@@ -1,0 +1,8 @@
+<RCC>
+    <qresource prefix="/">
+        <file>main.qml</file>
+        <file>qtquickcontrols2.conf</file>
+        <file>QuestionButton.qml</file>
+        <file>AnswerSlider.qml</file>
+    </qresource>
+</RCC>
