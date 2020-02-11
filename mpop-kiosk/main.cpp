@@ -1,5 +1,7 @@
 #include <QGuiApplication>
+#include <QQmlContext>
 #include <QQmlApplicationEngine>
+#include "rfidreader.h"
 
 int main(int argc, char *argv[])
 {
@@ -10,6 +12,10 @@ int main(int argc, char *argv[])
     QGuiApplication app(argc, argv);
 
     QQmlApplicationEngine engine;
+
+    RFIDReader rfidReader;
+    engine.rootContext()->setContextProperty("rfidReader", &rfidReader);
+
     engine.load(QUrl(QStringLiteral("qrc:/main.qml")));
     if (engine.rootObjects().isEmpty())
         return -1;
