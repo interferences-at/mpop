@@ -12,6 +12,16 @@ ApplicationWindow {
     height: 1080
     title: qsTr("MPOP Kiosk")
 
+    property string lastRfidRead: ""
+
+    Connections {
+        target: rfidReader
+        onLastRfidReadChanged: {
+            lastRfidRead = rfidReader.lastRfidRead;
+            console.log("Last RFID read: " + lastRfidRead);
+        }
+    }
+
     /**
      * Toggles the fullscreen state of the main window.
      */

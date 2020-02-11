@@ -46,10 +46,10 @@ void RFIDReader::resetSerialPort() {
             connect(&this->_serialPort, &QSerialPort::errorOccurred, this, &RFIDReader::handleError);
         } else {
             this->_standardOutput <<
-                QObject::tr("Failed to open port %1, error: %2")
-                .arg(serialPortName)
-                .arg(this->_serialPort.errorString())
-                << endl;
+                                     QObject::tr("Failed to open port %1, error: %2")
+                                     .arg(serialPortName)
+                                     .arg(this->_serialPort.errorString())
+                                  << endl;
             // TODO: try again
         }
     }
@@ -58,6 +58,7 @@ void RFIDReader::resetSerialPort() {
 QString RFIDReader::guessSerialPortName() {
     QString ret = ""; // Returns an empty string if none found.
     bool verbose = true;
+    bool veryVerbose = false;
 
     QStringList expected = {
         "/dev/ttyUSB", // on GNU/Linux
@@ -67,7 +68,9 @@ QString RFIDReader::guessSerialPortName() {
 
     const auto serialPortInfos = QSerialPortInfo::availablePorts();
     QTextStream out(stdout);
-    out << "Total number of ports available: " << serialPortInfos.count() << endl;
+    if (verbose) {
+        out << "Total number of serial ports available: " << serialPortInfos.count() << endl;
+    }
 
     static const QString blankString = "N/A";
     QString description;
@@ -78,12 +81,14 @@ QString RFIDReader::guessSerialPortName() {
         description = serialPortInfo.description();
         manufacturer = serialPortInfo.manufacturer();
         serialNumber = serialPortInfo.serialNumber();
-        if (verbose) {
+        if (veryVerbose) {
             out << endl;
             out << "Port: " << serialPortInfo.portName() << endl;
         }
-        out << "Location: " << serialPortInfo.systemLocation() << endl;
         if (verbose) {
+            out << "Location: " << serialPortInfo.systemLocation() << endl;
+        }
+        if (veryVerbose) {
             out << "Description: " << (! description.isEmpty() ? description : blankString) << endl;
             out << "Manufacturer: " << (! manufacturer.isEmpty() ? manufacturer : blankString) << endl;
             out << "Serial number: " << (! serialNumber.isEmpty() ? serialNumber : blankString) << endl;
@@ -99,13 +104,19 @@ QString RFIDReader::guessSerialPortName() {
             QString item = expected.at(i).toLocal8Bit().constData();
             QString systemLocation = serialPortInfo.systemLocation();
             if (systemLocation.contains(item, Qt::CaseInsensitive)) {
-                out << "Found FTDI device!" << endl;
+                if (verbose) {
+                    out << "Found FTDI device: " << serialPortInfo.systemLocation() << endl;
+                }
                 ret = serialPortInfo.systemLocation();
             }
         }
     }
 
     return ret;
+}
+
+QString RFIDReader::getLastRfidRead() const {
+    return this->_lastRfidRead;
 }
 
 void RFIDReader::handleReadyRead() {
@@ -116,22 +127,31 @@ void RFIDReader::handleReadyRead() {
     if (! this->_readTimer.isActive()) {
         this->_readTimer.start(SERIAL_READ_INTERVAL_MS);
     }
+    if (this->_serialPort.canReadLine()) {
+
+        static const qint64 maxSize = 100;
+        QByteArray line;
+        line = this->_serialPort.readLine(maxSize);
+        QString tag = QString::fromLatin1(line.data());
+        emit tagRead(tag); // FIXME
+        this->_lastRfidRead = tag;
+    }
 }
 
 void RFIDReader::readTimerCb() {
     if (this->_readData.isEmpty()) {
         this->_standardOutput << QObject::tr(
-            "No data was currently available for reading from port %1")
-            .arg(this->_serialPort.portName())
-            << endl;
+                                     "No data was currently available for reading from port %1")
+                                 .arg(this->_serialPort.portName())
+                              << endl;
     } else {
         this->_standardOutput <<
-            QObject::tr("Data successfully received from port %1")
-            .arg(this->_serialPort.portName())
-            << endl;
+                                 QObject::tr("Data successfully received from port %1")
+                                 .arg(this->_serialPort.portName())
+                              << endl;
         this->_standardOutput << this->_readData << endl;
     }
-    QCoreApplication::quit();
+    // QCoreApplication::quit();
 }
 
 void RFIDReader::reopenTimerCb() {
@@ -143,10 +163,10 @@ void RFIDReader::reopenTimerCb() {
 void RFIDReader::handleError(QSerialPort::SerialPortError serialPortError) {
     if (serialPortError == QSerialPort::ReadError) {
         this->_standardOutput <<
-            QObject::tr("An I/O error occurred while reading data from port %1, error: %2")
-                .arg(this->_serialPort.portName())
-                .arg(this->_serialPort.errorString())
-                << endl;
+                                 QObject::tr("An I/O error occurred while reading data from port %1, error: %2")
+                                 .arg(this->_serialPort.portName())
+                                 .arg(this->_serialPort.errorString())
+                              << endl;
         // TODO: handle error
     }
 }
