@@ -23,15 +23,19 @@ ApplicationWindow {
         }
     }
 
-    Item {
-        id: globalKeyHandler
-        focus: true
-        // FIXME: we lose the focus, when one clicks on buttons
-        Keys.onPressed: {
-            if (event.key === Qt.Key_Escape) {
-                toggleFullscreen();
-            }
-        }
+    function quitThisApp() {
+        Qt.quit();
+    }
+
+    // Shortcuts:
+    Shortcut {
+        sequence: "Esc"
+        onActivated: toggleFullscreen();
+    }
+
+    Shortcut {
+        sequence: "Ctrl+Q"
+        onActivated: quitThisApp();
     }
 
     // Main two-column layout
