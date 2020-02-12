@@ -3,9 +3,9 @@ TEMPLATE = subdirs
 CONFIG += sdk_no_version_check
 
 # qosc:
-# sub_qosc.subdir = qosc
-# sub_qosc = qosc
-# SUBDIRS += qosc
+sub_qosc.subdir = qosc
+sub_qosc = qosc
+SUBDIRS += qosc
 
 # mpop_kiosk:
 sub_mpop_kiosk.subdir = mpop_kiosk

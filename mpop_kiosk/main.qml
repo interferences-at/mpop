@@ -7,18 +7,32 @@ import QtQuick.Window 2.11
 ApplicationWindow {
     id: window
 
+    property string lastRfidRead: ""
+    property string lastMessageReceived: ""
+
     visible: true
     width: 1920
     height: 1080
     title: qsTr("MPOP Kiosk")
 
-    property string lastRfidRead: ""
+    function handleMessageReceived(oscPath, oscArguments) {
+        console.log("QML-Received OSC: " + oscPath + " " + oscArguments);
+        lastMessageReceived = oscPath + " " + oscArguments;
+    }
 
     Connections {
         target: rfidReader
         onLastRfidReadChanged: {
             lastRfidRead = rfidReader.lastRfidRead;
             console.log("Last RFID read: " + lastRfidRead);
+        }
+    }
+
+    Connections {
+        target: oscReceiver
+
+        onMessageReceived: {
+            handleMessageReceived(oscAddress, message);
         }
     }
 
@@ -37,15 +51,23 @@ ApplicationWindow {
         Qt.quit();
     }
 
+    function toggleDebugView() {
+        stackLayout0.currentIndex = (stackLayout0.currentIndex + 1) % 2;
+    }
+
     // Shortcuts:
     Shortcut {
         sequence: "Esc"
-        onActivated: toggleFullscreen();
+        onActivated: toggleFullscreen()
     }
 
     Shortcut {
         sequence: "Ctrl+Q"
-        onActivated: quitThisApp();
+        onActivated: quitThisApp()
+    }
+    Shortcut {
+        sequence: "Tab"
+        onActivated: toggleDebugView()
     }
 
     // Main two-column layout
@@ -70,58 +92,104 @@ ApplicationWindow {
         //            }
 
         // Contents
-        ColumnLayout {
+        StackLayout {
+            id: stackLayout0
+            currentIndex: 0
             Layout.fillWidth: true
             Layout.fillHeight: true
-            Layout.margins: 0
 
-            StackView {
+            ColumnLayout {
                 Layout.fillWidth: true
                 Layout.fillHeight: true
                 Layout.margins: 0
 
-                ColumnLayout {
-                    anchors.fill: parent
+                StackLayout {
+                    Layout.fillWidth: true
+                    Layout.fillHeight: true
+                    Layout.margins: 0
 
-                    Button {
-                        Layout.alignment: Qt.AlignRight
-                        text: "X"
-                        font.pixelSize: 24
-                    }
-
-                    Label {
-                        Layout.alignment: Qt.AlignCenter
-                        text: "Question 01"
-                        font.pixelSize: 36
-                    }
-                    Label {
-                        Layout.alignment: Qt.AlignCenter
-                        text: "Combien de bière par semaine buvez-vous ?"
-                        font.pixelSize: 36
-                    }
-                    AnswerSlider {
+                    ColumnLayout {
                         Layout.fillWidth: true
-                        sliderValue: 50
-                        textLeft: "Peu"
-                        textRight: "Beaucoup"
-                        showNumber: false
-                    }
-                    Label {
-                        Layout.alignment: Qt.AlignCenter
-                        text: "Sous-titre pour le slider."
-                        font.pixelSize: 24
-                    }
-                    RowLayout {
-                        Layout.alignment: Qt.AlignRight
-                        Layout.fillWidth: false
-                        Layout.fillHeight: false
+                        Layout.fillHeight: true
 
                         Button {
-                            text: "<-"
+                            Layout.alignment: Qt.AlignRight
+                            text: "X"
+                            font.pixelSize: 24
                         }
-                        Button {
-                            text: "->"
+
+                        Label {
+                            Layout.alignment: Qt.AlignCenter
+                            text: "Question 01"
+                            font.pixelSize: 36
                         }
+                        Label {
+                            Layout.alignment: Qt.AlignCenter
+                            text: "Combien de bière par semaine buvez-vous ?"
+                            font.pixelSize: 36
+                        }
+                        AnswerSlider {
+                            Layout.fillWidth: true
+                            sliderValue: 50
+                            textLeft: "Peu"
+                            textRight: "Beaucoup"
+                            showNumber: false
+                        }
+                        Label {
+                            Layout.alignment: Qt.AlignCenter
+                            text: "Sous-titre pour le slider."
+                            font.pixelSize: 24
+                        }
+                        RowLayout {
+                            Layout.alignment: Qt.AlignRight
+                            Layout.fillWidth: false
+                            Layout.fillHeight: false
+
+                            Button {
+                                text: "<-"
+                            }
+                            Button {
+                                text: "->"
+                            }
+                        }
+                    }
+
+
+                }
+            }
+
+            // OSC debug layout:
+            ColumnLayout {
+                RowLayout {
+                    SpinBox {
+                        id: someInt
+                        value: 2
+                    }
+                    Slider {
+                        id: someDouble
+                        value: 3.14159
+                        from: 0.0
+                        to: 5.0
+                    }
+                    TextField {
+                        id: someText
+                        text: "hello"
+                    }
+                }
+
+                Button {
+                    text: "Send OSC"
+                    onClicked: {
+                        oscSender.send("/hello", [someInt.value, someDouble.value, someText.text]);
+                    }
+                }
+
+                RowLayout {
+                    Label {
+                        text: "Received:"
+                    }
+                    Label {
+                        text: lastMessageReceived
                     }
                 }
             }

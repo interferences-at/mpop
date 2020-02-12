@@ -1,4 +1,4 @@
-TEMPLATE = LIBS
+TEMPLATE = lib
 
 VERSION = 0.1.0
 
@@ -15,13 +15,13 @@ CONFIG += staticlib
 CONFIG += sdk_no_version_check # disable warning on macOS
 CONFIG += debug_and_release
 CONFIG += build_all
+CONFIG -= qtquickcompiler
 
 CONFIG(debug, debug|release) {
     TARGET = debug_binary
 } else {
     TARGET = release_binary
 }
-
 
 DEFINES += QOSC_LIBRARY
 
