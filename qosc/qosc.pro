@@ -18,9 +18,9 @@ CONFIG += build_all
 CONFIG -= qtquickcompiler
 
 CONFIG(debug, debug|release) {
-    TARGET = debug_binary
+    TARGET = qosc_debug_binary
 } else {
-    TARGET = release_binary
+    TARGET = qosc_release_binary
 }
 
 DEFINES += QOSC_LIBRARY

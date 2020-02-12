@@ -11,6 +11,7 @@ CONFIG += sdk_no_version_check
 # depend on your compiler). Please consult the documentation of the
 # deprecated API in order to know how to port your code away from it.
 DEFINES += QT_DEPRECATED_WARNINGS
+DEFINES += QOSC_LIBRARY
 
 # You can also make your code fail to compile if you use deprecated APIs.
 # In order to do so, uncomment the following line.
@@ -18,6 +19,12 @@ DEFINES += QT_DEPRECATED_WARNINGS
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
+    ../qosc/contrib/oscpack/OscOutboundPacketStream.cpp \
+    ../qosc/contrib/oscpack/OscPrintReceivedElements.cpp \
+    ../qosc/contrib/oscpack/OscReceivedElements.cpp \
+    ../qosc/contrib/oscpack/OscTypes.cpp \
+    ../qosc/oscreceiver.cpp \
+    ../qosc/oscsender.cpp \
     main.cpp \
     rfidreader.cpp
 
@@ -35,18 +42,35 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
 
 HEADERS += \
+    ../qosc/contrib/oscpack/MessageMappingOscPacketListener.h \
+    ../qosc/contrib/oscpack/OscException.h \
+    ../qosc/contrib/oscpack/OscHostEndianness.h \
+    ../qosc/contrib/oscpack/OscOutboundPacketStream.h \
+    ../qosc/contrib/oscpack/OscPacketListener.h \
+    ../qosc/contrib/oscpack/OscPrintReceivedElements.h \
+    ../qosc/contrib/oscpack/OscReceivedElements.h \
+    ../qosc/contrib/oscpack/OscTypes.h \
+    ../qosc/oscreceiver.h \
+    ../qosc/oscsender.h \
     rfidreader.h
 
-# Add the qosc library:
-win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../qosc/release/ -lrelease_binary
-else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../qosc/debug/ -lrelease_binary
-else:unix: LIBS += -L$$OUT_PWD/../qosc/ -lrelease_binary
-
 INCLUDEPATH += $$PWD/../qosc
-DEPENDPATH += $$PWD/../qosc
+INCLUDEPATH += $$PWD/../qosc/contrib/packosc
 
-win32-g++:CONFIG(release, debug|release): PRE_TARGETDEPS += $$OUT_PWD/../qosc/release/librelease_binary.a
-else:win32-g++:CONFIG(debug, debug|release): PRE_TARGETDEPS += $$OUT_PWD/../qosc/debug/librelease_binary.a
-else:win32:!win32-g++:CONFIG(release, debug|release): PRE_TARGETDEPS += $$OUT_PWD/../qosc/release/release_binary.lib
-else:win32:!win32-g++:CONFIG(debug, debug|release): PRE_TARGETDEPS += $$OUT_PWD/../qosc/debug/release_binary.lib
-else:unix: PRE_TARGETDEPS += $$OUT_PWD/../qosc/librelease_binary.a
+# Should disable assertions # FIXME: It doesn't
+CONFIG(release, debug|release): DEFINES += NDEBUG
+
+
+# # Add the qosc library:
+# win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../qosc/release/ -lqosc_release_binary
+# else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../qosc/ -lqosc_debug_binary  # FIXME there was a /debug/ directory in the path, but it's gone.
+# else:unix: LIBS += -L$$OUT_PWD/../qosc/ -lrelease_binary
+#
+# INCLUDEPATH += $$PWD/../qosc
+# DEPENDPATH += $$PWD/../qosc
+#
+# win32-g++:CONFIG(release, debug|release): PRE_TARGETDEPS += $$OUT_PWD/../qosc/release/libqosc_release_binary.a
+# else:win32-g++:CONFIG(debug, debug|release): PRE_TARGETDEPS += $$OUT_PWD/../qosc/libqosc_debug_binary.a # FIXME: there was /debug/ in the path as last directory before I removed it
+# else:win32:!win32-g++:CONFIG(release, debug|release): PRE_TARGETDEPS += $$OUT_PWD/../qosc/release/qosc_release_binary.lib
+# else:win32:!win32-g++:CONFIG(debug, debug|release): PRE_TARGETDEPS += $$OUT_PWD/../qosc/debug/qosc_debug_binary.lib
+# else:unix: PRE_TARGETDEPS += $$OUT_PWD/../qosc/libqosc_release_binary.a
