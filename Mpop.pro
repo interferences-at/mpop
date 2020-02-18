@@ -14,6 +14,11 @@ sub_mpop_kiosk.target = sub_mpop_kiosk
 sub_mpop_kiosk.depends = qosc
 SUBDIRS += mpop_kiosk
 
+# mpop_service:
+sub_mpop_service.subdir = mpop_service
+sub_mpop_service.target = sub_mpop_service
+SUBDIRS += mpop_service
+
 # test_mpop_kiosk:
 sub_test_mpop_kiosk.subdir = test_mpop_kiosk
 sub_test_mpop_kiosk.target = sub_test_mpop_kiosk
