@@ -120,11 +120,12 @@ private:
     {
         // sanity check integer types declared in OscTypes.h 
         // you'll need to fix OscTypes.h if any of these asserts fail
+#if 0
         assert( sizeof(osc::int32) == 4 );
         assert( sizeof(osc::uint32) == 4 );
         assert( sizeof(osc::int64) == 8 );
         assert( sizeof(osc::uint64) == 8 );
-
+#endif
         if( !IsValidElementSizeValue(size) )
             throw MalformedPacketException( "invalid packet size" );
 
