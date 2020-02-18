@@ -31,7 +31,7 @@ Request Request::fromString(const QString& str) {
 QString Request::toString() {
     QVariantMap map;
     map["method"] = this->method;
-    if (! this->paramsByName.empty()) {
+    if (! this->paramsByName.empty()) { //FIXME: can we have both?
         map["params"] = this->paramsByName;
     } else {
         map["params"] = this->paramsByPosition;

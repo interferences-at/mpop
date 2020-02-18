@@ -57,6 +57,7 @@
 #include <cstdio>
 #include "request.h"
 #include "response.h"
+#include "notification.h"
 #include <iostream>
 
 QT_USE_NAMESPACE
@@ -90,20 +91,27 @@ void MPopService::newConnectionCb() {
 
 void MPopService::textMessageReceivedCb(const QString &message) {
     QWebSocket *pSender = qobject_cast<QWebSocket *>(sender());
-    for (QWebSocket *pClient : qAsConst(m_clients)) {
-        if (pClient != pSender) { //don't echo message back to sender
+    bool broadcastNotification = false;
 
-        }
+    QTextStream(stdout) << "got a request";
+    try {
+        QString response = this->handleJsonRpcTwoMethod(message, broadcastNotification);
 
-        QTextStream(stdout) << "got a request";
-        try {
-            QString response = this->handleJsonRpcTwoMethod(message);
-            pClient->sendTextMessage(response);
-        } catch (const std::exception& e) {
-            //qDebug << e.what();
+        if (broadcastNotification) {
+            QString notification = response;
+            for (QWebSocket *pClient : qAsConst(m_clients)) {
+                if (pClient != pSender) { //don't echo message back to sender
+                    pClient->sendTextMessage(notification);
+                }
+            }
+        } else {
+            pSender->sendTextMessage(response);
         }
+    } catch (const std::exception& e) {
+        //qDebug << e.what();
     }
 }
+
 
 void MPopService::socketDisconnectedCb() {
     QWebSocket *client = qobject_cast<QWebSocket*>(sender());
@@ -115,7 +123,7 @@ void MPopService::socketDisconnectedCb() {
 }
 
 
-QString MPopService::handleJsonRpcTwoMethod(const QString& message) {
+QString MPopService::handleJsonRpcTwoMethod(const QString& message, bool &broadcastNotification) {
     //std::string str = message.toStdString();
     //QJsonDocument requestDocument = QJsonDocument::fromRawData(str.c_str(), str.size(), QJsonDocument::Validate);
     Request request = Request::fromString(message);
@@ -125,16 +133,33 @@ QString MPopService::handleJsonRpcTwoMethod(const QString& message) {
     Response response;
     response.id = request.id; // FIXME: should allow string, int or null
     response.method = request.method;
+    bool sendResponse = true;
 
-    if (request.method == "ping") {
-        QTextStream(stdout) << "Got method ping";
+    if (request.method == "message") {
+        QTextStream(stdout) << "Got method message" << endl;
+        //response.result = QVariant::fromValue(QString("pong"));
+        QTextStream(stdout) << "Answer with pong" << endl;
+        sendResponse = false;
+        broadcastNotification = true;
+        Notification notification;
+        notification.method = "message";
+        notification.paramsByPosition = request.paramsByPosition;
+        QString ret = notification.toString();
+        QTextStream(stdout) << "Response: " << ret;
+        return ret;
+    } else if (request.method == "ping") {
+        QTextStream(stdout) << "Got method ping" << endl;
         response.result = QVariant::fromValue(QString("pong"));
-        QTextStream(stdout) << "Answer with pong";
+        QTextStream(stdout) << "Answer with pong" << endl;
+    } else if (request.method == "echo") {
+        QTextStream(stdout) << "Got method echo" << endl;
+        response.result = QVariant(request.paramsByName);
+        QTextStream(stdout) << "Answer with echo" << endl;
     } else {
         QTextStream(stdout) << "unhandled request";
     }
 
-    QString ret = response.toString(); // TODO: return string response (JSON)
+    QString ret = response.toString(); // return string response (JSON)
     QTextStream(stdout) << "Response: " << ret;
     return ret;
 }

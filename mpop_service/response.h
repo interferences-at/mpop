@@ -11,7 +11,7 @@ public:
     struct Error {
         int code = 0;
         QString message = "";
-        QList<QVariant> data;
+        QVariant data;
     };
     QString jsonrpc = "2.0";
     QString method = "";

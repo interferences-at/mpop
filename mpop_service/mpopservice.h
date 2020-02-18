@@ -70,7 +70,7 @@ private slots:
     void socketDisconnectedCb();
 
 private: // methods
-    QString handleJsonRpcTwoMethod(const QString& message);
+    QString handleJsonRpcTwoMethod(const QString& message, bool& broadcastNotification);
 
 private:
     QWebSocketServer* m_pWebSocketServer;

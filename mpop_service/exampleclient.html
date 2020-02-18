@@ -33,7 +33,12 @@
             function sendMessage() {
                 var nickname = document.getElementById("inputNick").value;
                 var msg = document.getElementById("inputText").value;
-                var strToSend = nickname + ": " + msg;
+		   var request = {
+			method: "message",
+			params: [nickname, msg],
+			id: 2
+		};
+                var strToSend = JSON.stringify(request);
                 if ( websocket != null )
                 {
                     document.getElementById("inputText").value = "";
@@ -52,6 +57,7 @@
                 var strToSend = JSON.stringify(request);
                 if (websocket != null)
                 {
+		    
                     websocket.send(strToSend);
                     console.log("string sent :", '"' + strToSend + '"');
                     debug(strToSend);
@@ -64,8 +70,9 @@
                 try {
                     if (typeof MozWebSocket == 'function')
                         WebSocket = MozWebSocket;
-                    if ( websocket && websocket.readyState == 1 )
-                        websocket.close();
+			if (websocket && websocket.readyState == 1) {
+                        	websocket.close();
+			}
                     var wsUri = "ws://" + document.getElementById("webSocketHost").value;
                     websocket = new WebSocket( wsUri );
                     websocket.onopen = function (evt) {
