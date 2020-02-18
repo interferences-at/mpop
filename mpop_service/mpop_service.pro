@@ -8,10 +8,14 @@ TEMPLATE = app
 
 SOURCES += \
     main.cpp \
-    mpopservice.cpp
+    mpopservice.cpp \
+    request.cpp \
+    response.cpp
 
 HEADERS += \
-    mpopservice.h
+    mpopservice.h \
+    request.h \
+    response.h
 
 # EXAMPLE_FILES += exampleclient.html
 

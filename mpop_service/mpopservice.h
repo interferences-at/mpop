@@ -69,6 +69,9 @@ private slots:
     void textMessageReceivedCb(const QString &message);
     void socketDisconnectedCb();
 
+private: // methods
+    QString handleJsonRpcTwoMethod(const QString& message);
+
 private:
     QWebSocketServer* m_pWebSocketServer;
     QList<QWebSocket*> m_clients;

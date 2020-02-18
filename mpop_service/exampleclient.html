@@ -1,9 +1,9 @@
 <html>
     <head>
-        <title>WebSocket Chat Client</title>
+        <title>WebSocket Client</title>
     </head>
     <body>
-        <h1>WebSocket Chat Client</h1>
+        <h1>WebSocket Client</h1>
         <p>
             Host: <input id="webSocketHost" type="text" value="localhost:1234"/>
         </p>
@@ -19,10 +19,12 @@
             <input type="text" id="inputNick" value="nickname" />
             <input type="text" id="inputText" onkeydown="if(event.keyCode==13)sendMessage();"/>
             <button id="sendButton" onClick="sendMessage();" disabled>Send</button>
+            <button id="pingButton" onClick="sendPing();" disabled>Ping</button>
         </p>
 
         <script type="text/javascript">
             var debugTextArea = document.getElementById("debugTextArea");
+
             function debug(message) {
                 debugTextArea.value += message + "\n";
                 debugTextArea.scrollTop = debugTextArea.scrollHeight;
@@ -41,6 +43,21 @@
                 }
             }
 
+            function sendPing() {
+		var request = {
+			method: "ping",
+			params: [],
+			id: 2
+		};
+                var strToSend = JSON.stringify(request);
+                if (websocket != null)
+                {
+                    websocket.send(strToSend);
+                    console.log("string sent :", '"' + strToSend + '"');
+                    debug(strToSend);
+                }
+            }
+
             var websocket = null;
 
             function initWebSocket() {
@@ -55,11 +72,13 @@
                         debug("CONNECTED");
                         document.getElementById("disconnectButton").disabled = false;
                         document.getElementById("sendButton").disabled = false;
+                        document.getElementById("pingButton").disabled = false;
                     };
                     websocket.onclose = function (evt) {
                         debug("DISCONNECTED");
                         document.getElementById("disconnectButton").disabled = true;
                         document.getElementById("sendButton").disabled = true;
+                        document.getElementById("pingButton").disabled = true;
                     };
                     websocket.onmessage = function (evt) {
                         console.log( "Message received :", evt.data );

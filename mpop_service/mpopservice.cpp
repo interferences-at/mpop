@@ -50,8 +50,14 @@
 #include "mpopservice.h"
 
 #include <QtWebSockets>
+#include <exception>
+
 #include <QtCore>
+#include <QDebug>
 #include <cstdio>
+#include "request.h"
+#include "response.h"
+#include <iostream>
 
 QT_USE_NAMESPACE
 
@@ -62,11 +68,8 @@ static QString getIdentifier(QWebSocket* peer) {
 
 MPopService::MPopService(quint16 port, QObject* parent) :
     QObject(parent),
-    m_pWebSocketServer(new QWebSocketServer(QStringLiteral("Chat Server"),
-        QWebSocketServer::NonSecureMode,
-        this)) {
-    if (m_pWebSocketServer->listen(QHostAddress::Any, port))
-    {
+    m_pWebSocketServer(new QWebSocketServer(QStringLiteral("MPOP Service"), QWebSocketServer::NonSecureMode, this)) {
+    if (m_pWebSocketServer->listen(QHostAddress::Any, port)) {
         QTextStream(stdout) << "Server listening on port " << port << '\n';
         connect(m_pWebSocketServer, &QWebSocketServer::newConnection,  this, &MPopService::newConnectionCb);
     }
@@ -88,8 +91,17 @@ void MPopService::newConnectionCb() {
 void MPopService::textMessageReceivedCb(const QString &message) {
     QWebSocket *pSender = qobject_cast<QWebSocket *>(sender());
     for (QWebSocket *pClient : qAsConst(m_clients)) {
-        if (pClient != pSender) //don't echo message back to sender
-            pClient->sendTextMessage(message);
+        if (pClient != pSender) { //don't echo message back to sender
+
+        }
+
+        QTextStream(stdout) << "got a request";
+        try {
+            QString response = this->handleJsonRpcTwoMethod(message);
+            pClient->sendTextMessage(response);
+        } catch (const std::exception& e) {
+            //qDebug << e.what();
+        }
     }
 }
 
@@ -101,3 +113,30 @@ void MPopService::socketDisconnectedCb() {
         client->deleteLater();
     }
 }
+
+
+QString MPopService::handleJsonRpcTwoMethod(const QString& message) {
+    //std::string str = message.toStdString();
+    //QJsonDocument requestDocument = QJsonDocument::fromRawData(str.c_str(), str.size(), QJsonDocument::Validate);
+    Request request = Request::fromString(message);
+    //if (document == nullptr) {
+    //    qDebug << "Could not parse JSON from JSON-RPC 2.0 message.";
+    //}
+    Response response;
+    response.id = request.id; // FIXME: should allow string, int or null
+    response.method = request.method;
+
+    if (request.method == "ping") {
+        QTextStream(stdout) << "Got method ping";
+        response.result = QVariant::fromValue(QString("pong"));
+        QTextStream(stdout) << "Answer with pong";
+    } else {
+        QTextStream(stdout) << "unhandled request";
+    }
+
+    QString ret = response.toString(); // TODO: return string response (JSON)
+    QTextStream(stdout) << "Response: " << ret;
+    return ret;
+}
+
+
