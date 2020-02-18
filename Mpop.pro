@@ -1,5 +1,6 @@
 TEMPLATE = subdirs
 
+# Silent a warning on macOS:
 CONFIG += sdk_no_version_check
 
 # qosc:
