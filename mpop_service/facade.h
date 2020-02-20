@@ -13,12 +13,21 @@ public:
             const QString& password, quint16 port, QObject *parent = nullptr);
 
     bool isDatabaseReady();
-    int createNewUser(QString rfidTag);
+
+    QString getUserLanguage(int userId);
+    int getOrCreateUser(QString rfidTag);
+    QMap<QString, int> getUserAnswers(int userId);
+    void setUserAnswer(int userId, QString questionId, int value);
+    QList<int> getStatsForQuestion(QString questionId);
+    void freeTag(QString rfidTag);
+    void freeUnusedTags();
+
 signals:
 
 private:
     QSqlDatabase _database;
     bool createTables();
+    int createNewUser(QString rfidTag);
 };
 
 #endif // FACADE_H

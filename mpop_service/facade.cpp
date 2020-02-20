@@ -36,4 +36,36 @@ bool Facade::createTables() {
 int Facade::createNewUser(QString rfidTag) {
     QString sql = "INSERT INTO users VALUES ()";
     QSqlQuery query(sql, _database);
+    // FIXME
+    int ret = 0;
+    return ret;
+}
+
+
+
+QString Facade::getUserLanguage(int userId) {
+    QString ret = "fr";
+    return ret; // FIXME
+}
+int Facade::getOrCreateUser(QString rfidTag) {
+    return 0; // FIXME
+}
+QMap<QString, int> Facade::getUserAnswers(int userId) {
+    QMap<QString, int> ret;
+    return ret;
+    // TODO
+}
+void Facade::setUserAnswer(int userId, QString questionId, int value) {
+
+}
+QList<int> Facade::getStatsForQuestion(QString questionId) {
+    QList<int> ret;
+    return ret;
+    // TODO
+}
+void Facade::freeTag(QString rfidTag) {
+
+}
+void Facade::freeUnusedTags() {
+
 }
