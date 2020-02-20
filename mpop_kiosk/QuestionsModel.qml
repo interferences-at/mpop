@@ -3,6 +3,20 @@ import QtQuick 2.0
 ListModel {
     id: questionsModel
 
+    function _find(model, criteria) {
+        for (var i = 0; i < model.count; ++i) {
+            if (criteria(model.get(i))) {
+                return model.get(i);
+            }
+        }
+        return null;
+    }
+    function findQuestion(question_identifier) {
+        return _find(questionsModel, function(item) {
+            return item.identifier === question_identifier;
+        });
+    }
+
     ListElement {
         identifier: "incidence_drogue"
         question_fr: "D’après vous, quelle est l’incidence du marché de la drogue sur les infractions criminelles?"
