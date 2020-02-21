@@ -1,3 +1,26 @@
+/* Work with both MySQL and SQLite: */
+
+CREATE TABLE IF NOT EXISTS tag (
+  id BIGINT UNSIGNED NOT NULL PRIMARY KEY,
+  rfid VARCHAR(256) NOT NULL UNIQUE,
+  visitor_id BIGINT UNSIGNED NULL UNIQUE
+);
+
+CREATE TABLE IF NOT EXISTS visitor (
+  id BIGINT UNSIGNED NOT NULL PRIMARY KEY,
+  gender VARCHAR(6) DEFAULT 'other',
+  language VARCHAR(2) DEFAULT 'fr',
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS answer ( id BIGINT UNSIGNED NOT NULL PRIMARY KEY,
+  question_identifier VARCHAR(100),
+  value TINYINT UNSIGNED,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+
+/*
 CREATE TABLE IF NOT EXISTS tag 
 (
     id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
@@ -26,10 +49,11 @@ CREATE TABLE IF NOT EXISTS answer
     question_identifier VARCHAR(100), -- ID of the question (see the questions file)
     value TINYINT UNSIGNED,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-    /*
-    question_id BIGINT, -- relation with the table question
-    */
+    
+    --question_id BIGINT, -- relation with the table question
+    
 );
+*/
 
 /*
 CREATE TABLE IF NOT EXISTS question

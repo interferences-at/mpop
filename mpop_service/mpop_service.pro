@@ -1,10 +1,10 @@
 QT += websockets
 QT += sql
+QT += core
 
 TARGET = mpop_service
 CONFIG += console
 CONFIG -= app_bundle
-
 
 TEMPLATE = app
 
