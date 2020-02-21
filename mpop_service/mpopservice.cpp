@@ -68,8 +68,10 @@ static QString getIdentifier(QWebSocket* peer) {
 }
 
 MPopService::MPopService(quint16 port, QObject* parent) :
-    QObject(parent),
-    m_pWebSocketServer(new QWebSocketServer(QStringLiteral("MPOP Service"), QWebSocketServer::NonSecureMode, this)) {
+        QObject(parent),
+        m_pWebSocketServer(new QWebSocketServer(QStringLiteral("MPOP Service"), QWebSocketServer::NonSecureMode, this)),
+        _facade("mpop")
+    {
     if (m_pWebSocketServer->listen(QHostAddress::Any, port)) {
         QTextStream(stdout) << "Server listening on port " << port << '\n';
         connect(m_pWebSocketServer, &QWebSocketServer::newConnection,  this, &MPopService::newConnectionCb);

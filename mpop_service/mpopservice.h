@@ -52,6 +52,7 @@
 
 #include <QtCore/QObject>
 #include <QtCore/QList>
+#include "facade.h"
 
 QT_FORWARD_DECLARE_CLASS(QWebSocketServer)
 QT_FORWARD_DECLARE_CLASS(QWebSocket)
@@ -75,6 +76,7 @@ private: // methods
 private:
     QWebSocketServer* m_pWebSocketServer;
     QList<QWebSocket*> m_clients;
+    Facade _facade;
 };
 
 #endif

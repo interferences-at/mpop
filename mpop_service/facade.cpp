@@ -1,11 +1,12 @@
 #include "facade.h"
 #include <QSqlQuery>
+#include <QVariant>
 
 static const int EXPECTED_NUM_TABLES = 3;
 
 Facade::Facade(
-        const QString& host, const QString& database, const QString& username,
-        const QString& password, quint16 port, QObject *parent) : QObject(parent)
+        const QString& database, const QString& host, const QString& username,
+        const QString& password, quint16 port, QObject* parent) : QObject(parent)
 {
     _database = QSqlDatabase::addDatabase("QMYSQL");
     _database.setHostName(host);
@@ -30,42 +31,130 @@ bool Facade::isDatabaseReady() {
 }
 
 bool Facade::createTables() {
-
+    return false; // TODO - or never do it.
 }
 
-int Facade::createNewUser(QString rfidTag) {
-    QString sql = "INSERT INTO users VALUES ()";
+int Facade::getOrCreateUser(const QString& rfidTag) {
+    return getUserForTag(rfidTag);
+}
+
+int Facade::getUserForTag(const QString& rfidTag) {
+    int visitorId = -1;
+    bool tagExists = false;
+    //QString selectSql = "SELECT visitor.id FROM visitor JOIN tag on tag.id = visitor.tag_id WHERE tag.rfid = :rfid";
+    //QString sql = "INSERT INTO users VALUES ()";
+    QString sql = "SELECT visitor_id FROM tag WHERE rfid = :rfid";
     QSqlQuery query(sql, _database);
-    // FIXME
-    int ret = 0;
+    query.bindValue(":rfid", QVariant(rfidTag));
+    query.exec();
+    while (query.next()) {
+        tagExists = true;
+        bool tagExistsButHasNoUser = query.isNull(0);
+        if (tagExistsButHasNoUser) {
+            visitorId = this->createNewUser();
+            updateTagSetVisitorId(rfidTag, visitorId);
+        } else {
+            visitorId = query.value(0).toInt(); // value("visitor_id") would also work, but is less efficient
+        }
+    }
+    if (! tagExists) {
+        visitorId = this->createTagAndUser(rfidTag);
+    } else {
+        // should not happen
+    }
+    return visitorId;
+}
+
+
+int Facade::createTagAndUser(const QString& rfidTag) {
+    // rreturn the created user id
+    int visitorId = createNewUser();
+    QString createSql = "INSERT INTO tag (`rfid`, `visitorId`) VALUES (:rfid, :visitor_id)";
+    QSqlQuery createQuery(createSql, _database);
+    createQuery.bindValue(":rfid", QVariant(rfidTag));
+    createQuery.bindValue(":visitorId", QVariant(visitorId));
+    createQuery.exec();
+    return visitorId;
+}
+
+int Facade::createNewUser() {
+    QString sql = "INSERT INTO visitor";
+    QSqlQuery query(sql, _database);
+    query.exec();
+    return query.lastInsertId().toInt();
+}
+
+bool Facade::updateTagSetVisitorId(const QString& rfidTag, int visitorId) {
+    QString sql = "UPDATE tag SET `visitor_id` = :visitorId WHERE `rfid` = :rfid";
+    QSqlQuery query(sql, _database);
+    query.bindValue(":rfid", QVariant(rfidTag));
+    query.bindValue(":visitorId", QVariant(visitorId));
+    query.exec();
+    return query.numRowsAffected() == 1;
+}
+
+QString Facade::getUserLanguage(int userId) {
+    QString ret;
+    QString sql = "SELECT language FROM visitor WHERE id = :userId";
+    QSqlQuery query(sql, _database);
+    query.bindValue(":userId", QVariant(userId));
+    query.exec();
+    while (query.next()) {
+        ret = query.value(0).toString();
+    }
     return ret;
 }
 
-
-
-QString Facade::getUserLanguage(int userId) {
-    QString ret = "fr";
-    return ret; // FIXME
+QString Facade::getUserGender(int userId) {
+    QString ret;
+    QString sql = "SELECT gender FROM visitor WHERE id = :userId";
+    QSqlQuery query(sql, _database);
+    query.bindValue(":userId", QVariant(userId));
+    query.exec();
+    while (query.next()) {
+        ret = query.value(0).toString();
+    }
+    return ret;
 }
-int Facade::getOrCreateUser(QString rfidTag) {
-    return 0; // FIXME
-}
+
 QMap<QString, int> Facade::getUserAnswers(int userId) {
     QMap<QString, int> ret;
     return ret;
     // TODO
 }
-void Facade::setUserAnswer(int userId, QString questionId, int value) {
+
+void Facade::setUserAnswer(int userId, const QString& questionId, int value) {
 
 }
-QList<int> Facade::getStatsForQuestion(QString questionId) {
+
+QList<int> Facade::getStatsForQuestion(const QString& questionId) {
     QList<int> ret;
     return ret;
-    // TODO
+    // TODO not sure what to return
 }
-void Facade::freeTag(QString rfidTag) {
+
+void Facade::freeTag(const QString& rfidTag) {
 
 }
+
 void Facade::freeUnusedTags() {
 
+}
+
+bool Facade::setUserLanguage(int userId, const QString& language) {
+    QString sql = "UPDATE visitor SET `language` = :language WHERE `id` = :userId";
+    QSqlQuery query(sql, _database);
+    query.bindValue(":userId", QVariant(userId));
+    query.bindValue(":language", QVariant(language));
+    query.exec();
+    return query.numRowsAffected() == 1;
+}
+
+bool Facade::setUserGender(int userId, const QString& gender) {
+    QString sql = "UPDATE visitor SET `gender` = :gender WHERE `id` = :userId";
+    QSqlQuery query(sql, _database);
+    query.bindValue(":userId", QVariant(userId));
+    query.bindValue(":gender", QVariant(gender));
+    query.exec();
+    return query.numRowsAffected() == 1;
 }
