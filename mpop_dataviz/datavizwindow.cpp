@@ -8,81 +8,53 @@
 
 
 DatavizWindow::DatavizWindow()
-    : _program(nullptr),
-      _frame(0)
 {
     qDebug() << "Create a Window";
 }
 
 
-static const char *vertexShaderSource =
-    "attribute highp vec4 posAttr;\n"
-    "attribute lowp vec4 colAttr;\n"
-    "varying lowp vec4 col;\n"
-    "uniform highp mat4 matrix;\n"
-    "void main() {\n"
-    "   col = colAttr;\n"
-    "   gl_Position = matrix * posAttr;\n"
-    "}\n";
-
-
-static const char *fragmentShaderSource =
-    "varying lowp vec4 col;\n"
-    "void main() {\n"
-    "   gl_FragColor = col;\n"
-    "}\n";
-
-
 void DatavizWindow::initialize() {
-    _program = new QOpenGLShaderProgram(this);
-    _program->addShaderFromSourceCode(QOpenGLShader::Vertex, vertexShaderSource);
-    _program->addShaderFromSourceCode(QOpenGLShader::Fragment, fragmentShaderSource);
-    _program->link();
-    _posAttr = _program->attributeLocation("posAttr");
-    _colAttr = _program->attributeLocation("colAttr");
-    _matrixUniform = _program->uniformLocation("matrix");
+
 }
 
 void DatavizWindow::render() {
     const qreal retinaScale = devicePixelRatio();
-    glViewport(0, 0, width() * retinaScale, height() * retinaScale);
+    glViewport(0, 0,
+               width() * static_cast<GLsizei>(retinaScale),
+               height() * static_cast<GLsizei>(retinaScale));
     glClear(GL_COLOR_BUFFER_BIT);
 
-    _program->bind();
+    glMatrixMode(GL_PROJECTION);
 
-    QMatrix4x4 matrix;
-    matrix.perspective(60.0f, 4.0f / 3.0f, 0.1f, 100.0f);
-    matrix.translate(0, 0, -2);
-    matrix.rotate(100.0f * _frame / screen()->refreshRate(), 0, 1, 0);
+    GLdouble ratio = (static_cast<GLdouble>(width())) / static_cast<GLdouble>(height());
+    GLdouble left = - ratio;
+    GLdouble right = ratio;
+    GLdouble top = 1.0;
+    GLdouble bottom = -1.0;
 
-    _program->setUniformValue(_matrixUniform, matrix);
+    glLoadIdentity();
+    glOrtho(left, right, bottom, top, -1, 1);
 
-    GLfloat vertices[] = {
-        0.0f, 0.707f,
-        -0.5f, -0.5f,
-        0.5f, -0.5f
-    };
+    // Instead, we could use a pespective view, here:
+    // gluPerspective(60.0f, ratio, 1.0f, 100.0f);
+    glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();
 
-    GLfloat colors[] = {
-        1.0f, 0.0f, 0.0f,
-        0.0f, 1.0f, 0.0f,
-        0.0f, 0.0f, 1.0f
-    };
+    glPushMatrix();
+    glTranslatef(-0.5, -0.5, 0.0);
+    glScalef(1.0, 1.0, 1.0);
 
-    glVertexAttribPointer(_posAttr, 2, GL_FLOAT, GL_FALSE, 0, vertices);
-    glVertexAttribPointer(_colAttr, 3, GL_FLOAT, GL_FALSE, 0, colors);
-
-    glEnableVertexAttribArray(0);
-    glEnableVertexAttribArray(1);
-
-    glDrawArrays(GL_TRIANGLES, 0, 3);
-
-    glDisableVertexAttribArray(1);
-    glDisableVertexAttribArray(0);
-
-    _program->release();
-
-    ++ _frame;
+    glBegin(GL_QUADS);
+    glColor4f(255, 127, 0, 255);
+    glVertex2f(0.0, 0.0);
+    glColor4f(127, 255, 0, 255);
+    glVertex2f(1.0, 0.0);
+    glColor4f(0, 127, 255, 255);
+    glVertex2f(1.0, 1.0);
+    glColor4f(255, 0, 127, 255);
+    glVertex2f(0.0, 1.0);
+    glEnd();
+    glPopMatrix();
 }
 
 

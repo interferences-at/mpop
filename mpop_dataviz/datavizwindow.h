@@ -12,9 +12,9 @@ public:
     void render() override;
 
 private:
-    GLuint _posAttr;
-    GLuint _colAttr;
-    GLuint _matrixUniform;
-    QOpenGLShaderProgram* _program;
-    int _frame;
+//    GLuint _posAttr;
+//    GLuint _colAttr;
+//    GLuint _matrixUniform;
+//    QOpenGLShaderProgram* _program;
+//    int _frame;
 };
