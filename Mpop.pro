@@ -19,6 +19,11 @@ sub_mpop_service.subdir = mpop_service
 sub_mpop_service.target = sub_mpop_service
 SUBDIRS += mpop_service
 
+# mpop_dataviz:
+sub_mpop_dataviz.subdir = mpop_dataviz
+sub_mpop_dataviz.target = sub_mpop_dataviz
+SUBDIRS += mpop_dataviz
+
 # test_mpop_kiosk:
 sub_test_mpop_kiosk.subdir = test_mpop_kiosk
 sub_test_mpop_kiosk.target = sub_test_mpop_kiosk
