@@ -1,5 +1,6 @@
 #include "datavizwindow.h"
 #include "openglwindow.h"
+#include "line.h"
 #include <QtGui/QGuiApplication>
 #include <QtGui/QMatrix4x4>
 #include <QtGui/QOpenGLShaderProgram>
@@ -10,6 +11,9 @@
 DatavizWindow::DatavizWindow()
 {
     qDebug() << "Create a Window";
+    _elapsedTimer.start();
+
+    _sceneObjects.push_back(new Line());
 }
 
 
@@ -40,25 +44,19 @@ void DatavizWindow::render() {
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
 
-    glPushMatrix();
-    glTranslatef(-0.5, -0.5, 0.0);
-    glScalef(1.0, 1.0, 1.0);
 
-    glBegin(GL_QUADS);
-    glColor4f(255, 127, 0, 255);
-    glVertex2f(0.0, 0.0);
-    glColor4f(127, 255, 0, 255);
-    glVertex2f(1.0, 0.0);
-    glColor4f(0, 127, 255, 255);
-    glVertex2f(1.0, 1.0);
-    glColor4f(255, 0, 127, 255);
-    glVertex2f(0.0, 1.0);
-    glEnd();
-    glPopMatrix();
+
+    for (auto iter = _sceneObjects.begin(); iter != _sceneObjects.end(); ++ iter) {
+        SceneObject* obj = (*iter);
+        obj->draw(_elapsedTimer);
+    }
 }
 
 
 DatavizWindow::~DatavizWindow()
 {
     qDebug() << "~DatavizWindow";
+    for (auto iter = _sceneObjects.begin(); iter != _sceneObjects.end(); ++ iter) {
+        delete (*iter);
+    }
 }

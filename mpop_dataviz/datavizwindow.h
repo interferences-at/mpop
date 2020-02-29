@@ -1,7 +1,10 @@
 #pragma once
 
 #include "openglwindow.h"
+#include "sceneobject.h"
 #include <QtGui/QOpenGLShaderProgram>
+#include <QElapsedTimer>
+#include <QVector>
 
 
 class DatavizWindow : public OpenGLWindow {
@@ -12,9 +15,6 @@ public:
     void render() override;
 
 private:
-//    GLuint _posAttr;
-//    GLuint _colAttr;
-//    GLuint _matrixUniform;
-//    QOpenGLShaderProgram* _program;
-//    int _frame;
+    QElapsedTimer _elapsedTimer;
+    QVector<SceneObject*> _sceneObjects;
 };
