@@ -53,6 +53,8 @@
 #include <QtCore/QObject>
 #include <QtCore/QList>
 #include "facade.h"
+#include "request.h"
+#include "response.h"
 
 QT_FORWARD_DECLARE_CLASS(QWebSocketServer)
 QT_FORWARD_DECLARE_CLASS(QWebSocket)
@@ -72,11 +74,13 @@ private slots:
 
 private: // methods
     QString handleJsonRpcTwoMethod(const QString& message, bool& broadcastNotification);
-
+    bool handleFacadeMethod(const Request& request, Response& response);
 private:
     QWebSocketServer* m_pWebSocketServer;
     QList<QWebSocket*> m_clients;
     Facade _facade;
+
+
 };
 
 #endif

@@ -56,6 +56,6 @@ int main(int argc, char *argv[])
     QCoreApplication application(argc, argv);
     application.setApplicationName("mpop_service");
     quint16 portNumber = 1234;
-    MPopService server(portNumber);
+    MPopService service(portNumber);
     return application.exec();
 }

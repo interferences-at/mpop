@@ -55,8 +55,7 @@
 #include <QtCore>
 #include <QDebug>
 #include <cstdio>
-#include "request.h"
-#include "response.h"
+
 #include "notification.h"
 #include <iostream>
 
@@ -157,6 +156,8 @@ QString MPopService::handleJsonRpcTwoMethod(const QString& message, bool &broadc
         QTextStream(stdout) << "Got method echo" << endl;
         response.result = QVariant(request.paramsByName);
         QTextStream(stdout) << "Answer with echo" << endl;
+    } else if (this->handleFacadeMethod(request, response)) {
+        // success
     } else {
         QTextStream(stdout) << "unhandled request";
     }
@@ -166,4 +167,25 @@ QString MPopService::handleJsonRpcTwoMethod(const QString& message, bool &broadc
     return ret;
 }
 
+bool MPopService::handleFacadeMethod(const Request& request, Response& response) {
+    // Write to the response object.
+    QString method = request.method;
+    if (method == "getOrCreateUser") {
+        QString rfidTag = request.paramsByPosition[0].toString();
+        response.result = QVariant(this->_facade.getOrCreateUser(rfidTag));
+// TODO int (const QString& rfidTag);
+    }
 
+    // TODO QString getUserLanguage(int userId);
+
+    // TODO QMap<QString, int> getUserAnswers(int userId);
+    // TODO void setUserAnswer(int userId, const QString& questionId, int value);
+    // TODO QList<int> getStatsForQuestion(const QString& questionId);
+    // TODO void freeTag(const QString& rfidTag);
+    // TODO void freeUnusedTags();
+    // TODO bool setUserLanguage(int userId, const QString& language);
+    // TODO bool setUserGender(int userId, const QString& gender);
+    // TODO QString getUserGender(int userId);
+
+    return true;
+}
