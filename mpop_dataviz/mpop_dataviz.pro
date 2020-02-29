@@ -12,9 +12,11 @@ INCLUDEPATH += $$PWD
 
 SOURCES += \
     openglwindow.cpp \
-    main.cpp
+    main.cpp \
+    datavizwindow.cpp
 
-HEADERS += openglwindow.h
+HEADERS += openglwindow.h \
+    datavizwindow.h
 
 
 # OSC support:
