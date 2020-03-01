@@ -8,12 +8,29 @@
 #include <QtCore/qmath.h>
 
 
+
 DatavizWindow::DatavizWindow()
 {
     qDebug() << "Create a Window";
     _elapsedTimer.start();
 
-    _sceneObjects.push_back(new Line());
+    static const int NUM_LINES = 100;
+
+    for (int i = 0; i < NUM_LINES; i ++) {
+        Line* line = new Line();
+        _sceneObjects.push_back(line);
+    }
+
+    _barChartLayout.addObjects(_sceneObjects); // FIXME: get only a subsets of all sceneobjects - only the lines
+
+
+    QVector<quint8> bars;
+    bars.push_back(10);
+    bars.push_back(20);
+    bars.push_back(70);
+    _barChartLayout.setBars(bars);
+
+    _barChartLayout.moveObjectsToLayout(); // Important: do it after you called setBars
 }
 
 
@@ -44,11 +61,11 @@ void DatavizWindow::render() {
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
 
-
-
     for (auto iter = _sceneObjects.begin(); iter != _sceneObjects.end(); ++ iter) {
         SceneObject* obj = (*iter);
-        obj->draw(_elapsedTimer);
+        if (obj->getVisible()) {
+            obj->draw(_elapsedTimer);
+        }
     }
 }
 

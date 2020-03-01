@@ -5,6 +5,7 @@
 #include <QtGui/QOpenGLShaderProgram>
 #include <QElapsedTimer>
 #include <QVector>
+#include "barchartlayout.h"
 
 
 class DatavizWindow : public OpenGLWindow {
@@ -17,4 +18,5 @@ public:
 private:
     QElapsedTimer _elapsedTimer;
     QVector<SceneObject*> _sceneObjects;
+    BarChartLayout _barChartLayout;
 };
