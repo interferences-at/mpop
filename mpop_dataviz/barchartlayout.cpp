@@ -16,6 +16,11 @@ void BarChartLayout::moveObjectsToLayout() {
     int lineIndex = 0;
     // TODO: never ever iterate over size of line vector
     // const int numLines = _sceneObjects.size();
+    static const double WIDTH_OF_EACH_COLUMN = 0.3;
+    static const double DISTANCE_BETWEEN_BARS = 0.02;
+    static const double DISTANCE_BETWEEN_COLUMN = 0.05;
+    static const double DISTANCE_BETWEEN_ROW = 0.15;
+    static const double ADJUST_FIFTH_X = 0.1;
 
     for (int barIndex = 0; barIndex < _barValues.size(); barIndex ++) {
         quint8 barValue = this->_barValues[barIndex];
@@ -26,9 +31,9 @@ void BarChartLayout::moveObjectsToLayout() {
             int moduloFive = lineInBar % 5;
 
             if (moduloFive < 4) {
-                line->setPosition(lineIndex * 0.1, row * 0.1);
+                line->setPosition(barIndex * WIDTH_OF_EACH_COLUMN + moduloFive * DISTANCE_BETWEEN_BARS, row * DISTANCE_BETWEEN_ROW);
             } else if (moduloFive == 4) {
-                line->setPosition(0.2, row * 0.1);
+                line->setPosition(barIndex * WIDTH_OF_EACH_COLUMN + moduloFive * DISTANCE_BETWEEN_BARS + DISTANCE_BETWEEN_COLUMN - ADJUST_FIFTH_X, row * DISTANCE_BETWEEN_ROW);
                 line->setOrientation(60.0);
                 row += 1;
             }
