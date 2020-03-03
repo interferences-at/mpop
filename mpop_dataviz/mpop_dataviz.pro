@@ -17,14 +17,16 @@ SOURCES += \
     sceneobject.cpp \
     layout.cpp \
     barchartlayout.cpp \
-    prisonerline.cpp
+    prisonerline.cpp \
+    controller.cpp
 
 HEADERS += openglwindow.h \
     datavizwindow.h \
     sceneobject.h \
     layout.h \
     barchartlayout.h \
-    prisonerline.h
+    prisonerline.h \
+    controller.h
 
 
 # OSC support:

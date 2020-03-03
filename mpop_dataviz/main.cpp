@@ -1,5 +1,7 @@
 #include "openglwindow.h"
+#include "controller.h"
 #include "datavizwindow.h"
+#include "oscreceiver.h"
 #include <QtGui/QGuiApplication>
 #include <QtGui/QMatrix4x4>
 #include <QtGui/QOpenGLShaderProgram>
@@ -12,13 +14,13 @@
 static const int NUM_WINDOWS = 4;
 static const int WINDOW_WIDTH = 1920;
 static const int WINDOW_HEIGHT = 1080;
-
+static const int OSC_RECEIVE_PORT = 31337;
 
 int main(int argc, char* argv[]) {
     QGuiApplication app(argc, argv);
     QSurfaceFormat format;
     format.setSamples(16);
-    QList<DatavizWindow*> windows;
+    QVector<DatavizWindow*> windows;
 
     for (int i = 0; i < NUM_WINDOWS; i ++) {
         int x = (i % 2) * WINDOW_WIDTH;
@@ -37,6 +39,9 @@ int main(int argc, char* argv[]) {
         window->setAnimating(true);
         windows.append(window);
     }
+
+    OscReceiver oscReceiver(OSC_RECEIVE_PORT);
+    Controller controller(&oscReceiver, windows);
 
     int ret = app.exec();
 
