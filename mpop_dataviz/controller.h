@@ -14,10 +14,18 @@ class Controller : public QObject
 {
     Q_OBJECT
 public:
+
     Controller(OscReceiver* oscReceiver, const QVector<DatavizWindow*>& windows);
-private:
+
+    void showBarChart(int windowIndex, const QList<int>& values);
+
+
+private: // data members
     OscReceiver* _oscReceiver;
     QVector<DatavizWindow*> _windows;
+
+private:
+    DatavizWindow* getWindow(int windowIndex) const;
 
 public slots:
     void messageReceivedCb(const QString& oscAddress, const QVariantList& arguments);

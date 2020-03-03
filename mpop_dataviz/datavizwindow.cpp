@@ -9,8 +9,7 @@
 
 
 
-DatavizWindow::DatavizWindow()
-{
+DatavizWindow::DatavizWindow() {
     qDebug() << "Create a Window";
     _elapsedTimer.start();
 
@@ -24,16 +23,18 @@ DatavizWindow::DatavizWindow()
 
     _barChartLayout.addPrisonerLines(prisonerLines); // Only a subsets of all sceneobjects - only the lines
 
-
-    QVector<quint8> bars;
+    // test values:
+    QList<int> bars;
     bars.push_back(10);
     bars.push_back(20);
     bars.push_back(70);
-    _barChartLayout.setBars(bars);
-
-    _barChartLayout.moveObjectsToLayout(); // Important: do it after you called setBars
+    showBarChartBars(bars);
 }
 
+void DatavizWindow::showBarChartBars(const QList<int>& bars) {
+    _barChartLayout.setBars(bars);
+    _barChartLayout.moveObjectsToLayout(); // Important: do it after you called setBars
+}
 
 void DatavizWindow::initialize() {
 

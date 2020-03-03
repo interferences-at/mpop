@@ -14,6 +14,7 @@ public:
     ~DatavizWindow() override;
     void initialize() override;
     void render() override;
+    void showBarChartBars(const QList<int>& bars);
 
 private:
     QElapsedTimer _elapsedTimer;

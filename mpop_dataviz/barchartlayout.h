@@ -1,6 +1,7 @@
 #pragma once
 
 #include "layout.h"
+#include <QList>
 
 /**
  * @brief Layout that places the prisoner lines to form a bar chart.
@@ -17,7 +18,7 @@ public:
      * @brief Sets the values for each bar to show.
      * @param values
      */
-    void setBars(const QVector<quint8>& values);
+    void setBars(const QList<int>& values);
 private:
-    QVector<quint8> _barValues;
+    QList<int> _barValues;
 };

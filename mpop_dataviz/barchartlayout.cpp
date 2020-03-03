@@ -1,10 +1,13 @@
 #include "barchartlayout.h"
 #include "prisonerline.h"
+#include <QDebug>
+
 
 BarChartLayout::BarChartLayout()
 {
 
 }
+
 
 BarChartLayout::~BarChartLayout()
 {
@@ -13,7 +16,7 @@ BarChartLayout::~BarChartLayout()
 
 
 void BarChartLayout::moveObjectsToLayout() {
-    int lineIndex = 0;
+
     // TODO: never ever iterate over size of line vector
     // const int numLines = _sceneObjects.size();
     static const double WIDTH_OF_EACH_COLUMN = 0.3;
@@ -21,13 +24,19 @@ void BarChartLayout::moveObjectsToLayout() {
     static const double DISTANCE_BETWEEN_COLUMN = 0.05;
     static const double DISTANCE_BETWEEN_ROW = 0.15;
     static const double ADJUST_FIFTH_X = 0.1;
+    static const double OUTSIDE_X = 3.0; // outside of the screen
+    static const double OUTSIDE_Y = 3.0; // outside of the screen
 
+    int lineIndex = 0;
     for (int barIndex = 0; barIndex < _barValues.size(); barIndex ++) {
+        if (lineIndex >= _prisonerLines.size()) {
+            qWarning() << "Out of bound: " << lineIndex;
+        }
         quint8 barValue = this->_barValues[barIndex];
         int row = 0;
 
         for (int lineInBar = 0; lineInBar < barValue; lineInBar ++) {
-            PrisonerLine* line = dynamic_cast<PrisonerLine*>(_prisonerLines[lineIndex]); // FIXME: Perhaps layouts should deal with line objects directly.
+            PrisonerLine* line = _prisonerLines[lineIndex];
             int moduloFive = lineInBar % 5;
 
             if (moduloFive < 4) {
@@ -41,9 +50,17 @@ void BarChartLayout::moveObjectsToLayout() {
             ++ lineIndex;
         }
     }
+
+    // Move leftover out of the screen, if needed
+    if (lineIndex < _prisonerLines.size()) {
+        for ( ; lineIndex < _prisonerLines.size(); lineIndex ++) {
+            PrisonerLine* line = _prisonerLines[lineIndex];
+            line->setPosition(OUTSIDE_X, OUTSIDE_Y);
+        }
+    }
 }
 
 
-void BarChartLayout::setBars(const QVector<quint8>& values) {
+void BarChartLayout::setBars(const QList<int>& values) {
     this->_barValues = values;
 }
