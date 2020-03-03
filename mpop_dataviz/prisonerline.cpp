@@ -1,20 +1,21 @@
-#include "line.h"
+#include "prisonerline.h"
 //#include <QtMath>
 #include <QDebug>
 
-Line::Line()
+PrisonerLine::PrisonerLine()
 {
     _x = 0.0;
     _y = 0.0;
     _angleDegrees = 0.0;
 }
 
-Line::~Line() {
+
+PrisonerLine::~PrisonerLine() {
 
 }
 
 
-void Line::draw(const QElapsedTimer& timer) {
+void PrisonerLine::draw(const QElapsedTimer& timer) {
     Q_UNUSED(timer);
 
     glPushMatrix();
@@ -44,11 +45,11 @@ void Line::draw(const QElapsedTimer& timer) {
 
 
 
-void Line::setPosition(double x, double y) {
+void PrisonerLine::setPosition(double x, double y) {
     _x = x;
     _y = y;
 }
 
-void Line::setOrientation(qreal degrees) {
+void PrisonerLine::setOrientation(qreal degrees) {
     _angleDegrees = degrees;
 }

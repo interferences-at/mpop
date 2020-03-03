@@ -1,6 +1,6 @@
 #include "datavizwindow.h"
 #include "openglwindow.h"
-#include "line.h"
+#include "prisonerline.h"
 #include <QtGui/QGuiApplication>
 #include <QtGui/QMatrix4x4>
 #include <QtGui/QOpenGLShaderProgram>
@@ -15,13 +15,14 @@ DatavizWindow::DatavizWindow()
     _elapsedTimer.start();
 
     static const int NUM_LINES = 100;
-
+    QVector<PrisonerLine*> prisonerLines;
     for (int i = 0; i < NUM_LINES; i ++) {
-        Line* line = new Line();
-        _sceneObjects.push_back(line);
+        PrisonerLine* line = new PrisonerLine();
+        _sceneObjects.push_back(dynamic_cast<SceneObject*>(line));
+        prisonerLines.push_back(line);
     }
 
-    _barChartLayout.addObjects(_sceneObjects); // FIXME: get only a subsets of all sceneobjects - only the lines
+    _barChartLayout.addPrisonerLines(prisonerLines); // Only a subsets of all sceneobjects - only the lines
 
 
     QVector<quint8> bars;

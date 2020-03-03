@@ -1,5 +1,5 @@
 #include "barchartlayout.h"
-#include "line.h"
+#include "prisonerline.h"
 
 BarChartLayout::BarChartLayout()
 {
@@ -27,7 +27,7 @@ void BarChartLayout::moveObjectsToLayout() {
         int row = 0;
 
         for (int lineInBar = 0; lineInBar < barValue; lineInBar ++) {
-            Line* line = dynamic_cast<Line*>(_sceneObjects[lineIndex]); // FIXME: Perhaps layouts should deal with line objects directly.
+            PrisonerLine* line = dynamic_cast<PrisonerLine*>(_prisonerLines[lineIndex]); // FIXME: Perhaps layouts should deal with line objects directly.
             int moduloFive = lineInBar % 5;
 
             if (moduloFive < 4) {

@@ -3,11 +3,11 @@
 #include "sceneobject.h"
 #include <QPoint>
 
-class Line : public SceneObject
+class PrisonerLine : public SceneObject
 {
 public:
-    Line();
-    ~Line() override;
+    PrisonerLine();
+    ~PrisonerLine() override;
     virtual void draw(const QElapsedTimer& timer) override;
     /**
      * @brief Sets the position of the line. (x, y)

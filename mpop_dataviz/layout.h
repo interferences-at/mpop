@@ -1,17 +1,27 @@
 #pragma once
 
 
-#include "sceneobject.h"
+#include "prisonerline.h"
 #include <QVector>
 
+/**
+ * @brief Layout for a way to group prisoner lines.
+ */
 class Layout
 {
 public:
     Layout();
     virtual ~Layout();
-    void addObjects(const QVector<SceneObject*>& sceneObjects);
+    /**
+     * @brief Adds some prisoner lines to this layour.
+     * @param prisonerLines
+     */
+    void addPrisonerLines(const QVector<PrisonerLine*>& prisonerLines);
+    /**
+     * @brief Move the objects managed by this layout into their desired position.
+     */
     virtual void moveObjectsToLayout() = 0;
 
 protected:
-    QVector<SceneObject*> _sceneObjects;
+    QVector<PrisonerLine*> _prisonerLines;
 };

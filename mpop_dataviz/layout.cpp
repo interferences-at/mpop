@@ -11,6 +11,6 @@ Layout::~Layout()
 }
 
 
-void Layout::addObjects(const QVector<SceneObject*>& sceneObjects) {
-    _sceneObjects.append(sceneObjects);
+void Layout::addPrisonerLines(const QVector<PrisonerLine*>& prisonerLines) {
+    _prisonerLines.append(prisonerLines);
 }
