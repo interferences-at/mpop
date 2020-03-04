@@ -2,7 +2,12 @@
 //#include <QtMath>
 #include <QDebug>
 
-PrisonerLine::PrisonerLine(QObject* parent) : SceneObject(parent)
+PrisonerLine::PrisonerLine(QObject* parent) : SceneObject(parent),
+    _xAnimation(this, "x"),
+    _yAnimation(this, "y"),
+    _zAnimation(this, "z"),
+    _scaleAnimation(this, "scale"),
+    _rotationAnimation(this, "rotation")
 {
     _x = 0.0;
     _y = 0.0;
@@ -17,6 +22,28 @@ PrisonerLine::~PrisonerLine() {
 
 }
 
+void PrisonerLine::animateXYAndRotation(int msec, const QEasingCurve& easing, qreal x, qreal y, qreal rotation) {
+
+    _xAnimation.setDuration(msec);
+    _yAnimation.setDuration(msec);
+    _rotationAnimation.setDuration(msec);
+
+    _xAnimation.setStartValue(_x);
+    _yAnimation.setStartValue(_y);
+    _rotationAnimation.setStartValue(_rotation);
+
+    _xAnimation.setEndValue(x);
+    _yAnimation.setEndValue(y);
+    _rotationAnimation.setEndValue(rotation);
+
+    _xAnimation.setEasingCurve(easing);
+    _yAnimation.setEasingCurve(easing);
+    _rotationAnimation.setEasingCurve(easing);
+
+    _xAnimation.start();
+    _yAnimation.start();
+    _rotationAnimation.start();
+}
 
 void PrisonerLine::draw(const QElapsedTimer& timer) {
     Q_UNUSED(timer);

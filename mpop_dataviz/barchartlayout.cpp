@@ -26,6 +26,8 @@ void BarChartLayout::moveObjectsToLayout() {
     static const qreal ADJUST_FIFTH_X = 0.1;
     static const qreal OUTSIDE_X = 3.0; // outside of the screen
     static const qreal OUTSIDE_Y = 3.0; // outside of the screen
+    static const QEasingCurve easing(QEasingCurve::InOutQuad);
+    static const int animationMS = 1000;
 
     int lineIndex = 0;
     for (int barIndex = 0; barIndex < _barValues.size(); barIndex ++) {
@@ -42,10 +44,20 @@ void BarChartLayout::moveObjectsToLayout() {
             int moduloFive = lineInBar % 5;
 
             if (moduloFive < 4) {
-                line->setPosition(barIndex * WIDTH_OF_EACH_COLUMN + moduloFive * DISTANCE_BETWEEN_BARS, row * DISTANCE_BETWEEN_ROW);
+                qreal x = barIndex * WIDTH_OF_EACH_COLUMN + moduloFive * DISTANCE_BETWEEN_BARS;
+                qreal y = row * DISTANCE_BETWEEN_ROW;
+                qreal rotation = 0.0;
+
+                // line->setPosition(x, y);
+                line->animateXYAndRotation(animationMS, easing, x, y, rotation);
             } else if (moduloFive == 4) {
-                line->setPosition(barIndex * WIDTH_OF_EACH_COLUMN + moduloFive * DISTANCE_BETWEEN_BARS + DISTANCE_BETWEEN_COLUMN - ADJUST_FIFTH_X, row * DISTANCE_BETWEEN_ROW);
-                line->setOrientation(60.0);
+                qreal x = barIndex * WIDTH_OF_EACH_COLUMN + moduloFive * DISTANCE_BETWEEN_BARS + DISTANCE_BETWEEN_COLUMN - ADJUST_FIFTH_X;
+                qreal y = row * DISTANCE_BETWEEN_ROW;
+                qreal rotation = 60.0;
+
+                //line->setPosition(x, y);
+                //line->setOrientation(60.0);
+                line->animateXYAndRotation(animationMS, easing, x, y, rotation);
                 row += 1;
             }
 

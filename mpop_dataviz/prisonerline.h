@@ -2,6 +2,7 @@
 
 #include "sceneobject.h"
 #include <QPoint>
+#include <QPropertyAnimation>
 #include <QEasingCurve>
 
 class PrisonerLine : public SceneObject
@@ -41,6 +42,8 @@ public:
     void setZ(qreal value);
     void setRotation(qreal value);
     void setScale(qreal value);
+    void animateXYAndRotation(int msec, const QEasingCurve& easing, qreal x, qreal y, qreal rotation);
+
 
 signals:
     void xChanged(qreal);
@@ -55,4 +58,10 @@ private:
     qreal _z;
     qreal _rotation;
     qreal _scale;
+    QPropertyAnimation _xAnimation;
+    QPropertyAnimation _yAnimation;
+    QPropertyAnimation _zAnimation;
+    QPropertyAnimation _rotationAnimation;
+    QPropertyAnimation _scaleAnimation;
+
 };
