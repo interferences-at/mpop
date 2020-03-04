@@ -2,9 +2,12 @@
 
 #include "sceneobject.h"
 #include <QPoint>
+#include <QEasingCurve>
 
 class PrisonerLine : public SceneObject
 {
+    Q_OBJECT
+    // TODO: add properties
 public:
     PrisonerLine();
     ~PrisonerLine() override;

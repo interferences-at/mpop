@@ -2,11 +2,13 @@
 
 #include <QElapsedTimer>
 #include <QtGui/QOpenGLFunctions>
+#include <QObject>
 
-class SceneObject
+class SceneObject : public QObject
 {
+    Q_OBJECT
 public:
-    SceneObject();
+    SceneObject( QObject* parent = nullptr);
     virtual ~SceneObject();
     virtual void draw(const QElapsedTimer& timer) = 0;
     void setVisible(bool isVisible);

@@ -1,6 +1,6 @@
 #include "sceneobject.h"
 
-SceneObject::SceneObject() {
+SceneObject::SceneObject(QObject* parent) : QObject(parent) {
     _isVisible = true;
 }
 

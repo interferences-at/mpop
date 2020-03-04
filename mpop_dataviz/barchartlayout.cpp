@@ -1,6 +1,7 @@
 #include "barchartlayout.h"
 #include "prisonerline.h"
 #include <QDebug>
+#include <QEasingCurve>
 
 
 BarChartLayout::BarChartLayout()
