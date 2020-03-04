@@ -2,11 +2,14 @@
 //#include <QtMath>
 #include <QDebug>
 
-PrisonerLine::PrisonerLine()
+PrisonerLine::PrisonerLine(QObject* parent) : SceneObject(parent)
 {
     _x = 0.0;
     _y = 0.0;
-    _angleDegrees = 0.0;
+    _z = 0.0;
+    //_angleDegrees = 0.0;
+    _scale = 1.0;
+    _rotation = 0.0;
 }
 
 
@@ -22,7 +25,7 @@ void PrisonerLine::draw(const QElapsedTimer& timer) {
 
     //qDebug() << "Draw line at " << _x << _y << "with angle" << _angleDegrees;
     glTranslated(_x, _y, 0.0);
-    glRotated(this->_angleDegrees, 0.0, 0.0, 1.0);
+    glRotated(_rotation, 0.0, 0.0, 1.0);
 
     glPushMatrix();
 
@@ -45,11 +48,38 @@ void PrisonerLine::draw(const QElapsedTimer& timer) {
 
 
 
-void PrisonerLine::setPosition(double x, double y) {
-    _x = x;
-    _y = y;
+void PrisonerLine::setPosition(qreal x, qreal y) {
+    setX(x);
+    setY(y);
 }
 
+// FIXME: deprecated
 void PrisonerLine::setOrientation(qreal degrees) {
-    _angleDegrees = degrees;
+    //_angleDegrees = degrees;
+    setRotation(degrees);
+}
+
+void PrisonerLine::setX(qreal value) {
+    _x = value;
+    emit xChanged(value);
+}
+
+void PrisonerLine::setY(qreal value) {
+    _y = value;
+    emit yChanged(value);
+}
+
+void PrisonerLine::setZ(qreal value) {
+    _z = value;
+    emit zChanged(value);
+}
+
+void PrisonerLine::setRotation(qreal value) {
+    _rotation = value;
+    emit rotationChanged(value);
+}
+
+void PrisonerLine::setScale(qreal value) {
+    _scale = value;
+    emit scaleChanged(value);
 }

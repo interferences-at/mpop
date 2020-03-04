@@ -1,7 +1,7 @@
 #include "barchartlayout.h"
 #include "prisonerline.h"
 #include <QDebug>
-#include <QEasingCurve>
+//#include <QEasingCurve>
 
 
 BarChartLayout::BarChartLayout()
@@ -17,25 +17,26 @@ BarChartLayout::~BarChartLayout()
 
 
 void BarChartLayout::moveObjectsToLayout() {
-
     // TODO: never ever iterate over size of line vector
     // const int numLines = _sceneObjects.size();
-    static const double WIDTH_OF_EACH_COLUMN = 0.3;
-    static const double DISTANCE_BETWEEN_BARS = 0.02;
-    static const double DISTANCE_BETWEEN_COLUMN = 0.05;
-    static const double DISTANCE_BETWEEN_ROW = 0.15;
-    static const double ADJUST_FIFTH_X = 0.1;
-    static const double OUTSIDE_X = 3.0; // outside of the screen
-    static const double OUTSIDE_Y = 3.0; // outside of the screen
+    static const qreal WIDTH_OF_EACH_COLUMN = 0.3;
+    static const qreal DISTANCE_BETWEEN_BARS = 0.02;
+    static const qreal DISTANCE_BETWEEN_COLUMN = 0.05;
+    static const qreal DISTANCE_BETWEEN_ROW = 0.15;
+    static const qreal ADJUST_FIFTH_X = 0.1;
+    static const qreal OUTSIDE_X = 3.0; // outside of the screen
+    static const qreal OUTSIDE_Y = 3.0; // outside of the screen
 
     int lineIndex = 0;
     for (int barIndex = 0; barIndex < _barValues.size(); barIndex ++) {
         if (lineIndex >= _prisonerLines.size()) {
             qWarning() << "Out of bound: " << lineIndex;
         }
-        quint8 barValue = this->_barValues[barIndex];
+        int barValue = this->_barValues[barIndex];
         int row = 0;
 
+        // Each bar in the bar chart is a column
+        // We group lines by groups of 5
         for (int lineInBar = 0; lineInBar < barValue; lineInBar ++) {
             PrisonerLine* line = _prisonerLines[lineIndex];
             int moduloFive = lineInBar % 5;
