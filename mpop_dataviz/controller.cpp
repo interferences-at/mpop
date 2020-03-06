@@ -45,8 +45,13 @@ void Controller::messageReceivedCb(const QString& oscAddress, const QVariantList
     }
 
     if (pathTokens[INDEX_PREFIX] == DATAVIZ_PREFIX) {
-        int windowIndex = pathTokens[INDEX_WINDOW_NUMBER].toInt(); // TODO: catch errors
+        int windowIndex = pathTokens[INDEX_WINDOW_NUMBER].toInt();
         qDebug() << "windowIndex" << windowIndex;
+        if (getWindow(windowIndex) == nullptr) {
+            qDebug() << "Invalid dataviz window index" << windowIndex;
+            return;
+        }
+
         QString methodName = pathTokens[INDEX_METHOD];
         // The barchart method: /dataviz/1/barchar iii 70 20 10
         if (methodName == BARCHART_METHOD) {
@@ -71,7 +76,7 @@ void Controller::showBarChart(int windowIndex, const QList<int>& values) {
 
 
 DatavizWindow* Controller::getWindow(int windowIndex) const {
-    if (windowIndex < _windows.size() && windowIndex > 0) {
+    if (windowIndex < _windows.size() && windowIndex >= 0) {
         return _windows[windowIndex];
     } else {
         qDebug() << "No such window" << windowIndex;

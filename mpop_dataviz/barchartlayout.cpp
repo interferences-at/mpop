@@ -27,7 +27,7 @@ void BarChartLayout::moveObjectsToLayout() {
     static const qreal OUTSIDE_X = 3.0; // outside of the screen
     static const qreal OUTSIDE_Y = 3.0; // outside of the screen
     static const QEasingCurve easing(QEasingCurve::InOutQuad);
-    static const int animationMS = 1000;
+    static const int animationMS = 4000; // ms
 
     int lineIndex = 0;
     for (int barIndex = 0; barIndex < _barValues.size(); barIndex ++) {

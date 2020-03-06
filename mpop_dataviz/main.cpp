@@ -11,7 +11,8 @@
 
 
 // Constants:
-static const int NUM_WINDOWS = 4;
+static const int NUM_WINDOWS = 1;
+// static const int NUM_WINDOWS = 4;
 static const int WINDOW_WIDTH = 1920;
 static const int WINDOW_HEIGHT = 1080;
 static const int OSC_RECEIVE_PORT = 31337;
@@ -51,5 +52,3 @@ int main(int argc, char* argv[]) {
     }
     return ret;
 }
-
-
