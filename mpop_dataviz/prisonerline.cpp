@@ -6,8 +6,8 @@ PrisonerLine::PrisonerLine(QObject* parent) : SceneObject(parent),
     _xAnimation(this, "x"),
     _yAnimation(this, "y"),
     _zAnimation(this, "z"),
-    _scaleAnimation(this, "scale"),
-    _rotationAnimation(this, "rotation")
+    _rotationAnimation(this, "rotation"),
+    _scaleAnimation(this, "scale")
 {
     _x = 0.0;
     _y = 0.0;

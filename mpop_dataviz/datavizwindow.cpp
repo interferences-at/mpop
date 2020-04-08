@@ -1,5 +1,4 @@
 #include "datavizwindow.h"
-#include "openglwindow.h"
 #include "prisonerline.h"
 #include <QtGui/QGuiApplication>
 #include <QtGui/QMatrix4x4>
@@ -30,26 +29,28 @@ DatavizWindow::DatavizWindow() {
     bars.push_back(70);
     showBarChartBars(bars);
 }
+    QList<int> bars;
 
 void DatavizWindow::showBarChartBars(const QList<int>& bars) {
     _barChartLayout.setBars(bars);
     _barChartLayout.moveObjectsToLayout(); // Important: do it after you called setBars
 }
 
-void DatavizWindow::initialize() {
-
+void DatavizWindow::initializeGL() {
+    // setSwapInterval(1);
 }
 
-void DatavizWindow::render() {
+void DatavizWindow::resizeGL(int w, int h) {
     const qreal retinaScale = devicePixelRatio();
+    this->makeCurrent();
     glViewport(0, 0,
-               width() * static_cast<GLsizei>(retinaScale),
-               height() * static_cast<GLsizei>(retinaScale));
+               w * static_cast<GLsizei>(retinaScale),
+               h * static_cast<GLsizei>(retinaScale));
     glClear(GL_COLOR_BUFFER_BIT);
 
     glMatrixMode(GL_PROJECTION);
 
-    GLdouble ratio = (static_cast<GLdouble>(width())) / static_cast<GLdouble>(height());
+    GLdouble ratio = (static_cast<GLdouble>(w)) / static_cast<GLdouble>(h);
     GLdouble left = - ratio;
     GLdouble right = ratio;
     GLdouble top = 1.0;
@@ -60,6 +61,9 @@ void DatavizWindow::render() {
 
     // Instead, we could use a pespective view, here:
     // gluPerspective(60.0f, ratio, 1.0f, 100.0f);
+}
+
+void DatavizWindow::paintGL() {
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
 
@@ -69,6 +73,8 @@ void DatavizWindow::render() {
             obj->draw(_elapsedTimer);
         }
     }
+    // swapBuffers();
+    this->update(); // ask for a new render next time the screen refreshes.
 }
 
 
@@ -79,3 +85,12 @@ DatavizWindow::~DatavizWindow()
         delete (*iter);
     }
 }
+
+
+void DatavizWindow::setAnimating(bool animating) {
+    _is_animating = animating;
+    if (animating) {
+        // renderLater();
+    }
+}
+

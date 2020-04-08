@@ -1,23 +1,26 @@
 #pragma once
 
-#include "openglwindow.h"
 #include "sceneobject.h"
 #include <QtGui/QOpenGLShaderProgram>
 #include <QElapsedTimer>
 #include <QVector>
 #include "barchartlayout.h"
+#include <QOpenGLWindow>
 
 
-class DatavizWindow : public OpenGLWindow {
+class DatavizWindow : public QOpenGLWindow {
 public:
     DatavizWindow();
     ~DatavizWindow() override;
-    void initialize() override;
-    void render() override;
+    void initializeGL() override;
+    void resizeGL(int w, int h) override;
+    void paintGL() override;
     void showBarChartBars(const QList<int>& bars);
+    void setAnimating(bool animating);
 
 private:
     QElapsedTimer _elapsedTimer;
     QVector<SceneObject*> _sceneObjects;
     BarChartLayout _barChartLayout;
+    bool _is_animating;
 };

@@ -11,7 +11,6 @@ CONFIG += sdk_no_version_check # disable warning on macOS
 INCLUDEPATH += $$PWD
 
 SOURCES += \
-    openglwindow.cpp \
     main.cpp \
     datavizwindow.cpp \
     sceneobject.cpp \
@@ -20,7 +19,7 @@ SOURCES += \
     prisonerline.cpp \
     controller.cpp
 
-HEADERS += openglwindow.h \
+HEADERS += \
     datavizwindow.h \
     sceneobject.h \
     layout.h \
