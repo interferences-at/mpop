@@ -38,6 +38,7 @@ void DatavizWindow::showBarChartBars(const QList<int>& bars) {
 
 void DatavizWindow::initializeGL() {
     // setSwapInterval(1);
+    glClearColor(0, 0, 0, 0);
 }
 
 void DatavizWindow::resizeGL(int w, int h) {
@@ -64,6 +65,8 @@ void DatavizWindow::resizeGL(int w, int h) {
 }
 
 void DatavizWindow::paintGL() {
+    glClear (GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
 
