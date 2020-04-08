@@ -7,7 +7,6 @@
 #include <QtCore/qmath.h>
 
 
-
 DatavizWindow::DatavizWindow() {
     qDebug() << "Create a Window";
     _elapsedTimer.start();
@@ -22,24 +21,26 @@ DatavizWindow::DatavizWindow() {
 
     _barChartLayout.addPrisonerLines(prisonerLines); // Only a subsets of all sceneobjects - only the lines
 
-    // test values:
+    // The initial example values:
     QList<int> bars;
     bars.push_back(10);
     bars.push_back(20);
     bars.push_back(70);
     showBarChartBars(bars);
 }
-    QList<int> bars;
+
 
 void DatavizWindow::showBarChartBars(const QList<int>& bars) {
     _barChartLayout.setBars(bars);
     _barChartLayout.moveObjectsToLayout(); // Important: do it after you called setBars
 }
 
+
 void DatavizWindow::initializeGL() {
     // setSwapInterval(1);
     glClearColor(0, 0, 0, 0);
 }
+
 
 void DatavizWindow::resizeGL(int w, int h) {
     const qreal retinaScale = devicePixelRatio();
@@ -51,6 +52,7 @@ void DatavizWindow::resizeGL(int w, int h) {
 
     glMatrixMode(GL_PROJECTION);
 
+    // Note: Here, the center is (0, 0), and not the top-left corner, like it often is.
     GLdouble ratio = (static_cast<GLdouble>(w)) / static_cast<GLdouble>(h);
     GLdouble left = - ratio;
     GLdouble right = ratio;
@@ -60,12 +62,14 @@ void DatavizWindow::resizeGL(int w, int h) {
     glLoadIdentity();
     glOrtho(left, right, bottom, top, -1, 1);
 
-    // Instead, we could use a pespective view, here:
+    // Instead, we could eventually use a pespective view, here:
     // gluPerspective(60.0f, ratio, 1.0f, 100.0f);
 }
 
+
 void DatavizWindow::paintGL() {
-    glClear (GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    // We must clear the background here
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
@@ -73,6 +77,7 @@ void DatavizWindow::paintGL() {
     for (auto iter = _sceneObjects.begin(); iter != _sceneObjects.end(); ++ iter) {
         SceneObject* obj = (*iter);
         if (obj->getVisible()) {
+            // FIXME: we should take care of the Z-sorting of the scene objects.
             obj->draw(_elapsedTimer);
         }
     }
@@ -96,4 +101,3 @@ void DatavizWindow::setAnimating(bool animating) {
         // renderLater();
     }
 }
-
