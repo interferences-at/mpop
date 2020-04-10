@@ -4,15 +4,15 @@
 #include "prisonerline.h"
 #include "sceneobject.h"
 #include <QVector>
+#include <QSharedPointer>
 
 /**
  * @brief Animates a group of scene objects.
  */
 class GroupTweenAnimator
 {
-public:
-
-    typedef struct {
+private:
+    struct AnimatedSceneObject {
         SceneObject* sceneObject;
         qreal xFrom;
         qreal xTo;
@@ -20,20 +20,26 @@ public:
         qreal yTo;
         qreal rotationFrom;
         qreal rotationTo;
-    } AnimatedObject;
+        // TODO add z and scale
+    };
 
+    typedef QSharedPointer<AnimatedSceneObject> AnimatedSceneObjectPtr;
+
+public:
     GroupTweenAnimator();
     virtual ~GroupTweenAnimator();
     /**
      * @brief Adds scene objects.
      * @param sceneObjects Scene objects to animate.
      */
-    void addSceneObjects(const QVector<SceneObject*>& sceneObjects);
+    //void addSceneObjects(const QVector<SceneObject*>& sceneObjects);
+
+    void addSceneObjectToAnimate(SceneObject* sceneObject, qreal targetX, qreal targetY, qreal targetRotation);
     /**
      * @brief Move the objects to the position they should be at now.
      * @return True if there is still some time left to the animation.
      */
-    bool updateSceneObjects(const qint64& currentTime);
+    bool updateSceneObjectsPosition(const qint64& currentTime);
 
     void start(const qint64& currentTime);
 
@@ -59,11 +65,16 @@ public:
      */
     static qreal mapValue(qreal inValue, qreal inFrom, qreal inTo, qreal outFrom, qreal outTo);
 
-protected:
-    QVector<SceneObject*> _sceneObjects;
+private:
+    // QVector<SceneObject*> _sceneObjects;
+    QVector<AnimatedSceneObjectPtr> _animatedSceneObjects;
 private:
     qint64 _duration;
     qint64 _startTime;
     qint64 _endTime;
     QEasingCurve::Type _easingType;
+
+    qreal getElapsedRatio(const qint64& currentTime) const;
+    qint64 getTimeLeft(const qint64& currentTime) const;
+    qint64 getElapsed(const qint64& currentTime) const;
 };
