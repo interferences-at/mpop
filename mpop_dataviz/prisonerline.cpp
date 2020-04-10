@@ -9,12 +9,7 @@ PrisonerLine::PrisonerLine(QObject* parent) : SceneObject(parent),
     _rotationAnimation(this, "rotation"),
     _scaleAnimation(this, "scale")
 {
-    _x = 0.0;
-    _y = 0.0;
-    _z = 0.0;
-    //_angleDegrees = 0.0;
-    _scale = 1.0;
-    _rotation = 0.0;
+
 }
 
 
@@ -74,39 +69,3 @@ void PrisonerLine::draw(const qint64& elapsed) {
 }
 
 
-
-void PrisonerLine::setPosition(qreal x, qreal y) {
-    setX(x);
-    setY(y);
-}
-
-// FIXME: deprecated
-void PrisonerLine::setOrientation(qreal degrees) {
-    //_angleDegrees = degrees;
-    setRotation(degrees);
-}
-
-void PrisonerLine::setX(qreal value) {
-    _x = value;
-    emit xChanged(value);
-}
-
-void PrisonerLine::setY(qreal value) {
-    _y = value;
-    emit yChanged(value);
-}
-
-void PrisonerLine::setZ(qreal value) {
-    _z = value;
-    emit zChanged(value);
-}
-
-void PrisonerLine::setRotation(qreal value) {
-    _rotation = value;
-    emit rotationChanged(value);
-}
-
-void PrisonerLine::setScale(qreal value) {
-    _scale = value;
-    emit scaleChanged(value);
-}
