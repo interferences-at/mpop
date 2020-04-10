@@ -2,6 +2,8 @@
 
 #include "layout.h"
 #include <QList>
+#include "grouptweenanimator.h"
+#include <QSharedPointer>
 
 /**
  * @brief Layout that places the prisoner lines to form a bar chart.
@@ -19,6 +21,9 @@ public:
      * @param values
      */
     void setBars(const QList<int>& values);
+
+    virtual void updateObjectPosition(qint64 currentTime) override;
 private:
     QList<int> _barValues;
+    QSharedPointer<GroupTweenAnimator> _groupTweenAnimator;
 };

@@ -1,12 +1,11 @@
 #include "sceneobject.h"
 
 
-SceneObject::SceneObject(QObject* parent) : QObject(parent) {
+SceneObject::SceneObject() { // QObject* parent) : QObject(parent) {
     _isVisible = true;
     _x = 0.0;
     _y = 0.0;
     _z = 0.0;
-    //_angleDegrees = 0.0;
     _scale = 1.0;
     _rotation = 0.0;
 }
@@ -43,29 +42,29 @@ void SceneObject::setOrientation(qreal degrees) {
 
 void SceneObject::setX(qreal value) {
     _x = value;
-    emit xChanged(value);
+    //emit xChanged(value);
 }
 
 
 void SceneObject::setY(qreal value) {
     _y = value;
-    emit yChanged(value);
+    //emit yChanged(value);
 }
 
 
 void SceneObject::setZ(qreal value) {
     _z = value;
-    emit zChanged(value);
+    //emit zChanged(value);
 }
 
 
 void SceneObject::setRotation(qreal value) {
     _rotation = value;
-    emit rotationChanged(value);
+    //emit rotationChanged(value);
 }
 
 
 void SceneObject::setScale(qreal value) {
     _scale = value;
-    emit scaleChanged(value);
+    //emit scaleChanged(value);
 }

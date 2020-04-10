@@ -14,6 +14,7 @@ DatavizWindow::DatavizWindow() {
     static const int NUM_LINES = 100;
     QVector<PrisonerLine*> prisonerLines;
     for (int i = 0; i < NUM_LINES; i ++) {
+        // TODO: use a QSharedPointer
         PrisonerLine* line = new PrisonerLine();
         _sceneObjects.push_back(dynamic_cast<SceneObject*>(line));
         prisonerLines.push_back(line);
@@ -79,6 +80,9 @@ void DatavizWindow::paintGL() {
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
 
+    // TODO: enable only one layout at a time, perhaps.
+    _barChartLayout.updateObjectPosition(this->elapsed());
+
     for (auto iter = _sceneObjects.begin(); iter != _sceneObjects.end(); ++ iter) {
         SceneObject* obj = (*iter);
         if (obj->getVisible()) {
@@ -95,7 +99,7 @@ DatavizWindow::~DatavizWindow()
 {
     qDebug() << "~DatavizWindow";
     for (auto iter = _sceneObjects.begin(); iter != _sceneObjects.end(); ++ iter) {
-        delete (*iter);
+        delete (*iter); // TODO: use a QSharedPointer
     }
 }
 

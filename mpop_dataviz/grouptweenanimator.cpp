@@ -25,7 +25,7 @@ GroupTweenAnimator::~GroupTweenAnimator()
 //}
 
 void GroupTweenAnimator::addSceneObjectToAnimate(SceneObject* sceneObject, qreal targetX, qreal targetY, qreal targetRotation) {
-    AnimatedSceneObjectPtr animatedObj; // calls new AnimatedSceneObject (?)
+    AnimatedSceneObjectPtr animatedObj(new AnimatedSceneObject);
     animatedObj->sceneObject = sceneObject;
 
     animatedObj->xFrom = sceneObject->getX();
@@ -42,17 +42,17 @@ void GroupTweenAnimator::addSceneObjectToAnimate(SceneObject* sceneObject, qreal
 
 // static method
 qreal GroupTweenAnimator::mapValue(qreal inValue, qreal inFrom, qreal inTo, qreal outFrom, qreal outTo) {
-    if ((inTo - inFrom) <= 0.0) {
-        qDebug() << "mapValue: division by zero!";
-        return 0.0;
-    }
+    //if ((inTo - inFrom) <= 0.0) {
+        // qDebug() << "mapValue: division by zero!";
+        // return 0.0;
+    //}
     qreal ret = outFrom + (outTo - outFrom) * ((inValue - inFrom) / (inTo - inFrom));
     // FIXME check for a division by zero
     return ret;
 }
 
 
-bool GroupTweenAnimator::updateSceneObjectsPosition(const qint64& currentTime) {
+void GroupTweenAnimator::updateSceneObjectsPosition(const qint64& currentTime) {
     bool hasSomeTimeLeft = ! this->isDone(currentTime);
 
     for (auto iter = this->_animatedSceneObjects.begin(); iter != _animatedSceneObjects.end(); ++ iter) {
@@ -61,7 +61,7 @@ bool GroupTweenAnimator::updateSceneObjectsPosition(const qint64& currentTime) {
 
         if (hasSomeTimeLeft) {
             qreal elapsedRatio = this->getElapsedRatio(currentTime);
-
+            qDebug() << "elapsedRatio: " << elapsedRatio;
             qreal newX = GroupTweenAnimator::mapValue(elapsedRatio, ZERO_VAL, ONE_VAL,
                 animatedData->xFrom, animatedData->xTo);
             qreal newY = GroupTweenAnimator::mapValue(elapsedRatio, ZERO_VAL, ONE_VAL,
@@ -81,20 +81,32 @@ bool GroupTweenAnimator::updateSceneObjectsPosition(const qint64& currentTime) {
             qDebug() << "This animation is done. You should delete this GroupTweenAnimator";
         }
     }
-    return hasSomeTimeLeft;
+    //return hasSomeTimeLeft;
 }
 
 qreal GroupTweenAnimator::getElapsedRatio(const qint64& currentTime) const {
     if (this->isDone(currentTime)) {
         return 1.0;
     } else {
-        //qreal elapsed = this->getElapsed(currentTime);
-        //qreal totalDuration = this->_duration;
-        return GroupTweenAnimator::mapValue(
-                    static_cast<qreal>(currentTime),
-                    static_cast<qreal>(this->_startTime),
-                    static_cast<qreal>(this->_endTime),
-                    ZERO_VAL, ONE_VAL);
+        qreal elapsed = this->getElapsed(currentTime);
+        qreal totalDuration = this->_duration;
+        if (totalDuration <= elapsed) {
+            return 1.0;
+        } else {
+            return elapsed / totalDuration;
+        }
+//        qreal ret = GroupTweenAnimator::mapValue(
+//                    static_cast<qreal>(currentTime),
+//                    static_cast<qreal>(this->_startTime),
+//                    static_cast<qreal>(this->_endTime),
+//                    ZERO_VAL, ONE_VAL);
+//        qDebug() <<
+//            "mapValue " << ret << " = " <<
+//                    static_cast<qreal>(currentTime) << ", " <<
+//                    static_cast<qreal>(this->_startTime) << ", " <<
+//                    static_cast<qreal>(this->_endTime) << ", " <<
+//                    ZERO_VAL << ", " <<
+//                    ONE_VAL;
     }
 }
 

@@ -27,7 +27,7 @@ public:
 
 private:
     QElapsedTimer _elapsedTimer;
-    QVector<SceneObject*> _sceneObjects;
+    QVector<SceneObject*> _sceneObjects; // TODO: use a QSharedPointer
     BarChartLayout _barChartLayout;
     //bool _is_animating;
 };

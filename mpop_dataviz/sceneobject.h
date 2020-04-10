@@ -1,22 +1,22 @@
 #pragma once
 
-#include <QElapsedTimer>
-#include <QtGui/QOpenGLFunctions>
+//#include <QElapsedTimer>
+//#include <QtGui/QOpenGLFunctions>
 #include <QObject>
 
-class SceneObject : public QObject
+class SceneObject //: public QObject
 {
-    Q_OBJECT
+    //Q_OBJECT
 
-    // properties
-    Q_PROPERTY(qreal x READ getX WRITE setX NOTIFY xChanged)
-    Q_PROPERTY(qreal y READ getY WRITE setY NOTIFY yChanged)
-    Q_PROPERTY(qreal z READ getZ WRITE setZ NOTIFY zChanged)
-    Q_PROPERTY(qreal rotation READ getRotation WRITE setRotation NOTIFY rotationChanged)
-    Q_PROPERTY(qreal scale READ getScale WRITE setScale NOTIFY scaleChanged)
+//    // properties
+//    Q_PROPERTY(qreal x READ getX WRITE setX NOTIFY xChanged)
+//    Q_PROPERTY(qreal y READ getY WRITE setY NOTIFY yChanged)
+//    Q_PROPERTY(qreal z READ getZ WRITE setZ NOTIFY zChanged)
+//    Q_PROPERTY(qreal rotation READ getRotation WRITE setRotation NOTIFY rotationChanged)
+//    Q_PROPERTY(qreal scale READ getScale WRITE setScale NOTIFY scaleChanged)
 
 public:
-    explicit SceneObject( QObject* parent = nullptr);
+    explicit SceneObject(); // QObject* parent = nullptr);
     virtual ~SceneObject();
     /**
      * @brief Draws the scene object.
@@ -48,12 +48,12 @@ public:
     void setRotation(qreal value);
     void setScale(qreal value);
 
-signals:
-    void xChanged(qreal);
-    void yChanged(qreal);
-    void zChanged(qreal);
-    void scaleChanged(qreal);
-    void rotationChanged(qreal);
+//signals:
+//    void xChanged(qreal);
+//    void yChanged(qreal);
+//    void zChanged(qreal);
+//    void scaleChanged(qreal);
+//    void rotationChanged(qreal);
 
 protected:
     bool _isVisible;

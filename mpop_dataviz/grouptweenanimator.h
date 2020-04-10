@@ -26,7 +26,7 @@ private:
     typedef QSharedPointer<AnimatedSceneObject> AnimatedSceneObjectPtr;
 
 public:
-    GroupTweenAnimator();
+    GroupTweenAnimator(); // TODO: add currentTime argument here. (and autostart it)
     virtual ~GroupTweenAnimator();
     /**
      * @brief Adds scene objects.
@@ -37,9 +37,9 @@ public:
     void addSceneObjectToAnimate(SceneObject* sceneObject, qreal targetX, qreal targetY, qreal targetRotation);
     /**
      * @brief Move the objects to the position they should be at now.
-     * @return True if there is still some time left to the animation.
      */
-    bool updateSceneObjectsPosition(const qint64& currentTime);
+    void updateSceneObjectsPosition(const qint64& currentTime);
+    // * @return True if there is still some time left to the animation.
 
     void start(const qint64& currentTime);
 
