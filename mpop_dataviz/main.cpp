@@ -1,4 +1,4 @@
-#include "openglwindow.h"
+//#include "openglwindow.h"
 #include "controller.h"
 #include "datavizwindow.h"
 #include "oscreceiver.h"
@@ -11,11 +11,13 @@
 
 
 // Constants:
+// TODO: add a command-line argument for how many windows to show.
 static const int NUM_WINDOWS = 1;
 // static const int NUM_WINDOWS = 4;
 static const int WINDOW_WIDTH = 1920;
 static const int WINDOW_HEIGHT = 1080;
 static const int OSC_RECEIVE_PORT = 31337;
+
 
 int main(int argc, char* argv[]) {
     QGuiApplication app(argc, argv);
@@ -37,7 +39,7 @@ int main(int argc, char* argv[]) {
         window->setFlags(Qt::Window | Qt::FramelessWindowHint);
         window->show();
 
-        window->setAnimating(true);
+        //window->setAnimating(true);
         windows.append(window);
     }
 

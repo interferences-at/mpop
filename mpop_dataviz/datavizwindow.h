@@ -15,12 +15,19 @@ public:
     void initializeGL() override;
     void resizeGL(int w, int h) override;
     void paintGL() override;
+    /**
+     * @brief Shows a bar chart with the given values.
+     * @param bars List of number values for each column.
+     */
     void showBarChartBars(const QList<int>& bars);
-    void setAnimating(bool animating);
+
+    //void setAnimating(bool animating);
+
+    qint64 elapsed() const;
 
 private:
     QElapsedTimer _elapsedTimer;
     QVector<SceneObject*> _sceneObjects;
     BarChartLayout _barChartLayout;
-    bool _is_animating;
+    //bool _is_animating;
 };

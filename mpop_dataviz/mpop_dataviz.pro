@@ -17,7 +17,8 @@ SOURCES += \
     layout.cpp \
     barchartlayout.cpp \
     prisonerline.cpp \
-    controller.cpp
+    controller.cpp \
+    grouptweenanimator.cpp
 
 HEADERS += \
     datavizwindow.h \
@@ -25,7 +26,8 @@ HEADERS += \
     layout.h \
     barchartlayout.h \
     prisonerline.h \
-    controller.h
+    controller.h \
+    grouptweenanimator.h
 
 
 # OSC support:

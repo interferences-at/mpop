@@ -10,7 +10,11 @@ class SceneObject : public QObject
 public:
     explicit SceneObject( QObject* parent = nullptr);
     virtual ~SceneObject();
-    virtual void draw(const QElapsedTimer& timer) = 0;
+    /**
+     * @brief Draws the scene object.
+     * @param timer How much time has elapsed since the startup of the application.
+     */
+    virtual void draw(const qint64& elapsed) = 0;
     void setVisible(bool isVisible);
     bool getVisible() const;
 protected:

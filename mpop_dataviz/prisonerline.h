@@ -5,6 +5,7 @@
 #include <QPropertyAnimation>
 #include <QEasingCurve>
 
+// TODO: rename to Nugget (it's easier to read/write/say)
 class PrisonerLine : public SceneObject
 {
     Q_OBJECT
@@ -19,7 +20,7 @@ class PrisonerLine : public SceneObject
 public:
     explicit PrisonerLine( QObject* parent = nullptr);
     ~PrisonerLine() override;
-    virtual void draw(const QElapsedTimer& timer) override;
+    virtual void draw(const qint64& elapsed) override;
     /**
      * @brief Sets the position of the line. (x, y)
      * @param point Position
@@ -42,7 +43,7 @@ public:
     void setZ(qreal value);
     void setRotation(qreal value);
     void setScale(qreal value);
-    void animateXYAndRotation(int msec, const QEasingCurve& easing, qreal x, qreal y, qreal rotation);
+    void animateXYAndRotation(qint64 currentTime, qint64 animationDuration, const QEasingCurve::Type& easing, qreal x, qreal y, qreal rotation);
 
 
 signals:
@@ -63,5 +64,4 @@ private:
     QPropertyAnimation _zAnimation;
     QPropertyAnimation _rotationAnimation;
     QPropertyAnimation _scaleAnimation;
-
 };

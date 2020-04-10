@@ -13,7 +13,7 @@ class BarChartLayout : public Layout
 public:
     BarChartLayout();
     virtual ~BarChartLayout() override;
-    virtual void moveObjectsToLayout() override;
+    virtual void moveObjectsToLayout(qint64 currentTime) override;
     /**
      * @brief Sets the values for each bar to show.
      * @param values

@@ -22,11 +22,11 @@ PrisonerLine::~PrisonerLine() {
 
 }
 
-void PrisonerLine::animateXYAndRotation(int msec, const QEasingCurve& easing, qreal x, qreal y, qreal rotation) {
+void PrisonerLine::animateXYAndRotation(qint64 currentTime, qint64 animationDuration, const QEasingCurve::Type& easing, qreal x, qreal y, qreal rotation) {
 
-    _xAnimation.setDuration(msec);
-    _yAnimation.setDuration(msec);
-    _rotationAnimation.setDuration(msec);
+    _xAnimation.setDuration(animationDuration);
+    _yAnimation.setDuration(animationDuration);
+    _rotationAnimation.setDuration(animationDuration);
 
     _xAnimation.setStartValue(_x);
     _yAnimation.setStartValue(_y);
@@ -45,8 +45,8 @@ void PrisonerLine::animateXYAndRotation(int msec, const QEasingCurve& easing, qr
     _rotationAnimation.start();
 }
 
-void PrisonerLine::draw(const QElapsedTimer& timer) {
-    Q_UNUSED(timer);
+void PrisonerLine::draw(const qint64& elapsed) {
+    Q_UNUSED(elapsed);
 
     glPushMatrix();
 

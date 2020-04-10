@@ -53,11 +53,14 @@ void Controller::messageReceivedCb(const QString& oscAddress, const QVariantList
         }
 
         QString methodName = pathTokens[INDEX_METHOD];
+
+        // Handle methods:
         // The barchart method: /dataviz/1/barchar iii 70 20 10
         if (methodName == BARCHART_METHOD) {
             QList<int> ints = toInts(arguments);
-            this->showBarChart(windowIndex, ints);
             qDebug() << "Calling showBarChart" << methodName << windowIndex << ints;
+            this->showBarChart(windowIndex, ints);
+
         } else {
             qDebug() << "Unhandle OSC method" << methodName;
         }

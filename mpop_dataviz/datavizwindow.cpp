@@ -30,9 +30,14 @@ DatavizWindow::DatavizWindow() {
 }
 
 
+qint64 DatavizWindow::elapsed() const {
+    return this->_elapsedTimer.elapsed();
+}
+
+
 void DatavizWindow::showBarChartBars(const QList<int>& bars) {
     _barChartLayout.setBars(bars);
-    _barChartLayout.moveObjectsToLayout(); // Important: do it after you called setBars
+    _barChartLayout.moveObjectsToLayout(this->elapsed()); // Important: do it after you called setBars
 }
 
 
@@ -43,7 +48,7 @@ void DatavizWindow::initializeGL() {
 
 
 void DatavizWindow::resizeGL(int w, int h) {
-    const qreal retinaScale = devicePixelRatio();
+    const qreal retinaScale = this->devicePixelRatio();
     this->makeCurrent();
     glViewport(0, 0,
                w * static_cast<GLsizei>(retinaScale),
@@ -78,7 +83,7 @@ void DatavizWindow::paintGL() {
         SceneObject* obj = (*iter);
         if (obj->getVisible()) {
             // FIXME: we should take care of the Z-sorting of the scene objects.
-            obj->draw(_elapsedTimer);
+            obj->draw(this->elapsed());
         }
     }
     // swapBuffers();
@@ -94,10 +99,11 @@ DatavizWindow::~DatavizWindow()
     }
 }
 
-
+/*
 void DatavizWindow::setAnimating(bool animating) {
     _is_animating = animating;
     if (animating) {
         // renderLater();
     }
 }
+*/

@@ -20,7 +20,7 @@ public:
     /**
      * @brief Move the objects managed by this layout into their desired position.
      */
-    virtual void moveObjectsToLayout() = 0;
+    virtual void moveObjectsToLayout(qint64 currentTime) = 0;
 
 protected:
     QVector<PrisonerLine*> _prisonerLines;
