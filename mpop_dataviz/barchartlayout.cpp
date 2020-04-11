@@ -19,7 +19,8 @@ void BarChartLayout::updateObjectPosition(qint64 currentTime) {
     if (not this->_groupTweenAnimator.isNull()) {
         this->_groupTweenAnimator->updateSceneObjectsPosition(currentTime);
         if (this->_groupTweenAnimator->isDone(currentTime)) {
-            this->_groupTweenAnimator.clear();
+            //qDebug() << "Delete the group tween animator.";
+            this->_groupTweenAnimator.clear(); // should delete the instance.
         }
     }
 }
@@ -37,7 +38,7 @@ void BarChartLayout::moveObjectsToLayout(qint64 currentTime) {
     static const qreal OUTSIDE_Y = 3.0; // outside of the screen
     //static const QEasingCurve easing(QEasingCurve::InOutQuad);
     static const QEasingCurve::Type easingCurveType = QEasingCurve::InOutQuad;
-    static const qint64 animationSeconds = 10;
+    static const qint64 animationSeconds = 1;
     static const qint64 animationMS = animationSeconds * 1000; // ms
 
     this->_groupTweenAnimator.reset(new GroupTweenAnimator());
@@ -81,6 +82,7 @@ void BarChartLayout::moveObjectsToLayout(qint64 currentTime) {
                 row += 1;
             }
 
+            // Will process the next line on the next iteration:
             ++ lineIndex;
         }
     }

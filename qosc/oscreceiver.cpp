@@ -7,7 +7,7 @@ OscReceiver::OscReceiver(quint16 receivePort, QObject* parent) :
 {
     m_udpSocket = new QUdpSocket(this);
     // m_udpSocket->bind(QHostAddress::LocalHost, receivePort);
-    qDebug() << "Listening for OSC on " << receivePort;
+    qDebug() << "Listening for OSC on port " << receivePort;
     m_udpSocket->bind(QHostAddress::Any, receivePort);
     connect(m_udpSocket, &QUdpSocket::readyRead, this, &OscReceiver::readyReadCb);
 }

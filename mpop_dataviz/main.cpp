@@ -3,11 +3,11 @@
 #include "datavizwindow.h"
 #include "oscreceiver.h"
 #include <QtGui/QGuiApplication>
-#include <QtGui/QMatrix4x4>
-#include <QtGui/QOpenGLShaderProgram>
-#include <QtGui/QScreen>
-#include <QtCore/qmath.h>
-#include <QSharedPointer>
+// #include <QtGui/QMatrix4x4>
+// #include <QtGui/QOpenGLShaderProgram>
+// #include <QtGui/QScreen>
+// #include <QtCore/qmath.h>
+// #include <QSharedPointer>
 
 
 // Constants:
@@ -17,13 +17,14 @@ static const int NUM_WINDOWS = 1;
 static const int WINDOW_WIDTH = 1920;
 static const int WINDOW_HEIGHT = 1080;
 static const int OSC_RECEIVE_PORT = 31337;
+static const bool HIDE_CURSOR = false;
 
 
 int main(int argc, char* argv[]) {
     QGuiApplication app(argc, argv);
     QSurfaceFormat format;
     format.setSamples(16);
-    QVector<DatavizWindow*> windows;
+    QVector<DatavizWindow*> windows; // TODO use shared pointers
 
     for (int i = 0; i < NUM_WINDOWS; i ++) {
         int x = (i % 2) * WINDOW_WIDTH;
@@ -31,7 +32,9 @@ int main(int argc, char* argv[]) {
         QPoint windowPosition(x, y);
 
         DatavizWindow* window = new DatavizWindow();
-        window->setCursor(Qt::BlankCursor);
+        if (HIDE_CURSOR) {
+            window->setCursor(Qt::BlankCursor);
+        }
         window->setFormat(format);
         window->resize(WINDOW_WIDTH, WINDOW_HEIGHT);
         window->setPosition(windowPosition);
@@ -52,5 +55,6 @@ int main(int argc, char* argv[]) {
     for (int i = 0; i < NUM_WINDOWS; i ++) {
         delete windows[i];
     }
+    qDebug() << "Exitting regularly.";
     return ret;
 }

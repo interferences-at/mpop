@@ -46,28 +46,55 @@ qreal GroupTweenAnimator::mapValue(qreal inValue, qreal inFrom, qreal inTo, qrea
         // qDebug() << "mapValue: division by zero!";
         // return 0.0;
     //}
-    qreal ret = outFrom + (outTo - outFrom) * ((inValue - inFrom) / (inTo - inFrom));
+
+    // processing formula:
+    // qreal ret = outFrom + (outTo - outFrom) * ((inValue - inFrom) / (inTo - inFrom));
+
+    // arduino formula:
+    qreal ret = (inValue - inFrom) * (outTo - outFrom) / (inTo - inFrom) + outFrom;
+
     // FIXME check for a division by zero
+    return ret;
+}
+
+/**
+ * @brief Linear interpolation between the original value and a target.
+ *
+ * Note that the start and final value can be in any range, including negative numbers.
+ *
+ * @param progressRatio The progress is within the range [0, 1]
+ * @param startValue Original position of the object to translate. (one-dimensional)
+ * @param targetValue (Destination)
+ * @return The interpolated value.
+ */
+static qreal interpolate_linearly(qreal progressRatio, qreal startValue, qreal targetValue) {
+    qreal ret = startValue + ( ( targetValue - startValue ) * progressRatio );
     return ret;
 }
 
 
 void GroupTweenAnimator::updateSceneObjectsPosition(const qint64& currentTime) {
     bool hasSomeTimeLeft = ! this->isDone(currentTime);
+    qreal elapsedRatio = this->getElapsedRatio(currentTime);
+    //qreal timeLeft = this->getTimeLeft(currentTime);
 
     for (auto iter = this->_animatedSceneObjects.begin(); iter != _animatedSceneObjects.end(); ++ iter) {
         AnimatedSceneObjectPtr animatedData = (*iter);
         SceneObject* sceneObject = animatedData->sceneObject;
 
         if (hasSomeTimeLeft) {
-            qreal elapsedRatio = this->getElapsedRatio(currentTime);
-            qDebug() << "elapsedRatio: " << elapsedRatio;
-            qreal newX = GroupTweenAnimator::mapValue(elapsedRatio, ZERO_VAL, ONE_VAL,
-                animatedData->xFrom, animatedData->xTo);
-            qreal newY = GroupTweenAnimator::mapValue(elapsedRatio, ZERO_VAL, ONE_VAL,
-                animatedData->yFrom, animatedData->yTo);
-            qreal newRotation = GroupTweenAnimator::mapValue(elapsedRatio, ZERO_VAL, ONE_VAL,
-                animatedData->rotationFrom, animatedData->rotationTo);
+
+            // qDebug() << "elapsedRatio: " << elapsedRatio;
+//            qreal newX = GroupTweenAnimator::mapValue(elapsedRatio, ZERO_VAL, ONE_VAL,
+//                animatedData->xFrom, animatedData->xTo);
+//            qreal newY = GroupTweenAnimator::mapValue(elapsedRatio, ZERO_VAL, ONE_VAL,
+//                animatedData->yFrom, animatedData->yTo);
+//            qreal newRotation = GroupTweenAnimator::mapValue(elapsedRatio, ZERO_VAL, ONE_VAL,
+//                animatedData->rotationFrom, animatedData->rotationTo);
+
+            qreal newX = interpolate_linearly(elapsedRatio, animatedData->xFrom, animatedData->xTo);
+            qreal newY = interpolate_linearly(elapsedRatio, animatedData->yFrom, animatedData->yTo);
+            qreal newRotation = interpolate_linearly(elapsedRatio, animatedData->rotationFrom, animatedData->rotationTo);
 
             sceneObject->setX(newX);
             sceneObject->setY(newY);
@@ -78,7 +105,7 @@ void GroupTweenAnimator::updateSceneObjectsPosition(const qint64& currentTime) {
             sceneObject->setX(animatedData->xTo);
             sceneObject->setY(animatedData->yTo);
             sceneObject->setRotation(animatedData->rotationTo);
-            qDebug() << "This animation is done. You should delete this GroupTweenAnimator";
+            // qDebug() << "This animation is done. You should delete this GroupTweenAnimator";
         }
     }
     //return hasSomeTimeLeft;
@@ -91,6 +118,8 @@ qreal GroupTweenAnimator::getElapsedRatio(const qint64& currentTime) const {
         qreal elapsed = this->getElapsed(currentTime);
         qreal totalDuration = this->_duration;
         if (totalDuration <= elapsed) {
+            return 1.0;
+        } else if (totalDuration <= 10) {
             return 1.0;
         } else {
             return elapsed / totalDuration;
