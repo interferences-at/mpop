@@ -50,7 +50,12 @@ void DatavizWindow::initializeGL() {
 
 void DatavizWindow::resizeGL(int w, int h) {
     const qreal retinaScale = this->devicePixelRatio();
+
+    // Note: Avoid issuing OpenGL commands from this function as
+    // there may not be a context current when it is invoked.
+    // If it cannot be avoided, call makeCurrent().
     this->makeCurrent();
+
     glViewport(0, 0,
                w * static_cast<GLsizei>(retinaScale),
                h * static_cast<GLsizei>(retinaScale));
