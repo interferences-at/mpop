@@ -1,6 +1,5 @@
 #pragma once
 
-
 #include "prisonerline.h"
 #include "sceneobject.h"
 #include <QVector>
@@ -29,17 +28,14 @@ public:
     GroupTweenAnimator(); // TODO: add currentTime argument here. (and autostart it)
     virtual ~GroupTweenAnimator();
     /**
-     * @brief Adds scene objects.
-     * @param sceneObjects Scene objects to animate.
+     * @brief Adds a scene object.
+     * @param sceneObject Scene object to animate.
      */
-    //void addSceneObjects(const QVector<SceneObject*>& sceneObjects);
-
     void addSceneObjectToAnimate(SceneObject* sceneObject, qreal targetX, qreal targetY, qreal targetRotation);
     /**
      * @brief Move the objects to the position they should be at now.
      */
     void updateSceneObjectsPosition(const qint64& currentTime);
-    // * @return True if there is still some time left to the animation.
 
     void start(const qint64& currentTime);
 
@@ -51,6 +47,7 @@ public:
 
     qint64 getEndTime() const;
 
+private:
     /**
      * Re-maps a number from one range to another.
      *
@@ -66,7 +63,6 @@ public:
     static qreal mapValue(qreal inValue, qreal inFrom, qreal inTo, qreal outFrom, qreal outTo);
 
 private:
-    // QVector<SceneObject*> _sceneObjects;
     QVector<AnimatedSceneObjectPtr> _animatedSceneObjects;
 private:
     qint64 _duration;

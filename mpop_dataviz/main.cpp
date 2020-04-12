@@ -1,13 +1,7 @@
-//#include "openglwindow.h"
 #include "controller.h"
 #include "datavizwindow.h"
 #include "oscreceiver.h"
 #include <QtGui/QGuiApplication>
-// #include <QtGui/QMatrix4x4>
-// #include <QtGui/QOpenGLShaderProgram>
-// #include <QtGui/QScreen>
-// #include <QtCore/qmath.h>
-// #include <QSharedPointer>
 
 
 // Constants:

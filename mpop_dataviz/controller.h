@@ -19,8 +19,8 @@ public:
 
     void showBarChart(int windowIndex, const QList<int>& values);
 
-
-private: // data members
+private:
+    // data members
     OscReceiver* _oscReceiver;
     QVector<DatavizWindow*> _windows;
 

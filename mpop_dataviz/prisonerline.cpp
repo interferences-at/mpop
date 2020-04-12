@@ -3,13 +3,7 @@
 #include <QDebug>
 #include <QtGui/QOpenGLFunctions>
 
-PrisonerLine::PrisonerLine() : SceneObject() //QObject* parent) : SceneObject(parent)
-//  ,
-//    _xAnimation(this, "x"),
-//    _yAnimation(this, "y"),
-//    _zAnimation(this, "z"),
-//    _rotationAnimation(this, "rotation"),
-//    _scaleAnimation(this, "scale")
+PrisonerLine::PrisonerLine() : SceneObject()
 {
 
 }
@@ -19,28 +13,6 @@ PrisonerLine::~PrisonerLine() {
 
 }
 
-//void PrisonerLine::animateXYAndRotation(qint64 currentTime, qint64 animationDuration, const QEasingCurve::Type& easing, qreal x, qreal y, qreal rotation) {
-
-//    _xAnimation.setDuration(animationDuration);
-//    _yAnimation.setDuration(animationDuration);
-//    _rotationAnimation.setDuration(animationDuration);
-
-//    _xAnimation.setStartValue(_x);
-//    _yAnimation.setStartValue(_y);
-//    _rotationAnimation.setStartValue(_rotation);
-
-//    _xAnimation.setEndValue(x);
-//    _yAnimation.setEndValue(y);
-//    _rotationAnimation.setEndValue(rotation);
-
-//    _xAnimation.setEasingCurve(easing);
-//    _yAnimation.setEasingCurve(easing);
-//    _rotationAnimation.setEasingCurve(easing);
-
-//    _xAnimation.start();
-//    _yAnimation.start();
-//    _rotationAnimation.start();
-//}
 
 void PrisonerLine::draw(const qint64& elapsed) {
     Q_UNUSED(elapsed);
