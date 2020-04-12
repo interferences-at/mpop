@@ -5,14 +5,13 @@
 #include <QVariant>
 #include <QtNetwork>
 #include <QHostAddress>
-#include "qosc_global.h"
 
 /**
  * @brief Sends OSC messages to a given host and port.
  *
  * Currently only supports unicast UDP.
  */
-class QOSC_EXPORT OscSender : public QObject
+class OscSender : public QObject
 {
     Q_OBJECT
 
