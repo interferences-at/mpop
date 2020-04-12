@@ -16,7 +16,7 @@ BarChartLayout::~BarChartLayout()
 }
 
 void BarChartLayout::updateObjectPosition(qint64 currentTime) {
-    if (not this->_groupTweenAnimator.isNull()) {
+    if (! this->_groupTweenAnimator.isNull()) {
         this->_groupTweenAnimator->updateSceneObjectsPosition(currentTime);
         if (this->_groupTweenAnimator->isDone(currentTime)) {
             //qDebug() << "Delete the group tween animator.";
@@ -49,6 +49,7 @@ void BarChartLayout::moveObjectsToLayout(qint64 currentTime) {
     for (int barIndex = 0; barIndex < _barValues.size(); barIndex ++) {
         if (lineIndex >= _prisonerLines.size()) {
             qWarning() << "Out of bound: " << lineIndex;
+            break; // exitting this loop
         }
         int barValue = this->_barValues[barIndex];
         int row = 0;
@@ -56,6 +57,10 @@ void BarChartLayout::moveObjectsToLayout(qint64 currentTime) {
         // Each bar in the bar chart is a column
         // We group lines by groups of 5
         for (int lineInBar = 0; lineInBar < barValue; lineInBar ++) {
+            if (lineIndex >= _prisonerLines.size()) {
+                qWarning() << "Out of bound: " << lineIndex;
+                break; // exitting this loop
+            }
             PrisonerLine* line = _prisonerLines[lineIndex];
             SceneObject* sceneObject = dynamic_cast<SceneObject*>(line);
             int moduloFive = lineInBar % 5;
