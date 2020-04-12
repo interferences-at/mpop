@@ -1,8 +1,8 @@
-
-
 QT += core
 QT += network
-CONFIG += c++11
+QT += opengl
+win32:LIBS += -lOpengl32
+CONFIG += c++14
 CONFIG -= qtquickcompiler
 CONFIG += sdk_no_version_check # disable warning on macOS
 
@@ -29,7 +29,6 @@ HEADERS += \
     controller.h \
     grouptweenanimator.h
 
-
 # OSC support:
 INCLUDEPATH += $$PWD/../qosc
 INCLUDEPATH += $$PWD/../qosc/contrib/packosc
@@ -53,4 +52,3 @@ HEADERS += \
     ../qosc/contrib/oscpack/OscTypes.h \
     ../qosc/oscreceiver.h \
     ../qosc/oscsender.h
-
