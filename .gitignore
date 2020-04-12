@@ -5,3 +5,21 @@
 build-*-Debug/
 .qmake.stash
 qt/
+moc_*
+Makefile
+*.o
+
+# Executables:
+mpop_dataviz/mpop_dataviz
+mpop_kiosk/mpop_kiosk
+mpop_service/mpop_service
+test_mpop_kiosk/test_mpop_kiosk
+
+qrc_qml.cpp
+Makefile.Debug
+Makefile.Release
+lib*.a
+lib*.prl
+lib*.a
+lib*.prl
+
