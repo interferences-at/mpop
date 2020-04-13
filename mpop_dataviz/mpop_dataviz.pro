@@ -27,7 +27,8 @@ HEADERS += \
     barchartlayout.h \
     prisonerline.h \
     controller.h \
-    grouptweenanimator.h
+    grouptweenanimator.h \
+    applicationoptions.h
 
 # OSC support:
 INCLUDEPATH += $$PWD/../qosc

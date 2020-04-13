@@ -4,6 +4,7 @@
 #include "datavizwindow.h"
 #include <QVector>
 #include <QObject>
+#include <QSharedPointer>
 
 /**
  * @brief Controller for the business logic of this application.
@@ -15,14 +16,14 @@ class Controller : public QObject
     Q_OBJECT
 public:
 
-    Controller(OscReceiver* oscReceiver, const QVector<DatavizWindow*>& windows);
+    Controller(OscReceiver* oscReceiver, const QVector<QSharedPointer<DatavizWindow>>& windows);
 
     void showBarChart(int windowIndex, const QList<int>& values);
 
 private:
     // data members
     OscReceiver* _oscReceiver;
-    QVector<DatavizWindow*> _windows;
+    QVector<QSharedPointer<DatavizWindow>> _windows;
 
 private:
     DatavizWindow* getWindow(int windowIndex) const;

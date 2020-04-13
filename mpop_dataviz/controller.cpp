@@ -2,7 +2,7 @@
 #include <QDebug>
 #include <QList>
 
-Controller::Controller(OscReceiver* oscReceiver, const QVector<DatavizWindow*>& windows) :
+Controller::Controller(OscReceiver* oscReceiver, const QVector<QSharedPointer<DatavizWindow>>& windows) :
     _oscReceiver(oscReceiver),
     _windows(windows)
 {
@@ -80,7 +80,7 @@ void Controller::showBarChart(int windowIndex, const QList<int>& values) {
 
 DatavizWindow* Controller::getWindow(int windowIndex) const {
     if (windowIndex < _windows.size() && windowIndex >= 0) {
-        return _windows[windowIndex];
+        return _windows[windowIndex].get();
     } else {
         qDebug() << "No such window" << windowIndex;
         return nullptr;
