@@ -38,13 +38,13 @@ int main(int argc, char* argv[]) {
     parser.addVersionOption();
 
     // boolean options: (flags)
-    const QCommandLineOption verboseOption({"V", "verbose"}, "Enable a verbose output.", "verbose"); // bool
+    const QCommandLineOption verboseOption({"V", "verbose"}, "Enable a verbose output."); // bool
     parser.addOption(verboseOption);
 
-    const QCommandLineOption hideCursorOption({"c", "hide-cursor"}, "Hide the mouse cursor.", "hide-cursor"); // bool
+    const QCommandLineOption hideCursorOption({"c", "hide-cursor"}, "Hide the mouse cursor."); // bool
     parser.addOption(hideCursorOption);
 
-    const QCommandLineOption showWindowFrameOption({"F", "show-window-frame"}, "Show the window frame.", "show-window-frame"); // bool
+    const QCommandLineOption showWindowFrameOption({"F", "show-window-frame"}, "Show the window frame."); // bool
     parser.addOption(showWindowFrameOption);
 
     // int options:
@@ -66,7 +66,8 @@ int main(int argc, char* argv[]) {
     const QCommandLineOption yWindowPositionOption({"y", "y-position"}, "Window Y position", "y-position", "0");
     parser.addOption(yWindowPositionOption);
 
-    parser.process(app);
+    // parser.process(app); // parse for --help and --version options.
+    // Parse our custom options:
     if (! parser.parse(QCoreApplication::arguments())) {
         QString errorMessage = parser.errorText();
         qDebug() << errorMessage;
@@ -93,6 +94,13 @@ int main(int argc, char* argv[]) {
     options.window_height = parser.value(heightOption).toInt();
     options.osc_receive_port = static_cast<quint16>(parser.value(oscReceivePortOption).toInt());
     options.window_height = parser.value(heightOption).toInt();
+
+    if (options.verbose) {
+//        for (int i = 0; i < argc; ++ i) {
+//            qDebug() << argv[i];
+//        }
+        options.printAll();
+    }
 
 
     // Create window(s)
@@ -128,7 +136,9 @@ int main(int argc, char* argv[]) {
         qDebug() << "Window" << i << "of size:" <<
             options.window_width << "x" << options.window_height <<
             "at position" << x << "," << y;
-        if (! options.show_window_frame) {
+        if (options.show_window_frame) {
+            window->setFlags(Qt::Window);
+        } else {
             window->setFlags(Qt::Window | Qt::FramelessWindowHint);
         }
         window->show();
