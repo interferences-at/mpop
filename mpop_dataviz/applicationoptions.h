@@ -7,6 +7,7 @@
 struct ApplicationOptions {
 public:
     bool verbose = false;
+    bool show_window_frame = false;
     int window_width = 1920;
     int window_height = 1080;
     int window_x = 0;

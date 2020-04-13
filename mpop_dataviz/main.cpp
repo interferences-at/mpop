@@ -7,36 +7,45 @@
 
 
 // Constants:
-// TODO: add a command-line argument for how many windows to show.
-static const int NUM_WINDOWS = 1;
-// static const int NUM_WINDOWS = 4;
-static const int DEFAULT_NUM_WINDOWS = 1;
-static const int MAX_NUM_WINDOWS = 4;
-static const int WINDOW_WIDTH = 1920;
-static const int WINDOW_HEIGHT = 1080;
-static const int OSC_RECEIVE_PORT = 31337;
-static const bool HIDE_CURSOR = false;
 static const QString APPLICATION_VERSION = "0.1.0-SNAPSHOT";
 static const QString APPLICATION_NAME = "mpop_dataviz";
 
 
+/**
+ * @brief Main entry point of this application.
+ *
+ * To specify the command-line arguments:
+ * Go in the "Project" part on the left of QtCreator and then in the "Run Settings" tab.
+ * There is a Arguments line edit where you can put all you need to pass to your app when launching it.
+ * Example arguments:
+ *
+ * --verbose --show-window-frame --port 31337
+ *
+ * @param argc Number of command-line arguments.
+ * @param argv List of command-line arguments.
+ * @return 0 if there is no error, 1 if there is one.
+ */
 int main(int argc, char* argv[]) {
     QGuiApplication app(argc, argv);
 
     QCoreApplication::setApplicationName(APPLICATION_NAME);
     QCoreApplication::setApplicationVersion(APPLICATION_VERSION);
 
+    // Parse command-line arguments.
     QCommandLineParser parser;
     parser.setApplicationDescription("OSC-controlled Dataviz for MPOP");
     parser.addHelpOption();
     parser.addVersionOption();
 
     // boolean options: (flags)
-    const QCommandLineOption verboseOption({"v", "verbose"}, "Enable a verbose output.", "verbose"); // bool
+    const QCommandLineOption verboseOption({"V", "verbose"}, "Enable a verbose output.", "verbose"); // bool
     parser.addOption(verboseOption);
 
     const QCommandLineOption hideCursorOption({"c", "hide-cursor"}, "Hide the mouse cursor.", "hide-cursor"); // bool
     parser.addOption(hideCursorOption);
+
+    const QCommandLineOption showWindowFrameOption({"F", "show-window-frame"}, "Show the window frame.", "show-window-frame"); // bool
+    parser.addOption(showWindowFrameOption);
 
     // int options:
     const QCommandLineOption widthOption({"w", "width"}, "Window width", "width", "1920");
@@ -52,10 +61,10 @@ int main(int argc, char* argv[]) {
     parser.addOption(oscReceivePortOption);
 
     const QCommandLineOption xWindowPositionOption({"x", "x-position"}, "Window X position", "x-position", "0");
-    parser.addOption(widthOption);
+    parser.addOption(xWindowPositionOption);
 
     const QCommandLineOption yWindowPositionOption({"y", "y-position"}, "Window Y position", "y-position", "0");
-    parser.addOption(heightOption);
+    parser.addOption(yWindowPositionOption);
 
     parser.process(app);
     if (! parser.parse(QCoreApplication::arguments())) {
@@ -68,57 +77,73 @@ int main(int argc, char* argv[]) {
         parser.showHelp(0);
     }
 
-    ApplicationOptions appOptions;
-
-    appOptions.num_windows = DEFAULT_NUM_WINDOWS;
+    // Store the options values in this struct:
+    ApplicationOptions options;
 
     // bool options:
-    appOptions.verbose = parser.isSet(verboseOption);
-    appOptions.hide_cursor = parser.isSet(hideCursorOption);
+    options.verbose = parser.isSet(verboseOption);
+    options.hide_cursor = parser.isSet(hideCursorOption);
+    options.show_window_frame = parser.isSet(showWindowFrameOption);
+
 
     // int options:
     // FIXME: check the parsing of int command-line options.
-    appOptions.num_windows = parser.value(numWindowsOption).toInt();
-    appOptions.window_width = parser.value(widthOption).toInt();
-    appOptions.window_height = parser.value(heightOption).toInt();
-    appOptions.osc_receive_port = static_cast<quint16>(parser.value(oscReceivePortOption).toInt());
-    appOptions.window_height = parser.value(heightOption).toInt();
+    options.num_windows = parser.value(numWindowsOption).toInt();
+    options.window_width = parser.value(widthOption).toInt();
+    options.window_height = parser.value(heightOption).toInt();
+    options.osc_receive_port = static_cast<quint16>(parser.value(oscReceivePortOption).toInt());
+    options.window_height = parser.value(heightOption).toInt();
 
 
-    QSurfaceFormat format;
-    format.setSamples(16);
+    // Create window(s)
+    // Note: it's possible to either show a single window (and be able to specify its (x,y) position)
+    // or to show more than one window.
+    // If you show more than one window, their position will be computed below.
+    // Note that all the windows currently are running in the same thread, so it sounds like a better
+    // idea to launch four instance of this application, rather than one instance with four windows.
+    // Simply use a different OSC receive port for each of them.
+
     QVector<QSharedPointer<DatavizWindow>> windows;
 
-    for (int i = 0; i < appOptions.num_windows; i ++) {
-        int x = (i % 2) * appOptions.window_width;
-        int y = (i / 2) * appOptions.window_height;
-         // TODO: use appOptions.window_x and window_y
-        QPoint windowPosition(x, y);
+    for (int i = 0; i < options.num_windows; i ++) {
+        int x = options.window_x;
+        int y = options.window_y;
 
-        QSharedPointer<DatavizWindow> window(new DatavizWindow());
-        if (appOptions.hide_cursor) {
-            window->setCursor(Qt::BlankCursor);
+        if (options.num_windows > 1) {
+            x = (i % 2) * options.window_width;
+            y = (i / 2) * options.window_height;
         }
-        window->setFormat(format);
-        window->resize(appOptions.window_width, appOptions.window_height);
-        window->setPosition(windowPosition);
-        qDebug() << "Window" << i << "of size:" <<
-            appOptions.window_width << "x" << appOptions.window_height <<
-            "at position" << x << "," << y;
-        // TODO: add frameless window option
-        window->setFlags(Qt::Window | Qt::FramelessWindowHint);
-        window->show();
+        QSharedPointer<DatavizWindow> window(new DatavizWindow());
 
         windows.append(window);
+        if (options.hide_cursor) {
+            window->setCursor(Qt::BlankCursor);
+        }
+        QSurfaceFormat format;
+        format.setSamples(16);
+        window->setFormat(format);
+        window->resize(options.window_width, options.window_height);
+        QPoint windowPosition(x, y);
+        window->setPosition(windowPosition);
+        qDebug() << "Window" << i << "of size:" <<
+            options.window_width << "x" << options.window_height <<
+            "at position" << x << "," << y;
+        if (! options.show_window_frame) {
+            window->setFlags(Qt::Window | Qt::FramelessWindowHint);
+        }
+        window->show();
     }
 
-    OscReceiver oscReceiver(appOptions.osc_receive_port);
+    // Connect the window(s) to the OSC receiver, via a controller
+    // that takes care of the logic of the application.
+    OscReceiver oscReceiver(options.osc_receive_port);
     Controller controller(&oscReceiver, windows);
 
+    // Run the application.
     int ret = app.exec();
 
+    // Once done, clear the memory and exit.
     windows.clear();
-
-    qDebug() << "Exitting regularly.";
+    qDebug() << "Exitting.";
     return ret;
 }
