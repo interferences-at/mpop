@@ -61,8 +61,8 @@ void BarChartLayout::moveObjectsToLayout(qint64 currentTime) {
                 qWarning() << "Out of bound: " << lineIndex;
                 break; // exitting this loop
             }
-            PrisonerLine* line = _prisonerLines[lineIndex];
-            SceneObject* sceneObject = dynamic_cast<SceneObject*>(line);
+            PrisonerLine::ptr line = _prisonerLines[lineIndex];
+            SceneObject::ptr sceneObject = qSharedPointerDynamicCast<SceneObject>(line);
             int moduloFive = lineInBar % 5;
 
             if (moduloFive < 4) {
@@ -95,8 +95,8 @@ void BarChartLayout::moveObjectsToLayout(qint64 currentTime) {
     // Move leftover out of the screen, if needed
     if (lineIndex < _prisonerLines.size()) {
         for ( ; lineIndex < _prisonerLines.size(); lineIndex ++) {
-            PrisonerLine* line = _prisonerLines[lineIndex];
-            SceneObject* sceneObject = dynamic_cast<SceneObject*>(line);
+            PrisonerLine::ptr line = _prisonerLines[lineIndex];
+            SceneObject::ptr sceneObject = qSharedPointerDynamicCast<SceneObject>(line);
             // line->setPosition(OUTSIDE_X, OUTSIDE_Y);
             qreal x = OUTSIDE_X;
             qreal y = OUTSIDE_Y;

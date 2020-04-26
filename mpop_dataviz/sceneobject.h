@@ -1,6 +1,7 @@
 #pragma once
 
 #include <QObject>
+#include <QSharedPointer>
 
 class SceneObject
 {
@@ -36,6 +37,9 @@ public:
     void setZ(qreal value);
     void setRotation(qreal value);
     void setScale(qreal value);
+
+    // Alias for shared pointer of this class
+    typedef QSharedPointer<SceneObject> ptr;
 
 protected:
     bool _isVisible;
