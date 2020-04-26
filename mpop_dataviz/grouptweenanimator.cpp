@@ -24,7 +24,7 @@ GroupTweenAnimator::~GroupTweenAnimator()
 //    _sceneObjects.append(sceneObjects);
 //}
 
-void GroupTweenAnimator::addSceneObjectToAnimate(SceneObject* sceneObject, qreal targetX, qreal targetY, qreal targetRotation) {
+void GroupTweenAnimator::addSceneObjectToAnimate(SceneObject::ptr sceneObject, qreal targetX, qreal targetY, qreal targetRotation) {
     AnimatedSceneObjectPtr animatedObj(new AnimatedSceneObject);
     animatedObj->sceneObject = sceneObject;
 
@@ -80,7 +80,7 @@ void GroupTweenAnimator::updateSceneObjectsPosition(const qint64& currentTime) {
 
     for (auto iter = this->_animatedSceneObjects.begin(); iter != _animatedSceneObjects.end(); ++ iter) {
         AnimatedSceneObjectPtr animatedData = (*iter);
-        SceneObject* sceneObject = animatedData->sceneObject;
+        SceneObject::ptr sceneObject = animatedData->sceneObject;
 
         if (hasSomeTimeLeft) {
 

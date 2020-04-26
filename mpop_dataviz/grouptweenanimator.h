@@ -12,7 +12,7 @@ class GroupTweenAnimator
 {
 private:
     struct AnimatedSceneObject {
-        SceneObject* sceneObject;
+        SceneObject::ptr sceneObject;
         qreal xFrom;
         qreal xTo;
         qreal yFrom;
@@ -31,7 +31,7 @@ public:
      * @brief Adds a scene object.
      * @param sceneObject Scene object to animate.
      */
-    void addSceneObjectToAnimate(SceneObject* sceneObject, qreal targetX, qreal targetY, qreal targetRotation);
+    void addSceneObjectToAnimate(SceneObject::ptr sceneObject, qreal targetX, qreal targetY, qreal targetRotation);
     /**
      * @brief Move the objects to the position they should be at now.
      */

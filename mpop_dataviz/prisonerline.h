@@ -13,5 +13,8 @@ public:
     ~PrisonerLine() override;
     virtual void draw(const qint64& elapsed) override;
 
+    // Alias for shared pointer of this class
+    typedef QSharedPointer<PrisonerLine> ptr;
+
 private:
 };

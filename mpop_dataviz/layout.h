@@ -17,7 +17,7 @@ public:
      * @brief Adds some prisoner lines to this layour.
      * @param prisonerLines
      */
-    void addPrisonerLines(const QVector<PrisonerLine*>& prisonerLines);
+    void addPrisonerLines(const QVector<PrisonerLine::ptr>& prisonerLines);
 
     /**
      * @brief Move the objects managed by this layout into their desired position.
@@ -27,5 +27,5 @@ public:
     virtual void updateObjectPosition(qint64 currentTime) = 0;
 
 protected:
-    QVector<PrisonerLine*> _prisonerLines;
+    QVector<PrisonerLine::ptr> _prisonerLines;
 };

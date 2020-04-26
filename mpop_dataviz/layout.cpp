@@ -11,6 +11,6 @@ Layout::~Layout()
 }
 
 
-void Layout::addPrisonerLines(const QVector<PrisonerLine*>& prisonerLines) {
+void Layout::addPrisonerLines(const QVector<PrisonerLine::ptr> &prisonerLines) {
     _prisonerLines.append(prisonerLines);
 }

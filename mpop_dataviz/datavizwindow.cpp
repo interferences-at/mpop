@@ -11,12 +11,11 @@ DatavizWindow::DatavizWindow() {
     qDebug() << "Create a Window";
     _elapsedTimer.start();
 
-    static const int NUM_LINES = 100;
-    QVector<PrisonerLine*> prisonerLines;
+    static const int NUM_LINES = 1000;
+    QVector<PrisonerLine::ptr> prisonerLines;
     for (int i = 0; i < NUM_LINES; i ++) {
-        // TODO: use a QSharedPointer
-        PrisonerLine* line = new PrisonerLine();
-        _sceneObjects.push_back(dynamic_cast<SceneObject*>(line));
+        PrisonerLine::ptr line = PrisonerLine::ptr::create();
+        _sceneObjects.push_back(qSharedPointerDynamicCast<SceneObject>(line));
         prisonerLines.push_back(line);
     }
 
@@ -89,7 +88,7 @@ void DatavizWindow::paintGL() {
     _barChartLayout.updateObjectPosition(this->elapsed());
 
     for (auto iter = _sceneObjects.begin(); iter != _sceneObjects.end(); ++ iter) {
-        SceneObject* obj = (*iter);
+        SceneObject::ptr obj = (*iter);
         if (obj->getVisible()) {
             // FIXME: we should take care of the Z-sorting of the scene objects.
             obj->draw(this->elapsed());
@@ -104,7 +103,7 @@ DatavizWindow::~DatavizWindow()
 {
     qDebug() << "~DatavizWindow";
     for (auto iter = _sceneObjects.begin(); iter != _sceneObjects.end(); ++ iter) {
-        delete (*iter); // TODO: use a QSharedPointer
+        iter->clear();
     }
 }
 
