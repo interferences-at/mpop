@@ -24,9 +24,13 @@ private:
     // data members
     OscReceiver* _oscReceiver;
     QVector<QSharedPointer<DatavizWindow>> _windows;
+    // Make easy to find window by ID
+    QMap<uint, DatavizWindow::ptr> _windowsMap;
+
 
 private:
-    DatavizWindow* getWindow(int windowIndex) const;
+    DatavizWindow* getWindow(int windowIndex) const Q_DECL_DEPRECATED;
+    DatavizWindow::ptr getWindowById(uint windowId) const;
 
 public slots:
     void messageReceivedCb(const QString& oscAddress, const QVariantList& arguments);
