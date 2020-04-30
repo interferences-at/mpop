@@ -25,7 +25,7 @@ private:
     OscReceiver* _oscReceiver;
     QVector<QSharedPointer<DatavizWindow>> _windows;
     // Make easy to find window by ID
-    QMap<int, DatavizWindow::ptr> _windowsMap;
+    QMap<uint, DatavizWindow::ptr> _windowsMap;
 
 
 private:
