@@ -14,6 +14,7 @@ public: // public data members
     int window_x = 0;
     int window_y = 0;
     int num_windows = 1;
+    uint window_offset_id = 0;
     quint16 osc_receive_port = 31337;
     bool hide_cursor = false;
 

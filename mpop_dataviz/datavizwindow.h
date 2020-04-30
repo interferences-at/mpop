@@ -22,9 +22,18 @@ public:
     void showBarChartBars(const QList<int>& bars);
 
     qint64 elapsed() const;
+    // Set Offset ID
+    void setOffsetId(uint offset) { windowId += offset; }
+    void setWindowId(uint id) { windowId = id; }
+    uint getWindowId() const { return windowId; }
+
+    // Alias for shared pointer of this class
+    typedef QSharedPointer<DatavizWindow> ptr;
 
 private:
     QElapsedTimer _elapsedTimer;
     QVector<SceneObject::ptr> _sceneObjects;
     BarChartLayout _barChartLayout;
+    // Window ID
+    static uint windowId;
 };

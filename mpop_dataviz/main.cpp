@@ -66,6 +66,9 @@ int main(int argc, char* argv[]) {
     const QCommandLineOption yWindowPositionOption({"y", "y-position"}, "Window Y position", "y-position", "0");
     parser.addOption(yWindowPositionOption);
 
+    const QCommandLineOption windowIdOffsetOption({"i", "window-id-offset"}, "Window ID offset", "windowIdOffsetOption","0");
+    parser.addOption(windowIdOffsetOption);
+
     // parser.process(app); // parse for --help and --version options.
     // Parse our custom options:
     if (! parser.parse(QCoreApplication::arguments())) {
@@ -94,6 +97,7 @@ int main(int argc, char* argv[]) {
     options.window_height = parser.value(heightOption).toInt();
     options.osc_receive_port = static_cast<quint16>(parser.value(oscReceivePortOption).toInt());
     options.window_height = parser.value(heightOption).toInt();
+    options.window_offset_id = parser.value(windowIdOffsetOption).toUInt();
 
     if (options.verbose) {
 //        for (int i = 0; i < argc; ++ i) {
@@ -133,9 +137,12 @@ int main(int argc, char* argv[]) {
         window->resize(options.window_width, options.window_height);
         QPoint windowPosition(x, y);
         window->setPosition(windowPosition);
+        if (i == 0) // Set window ID offset just for the first window
+            window->setOffsetId(options.window_offset_id);
         qDebug() << "Window" << i << "of size:" <<
             options.window_width << "x" << options.window_height <<
             "at position" << x << "," << y;
+        qDebug() << "Window ID: " << window->getWindowId() << endl;
         if (options.show_window_frame) {
             window->setFlags(Qt::Window);
         } else {

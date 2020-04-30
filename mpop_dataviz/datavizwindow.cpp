@@ -6,6 +6,8 @@
 #include <QtGui/QScreen>
 #include <QtCore/qmath.h>
 
+// Static window ID variable
+uint DatavizWindow::windowId = -1;
 
 DatavizWindow::DatavizWindow() {
     qDebug() << "Create a Window";
@@ -27,6 +29,9 @@ DatavizWindow::DatavizWindow() {
     bars.push_back(20);
     bars.push_back(70);
     showBarChartBars(bars);
+
+    // Set default window ID to +1
+    windowId++;
 }
 
 

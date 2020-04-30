@@ -6,6 +6,13 @@ Controller::Controller(OscReceiver* oscReceiver, const QVector<QSharedPointer<Da
     _oscReceiver(oscReceiver),
     _windows(windows)
 {
+    // FIXME: Maybe it will be less expensive if we pass
+    // QMap through the constructor parameter instead of
+    // Qvector specially if we start using custom window id
+    for (auto window : _windows) {
+        _windowsMap.insert(window->getWindowId(), window);
+    }
+
     connect(oscReceiver, &OscReceiver::messageReceived, this, &Controller::messageReceivedCb);
 }
 
@@ -47,7 +54,7 @@ void Controller::messageReceivedCb(const QString& oscAddress, const QVariantList
     if (pathTokens[INDEX_PREFIX] == DATAVIZ_PREFIX) {
         int windowIndex = pathTokens[INDEX_WINDOW_NUMBER].toInt();
         qDebug() << "windowIndex" << windowIndex;
-        if (getWindow(windowIndex) == nullptr) {
+        if (getWindowById(windowIndex) == nullptr) {
             qDebug() << "Invalid dataviz window index" << windowIndex;
             return;
         }
@@ -71,19 +78,29 @@ void Controller::messageReceivedCb(const QString& oscAddress, const QVariantList
 
 
 void Controller::showBarChart(int windowIndex, const QList<int>& values) {
-    DatavizWindow* window = this->getWindow(windowIndex);
+    DatavizWindow::ptr window = getWindowById(windowIndex);
     if (window) {
         window->showBarChartBars(values);
     }
 }
 
 
-DatavizWindow* Controller::getWindow(int windowIndex) const {
+DatavizWindow* Controller::getWindow(int windowIndex) const { // Q_DECL_DEPRECATED
     if (windowIndex < _windows.size() && windowIndex >= 0) {
         return _windows[windowIndex].get();
     } else {
         qDebug() << "No such window" << windowIndex;
         return nullptr;
     }
+}
+
+DatavizWindow::ptr Controller::getWindowById(uint windowId) const
+{
+    if (!_windowsMap.contains(windowId)) {
+        qDebug() << "No such window" << windowId;
+        return nullptr;
+    }
+
+    return _windowsMap[windowId];
 }
 
