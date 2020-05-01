@@ -137,8 +137,8 @@ int main(int argc, char* argv[]) {
         window->resize(options.window_width, options.window_height);
         QPoint windowPosition(x, y);
         window->setPosition(windowPosition);
-        if (i == 0) // Set window ID offset just for the first window
-            window->setOffsetId(options.window_offset_id);
+        window->setWindowId(i); // The index use to be the ID
+        window->setOffsetId(options.window_offset_id); // Set window ID offset
         qDebug() << "Window" << i << "of size:" <<
             options.window_width << "x" << options.window_height <<
             "at position" << x << "," << y;

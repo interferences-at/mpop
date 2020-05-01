@@ -35,5 +35,5 @@ private:
     QVector<SceneObject::ptr> _sceneObjects;
     BarChartLayout _barChartLayout;
     // Window ID
-    static uint windowId;
+    uint windowId;
 };
