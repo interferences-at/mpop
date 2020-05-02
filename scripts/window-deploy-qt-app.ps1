@@ -21,7 +21,7 @@
 [CmdletBinding()]
 param (
   # Command line parameters
-  $QtDir = "C:\Qt", # Qt default installation directory path
+  $QtDir = "", # Qt default installation directory path
   $ExeFile = "" # Path of the executable file to deploy 
 )
 
