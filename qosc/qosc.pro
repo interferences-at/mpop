@@ -1,3 +1,6 @@
+# FIXME: this .pro file is unused.
+# It was difficult to build this library on Windows
+
 TEMPLATE = lib
 
 VERSION = 0.1.0
