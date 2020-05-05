@@ -1,4 +1,4 @@
-# mpop-all
+# mpop
 
 User interfaces for the MPOP project.
 

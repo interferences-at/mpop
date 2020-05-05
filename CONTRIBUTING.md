@@ -4,7 +4,16 @@ Here are the developer notes for this project.
 
 ## Building
 
+You need Qt 5 to build this project, including QtQuick.
+
 Open the .pro file in Qt Creator. Build it.
+
+Another option is to do:
+
+```
+qmake .
+make
+```
 
 # Coding style
 
