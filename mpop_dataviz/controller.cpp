@@ -62,7 +62,7 @@ void Controller::messageReceivedCb(const QString& oscAddress, const QVariantList
         QString methodName = pathTokens[INDEX_METHOD];
 
         // Handle methods:
-        // The barchart method: /dataviz/1/barchar iii 70 20 10
+        // The barchart method: /dataviz/1/barchart iii 70 20 10
         if (methodName == BARCHART_METHOD) {
             QList<int> ints = toInts(arguments);
             qDebug() << "Calling showBarChart" << methodName << windowIndex << ints;
