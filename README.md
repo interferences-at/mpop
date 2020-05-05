@@ -14,3 +14,5 @@ GNU GPL v3.
 
 Developers can look in the CONTRIBUTING.md file.
 
+See doc/OSC.md and all the files in doc/.
+
