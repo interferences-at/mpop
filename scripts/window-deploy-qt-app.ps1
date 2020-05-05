@@ -77,8 +77,10 @@ function GetQtDirectory () {
   $QtDir = ""
   # Open folder dialog and asking for Qt installation directory
   $folderDialog = New-Object System.Windows.Forms.FolderBrowserDialog
-  # Make sure the the user didn't cancel the operation
-  if ($folderDialog.ShowDialog() -ne "Cancel") {
+  # Add description to the dialog window
+  $folderDialog.Description = "Select the Qt installation folder! eg: C:\Qt"
+  # Open the dialog on top of all and make sure the the user didn't cancel the operation
+  if ($folderDialog.ShowDialog((New-Object System.Windows.Forms.Form -Property @{TopMost = $true })) -ne "Cancel") {
     # Get the selected path
     $QtDir = $folderDialog.SelectedPath
   }
@@ -94,8 +96,12 @@ function GetExecutableFile () {
   $exeFile = ""
   # Open file dialog and asking for executable file
   $fileDialog = New-Object System.Windows.Forms.OpenFileDialog
-  # Make sure the the user didn't cancel the operation
-  if ($fileDialog.ShowDialog() -ne "Cancel") {
+  # Add description to the dialog window
+  $fileDialog.Title = "Select the executable file you want to deploy"
+  # Make sure the user select an executable file
+  $fileDialog.Filter = "Executable files (*.exe)|*.exe|All files (*.*)|*.*";  
+  # Open the dialog on top of all and make sure the the user didn't cancel the operation
+  if ($fileDialog.ShowDialog((New-Object System.Windows.Forms.Form -Property @{TopMost = $true })) -ne "Cancel") {
     # Get the parent directory of the executable file
     $exeFile = Split-Path -Path $fileDialog.FileName
   }
