@@ -36,4 +36,6 @@ private:
     BarChartLayout _barChartLayout;
     // Window ID
     uint windowId;
+    // TODO: add current layout (enum)
+    // TODO: ajouter plusieurs objets TextSceneObject
 };
