@@ -40,10 +40,26 @@ void DatavizWindow::showBarChartBars(const QList<int>& bars) {
     _barChartLayout.moveObjectsToLayout(this->elapsed()); // Important: do it after you called setBars
 }
 
+void DatavizWindow::addLayoutTitles(const QList<QString> &titles, bool topTitle)
+{
+    if (topTitle) { // Set the top titles
+        _painter->setTopTitles(titles);
+    } else { // Set the bottom title
+        _painter->setBottomTitles(titles);
+    }
+}
+
 
 void DatavizWindow::initializeGL() {
     // setSwapInterval(1);
     glClearColor(0, 0, 0, 0);
+    // Enable painting on the OpenGL context
+    _device = new  QOpenGLPaintDevice();
+    // Create a text drawer
+    _painter = new TextObjectPainter();
+
+    // Test of OSC add top titles
+    addLayoutTitles({"Title1", "Title2", "Title3"}, true);
 }
 
 
@@ -74,12 +90,24 @@ void DatavizWindow::resizeGL(int w, int h) {
 
     // Instead, we could eventually use a pespective view, here:
     // gluPerspective(60.0f, ratio, 1.0f, 100.0f);
+
+    // Resize the paint device
+    _device->setSize(QSize(width() * retinaScale, height() * retinaScale));
+    _device->setDevicePixelRatio(retinaScale);
 }
 
 
 void DatavizWindow::paintGL() {
     // We must clear the background here
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+    _painter->setPaintDevice(_device);
+    // Draw the horizontal coordinate
+    _painter->drawAbscissa();
+    // Draw the vertical coordinate
+    _painter->drawOrdinate();
+
+    _painter->beginOpenGLPainting(); // Start OpenGL painting
 
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
@@ -94,6 +122,8 @@ void DatavizWindow::paintGL() {
             obj->draw(this->elapsed());
         }
     }
+
+    _painter->endOpenGLPainting(); // Finish OpenGL painting
     // swapBuffers();
     this->update(); // ask for a new render next time the screen refreshes.
 }
