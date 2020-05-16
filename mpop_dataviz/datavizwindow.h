@@ -6,6 +6,9 @@
 #include <QVector>
 #include "barchartlayout.h"
 #include <QOpenGLWindow>
+#include <QOpenGLPaintDevice>
+
+#include "textobjectpainter.h"
 
 
 class DatavizWindow : public QOpenGLWindow {
@@ -21,6 +24,8 @@ public:
      */
     void showBarChartBars(const QList<int>& bars);
 
+    void addLayoutTitles( const QList<QString> &titles, bool topTitle = false);
+
     qint64 elapsed() const;
     // Set Offset ID
     void setOffsetId(uint offset) { windowId += offset; }
@@ -34,6 +39,10 @@ private:
     QElapsedTimer _elapsedTimer;
     QVector<SceneObject::ptr> _sceneObjects;
     BarChartLayout _barChartLayout;
+
+    QOpenGLPaintDevice *_device;
+
+    TextObjectPainter *_painter;
     // Window ID
     uint windowId;
     // TODO: add current layout (enum)

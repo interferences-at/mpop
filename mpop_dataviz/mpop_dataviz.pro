@@ -18,7 +18,8 @@ SOURCES += \
     barchartlayout.cpp \
     prisonerline.cpp \
     controller.cpp \
-    grouptweenanimator.cpp
+    grouptweenanimator.cpp \
+    textobjectpainter.cpp
 
 HEADERS += \
     datavizwindow.h \
@@ -28,7 +29,8 @@ HEADERS += \
     prisonerline.h \
     controller.h \
     grouptweenanimator.h \
-    applicationoptions.h
+    applicationoptions.h \
+    textobjectpainter.h
 
 # OSC support:
 INCLUDEPATH += $$PWD/../qosc
@@ -53,3 +55,6 @@ HEADERS += \
     ../qosc/contrib/oscpack/OscTypes.h \
     ../qosc/oscreceiver.h \
     ../qosc/oscsender.h
+
+RESOURCES += \
+  resources.qrc
