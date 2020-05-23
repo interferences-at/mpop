@@ -73,5 +73,6 @@ private:
     const int Y_LINE_TOP_MARGIN = 30;
     const int Y_LINE_BOTTOM_MARGIN = 60;
 
+    // Titles text boxes height
     const int TITLES_HEIGHT = 60;
 };

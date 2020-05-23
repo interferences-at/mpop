@@ -58,8 +58,10 @@ void DatavizWindow::initializeGL() {
     // Create a text drawer
     _painter = new TextObjectPainter();
 
-    // Test of OSC add top titles
+    // Test of top titles
     addLayoutTitles({"Title1", "Title2", "Title3"}, true);
+    // Test of bottom titles
+    addLayoutTitles({"Homme", "Femme", "Autres"});
 }
 
 
@@ -102,10 +104,6 @@ void DatavizWindow::paintGL() {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     _painter->setPaintDevice(_device);
-    // Draw the horizontal coordinate
-    _painter->drawAbscissa();
-    // Draw the vertical coordinate
-    _painter->drawOrdinate();
 
     _painter->beginOpenGLPainting(); // Start OpenGL painting
 
@@ -124,6 +122,16 @@ void DatavizWindow::paintGL() {
     }
 
     _painter->endOpenGLPainting(); // Finish OpenGL painting
+
+    // Draw the horizontal coordinate
+    _painter->drawAbscissa();
+    // Draw the vertical coordinate
+    _painter->drawOrdinate();
+    // Test drawing elements
+    _painter->drawPercentage();
+    _painter->drawTopTitles();
+    _painter->drawButtonTitles();
+
     // swapBuffers();
     this->update(); // ask for a new render next time the screen refreshes.
 }
