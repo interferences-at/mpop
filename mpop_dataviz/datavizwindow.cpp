@@ -100,13 +100,11 @@ void DatavizWindow::resizeGL(int w, int h) {
 
 
 void DatavizWindow::paintGL() {
-    // We must clear the background here
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
     _painter->setPaintDevice(_device);
-
     _painter->beginOpenGLPainting(); // Start OpenGL painting
 
+    // Clear the background
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
 
