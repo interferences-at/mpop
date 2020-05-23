@@ -1,11 +1,13 @@
 ﻿#include "textobjectpainter.h"
+#include <QPaintEngine>
 
 TextObjectPainter::TextObjectPainter() :
-    _showBottomTitle(true),
-    _showPercentage(true)
+    _showBottomTitle(true), // TODO: Make it false by default
+    _showPercentage(true) // TODO: Make it false by default
 {
-    _linePen = QPen(Qt::white, 2);
+    _linePen = QPen(Qt::white, 2); // Line style
 
+    // Add a custom font
     int id = QFontDatabase::addApplicationFont(":/base-font");
     QString fontFamily = QFontDatabase::applicationFontFamilies(id).at(0);
 
@@ -13,9 +15,6 @@ TextObjectPainter::TextObjectPainter() :
     _bottomTitleFont = QFont(fontFamily, 24);
     _topTitleFont = QFont(fontFamily, 22);
     _percentageFont = QFont(fontFamily, 22);
-
-    setBottomTitles({"Homme", "Femme", "Autres"});
-    setTopTitles({"Title1", "Title2"});
 }
 
 TextObjectPainter::~TextObjectPainter()
@@ -35,11 +34,6 @@ void TextObjectPainter::setPaintDevice(QOpenGLPaintDevice *device)
     _width = device->width(); // Reset width
     _height = device->height(); // Reset height;
     _pixelRatio = device->devicePixelRatio();
-
-    drawPercentage();
-    drawTopTitles();
-    drawButtonTitles();
-
 }
 
 void TextObjectPainter::drawAbscissa(int xMaxValue, int xIntervalUnit)
@@ -128,11 +122,14 @@ void TextObjectPainter::drawPercentage()
 
 void TextObjectPainter::beginOpenGLPainting()
 {
+    _painter.save();
+    _painter.resetTransform();
     _painter.beginNativePainting();
 }
 
 void TextObjectPainter::endOpenGLPainting()
 {
     _painter.endNativePainting();
+    _painter.restore();
 }
 

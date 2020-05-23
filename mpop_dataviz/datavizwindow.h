@@ -24,7 +24,7 @@ public:
      */
     void showBarChartBars(const QList<int>& bars);
 
-    void addLayoutTitles( const QList<QString> &titles, bool topTitle = false);
+    void addLayoutTitles(const QList<QString> &titles, bool topTitle = false);
 
     qint64 elapsed() const;
     // Set Offset ID
