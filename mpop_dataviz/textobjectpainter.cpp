@@ -122,14 +122,18 @@ void TextObjectPainter::drawPercentage()
 
 void TextObjectPainter::beginOpenGLPainting()
 {
-    _painter.save();
-    _painter.resetTransform();
+    // It seems like beginNativePainting makes all
+    // the OpenGL drawing invisible on macOS and Linux,
+    // but it seems ok on Windows.
+#if TARGET_OS_WIN32
     _painter.beginNativePainting();
+#endif
 }
 
 void TextObjectPainter::endOpenGLPainting()
 {
+#if TARGET_OS_WIN32
     _painter.endNativePainting();
-    _painter.restore();
-}
 
+#endif
+}
