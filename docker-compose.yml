@@ -1,0 +1,49 @@
+# docker-compose.yml for the mpop_service
+# See also the Dockerfile
+
+version: '3'
+
+services:
+  mpop-service:
+    build: .
+    image: mpop_service:latest
+    ports:
+      - "1234:1234"
+    labels:
+      ca.interferences.mpop.description: "Provides the API to read/write from/to the database for the project."
+    environment:
+      CONFIG_MYSQL_HOST: 'db'
+      CONFIG_MYSQL_USER: 'root'
+      CONFIG_MYSQL_PASSWORD: 'root'
+      CONFIG_MYSQL_DATABASE: 'mpop_database'
+      CONFIG_MYSQL_PORT: '3306'
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    depends_on:
+      - db
+    ports:
+      - "8001:80"
+
+  adminer:
+    image: adminer:latest
+    ports:
+      - "8002:8080"
+
+  db:
+    image: mysql:5.7
+    environment:
+      MYSQL_DATABASE: 'mpop_database'
+      MYSQL_ROOT_PASSWORD: 'root'
+      MYSQL_USER: 'admin'
+      MYSQL_PASSWORD: 'admin'
+    # Exposes the standard MySQL port (3306)
+    
+  flyway:
+    image: flyway/flyway
+    command: -url=jdbc:mysql://db:3306/mpop_database?verifyServerCertificate=false&useSSL=false -user=root -password=root -connectRetries=60 migrate
+    volumes:
+      - ./flyway/sql:/flyway/sql
+    depends_on:
+      - db
+
