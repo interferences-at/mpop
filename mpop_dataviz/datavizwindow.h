@@ -7,11 +7,15 @@
 #include "barchartlayout.h"
 #include <QOpenGLWindow>
 #include <QOpenGLPaintDevice>
+#include <QKeyEvent>
+#include <QElapsedTimer>
+#include <QTimer>
 
 #include "textobjectpainter.h"
 
 
 class DatavizWindow : public QOpenGLWindow {
+    Q_OBJECT
 public:
     DatavizWindow();
     ~DatavizWindow() override;
@@ -35,6 +39,12 @@ public:
     // Alias for shared pointer of this class
     typedef QSharedPointer<DatavizWindow> ptr;
 
+protected:
+    void keyPressEvent(QKeyEvent *event) override;
+
+private slots:
+    void updateFramePerSecond();
+
 private:
     QElapsedTimer _elapsedTimer;
     QVector<SceneObject::ptr> _sceneObjects;
@@ -47,4 +57,12 @@ private:
     uint windowId;
     // TODO: add current layout (enum)
     // TODO: ajouter plusieurs objets TextSceneObject
+
+    // Show/Hide FPS
+    bool _showFPS = true;
+
+    QElapsedTimer _frameTimer;
+    QTimer _updateIntervalTimer;
+    int _framesCount = 0;
+    int _framePerSecond = 0;
 };
