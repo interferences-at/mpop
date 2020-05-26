@@ -15,6 +15,7 @@ TextObjectPainter::TextObjectPainter() :
     _bottomTitleFont = QFont(fontFamily, 24);
     _topTitleFont = QFont(fontFamily, 22);
     _percentageFont = QFont(fontFamily, 22);
+    _fpsTextFont = QFont(fontFamily, 12, QFont::DemiBold);
 }
 
 TextObjectPainter::~TextObjectPainter()
@@ -117,6 +118,14 @@ void TextObjectPainter::drawPercentage()
     QRect percentageRect(0, 0, Y_AXIS_WIDTH, Y_AXIS_WIDTH);
     _painter.setFont(_percentageFont);
     _painter.drawText(percentageRect, Qt::AlignCenter, QString("%"));
+    _painter.restore();
+}
+
+void TextObjectPainter::drawFramePerSecond(const int &framePerSecond)
+{
+    _painter.save();
+    _painter.setFont(_fpsTextFont);
+    _painter.drawText(100, 100, QString::number(framePerSecond) + " FPS");
     _painter.restore();
 }
 

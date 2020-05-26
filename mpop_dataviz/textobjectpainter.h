@@ -35,6 +35,8 @@ public:
     void drawButtonTitles();
     // Draw the percentage icon
     void drawPercentage();
+    // Draw frame per second
+    void drawFramePerSecond(const int &framePerSecond);
 
     void beginOpenGLPainting(); // QPainter beginNativePainting wrapper
     void endOpenGLPainting();  // QPainter endNativePainting wrapper
@@ -45,10 +47,8 @@ private:
     QPen _linePen;
 
     // Font settings
-    QFont _axisNumberFont;
-    QFont _bottomTitleFont;
-    QFont _topTitleFont;
-    QFont _percentageFont;
+    QFont _axisNumberFont, _bottomTitleFont, _topTitleFont;
+    QFont _percentageFont, _fpsTextFont;
 
     // List of top and bottom titles
     QList<QString> _topTitles;

@@ -27,11 +27,37 @@ DatavizWindow::DatavizWindow() {
     bars.push_back(20);
     bars.push_back(70);
     showBarChartBars(bars);
+
+    connect(&_updateIntervalTimer, SIGNAL(timeout()), this, SLOT(updateFramePerSecond()));
+    _updateIntervalTimer.setInterval(200); // Set the update interval
+    _updateIntervalTimer.start(); // Start listening
+    _frameTimer.start(); // Start timer
 }
 
 
 qint64 DatavizWindow::elapsed() const {
     return this->_elapsedTimer.elapsed();
+}
+
+void DatavizWindow::keyPressEvent(QKeyEvent *event)
+{
+    switch (event->key()) {
+    case Qt::Key_Tab:
+        _showFPS = !_showFPS;
+        break;
+    default:
+        break;
+    }
+}
+
+void DatavizWindow::updateFramePerSecond()
+{
+    // Frame per second
+    _framePerSecond = _framesCount / ((double)_frameTimer.elapsed() / 1000.0);
+    // Restart timer
+    _frameTimer.restart();
+    // Reset frame counter
+    _framesCount = 0;
 }
 
 
@@ -129,6 +155,12 @@ void DatavizWindow::paintGL() {
     _painter->drawPercentage();
     _painter->drawTopTitles();
     _painter->drawButtonTitles();
+
+    // Draw Frame per second
+    if (_showFPS)
+        _painter->drawFramePerSecond(_framePerSecond);
+
+    ++_framesCount; // Update the amount of frame
 
     // swapBuffers();
     this->update(); // ask for a new render next time the screen refreshes.
