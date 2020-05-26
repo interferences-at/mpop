@@ -41,12 +41,18 @@ qint64 DatavizWindow::elapsed() const {
 
 void DatavizWindow::keyPressEvent(QKeyEvent *event)
 {
-    switch (event->key()) {
-    case Qt::Key_Tab:
-        _showFPS = !_showFPS;
-        break;
-    default:
-        break;
+    if (event->modifiers() & Qt::ControlModifier) {
+        switch (event->key()) {
+        case Qt::Key_Q:
+            close(); // Close the window with CTRL+Q
+            break;
+        }
+    } else {
+        switch (event->key()) {
+        case Qt::Key_Tab:
+            _showFPS = !_showFPS; // Show/Hide FPS text with TAB
+            break;
+        }
     }
 }
 
