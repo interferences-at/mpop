@@ -15,6 +15,10 @@ BarChartLayout::~BarChartLayout()
 
 }
 
+/**
+ * @brief Update the position of all objects.
+ * @param currentTime
+ */
 void BarChartLayout::updateObjectPosition(qint64 currentTime) {
     if (! this->_groupTweenAnimator.isNull()) {
         this->_groupTweenAnimator->updateSceneObjectsPosition(currentTime);
