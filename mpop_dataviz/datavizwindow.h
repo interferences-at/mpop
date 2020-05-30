@@ -59,7 +59,7 @@ private:
     // TODO: ajouter plusieurs objets TextSceneObject
 
     // Show/Hide FPS
-    bool _showFPS = true;
+    bool _showFPS = false;
 
     QElapsedTimer _frameTimer;
     QTimer _updateIntervalTimer;
