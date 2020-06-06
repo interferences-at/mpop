@@ -37,7 +37,7 @@ void Controller::messageReceivedCb(const QString& oscAddress, const QVariantList
     qDebug() << "Controller received" << oscAddress << arguments;
 
     static const QString DATAVIZ_PREFIX = "dataviz";
-    static const QString BARCHART_METHOD = "barchart";
+    static const QString BARCHART_METHOD = "my_answer";
     static const int INDEX_PREFIX = 0;
     static const int INDEX_WINDOW_NUMBER = 1;
     static const int INDEX_METHOD = 2;
@@ -66,7 +66,7 @@ void Controller::messageReceivedCb(const QString& oscAddress, const QVariantList
         if (methodName == BARCHART_METHOD) {
             QList<int> ints = toInts(arguments);
             qDebug() << "Calling showBarChart" << methodName << windowIndex << ints;
-            this->showBarChart(windowIndex, ints);
+            this->showUserAnswer(windowIndex, ints);
 
         } else {
             qDebug() << "Unhandle OSC method" << methodName;
@@ -77,10 +77,11 @@ void Controller::messageReceivedCb(const QString& oscAddress, const QVariantList
 }
 
 
-void Controller::showBarChart(int windowIndex, const QList<int>& values) {
+void Controller::showUserAnswer(int windowIndex, const QList<int>& values) {
     DatavizWindow::ptr window = getWindowById(windowIndex);
     if (window) {
-        window->showBarChartBars(values);
+//        window->showBarChartBars(values);
+        window->viewManager()->setUserAnswerBars(values);
     }
 }
 

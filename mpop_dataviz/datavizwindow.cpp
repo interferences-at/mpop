@@ -19,7 +19,14 @@ DatavizWindow::DatavizWindow() {
         prisonerLines.push_back(line);
     }
 
-    _barChartLayout.addPrisonerLines(prisonerLines); // Only a subsets of all sceneobjects - only the lines
+//    _barChartLayout.addPrisonerLines(prisonerLines); // Only a subsets of all sceneobjects - only the lines
+
+//    _screensaverLayout.setBarsQuantity(200);
+
+    // Allocate all the bars to screen saver
+    _viewModeManager = viewManager();
+    _viewModeManager->setViewBarsQuantity(200, ViewModeManager::ScreenSaverMode);
+
 
     // The initial example values:
     QList<int> bars;
@@ -68,8 +75,10 @@ void DatavizWindow::updateFramePerSecond()
 
 
 void DatavizWindow::showBarChartBars(const QList<int>& bars) {
-    _barChartLayout.setBars(bars);
-    _barChartLayout.moveObjectsToLayout(this->elapsed()); // Important: do it after you called setBars
+//    _barChartLayout.setBars(bars);
+//    _barChartLayout.moveObjectsToLayout(this->elapsed()); // Important: do it after you called setBars
+//    _screensaverLayout.setResponsesBars(bars);
+//    _screensaverLayout.moveObjectsToLayout(elapsed());
 }
 
 void DatavizWindow::addLayoutTitles(const QList<QString> &titles, bool topTitle)
@@ -128,6 +137,11 @@ void DatavizWindow::resizeGL(int w, int h) {
     // Resize the paint device
     _device->setSize(QSize(width() * retinaScale, height() * retinaScale));
     _device->setDevicePixelRatio(retinaScale);
+
+    // Resize Layout
+//    _screensaverLayout.setLayoutCoordinate(left, right, bottom, top);
+    _viewModeManager->updateViewCoordinate(left, right, bottom, top);
+    _viewModeManager->updateViewSize(w * retinaScale, h * retinaScale);
 }
 
 
@@ -141,26 +155,49 @@ void DatavizWindow::paintGL() {
     glLoadIdentity();
 
     // TODO: enable only one layout at a time, perhaps.
-    _barChartLayout.updateObjectPosition(this->elapsed());
+//    _barChartLayout.updateObjectPosition(this->elapsed());
+//    _screensaverLayout.updateBarsPosition(elapsed());
 
-    for (auto iter = _sceneObjects.begin(); iter != _sceneObjects.end(); ++ iter) {
-        SceneObject::ptr obj = (*iter);
-        if (obj->getVisible()) {
-            // FIXME: we should take care of the Z-sorting of the scene objects.
-            obj->draw(this->elapsed());
-        }
-    }
+//    _screensaverLayout.showSceneObject(elapsed());
+//    _barChartLayout.showSceneObject(elapsed());
+
+//    for (auto iter = _sceneObjects.begin(); iter != _sceneObjects.end(); ++ iter) {
+//        SceneObject::ptr obj = (*iter);
+//        if (obj->getVisible()) {
+//            // FIXME: we should take care of the Z-sorting of the scene objects.
+//            obj->draw(this->elapsed());
+//        }
+//    }
+    ViewModeManager::ViewMode viewActiveMode = _viewModeManager->getViewActiveMode();
+    _viewModeManager->showViewManagerBars(viewActiveMode);
 
     _painter->endOpenGLPainting(); // Finish OpenGL painting
 
-    // Draw the horizontal coordinate
-    _painter->drawAbscissa();
-    // Draw the vertical coordinate
-    _painter->drawOrdinate();
-    // Test drawing elements
-    _painter->drawPercentage();
-    _painter->drawTopTitles();
-    _painter->drawButtonTitles();
+    switch (viewActiveMode) {
+    case ViewModeManager::ScreenSaverMode:
+
+        break;
+    case ViewModeManager::UserAnswersMode:
+
+        break;
+    case ViewModeManager::FilteredAnswersMode:
+
+        break;
+    case ViewModeManager::AnswerByAgeMode:
+        // Draw the horizontal coordinate
+        _painter->drawAbscissa();
+        // Draw the vertical coordinate
+        _painter->drawOrdinate();
+        break;
+    case ViewModeManager::AnswerByGenderMode:
+
+        break;
+    case ViewModeManager::AnswerByCultureMode:
+
+        break;
+    default:
+        break;
+    }
 
     // Draw Frame per second
     if (_showFPS)

@@ -20,10 +20,20 @@ public:
      * @brief Sets the values for each bar to show.
      * @param values
      */
-    void setBars(const QList<int>& values);
+    void setRows(const QList<int>& values);
 
-    virtual void updateObjectPosition(qint64 currentTime) override;
+    void updateBarsPosition(qint64 currentTime) override;
+
+    void showSceneObject(qint64 currentTime) override;
+
+    void setAlignCenter(bool center) {_centered = center; }
+    void setStartPosition(const QPointF &pos);
+
 private:
-    QList<int> _barValues;
+    QList<int> _rowsValues;
     QSharedPointer<GroupTweenAnimator> _groupTweenAnimator;
+
+    bool _centered = false;
+
+    qreal _x, _y = 0.0;
 };

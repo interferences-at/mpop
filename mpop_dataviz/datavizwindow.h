@@ -12,6 +12,9 @@
 #include <QTimer>
 
 #include "textobjectpainter.h"
+#include "screensaverlayout.h"
+
+#include "viewmodemanager.h"
 
 
 class DatavizWindow : public QOpenGLWindow {
@@ -36,6 +39,8 @@ public:
     void setWindowId(uint id) { windowId = id; }
     uint getWindowId() const { return windowId; }
 
+    ViewModeManager *viewManager() { return ViewModeManager::viewManager(); }
+
     // Alias for shared pointer of this class
     typedef QSharedPointer<DatavizWindow> ptr;
 
@@ -49,6 +54,9 @@ private:
     QElapsedTimer _elapsedTimer;
     QVector<SceneObject::ptr> _sceneObjects;
     BarChartLayout _barChartLayout;
+    ScreensaverLayout _screensaverLayout;
+
+    ViewModeManager *_viewModeManager;
 
     QOpenGLPaintDevice *_device;
 

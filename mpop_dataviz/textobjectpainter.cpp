@@ -126,6 +126,8 @@ void TextObjectPainter::drawFramePerSecond(const int &framePerSecond)
     _painter.save();
     _painter.setFont(_fpsTextFont);
     _painter.drawText(100, 100, QString::number(framePerSecond) + " FPS");
+    _painter.drawLine(0, 0, _width, _height);
+    _painter.drawLine(_width, 0, 0, _height);
     _painter.restore();
 }
 

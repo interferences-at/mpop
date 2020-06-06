@@ -18,7 +18,7 @@ public:
 
     Controller(OscReceiver* oscReceiver, const QVector<QSharedPointer<DatavizWindow>>& windows);
 
-    void showBarChart(int windowIndex, const QList<int>& values);
+    void showUserAnswer(int windowIndex, const QList<int>& values);
 
 private:
     // data members
