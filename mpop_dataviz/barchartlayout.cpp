@@ -19,7 +19,7 @@ BarChartLayout::~BarChartLayout()
  * @brief Update the position of all objects.
  * @param currentTime
  */
-void BarChartLayout::updateObjectPosition(qint64 currentTime) {
+void BarChartLayout::updateBarsPosition(qint64 currentTime) {
     if (! this->_groupTweenAnimator.isNull()) {
         this->_groupTweenAnimator->updateSceneObjectsPosition(currentTime);
         if (this->_groupTweenAnimator->isDone(currentTime)) {
@@ -29,77 +29,98 @@ void BarChartLayout::updateObjectPosition(qint64 currentTime) {
     }
 }
 
+void BarChartLayout::showSceneObject(qint64 currentTime)
+{
+    for (auto line : *_prisonerLines) {
+        if (line->getVisible()) {
+            line->draw(currentTime);
+        }
+    }
+}
+
+void BarChartLayout::setStartPosition(const QPointF &pos)
+{
+    if (_x != pos.x())
+        _x = pos.x();
+    if (_y != pos.y())
+        _y = pos.y();
+}
+
 
 void BarChartLayout::moveObjectsToLayout(qint64 currentTime) {
     // TODO: never ever iterate over size of line vector
     // const int numLines = _sceneObjects.size();
-    static const qreal WIDTH_OF_EACH_COLUMN = 0.3;
-    static const qreal DISTANCE_BETWEEN_BARS = 0.02;
-    static const qreal DISTANCE_BETWEEN_COLUMN = 0.05;
-    static const qreal DISTANCE_BETWEEN_ROW = 0.15;
-    static const qreal ADJUST_FIFTH_X = 0.1;
+    static const qreal DISTANCE_BETWEEN_BARS = _barsWidth * 5;
+    static const qreal WIDTH_OF_EACH_COLUMN = DISTANCE_BETWEEN_BARS * 3;
+    static const qreal DISTANCE_BETWEEN_COLUMN = DISTANCE_BETWEEN_BARS;
+    static const qreal DISTANCE_BETWEEN_ROW = DISTANCE_BETWEEN_BARS;
     static const qreal OUTSIDE_X = 3.0; // outside of the screen
     static const qreal OUTSIDE_Y = 3.0; // outside of the screen
     //static const QEasingCurve easing(QEasingCurve::InOutQuad);
     static const QEasingCurve::Type easingCurveType = QEasingCurve::InOutQuad;
     static const qint64 animationSeconds = 1;
-    static const qint64 animationMS = animationSeconds * 1000; // ms
+    static const qint64 animationMS = animationSeconds * 1000; // m
 
     this->_groupTweenAnimator.reset(new GroupTweenAnimator());
     this->_groupTweenAnimator->setDuration(animationMS);
     this->_groupTweenAnimator->setEasingType(easingCurveType);
 
     int lineIndex = 0;
-    for (int barIndex = 0; barIndex < _barValues.size(); barIndex ++) {
-        if (lineIndex >= _prisonerLines.size()) {
-            qWarning() << "Out of bound: " << lineIndex;
-            break; // exitting this loop
-        }
-        int barValue = this->_barValues[barIndex];
-        int row = 0;
+
+    int biggestRow = *std::max_element(_rowsValues.begin(), _rowsValues.end());
+    qreal columnSize = biggestRow / 5;
+
+    qreal offsetX = ((WIDTH_OF_EACH_COLUMN * columnSize) + ((DISTANCE_BETWEEN_BARS * 2) +
+                       DISTANCE_BETWEEN_COLUMN) * (int(columnSize) - 1)) / 2;
+    qreal offsetY = ((_barsHeight * (_rowsValues.size() - 1)) +
+                     (DISTANCE_BETWEEN_ROW * (_rowsValues.size() - 1))) / 2;
+
+    for (int rowIndex = 0; rowIndex < _rowsValues.size(); rowIndex++) {
+
+        int columnIndex = 0;
 
         // Each bar in the bar chart is a column
         // We group lines by groups of 5
-        for (int lineInBar = 0; lineInBar < barValue; lineInBar ++) {
-            if (lineIndex >= _prisonerLines.size()) {
+        for (int barIndex = 0; barIndex < _rowsValues.at(rowIndex); barIndex++) {
+            if (lineIndex >= _prisonerLines->size()) {
                 qWarning() << "Out of bound: " << lineIndex;
                 break; // exitting this loop
             }
-            PrisonerLine::ptr line = _prisonerLines[lineIndex];
+            PrisonerLine::ptr line = _prisonerLines->at(lineIndex);
             SceneObject::ptr sceneObject = qSharedPointerDynamicCast<SceneObject>(line);
-            int moduloFive = lineInBar % 5;
+            int moduloFive = barIndex % 5;
 
-            if (moduloFive < 4) {
-                qreal x = barIndex * WIDTH_OF_EACH_COLUMN + moduloFive * DISTANCE_BETWEEN_BARS;
-                qreal y = row * DISTANCE_BETWEEN_ROW;
-                qreal rotation = 0.0;
+            qreal columnOffset = columnIndex * DISTANCE_BETWEEN_COLUMN;
+            qreal x = barIndex * DISTANCE_BETWEEN_BARS + columnOffset;
+            qreal y = -rowIndex * (DISTANCE_BETWEEN_ROW + (_barsHeight));
+            qreal rotation = 0.0;
 
-                this->_groupTweenAnimator->addSceneObjectToAnimate(sceneObject, x, y, rotation);
+            if (moduloFive == 4) {
+                x = ((barIndex - 2) * DISTANCE_BETWEEN_BARS) - (DISTANCE_BETWEEN_BARS / 2) + columnOffset;
+                rotation = -60.0;
 
-                //line->setPosition(x, y);
-                //line->animateXYAndRotation(currentTime, animationMS, easingCurveType, x, y, rotation);
-            } else if (moduloFive == 4) {
-                qreal x = barIndex * WIDTH_OF_EACH_COLUMN + moduloFive * DISTANCE_BETWEEN_BARS + DISTANCE_BETWEEN_COLUMN - ADJUST_FIFTH_X;
-                qreal y = row * DISTANCE_BETWEEN_ROW;
-                qreal rotation = 60.0;
-
-                //line->setPosition(x, y);
-                //line->setOrientation(60.0);
-                //line->animateXYAndRotation(currentTime, animationMS, easingCurveType, x, y, rotation);
-                this->_groupTweenAnimator->addSceneObjectToAnimate(sceneObject, x, y, rotation);
-
-                row += 1;
+                columnIndex += 1;
             }
 
             // Will process the next line on the next iteration:
             ++ lineIndex;
+
+            if (_centered) {
+                x -= offsetX;
+                y += offsetY;
+            } else {
+                x += _x;
+                y -= _y;
+            }
+
+            _groupTweenAnimator->addSceneObjectToAnimate(sceneObject, x, y, rotation);
         }
     }
 
     // Move leftover out of the screen, if needed
-    if (lineIndex < _prisonerLines.size()) {
-        for ( ; lineIndex < _prisonerLines.size(); lineIndex ++) {
-            PrisonerLine::ptr line = _prisonerLines[lineIndex];
+    if (lineIndex < _prisonerLines->size()) {
+        for ( ; lineIndex < _prisonerLines->size(); lineIndex ++) {
+            PrisonerLine::ptr line = _prisonerLines->at(lineIndex);
             SceneObject::ptr sceneObject = qSharedPointerDynamicCast<SceneObject>(line);
             // line->setPosition(OUTSIDE_X, OUTSIDE_Y);
             qreal x = OUTSIDE_X;
@@ -113,6 +134,6 @@ void BarChartLayout::moveObjectsToLayout(qint64 currentTime) {
 }
 
 
-void BarChartLayout::setBars(const QList<int>& values) {
-    this->_barValues = values;
+void BarChartLayout::setRows(const QList<int>& values) {
+    this->_rowsValues = values;
 }

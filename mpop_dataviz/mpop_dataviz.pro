@@ -19,7 +19,9 @@ SOURCES += \
     prisonerline.cpp \
     controller.cpp \
     grouptweenanimator.cpp \
-    textobjectpainter.cpp
+    screensaverlayout.cpp \
+    textobjectpainter.cpp \
+    viewmodemanager.cpp
 
 HEADERS += \
     datavizwindow.h \
@@ -30,7 +32,9 @@ HEADERS += \
     controller.h \
     grouptweenanimator.h \
     applicationoptions.h \
-    textobjectpainter.h
+    screensaverlayout.h \
+    textobjectpainter.h \
+    viewmodemanager.h
 
 # OSC support:
 INCLUDEPATH += $$PWD/../qosc
