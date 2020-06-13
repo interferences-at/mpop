@@ -3,6 +3,7 @@
 #include <QPointF>
 #include <QElapsedTimer>
 #include <algorithm>
+#include <QSharedPointer>
 
 #include "barchartlayout.h"
 #include "screensaverlayout.h"
@@ -10,6 +11,7 @@
 class ViewModeManager
 {
 public:
+    // Types:
     enum ViewMode {
         ScreenSaverMode, // Default Mode
         UserAnswersMode,
@@ -21,7 +23,15 @@ public:
 
     typedef  QSharedPointer<QVector<PrisonerLine::ptr>> viewBars;
 
+    typedef struct {
+        QString text;
+        int my_answer;
+        int their_answer;
+    } AnswerData;
 
+    typedef QSharedPointer<AnswerData> AnswerDataPtr;
+
+    // Methods:
     ViewModeManager();
     ~ViewModeManager() {}
 
@@ -59,6 +69,7 @@ public:
         return viewModeManager;
     }
 
+    void showAnswersData(const QList<AnswerDataPtr>& answers);
 
 private:
     ViewMode _viewActiveMode;
