@@ -4,6 +4,9 @@
 #include "prisonerline.h"
 #include <QVector>
 #include <QDebug>
+#include <QRandomGenerator>
+#include <random>
+#include <algorithm>
 
 /**
  * @brief Layout for a way to group prisoner lines.
@@ -29,9 +32,6 @@ public:
 
     virtual void showSceneObject(qint64 currentTime) = 0;
 
-    // Set the amount of bars or stick
-    void setBarsQuantity(int number);
-
     void setBarsSize(qreal width, qreal height);
     void setBarsSize(const QPointF &size);
 
@@ -42,6 +42,7 @@ public:
 
 protected:
     QSharedPointer<QVector<PrisonerLine::ptr>> _prisonerLines;
+    QVector<PrisonerLine::ptr> _previousBars;
 
     float _left = -1.0;
     float _right = 1.0;

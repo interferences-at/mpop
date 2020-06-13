@@ -15,28 +15,6 @@ void Layout::addPrisonerLines(QSharedPointer<QVector<PrisonerLine::ptr> > prison
     _prisonerLines = prisonerLines;
 }
 
-void Layout::setBarsQuantity(int number)
-{
-    if (number > 0) {
-        int barSize = _prisonerLines->isEmpty() ? 0 : _prisonerLines->size();
-
-        if (number > barSize) {
-           int diff = number - barSize;
-           for (int i = 0; i < diff; i++) {
-               PrisonerLine::ptr line = PrisonerLine::ptr::create();
-               _prisonerLines->push_back(line);
-           }
-        }
-
-        if ( number < barSize) {
-            int diff = barSize - number;
-            for (int i = 0; i < diff; i++) {
-                _prisonerLines->pop_back();
-            }
-        }
-    }
-}
-
 void Layout::setBarsSize(qreal width, qreal height)
 {
     for (auto line : *_prisonerLines) {
@@ -47,7 +25,6 @@ void Layout::setBarsSize(qreal width, qreal height)
         _barsWidth = width;
     if (_barsHeight != height)
         _barsHeight = height;
-    qDebug() << "Bar width: " << _barsWidth << " height: " << _barsHeight;
 }
 
 void Layout::setBarsSize(const QPointF &size)
