@@ -10,10 +10,12 @@ ViewModeManager::ViewModeManager() :
 {
     _timer.start();
 
-//    _viewBars.reserve(6); // Allocate memory for view enum
     _barChartRows = QVector<QList<int>>(6);
 
-    _viewBars = QVector<ViewModeManager::viewBars>(6, ViewModeManager::viewBars::create());
+    for (int i = 0; i < 6; i++) {
+        ViewModeManager::viewBars sharedVector = ViewModeManager::viewBars::create();
+        _viewBars.push_back(sharedVector);
+    }
 }
 
 void ViewModeManager::showViewManagerBars(ViewMode mode)
@@ -69,7 +71,7 @@ void ViewModeManager::setViewActiveMode(ViewMode mode)
 
 void ViewModeManager::setBarChartRows(const QList<int> &bars, ViewMode viewIndex)
 {
-//    _barChartRows[viewIndex] = bars;
+    //    _barChartRows[viewIndex] = bars;
 
     switch (viewIndex) {
     case ScreenSaverMode:
@@ -85,9 +87,12 @@ void ViewModeManager::setBarChartRows(const QList<int> &bars, ViewMode viewIndex
 
 void ViewModeManager::moveBarsToLayouts(ViewModeManager::viewBars bars, ViewMode viewIndex)
 {
-//    restoreBarsToScreenSaver(viewIndex);
+    //    restoreBarsToScreenSaver(viewIndex);
     _viewBars[viewIndex] = bars;
 
+    for (int i = 0; i < _viewBars.size(); i++) {
+        qDebug() << "View bar size: " << _viewBars.at(i)->size();
+    }
     switch (viewIndex) {
     case ScreenSaverMode:
 
@@ -104,7 +109,7 @@ void ViewModeManager::moveBarsToLayouts(ViewModeManager::viewBars bars, ViewMode
         _answersBarchart.setBarsSize(sizeFromPixel(3, 74));
         _answersBarchart.setBarsColor("#FF0000");
         _answersBarchart.setAlignCenter(true);
-//        _answersBarchart.setStartPosition(coordinateFromPixel(100, 100));
+        //        _answersBarchart.setStartPosition(coordinateFromPixel(100, 100));
         _answersBarchart.moveObjectsToLayout(currentTime());
         break;
     default:
@@ -114,21 +119,34 @@ void ViewModeManager::moveBarsToLayouts(ViewModeManager::viewBars bars, ViewMode
 
 void ViewModeManager::setViewBarsQuantity(int number, ViewMode viewIndex)
 {
+    qDebug() << "Index: " << viewIndex;
     if (number > 0) {
-        int barSize = _viewBars[viewIndex]->isEmpty() ? 0 : _viewBars.at(viewIndex)->size();
-
+        int barSize = _viewBars[viewIndex]->isEmpty() ? 0 : _viewBars[viewIndex]->size();
+        qDebug () << "Number: " << number << " barSize: " << _viewBars[viewIndex]->size();
         if (number > barSize) {
-           int diff = number - barSize;
-           for (int i = 0; i < diff; i++) {
-               PrisonerLine::ptr line = PrisonerLine::ptr::create();
-               _viewBars[viewIndex]->push_back(line);
-           }
+            int diff = number - barSize;
+
+            if (viewIndex == ScreenSaverMode) {
+                for (int i = 0; i < diff; i++) {
+                    PrisonerLine::ptr line = PrisonerLine::ptr::create();
+                    _viewBars[viewIndex]->push_back(line);
+                }
+            } else {
+                _viewBars[viewIndex]->append(*getBarsFromScreenSaver(diff));
+            }
         }
 
         if ( number < barSize) {
             int diff = barSize - number;
-            for (int i = 0; i < diff; i++) {
-                _viewBars[viewIndex]->pop_back();
+            if (viewIndex == ScreenSaverMode) {
+                for (int i = 0; i < diff; i++) {
+                    _viewBars[viewIndex]->removeLast();
+                }
+            } else {
+                for (int i = 0; i < diff; i++) {
+                    _viewBars[ScreenSaverMode]->push_back(_viewBars[viewIndex]->last());
+                    _viewBars[viewIndex]->removeLast();
+                }
             }
         }
     }
@@ -136,10 +154,8 @@ void ViewModeManager::setViewBarsQuantity(int number, ViewMode viewIndex)
     moveBarsToLayouts(_viewBars[viewIndex], viewIndex);
 }
 
-ViewModeManager::viewBars ViewModeManager::getBarsFromScreenSaver(const QList<int> &bars)
+ViewModeManager::viewBars ViewModeManager::getBarsFromScreenSaver(int number)
 {
-    int barSum = std::accumulate(bars.begin(), bars.end(), 0);
-
     qreal pointX = _pointToPickFrom.x();
     qreal pointY = -_pointToPickFrom.y();
 
@@ -152,10 +168,9 @@ ViewModeManager::viewBars ViewModeManager::getBarsFromScreenSaver(const QList<in
 
     ViewModeManager::viewBars barChartBars = ViewModeManager::viewBars::create();
 
-    for (int i = 0; i < barSum; i++) {
+    for (int i = 0; i < number; i++) {
         if (i >= _viewBars[ScreenSaverMode]->size()) break;
         PrisonerLine::ptr line = _viewBars[ScreenSaverMode]->at(i);
-//        PrisonerLine::ptr line = _screensaver.getLayoutClosestBars(_pointToPickFrom).at(i);
         barChartBars->push_back(line);
         _viewBars[ScreenSaverMode]->remove(i);
     }
@@ -174,9 +189,11 @@ void ViewModeManager::restoreBarsToScreenSaver(ViewModeManager::ViewMode viewInd
 
 void ViewModeManager::setUserAnswerBars(const QList<int> &bars)
 {
+    int barSum = std::accumulate(bars.begin(), bars.end(), 0);
     setBarChartRows(bars, UserAnswersMode);
-//    setPointToPickFrom(coordinateFromPixel(100, 100));
-    moveBarsToLayouts(getBarsFromScreenSaver(bars), UserAnswersMode);
+    //    setPointToPickFrom(coordinateFromPixel(100, 100));
+    setViewBarsQuantity(barSum, UserAnswersMode);
+//    moveBarsToLayouts(getBarsFromScreenSaver(bars), UserAnswersMode);
     setViewActiveMode(UserAnswersMode);
 }
 

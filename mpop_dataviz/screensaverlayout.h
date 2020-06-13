@@ -1,9 +1,5 @@
 #pragma once
 
-#include <QRandomGenerator>
-#include <random>
-#include <algorithm>
-
 #include "layout.h"
 #include "grouptweenanimator.h"
 #include "barchartlayout.h"

@@ -35,9 +35,10 @@ public:
 
     void setBarChartRows(const QList<int> &list, ViewMode viewIndex);
     void moveBarsToLayouts(ViewModeManager::viewBars bars, ViewMode viewIndex);
+
     void setViewBarsQuantity(int number, ViewMode viewIndex);
 
-    ViewModeManager::viewBars getBarsFromScreenSaver(const QList<int> &list);
+    ViewModeManager::viewBars getBarsFromScreenSaver(int number);
     void restoreBarsToScreenSaver(ViewMode viewIndex);
 
     void setUserAnswerBars(const QList<int> &bars);
