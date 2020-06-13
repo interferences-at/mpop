@@ -2,6 +2,7 @@
 
 #include "oscreceiver.h"
 #include "datavizwindow.h"
+#include "viewmodemanager.h"
 #include <QVector>
 #include <QObject>
 #include <QSharedPointer>
@@ -19,6 +20,7 @@ public:
     Controller(OscReceiver* oscReceiver, const QVector<QSharedPointer<DatavizWindow>>& windows);
 
     void showUserAnswer(int windowIndex, const QList<int>& values);
+    void showAnswers(int windowIndex, const QList<ViewModeManager::AnswerDataPtr>& answers);
 
 private:
     // data members

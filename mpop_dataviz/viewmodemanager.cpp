@@ -221,7 +221,7 @@ qreal ViewModeManager::mapValue(qreal value, qreal istart, qreal istop, qreal os
     return ostart + (ostop - ostart) * ((value - istart) / (istop - istart));
 }
 
-
-
-
-
+void ViewModeManager::showAnswersData(const QList<AnswerDataPtr>& answers) {
+    // TODO
+    Q_UNUSED(answers);
+}

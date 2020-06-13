@@ -2,6 +2,16 @@
 #include <QDebug>
 #include <QList>
 
+// constants
+static const QString DATAVIZ_PREFIX = "dataviz";
+static const QString BARCHART_METHOD = "my_answer";
+static const QString VIEW_ANSWERS_METHOD = "view_answers";
+static const int INDEX_PREFIX = 0;
+static const int INDEX_WINDOW_NUMBER = 1;
+static const int INDEX_METHOD = 2;
+static const int EXPECTED_MINIMUM_PATH_TOKENS = 3;
+
+
 Controller::Controller(OscReceiver* oscReceiver, const QVector<QSharedPointer<DatavizWindow>>& windows) :
     _oscReceiver(oscReceiver),
     _windows(windows)
@@ -31,17 +41,47 @@ QStringList splitPath(const QString& oscPath) {
     return ret;
 }
 
+/**
+ * @brief Parse the OSC message for view_answers
+ * @param arguments List of OSC arguments.
+ * @param toPopulate List of answers to populate.
+ * @return Success if it successfully parsed it.
+ */
+static bool parseViewAnswers(const QVariantList& arguments, QList<ViewModeManager::AnswerDataPtr>& toPopulate) {
+    int num_answers = 0;
+    static const int OFFSET_NUM_VALUES = 1;
+    static const int NUM_ARGS_PER_ITEM = 3;
+    static const int INDEX_TEXT = 0;
+    static const int INDEX_MINE = 1;
+    static const int INDEX_THEIRS = 2;
+
+    if (arguments.size() >= OFFSET_NUM_VALUES) {
+        num_answers = arguments[0].toInt();
+    }
+
+    if (arguments.size() != num_answers * NUM_ARGS_PER_ITEM + OFFSET_NUM_VALUES) {
+        qDebug() << "Wrong number of arguments for " << VIEW_ANSWERS_METHOD;
+        return false;
+    } else {
+        for (int i = 0; i < num_answers; i ++) {
+            int text_index = ( i * NUM_ARGS_PER_ITEM ) + OFFSET_NUM_VALUES + INDEX_TEXT;
+            int mine_index = ( i * NUM_ARGS_PER_ITEM ) + OFFSET_NUM_VALUES + INDEX_MINE;
+            int theirs_index = ( i * NUM_ARGS_PER_ITEM ) + OFFSET_NUM_VALUES + INDEX_THEIRS;
+
+            auto item = ViewModeManager::AnswerDataPtr(new ViewModeManager::AnswerData);
+            item->text = arguments.at(text_index).toString();
+            item->my_answer = arguments.at(mine_index).toInt();
+            item->their_answer = arguments.at(theirs_index).toInt();
+            toPopulate.append(item);
+        }
+        return true;
+    }
+}
+
 
 void Controller::messageReceivedCb(const QString& oscAddress, const QVariantList& arguments) {
     // TODO: perhaps move the OSC receiver out of the controller.
     qDebug() << "Controller received" << oscAddress << arguments;
-
-    static const QString DATAVIZ_PREFIX = "dataviz";
-    static const QString BARCHART_METHOD = "my_answer";
-    static const int INDEX_PREFIX = 0;
-    static const int INDEX_WINDOW_NUMBER = 1;
-    static const int INDEX_METHOD = 2;
-    static const int EXPECTED_MINIMUM_PATH_TOKENS = 3;
 
     QStringList pathTokens = splitPath(oscAddress);
     qDebug() << "OSC Path tokens" << pathTokens;
@@ -67,7 +107,12 @@ void Controller::messageReceivedCb(const QString& oscAddress, const QVariantList
             QList<int> ints = toInts(arguments);
             qDebug() << "Calling showBarChart" << methodName << windowIndex << ints;
             this->showUserAnswer(windowIndex, ints);
-
+        } else if (methodName == VIEW_ANSWERS_METHOD) {
+            QList<ViewModeManager::AnswerDataPtr> toPopulate;
+            if (parseViewAnswers(arguments, toPopulate)) {
+                qDebug() << "Calling view_answers";
+                this->showAnswers(windowIndex, toPopulate);
+            }
         } else {
             qDebug() << "Unhandle OSC method" << methodName;
         }
@@ -76,6 +121,12 @@ void Controller::messageReceivedCb(const QString& oscAddress, const QVariantList
     }
 }
 
+void Controller::showAnswers(int windowIndex, const QList<ViewModeManager::AnswerDataPtr>& answers) {
+    DatavizWindow::ptr window = getWindowById(windowIndex);
+    if (window) {
+        window->viewManager()->showAnswersData(answers);
+    }
+}
 
 void Controller::showUserAnswer(int windowIndex, const QList<int>& values) {
     DatavizWindow::ptr window = getWindowById(windowIndex);
