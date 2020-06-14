@@ -1,10 +1,15 @@
 # OSC Message signatures for this project
 
 In this document, we detail the signature of the OSC messages we use for this project.
+It contains examples with the `oscsend` utilities. (part of liblo-utils)
 
 For each entry, there is a short description of the behaviour it triggers, and then an example.
 The details of the arguments, if necessary, is written after the description.
 We keep this documentation short, so that it's easy to change, if needed.
+
+## Dataviz
+
+Here are the OSC messages that the mpop-dataviz software can receive.
 
 The mpop_dataviz software can receive Open Sound Control messages.
 That is how the mpop_kiosk controls it.
@@ -12,7 +17,10 @@ See http://opensoundcontrol.org/spec-1_0 for more details about OSC.
 
 The type tags for the arguments we use are: sfi - that stands for string, float32 and int32.
 
-Generally, the beginning of the path is /dataviz/N/ where N is the index of the window.
+The general idea is that the OSC addresses it support follow the pattern `/dataviz/<window>/<method>` where `<window>` is the window index, and `<method>` is the RPC-style method to call.
+If there are more than one window in the same instance, (process) windows have indices.
+They are numbered from 1 to `N`, where `N` is the total number of windows.
+If there is more than one instance running, they should use a different port number.
 We currently use one mpop_dataviz process per window, so the index is alway 0.
 What varies is the OSC port it listens on.
 This document doesn't involve mention the OSC port numbers per se.
@@ -21,6 +29,7 @@ That is a concern for the devops.
 Note that each message can be sent multiple times. Once we are in a layout,
 there can be new values that are sent, so that it updates the values shown.
 
+Here are the OSC methods of mpop-dataviz:
 
 ## my_answer
 
@@ -48,20 +57,20 @@ The first time it's received, the dataviz goes into that layout.
 Next, a new set of values can be sent to it, so that it updates the values it shows.
 
 
-## screensaver
+## goto_screensaver
 
 ```
-/dataviz/0/screensaver
+/dataviz/0/goto_screensaver
 ```
 
 Sends all bars to the screensaver mode.
 
 
-## view_answer/by_age
+## view_answer_by_age
 
 Shows the answer to a single question, with one row for each
 ```
-/dataviz/0/view_answer/by_age iiiiiiiiiiiiiiiiiiiii 99 21 5 10 15 20 25 30 35 40 45 50 55 60 65 70 75 80 85 90 95 100
+/dataviz/0/view_answer_by_age iiiiiiiiiiiiiiiiiiiii 99 21 5 10 15 20 25 30 35 40 45 50 55 60 65 70 75 80 85 90 95 100
 ```
 
 The first argument is my answer.
@@ -71,10 +80,10 @@ Finally, the value for each of the twenty (20) rows.
 Total: 22 integer arguments.
 
 
-## view_answer/by_age
+## view_answer_by_gender
 
 ```
-/dataviz/0/view_answer/by_gender sisisi "Hommes" 10 "Femmes" 20 "Autres" 30
+/dataviz/0/view_answer_by_gender sisisi "Hommes" 10 "Femmes" 20 "Autres" 30
 
 ```
 
@@ -93,10 +102,10 @@ Then, for each culture, there is:
 - my answer (i)
 
 
-## by_culture
+## view_answer_by_culture
 
 ```
-/dataviz/0/view_answer/by_culture iiisisisisisisi 6 2 50 "Québécoise" 50 "Canadienne" 50 "Autochtone" 50 "Européenne" 50 "Autre" 50
+/dataviz/0/view_answer_by_culture iiisisisisisisi 6 2 50 "Québécoise" 50 "Canadienne" 50 "Autochtone" 50 "Européenne" 50 "Autre" 50
 ```
 
 The first int is: how many cultures to show. (it should always be 6)
@@ -109,23 +118,24 @@ The 2n and 3rd int is:
 The first number is how many rows to show
 
 
-## screensaver/speed_ratio
+## screensaver_speed_ratio
 
 Sets the speed ratio for the screensaver.
 
 A ratio of 1.0 is normal. You can speed it up or slow it down by setting it to another value.
 
 ```
-/dataviz/0/screensaver/speed_ratio f 1.0
+/dataviz/0/set_screensaver_speed_ratio f 1.0
 ```
 
 
-# screensaver/radius_ratio
+# set_screensaver_radius_ratio
 
 Sets the radis ratio for the screensaver.
 
 ```
-/dataviz/0/screensaver/radius_ratio f 1.0
+/dataviz/0/set_creensaver_radius_ratio f 1.0
 ```
 
 A ratio of 1.0 is normal. You can speed it up or slow it down by setting it to another value.
+
