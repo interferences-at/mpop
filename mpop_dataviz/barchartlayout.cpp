@@ -117,24 +117,6 @@ void BarChartLayout::moveObjectsToLayout(qint64 currentTime) {
         }
     }
 
-    // Move leftover out of the screen, if needed
-//    if (lineIndex < _prisonerLines->size()) {
-    if (!_previousBars.isEmpty() && _previousBars.size() > _prisonerLines->size()) {
-        QRandomGenerator randomGenerator;
-        for (int i = _prisonerLines->size(); i < _previousBars.size(); i++) {
-            PrisonerLine::ptr line = _previousBars.at(i);
-            SceneObject::ptr sceneObject = qSharedPointerDynamicCast<SceneObject>(line);
-
-            std::uniform_real_distribution<qreal> randomWidth(_left, _right);
-            std::uniform_real_distribution<qreal> randomHeight(_bottom, _top);
-            std::uniform_real_distribution<qreal> randomAngle(-360, 360);
-            qreal x = randomWidth(randomGenerator);
-            qreal y = randomHeight(randomGenerator);
-            qreal rotation = randomAngle(randomGenerator);
-            this->_groupTweenAnimator->addSceneObjectToAnimate(sceneObject, x, y, rotation);
-        }
-    }
-
     this->_groupTweenAnimator->start(currentTime);
 
     // When everything is done keep track of previous bars data
