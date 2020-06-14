@@ -103,7 +103,9 @@ void ViewModeManager::moveBarsToLayouts(ViewModeManager::viewBars bars, ViewMode
     switch (viewIndex) {
     case ScreenSaverMode:
         _screensaver.addPrisonerLines(_viewBars[ScreenSaverMode]);
+        _screensaver.setBarsSize(sizeFromPixel(3, 40));
         _screensaver.setBarsColor("#CCCCCC");
+        _screensaver.moveObjectsToLayout(currentTime());
         break;
     case UserAnswersMode:
         _screensaver.addPrisonerLines(_viewBars[ScreenSaverMode]);
@@ -234,9 +236,34 @@ void ViewModeManager::setUserAnswerBars(const QList<int> &bars)
     setViewActiveMode(UserAnswersMode);
 }
 
-void ViewModeManager::setFairnessAnswerBars()
-{
+void ViewModeManager::showAnswersData(const QList<AnswerDataPtr>& answers) {
+    int answerTotal = 0;
 
+    for (int i = 0; i < answers.size(); i++) {
+        QList<int> list; list << answers.at(i)->their_answer;
+        _fairnessAverageAnswer[i].setRows(list);
+        QList<int> list2; list2 << answers.at(i)->my_answer;
+        qDebug() << "User answer: " << list2.at(0);
+        _fairnessUserAnswer[i].setRows(list2);
+
+        answerTotal += answers.at(i)->their_answer;
+        answerTotal += answers.at(i)->my_answer;
+    }
+    qDebug() << "Total bar: " << answerTotal;
+    setViewBarsQuantity(answerTotal, FairnessAnswersMode);
+    setViewActiveMode(FairnessAnswersMode);
+}
+
+void ViewModeManager::goToScreensaver()
+{
+//    _viewBars[ScreenSaverMode]->append(*_viewBars[_viewActiveMode]);
+    int totalBars = _viewBars[_viewActiveMode]->size();
+    for (int i = 0; i < totalBars; i++) {
+        _viewBars[ScreenSaverMode]->push_back(_viewBars[_viewActiveMode]->at(i));
+    }
+    _viewBars[_viewActiveMode]->remove(0, totalBars);
+    moveBarsToLayouts(_viewBars[ScreenSaverMode], ScreenSaverMode);
+    setViewActiveMode(ScreenSaverMode);
 }
 
 QPointF ViewModeManager::coordinateFromPixel(qreal x, qreal y)
@@ -261,22 +288,4 @@ void ViewModeManager::setPointToPickFrom(const QPointF &point)
 qreal ViewModeManager::mapValue(qreal value, qreal istart, qreal istop, qreal ostart, qreal ostop)
 {
     return ostart + (ostop - ostart) * ((value - istart) / (istop - istart));
-}
-
-void ViewModeManager::showAnswersData(const QList<AnswerDataPtr>& answers) {
-    int answerTotal = 0;
-
-    for (int i = 0; i < answers.size(); i++) {
-        QList<int> list; list << answers.at(i)->their_answer;
-        _fairnessAverageAnswer[i].setRows(list);
-        QList<int> list2; list2 << answers.at(i)->my_answer;
-        qDebug() << "User answer: " << list2.at(0);
-        _fairnessUserAnswer[i].setRows(list2);
-
-        answerTotal += answers.at(i)->their_answer;
-        answerTotal += answers.at(i)->my_answer;
-    }
-    qDebug() << "Total bar: " << answerTotal;
-    setViewBarsQuantity(answerTotal, FairnessAnswersMode);
-    setViewActiveMode(FairnessAnswersMode);
 }
