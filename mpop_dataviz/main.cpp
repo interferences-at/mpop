@@ -48,7 +48,7 @@ int main(int argc, char* argv[]) {
     parser.addOption(showWindowFrameOption);
 
     // int options:
-    const QCommandLineOption widthOption({"w", "width"}, "Window width", "width", "1920");
+    const QCommandLineOption widthOption({"w", "width"}, "Window width", "width", "1260");
     parser.addOption(widthOption);
 
     const QCommandLineOption heightOption({"H", "height"}, "Window height", "height", "1080");
