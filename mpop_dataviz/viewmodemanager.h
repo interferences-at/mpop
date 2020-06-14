@@ -51,7 +51,9 @@ public:
     ViewModeManager::viewBars getBarsFromScreenSaver(int number);
 
     void setUserAnswerBars(const QList<int> &bars);
-    void setFairnessAnswerBars();
+//    void setFairnessAnswerBars();
+    void showAnswersData(const QList<AnswerDataPtr>& answers);
+    void goToScreensaver();
 
     QPointF coordinateFromPixel(qreal x, qreal y);
     QPointF sizeFromPixel(qreal width, qreal height);
@@ -68,8 +70,6 @@ public:
             viewModeManager = new ViewModeManager;
         return viewModeManager;
     }
-
-    void showAnswersData(const QList<AnswerDataPtr>& answers);
 
 private:
     ViewMode _viewActiveMode;

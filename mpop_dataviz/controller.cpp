@@ -142,7 +142,7 @@ void Controller::goToScreensaver(int windowIndex) {
     DatavizWindow::ptr window = getWindowById(windowIndex);
     if (window) {
         // TODO
-        // window->viewManager()->goToScreensaver();
+         window->viewManager()->goToScreensaver();
     }
 }
 
