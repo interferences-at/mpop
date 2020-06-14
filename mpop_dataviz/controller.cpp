@@ -6,6 +6,7 @@
 static const QString DATAVIZ_PREFIX = "dataviz";
 static const QString BARCHART_METHOD = "my_answer";
 static const QString VIEW_ANSWERS_METHOD = "view_answers";
+static const QString GOTO_SCREENSAVER_METHOD = "goto_screensaver";
 static const int INDEX_PREFIX = 0;
 static const int INDEX_WINDOW_NUMBER = 1;
 static const int INDEX_METHOD = 2;
@@ -113,6 +114,8 @@ void Controller::messageReceivedCb(const QString& oscAddress, const QVariantList
                 qDebug() << "Calling view_answers";
                 this->showAnswers(windowIndex, toPopulate);
             }
+        } else if (methodName == GOTO_SCREENSAVER_METHOD) {
+            this->goToScreensaver(windowIndex);
         } else {
             qDebug() << "Unhandle OSC method" << methodName;
         }
@@ -132,6 +135,14 @@ void Controller::showUserAnswer(int windowIndex, const QList<int>& values) {
     DatavizWindow::ptr window = getWindowById(windowIndex);
     if (window) {
         window->viewManager()->setUserAnswerBars(values);
+    }
+}
+
+void Controller::goToScreensaver(int windowIndex) {
+    DatavizWindow::ptr window = getWindowById(windowIndex);
+    if (window) {
+        // TODO
+        // window->viewManager()->goToScreensaver();
     }
 }
 

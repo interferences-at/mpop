@@ -21,6 +21,7 @@ public:
 
     void showUserAnswer(int windowIndex, const QList<int>& values);
     void showAnswers(int windowIndex, const QList<ViewModeManager::AnswerDataPtr>& answers);
+    void goToScreensaver(int windowIndex);
 
 private:
     // data members
