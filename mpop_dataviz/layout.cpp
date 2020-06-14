@@ -21,9 +21,9 @@ void Layout::setBarsSize(qreal width, qreal height)
         line->setSize(width, height);
     }
 
-    if (_barsWidth != width)
+//    if (_barsWidth != width)
         _barsWidth = width;
-    if (_barsHeight != height)
+//    if (_barsHeight != height)
         _barsHeight = height;
 }
 

@@ -10,7 +10,8 @@ ViewModeManager::ViewModeManager() :
 {
     _timer.start();
 
-    _barChartRows = QVector<QList<int>>(6);
+    _fairnessAverageAnswer = QVector<BarChartLayout>(5);
+    _fairnessUserAnswer = QVector<BarChartLayout>(5);
 
     for (int i = 0; i < 6; i++) {
         ViewModeManager::viewBars sharedVector = ViewModeManager::viewBars::create();
@@ -27,9 +28,21 @@ void ViewModeManager::showViewManagerBars(ViewMode mode)
         break;
     case UserAnswersMode:
         _screensaver.updateBarsPosition(currentTime());
-        _answersBarchart.updateBarsPosition(currentTime());
+        _userAnswers.updateBarsPosition(currentTime());
         _screensaver.showSceneObject(currentTime());
-        _answersBarchart.showSceneObject(currentTime());
+        _userAnswers.showSceneObject(currentTime());
+        break;
+    case FairnessAnswersMode:
+        _screensaver.updateBarsPosition(currentTime());
+        _screensaver.showSceneObject(currentTime());
+        for (int i = 0; i < _fairnessAverageAnswer.size(); i++) {
+            _fairnessAverageAnswer[i].updateBarsPosition(currentTime());
+            _fairnessAverageAnswer[i].showSceneObject(currentTime());
+
+            _fairnessUserAnswer[i].updateBarsPosition(currentTime());
+            _fairnessUserAnswer[i].showSceneObject(currentTime());
+        }
+        break;
     default:
         break;
     }
@@ -71,14 +84,12 @@ void ViewModeManager::setViewActiveMode(ViewMode mode)
 
 void ViewModeManager::setBarChartRows(const QList<int> &bars, ViewMode viewIndex)
 {
-    //    _barChartRows[viewIndex] = bars;
-
     switch (viewIndex) {
     case ScreenSaverMode:
 
         break;
     case UserAnswersMode:
-        _answersBarchart.setRows(bars);
+        _userAnswers.setRows(bars);
         break;
     default:
         break;
@@ -87,15 +98,10 @@ void ViewModeManager::setBarChartRows(const QList<int> &bars, ViewMode viewIndex
 
 void ViewModeManager::moveBarsToLayouts(ViewModeManager::viewBars bars, ViewMode viewIndex)
 {
-    //    restoreBarsToScreenSaver(viewIndex);
-    _viewBars[viewIndex] = bars;
+//    _viewBars[viewIndex] = bars;
 
-    for (int i = 0; i < _viewBars.size(); i++) {
-        qDebug() << "View bar size: " << _viewBars.at(i)->size();
-    }
     switch (viewIndex) {
     case ScreenSaverMode:
-
         _screensaver.addPrisonerLines(_viewBars[ScreenSaverMode]);
         _screensaver.setBarsColor("#CCCCCC");
         break;
@@ -105,12 +111,48 @@ void ViewModeManager::moveBarsToLayouts(ViewModeManager::viewBars bars, ViewMode
         _screensaver.setBarsColor("#CCCCCC");
         _screensaver.moveObjectsToLayout(currentTime());
 
-        _answersBarchart.addPrisonerLines(_viewBars[UserAnswersMode]);
-        _answersBarchart.setBarsSize(sizeFromPixel(3, 74));
-        _answersBarchart.setBarsColor("#FF0000");
-        _answersBarchart.setAlignCenter(true);
-        //        _answersBarchart.setStartPosition(coordinateFromPixel(100, 100));
-        _answersBarchart.moveObjectsToLayout(currentTime());
+        _userAnswers.addPrisonerLines(_viewBars[UserAnswersMode]);
+        _userAnswers.setBarsSize(sizeFromPixel(3, 74));
+        _userAnswers.setBarsColor("#FF0000");
+        _userAnswers.setAlignCenter(true);
+        _userAnswers.moveObjectsToLayout(currentTime());
+        break;
+    case FairnessAnswersMode:
+        _screensaver.addPrisonerLines(_viewBars[ScreenSaverMode]);
+        _screensaver.setBarsSize(sizeFromPixel(2, 35));
+        _screensaver.setBarsColor("#3D3D3D");
+        _screensaver.moveObjectsToLayout(currentTime());
+    {
+        int y = 129;
+        int interval = 182;
+        int index = 0;
+
+        for (int i = 0; i < _fairnessAverageAnswer.size(); i++) {
+            ViewModeManager::viewBars averageVect = ViewModeManager::viewBars::create();
+            ViewModeManager::viewBars userVect = ViewModeManager::viewBars::create();
+            for (int x = 0; x < _fairnessAverageAnswer[i].getRows().at(0); x++) {
+                averageVect->push_back(_viewBars[FairnessAnswersMode]->at(index));
+                index++;
+            }
+            for (int x = 0; x < _fairnessUserAnswer[i].getRows().at(0); x++) {
+                userVect->push_back(_viewBars[FairnessAnswersMode]->at(index));
+                index++;
+            }
+
+            _fairnessAverageAnswer[i].addPrisonerLines(averageVect);
+            _fairnessUserAnswer[i].addPrisonerLines(userVect);
+
+            _fairnessAverageAnswer[i].setBarsSize(sizeFromPixel(2, 35));
+            _fairnessAverageAnswer[i].setBarsColor("#FFFFFF");
+            _fairnessAverageAnswer[i].setStartPosition(coordinateFromPixel(95, y + i * interval));
+            _fairnessAverageAnswer[i].moveObjectsToLayout(currentTime());
+
+            _fairnessUserAnswer[i].setBarsSize(sizeFromPixel(2, 35));
+            _fairnessUserAnswer[i].setBarsColor("#AB3D33");
+            _fairnessUserAnswer[i].setStartPosition(coordinateFromPixel(95, y + 45 + i * interval));
+            _fairnessUserAnswer[i].moveObjectsToLayout(currentTime());
+        }
+    }
         break;
     default:
         break;
@@ -119,10 +161,9 @@ void ViewModeManager::moveBarsToLayouts(ViewModeManager::viewBars bars, ViewMode
 
 void ViewModeManager::setViewBarsQuantity(int number, ViewMode viewIndex)
 {
-    qDebug() << "Index: " << viewIndex;
     if (number > 0) {
         int barSize = _viewBars[viewIndex]->isEmpty() ? 0 : _viewBars[viewIndex]->size();
-        qDebug () << "Number: " << number << " barSize: " << _viewBars[viewIndex]->size();
+
         if (number > barSize) {
             int diff = number - barSize;
 
@@ -169,32 +210,33 @@ ViewModeManager::viewBars ViewModeManager::getBarsFromScreenSaver(int number)
     ViewModeManager::viewBars barChartBars = ViewModeManager::viewBars::create();
 
     for (int i = 0; i < number; i++) {
-        if (i >= _viewBars[ScreenSaverMode]->size()) break;
-        PrisonerLine::ptr line = _viewBars[ScreenSaverMode]->at(i);
-        barChartBars->push_back(line);
-        _viewBars[ScreenSaverMode]->remove(i);
+        // The Screensaver amount of bars must be greater by 100 than...
+        while (_viewBars[ScreenSaverMode]->size() - i < 100) {
+            // Add new line every time screensaver bar is about to finish
+            // To avoid out of range error
+            PrisonerLine::ptr line = PrisonerLine::ptr::create();
+            _viewBars[ScreenSaverMode]->push_back(line);
+        }
+
+        barChartBars->push_back(_viewBars[ScreenSaverMode]->at(i));
     }
+    _viewBars[ScreenSaverMode]->remove(0, number);
 
     return barChartBars;
-}
-
-void ViewModeManager::restoreBarsToScreenSaver(ViewModeManager::ViewMode viewIndex)
-{
-    if (! _viewBars[viewIndex]->isEmpty()) {
-        for (auto bar : *_viewBars[viewIndex]) {
-            _viewBars[ScreenSaverMode]->push_back(bar);
-        }
-    }
 }
 
 void ViewModeManager::setUserAnswerBars(const QList<int> &bars)
 {
     int barSum = std::accumulate(bars.begin(), bars.end(), 0);
+
     setBarChartRows(bars, UserAnswersMode);
-    //    setPointToPickFrom(coordinateFromPixel(100, 100));
     setViewBarsQuantity(barSum, UserAnswersMode);
-//    moveBarsToLayouts(getBarsFromScreenSaver(bars), UserAnswersMode);
     setViewActiveMode(UserAnswersMode);
+}
+
+void ViewModeManager::setFairnessAnswerBars()
+{
+
 }
 
 QPointF ViewModeManager::coordinateFromPixel(qreal x, qreal y)
@@ -222,6 +264,19 @@ qreal ViewModeManager::mapValue(qreal value, qreal istart, qreal istop, qreal os
 }
 
 void ViewModeManager::showAnswersData(const QList<AnswerDataPtr>& answers) {
-    // TODO
-    Q_UNUSED(answers);
+    int answerTotal = 0;
+
+    for (int i = 0; i < answers.size(); i++) {
+        QList<int> list; list << answers.at(i)->their_answer;
+        _fairnessAverageAnswer[i].setRows(list);
+        QList<int> list2; list2 << answers.at(i)->my_answer;
+        qDebug() << "User answer: " << list2.at(0);
+        _fairnessUserAnswer[i].setRows(list2);
+
+        answerTotal += answers.at(i)->their_answer;
+        answerTotal += answers.at(i)->my_answer;
+    }
+    qDebug() << "Total bar: " << answerTotal;
+    setViewBarsQuantity(answerTotal, FairnessAnswersMode);
+    setViewActiveMode(FairnessAnswersMode);
 }

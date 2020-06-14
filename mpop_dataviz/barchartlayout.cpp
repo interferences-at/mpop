@@ -50,12 +50,12 @@ void BarChartLayout::setStartPosition(const QPointF &pos)
 void BarChartLayout::moveObjectsToLayout(qint64 currentTime) {
     // TODO: never ever iterate over size of line vector
     // const int numLines = _sceneObjects.size();
-    static const qreal DISTANCE_BETWEEN_BARS = _barsWidth * 5;
-    static const qreal WIDTH_OF_EACH_COLUMN = DISTANCE_BETWEEN_BARS * 3;
-    static const qreal DISTANCE_BETWEEN_COLUMN = DISTANCE_BETWEEN_BARS;
-    static const qreal DISTANCE_BETWEEN_ROW = DISTANCE_BETWEEN_BARS;
-    static const qreal OUTSIDE_X = 3.0; // outside of the screen
-    static const qreal OUTSIDE_Y = 3.0; // outside of the screen
+//    static const qreal DISTANCE_BETWEEN_BARS = _barsWidth * 5;
+    qDebug() << "width: " << _barsWidth << " height: " << _barsHeight;
+    const qreal DISTANCE_BETWEEN_BARS = _barsHeight / 5;
+    const qreal WIDTH_OF_EACH_COLUMN = DISTANCE_BETWEEN_BARS * 3;
+    const qreal DISTANCE_BETWEEN_COLUMN = DISTANCE_BETWEEN_BARS;
+    const qreal DISTANCE_BETWEEN_ROW = DISTANCE_BETWEEN_BARS;
     //static const QEasingCurve easing(QEasingCurve::InOutQuad);
     static const QEasingCurve::Type easingCurveType = QEasingCurve::InOutQuad;
     static const qint64 animationSeconds = 1;

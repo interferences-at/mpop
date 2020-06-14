@@ -180,8 +180,8 @@ void DatavizWindow::paintGL() {
     case ViewModeManager::UserAnswersMode:
 
         break;
-    case ViewModeManager::FilteredAnswersMode:
-
+    case ViewModeManager::FairnessAnswersMode:
+        _painter->drawFairnessAnswersElements();
         break;
     case ViewModeManager::AnswerByAgeMode:
         // Draw the horizontal coordinate

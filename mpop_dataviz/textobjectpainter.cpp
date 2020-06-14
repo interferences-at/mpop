@@ -16,6 +16,7 @@ TextObjectPainter::TextObjectPainter() :
     _topTitleFont = QFont(fontFamily, 22);
     _percentageFont = QFont(fontFamily, 22);
     _fpsTextFont = QFont(fontFamily, 12, QFont::DemiBold);
+    _fairnessAnswerFont = QFont(fontFamily, 14, QFont::DemiBold);
 }
 
 TextObjectPainter::~TextObjectPainter()
@@ -128,6 +129,29 @@ void TextObjectPainter::drawFramePerSecond(const int &framePerSecond)
     _painter.drawText(100, 100, QString::number(framePerSecond) + " FPS");
     _painter.drawLine(0, 0, _width, _height);
     _painter.drawLine(_width, 0, 0, _height);
+    _painter.restore();
+}
+
+void TextObjectPainter::drawFairnessAnswersElements(const QList<QString> &text)
+{
+    QList<QString> title = text;
+    if (title.isEmpty())
+        title << "Les victimes" << "Les personnes marginalisées"
+              << "Les jeunes contrevenants" << "Les gens fortunés"
+              << "Les minorités visibles ou culturelles";
+
+    int y = 100;
+    int interval = 182;
+    _painter.save();
+    _painter.setPen(_linePen);
+    _painter.drawLine(79, 50, 79, _height - 79);
+    _painter.drawLine(96, _height - 79, _width - 106, _height - 79);
+    _painter.setFont(_fairnessAnswerFont);
+    for (int i = 0; i < title.size(); i++) {
+        _painter.drawText(94, y + i * interval, title.at(i));
+    }
+    _painter.drawText(65, _height - 40, "Pas du tout");
+    _painter.drawText(_width - 170, _height - 40, "Tout à fait");
     _painter.restore();
 }
 

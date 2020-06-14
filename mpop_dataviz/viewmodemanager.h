@@ -14,8 +14,8 @@ public:
     // Types:
     enum ViewMode {
         ScreenSaverMode, // Default Mode
-        UserAnswersMode,
-        FilteredAnswersMode,
+        UserAnswersMode, // See My answer
+        FairnessAnswersMode,
         AnswerByAgeMode,
         AnswerByGenderMode,
         AnswerByCultureMode
@@ -49,9 +49,9 @@ public:
     void setViewBarsQuantity(int number, ViewMode viewIndex);
 
     ViewModeManager::viewBars getBarsFromScreenSaver(int number);
-    void restoreBarsToScreenSaver(ViewMode viewIndex);
 
     void setUserAnswerBars(const QList<int> &bars);
+    void setFairnessAnswerBars();
 
     QPointF coordinateFromPixel(qreal x, qreal y);
     QPointF sizeFromPixel(qreal width, qreal height);
@@ -81,10 +81,12 @@ private:
     QPointF _pointToPickFrom;
 
     QVector<ViewModeManager::viewBars> _viewBars;
-    QVector<QList<int>> _barChartRows;
 
     ScreensaverLayout _screensaver;
-    BarChartLayout _answersBarchart;
+    BarChartLayout _userAnswers;
+
+    QVector<BarChartLayout> _fairnessAverageAnswer;
+    QVector<BarChartLayout> _fairnessUserAnswer;
 
     QElapsedTimer _timer;
 

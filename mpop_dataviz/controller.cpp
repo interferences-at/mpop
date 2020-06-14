@@ -131,7 +131,6 @@ void Controller::showAnswers(int windowIndex, const QList<ViewModeManager::Answe
 void Controller::showUserAnswer(int windowIndex, const QList<int>& values) {
     DatavizWindow::ptr window = getWindowById(windowIndex);
     if (window) {
-//        window->showBarChartBars(values);
         window->viewManager()->setUserAnswerBars(values);
     }
 }
