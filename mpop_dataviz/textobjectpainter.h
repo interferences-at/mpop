@@ -37,6 +37,8 @@ public:
     void drawPercentage();
     // Draw frame per second
     void drawFramePerSecond(const int &framePerSecond);
+    // Draw Fairness answer element
+    void drawFairnessAnswersElements(const QList<QString> &text = {});
 
     void beginOpenGLPainting(); // QPainter beginNativePainting wrapper
     void endOpenGLPainting();  // QPainter endNativePainting wrapper
@@ -49,6 +51,7 @@ private:
     // Font settings
     QFont _axisNumberFont, _bottomTitleFont, _topTitleFont;
     QFont _percentageFont, _fpsTextFont;
+    QFont _fairnessAnswerFont;
 
     // List of top and bottom titles
     QList<QString> _topTitles;

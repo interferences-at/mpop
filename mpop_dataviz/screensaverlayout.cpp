@@ -15,9 +15,7 @@ void ScreensaverLayout::updateBarsPosition(qint64 currentTime)
 {
     QRandomGenerator randomGenerator;
 
-//    for (auto line : _prisonerLines) {
-    for (int i = 0; i < _prisonerLines->size(); i++) {
-        PrisonerLine::ptr line = _prisonerLines->at(i);
+    for (auto line : *_prisonerLines) {
 
         std::uniform_real_distribution<qreal> randomCenterX(_left, _right);
         qreal centerX = randomCenterX(randomGenerator);
@@ -29,14 +27,14 @@ void ScreensaverLayout::updateBarsPosition(qint64 currentTime)
         std::uniform_real_distribution<qreal> randomFrequency(0.01, 0.1);
         qreal frequency = randomFrequency(randomGenerator);
 
-        std::uniform_real_distribution<qreal> randomRatioRotation(-0.1, 0.1);
+        std::uniform_real_distribution<qreal> randomRatioRotation(-90, 90);
         qreal ratioRotation = randomRatioRotation(randomGenerator);
 
         qreal timeNow = currentTime / 1000.0;
 
         qreal posX = centerX + cos(timeNow * frequency) * radius;
         qreal posY = centerY + sin(timeNow * frequency) * radius;
-        qreal rotation = currentTime * frequency * ratioRotation;
+        qreal rotation = timeNow * frequency * ratioRotation;
 
         line->setX(posX);
         line->setY(posY);

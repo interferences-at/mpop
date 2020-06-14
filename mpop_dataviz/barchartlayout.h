@@ -21,6 +21,7 @@ public:
      * @param values
      */
     void setRows(const QList<int>& values);
+    QList<int> getRows() const { return _rowsValues; }
 
     void updateBarsPosition(qint64 currentTime) override;
 
