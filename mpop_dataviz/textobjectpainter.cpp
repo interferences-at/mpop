@@ -132,24 +132,30 @@ void TextObjectPainter::drawFramePerSecond(const int &framePerSecond)
     _painter.restore();
 }
 
-void TextObjectPainter::drawFairnessAnswersElements(const QList<QString> &text)
+void TextObjectPainter::drawViewElements(ViewModeManager::ViewMode view, const QList<QString> &title)
 {
-    QList<QString> title = text;
-    if (title.isEmpty())
-        title << "Les victimes" << "Les personnes marginalisées"
-              << "Les jeunes contrevenants" << "Les gens fortunés"
-              << "Les minorités visibles ou culturelles";
-
-    int y = 100;
-    int interval = 182;
     _painter.save();
+
     _painter.setPen(_linePen);
     _painter.drawLine(79, 50, 79, _height - 79);
     _painter.drawLine(96, _height - 79, _width - 106, _height - 79);
-    _painter.setFont(_fairnessAnswerFont);
-    for (int i = 0; i < title.size(); i++) {
-        _painter.drawText(94, y + i * interval, title.at(i));
+
+    switch (view) {
+    case ViewModeManager::FairnessAnswersMode:
+    {
+        int y = 100;
+        int interval = 182;
+
+        _painter.setFont(_fairnessAnswerFont);
+        for (int i = 0; i < title.size(); i++) {
+            _painter.drawText(94, y + i * interval, title.at(i));
+        }
     }
+        break;
+    default:
+        break;
+    }
+
     _painter.drawText(65, _height - 40, "Pas du tout");
     _painter.drawText(_width - 170, _height - 40, "Tout à fait");
     _painter.restore();

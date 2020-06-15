@@ -16,9 +16,12 @@ public:
 
     void showSceneObject(qint64 currentTime) override;
 
-    QVector<PrisonerLine::ptr> getLayoutClosestBars(const QPointF &pos);
+    QSharedPointer<QVector<PrisonerLine::ptr>> getClosestBars(const QPointF &pos);
 
 private:
+    std::uniform_real_distribution<qreal> randomX, randomY, randomRadius;
+    std::uniform_real_distribution<qreal> randomFrequency, randomRatioRotation;
+
     QSharedPointer<GroupTweenAnimator> _groupTweenAnimator;
 };
 

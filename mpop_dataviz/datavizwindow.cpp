@@ -154,20 +154,6 @@ void DatavizWindow::paintGL() {
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
 
-    // TODO: enable only one layout at a time, perhaps.
-//    _barChartLayout.updateObjectPosition(this->elapsed());
-//    _screensaverLayout.updateBarsPosition(elapsed());
-
-//    _screensaverLayout.showSceneObject(elapsed());
-//    _barChartLayout.showSceneObject(elapsed());
-
-//    for (auto iter = _sceneObjects.begin(); iter != _sceneObjects.end(); ++ iter) {
-//        SceneObject::ptr obj = (*iter);
-//        if (obj->getVisible()) {
-//            // FIXME: we should take care of the Z-sorting of the scene objects.
-//            obj->draw(this->elapsed());
-//        }
-//    }
     ViewModeManager::ViewMode viewActiveMode = _viewModeManager->getViewActiveMode();
     _viewModeManager->showViewManagerBars(viewActiveMode);
 
@@ -181,7 +167,8 @@ void DatavizWindow::paintGL() {
 
         break;
     case ViewModeManager::FairnessAnswersMode:
-        _painter->drawFairnessAnswersElements();
+        _painter->drawViewElements(viewActiveMode,
+                                   _viewModeManager->getViewTitles(viewActiveMode));
         break;
     case ViewModeManager::AnswerByAgeMode:
         // Draw the horizontal coordinate

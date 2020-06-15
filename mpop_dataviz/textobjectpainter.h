@@ -1,6 +1,7 @@
 #pragma once
 
 #include "sceneobject.h"
+#include "viewmodemanager.h"
 
 #include <QOpenGLPaintDevice>
 #include <QPainter>
@@ -37,8 +38,8 @@ public:
     void drawPercentage();
     // Draw frame per second
     void drawFramePerSecond(const int &framePerSecond);
-    // Draw Fairness answer element
-    void drawFairnessAnswersElements(const QList<QString> &text = {});
+    // Draw view answer element
+    void drawViewElements(ViewModeManager::ViewMode view, const QList<QString> &title);
 
     void beginOpenGLPainting(); // QPainter beginNativePainting wrapper
     void endOpenGLPainting();  // QPainter endNativePainting wrapper
