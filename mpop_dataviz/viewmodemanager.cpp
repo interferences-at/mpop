@@ -13,6 +13,8 @@ ViewModeManager::ViewModeManager() :
     _fairnessAverageAnswer = QVector<BarChartLayout>(5);
     _fairnessUserAnswer = QVector<BarChartLayout>(5);
 
+    _viewTitles = QVector<QList<QString>>(6);
+
     for (int i = 0; i < 6; i++) {
         ViewModeManager::viewBars sharedVector = ViewModeManager::viewBars::create();
         _viewBars.push_back(sharedVector);
@@ -96,14 +98,12 @@ void ViewModeManager::setBarChartRows(const QList<int> &bars, ViewMode viewIndex
     }
 }
 
-void ViewModeManager::moveBarsToLayouts(ViewModeManager::viewBars bars, ViewMode viewIndex)
+void ViewModeManager::moveBarsToLayouts(ViewMode viewIndex)
 {
-//    _viewBars[viewIndex] = bars;
-
     switch (viewIndex) {
     case ScreenSaverMode:
         _screensaver.addPrisonerLines(_viewBars[ScreenSaverMode]);
-        _screensaver.setBarsSize(sizeFromPixel(3, 40));
+        _screensaver.setBarsSize(sizeFromPixel(3, 60));
         _screensaver.setBarsColor("#CCCCCC");
         _screensaver.moveObjectsToLayout(currentTime());
         break;
@@ -194,20 +194,13 @@ void ViewModeManager::setViewBarsQuantity(int number, ViewMode viewIndex)
         }
     }
 
-    moveBarsToLayouts(_viewBars[viewIndex], viewIndex);
+    moveBarsToLayouts(viewIndex);
 }
 
 ViewModeManager::viewBars ViewModeManager::getBarsFromScreenSaver(int number)
 {
     qreal pointX = _pointToPickFrom.x();
     qreal pointY = -_pointToPickFrom.y();
-
-    // Sort bars by the closest to the point(x, y)
-    std::sort(_viewBars[ScreenSaverMode]->begin(), _viewBars[ScreenSaverMode]->end(),
-              [&](PrisonerLine::ptr a, PrisonerLine::ptr b) -> bool {
-        return pow(abs(a->getX() - pointX), 2) + pow(abs(a->getY() - pointY), 2) <
-                pow(abs(b->getX() - pointX), 2) + pow(abs(b->getY() - pointY), 2);
-    });
 
     ViewModeManager::viewBars barChartBars = ViewModeManager::viewBars::create();
 
@@ -220,9 +213,14 @@ ViewModeManager::viewBars ViewModeManager::getBarsFromScreenSaver(int number)
             _viewBars[ScreenSaverMode]->push_back(line);
         }
 
-        barChartBars->push_back(_viewBars[ScreenSaverMode]->at(i));
+        _viewBars[ScreenSaverMode] = _screensaver.getClosestBars(QPointF(pointX, pointY));
+
+        PrisonerLine::ptr line = _viewBars[ScreenSaverMode]->at(i);
+        line->setColor("#FF00FF");
+        barChartBars->push_back(line);
+        _viewBars[ScreenSaverMode]->remove(i);
+
     }
-    _viewBars[ScreenSaverMode]->remove(0, number);
 
     return barChartBars;
 }
@@ -232,6 +230,7 @@ void ViewModeManager::setUserAnswerBars(const QList<int> &bars)
     int barSum = std::accumulate(bars.begin(), bars.end(), 0);
 
     setBarChartRows(bars, UserAnswersMode);
+    setPointToPickFrom(QPointF(0, 0));
     setViewBarsQuantity(barSum, UserAnswersMode);
     setViewActiveMode(UserAnswersMode);
 }
@@ -239,31 +238,40 @@ void ViewModeManager::setUserAnswerBars(const QList<int> &bars)
 void ViewModeManager::showAnswersData(const QList<AnswerDataPtr>& answers) {
     int answerTotal = 0;
 
+    QList<QString> titles;
+
     for (int i = 0; i < answers.size(); i++) {
         QList<int> list; list << answers.at(i)->their_answer;
         _fairnessAverageAnswer[i].setRows(list);
         QList<int> list2; list2 << answers.at(i)->my_answer;
-        qDebug() << "User answer: " << list2.at(0);
         _fairnessUserAnswer[i].setRows(list2);
 
         answerTotal += answers.at(i)->their_answer;
         answerTotal += answers.at(i)->my_answer;
+
+        // Set titles
+        titles << answers.at(i)->text;
     }
-    qDebug() << "Total bar: " << answerTotal;
+    setPointToPickFrom(coordinateFromPixel(_width, _height));
     setViewBarsQuantity(answerTotal, FairnessAnswersMode);
+    setViewTitles(titles, FairnessAnswersMode);
     setViewActiveMode(FairnessAnswersMode);
 }
 
 void ViewModeManager::goToScreensaver()
 {
-//    _viewBars[ScreenSaverMode]->append(*_viewBars[_viewActiveMode]);
     int totalBars = _viewBars[_viewActiveMode]->size();
     for (int i = 0; i < totalBars; i++) {
         _viewBars[ScreenSaverMode]->push_back(_viewBars[_viewActiveMode]->at(i));
     }
     _viewBars[_viewActiveMode]->remove(0, totalBars);
-    moveBarsToLayouts(_viewBars[ScreenSaverMode], ScreenSaverMode);
+    moveBarsToLayouts(ScreenSaverMode);
     setViewActiveMode(ScreenSaverMode);
+}
+
+void ViewModeManager::setViewTitles(const QList<QString> &titles, ViewModeManager::ViewMode viewIndex)
+{
+    _viewTitles[viewIndex] = titles;
 }
 
 QPointF ViewModeManager::coordinateFromPixel(qreal x, qreal y)

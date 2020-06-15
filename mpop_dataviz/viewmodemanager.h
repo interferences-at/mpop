@@ -44,16 +44,18 @@ public:
     ViewMode getViewActiveMode() const { return _viewActiveMode; }
 
     void setBarChartRows(const QList<int> &list, ViewMode viewIndex);
-    void moveBarsToLayouts(ViewModeManager::viewBars bars, ViewMode viewIndex);
+    void moveBarsToLayouts(ViewMode viewIndex);
 
     void setViewBarsQuantity(int number, ViewMode viewIndex);
 
     ViewModeManager::viewBars getBarsFromScreenSaver(int number);
 
     void setUserAnswerBars(const QList<int> &bars);
-//    void setFairnessAnswerBars();
     void showAnswersData(const QList<AnswerDataPtr>& answers);
     void goToScreensaver();
+
+    void setViewTitles(const QList<QString> &titles, ViewMode viewIndex);
+    QList<QString> getViewTitles(ViewMode view) const { return _viewTitles[view]; }
 
     QPointF coordinateFromPixel(qreal x, qreal y);
     QPointF sizeFromPixel(qreal width, qreal height);
@@ -87,6 +89,8 @@ private:
 
     QVector<BarChartLayout> _fairnessAverageAnswer;
     QVector<BarChartLayout> _fairnessUserAnswer;
+
+    QVector<QList<QString>> _viewTitles;
 
     QElapsedTimer _timer;
 
