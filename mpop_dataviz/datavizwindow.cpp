@@ -135,13 +135,12 @@ void DatavizWindow::resizeGL(int w, int h) {
     // gluPerspective(60.0f, ratio, 1.0f, 100.0f);
 
     // Resize the paint device
-    _device->setSize(QSize(width() * retinaScale, height() * retinaScale));
+    _device->setSize(QSize(width(), height()));
     _device->setDevicePixelRatio(retinaScale);
 
     // Resize Layout
-//    _screensaverLayout.setLayoutCoordinate(left, right, bottom, top);
     _viewModeManager->updateViewCoordinate(left, right, bottom, top);
-    _viewModeManager->updateViewSize(w * retinaScale, h * retinaScale);
+    _viewModeManager->updateViewSize(width(), height());
 }
 
 

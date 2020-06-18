@@ -36,6 +36,8 @@ void TextObjectPainter::setPaintDevice(QOpenGLPaintDevice *device)
     _width = device->width(); // Reset width
     _height = device->height(); // Reset height;
     _pixelRatio = device->devicePixelRatio();
+
+    _painter.setViewport(0, 0, _width / _pixelRatio, _height / _pixelRatio);
 }
 
 void TextObjectPainter::drawAbscissa(int xMaxValue, int xIntervalUnit)
