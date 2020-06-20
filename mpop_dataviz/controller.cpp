@@ -1,13 +1,19 @@
 #include "controller.h"
 #include <QDebug>
 #include <QList>
+#include <QString>
 
 // constants
-static const QString DATAVIZ_PREFIX = "dataviz";
+// For the OSC message handling:
+static const QString NAMESPACE_PATH_PREFIX = "dataviz";
 static const QString BARCHART_METHOD = "my_answer";
 static const QString VIEW_ANSWERS_METHOD = "view_answers";
 static const QString GOTO_SCREENSAVER_METHOD = "goto_screensaver";
-static const int INDEX_PREFIX = 0;
+static const QString SCREENSAVER_SET_PARAM_METHOD = "screensaver_set_param";
+static const QString VIEW_ANSWER_BY_CULTURE_METHOD = "view_answer_by_culture";
+static const QString VIEW_ANSWER_BY_GENDER_METHOD = "view_answer_by_gender";
+static const QString VIEW_ANSWER_BY_AGE_METHOD = "view_answer_by_age";
+static const int INDEX_NAMESPACE_PREFIX = 0;
 static const int INDEX_WINDOW_NUMBER = 1;
 static const int INDEX_METHOD = 2;
 static const int EXPECTED_MINIMUM_PATH_TOKENS = 3;
@@ -92,7 +98,7 @@ void Controller::messageReceivedCb(const QString& oscAddress, const QVariantList
         return;
     }
 
-    if (pathTokens[INDEX_PREFIX] == DATAVIZ_PREFIX) {
+    if (pathTokens[INDEX_NAMESPACE_PREFIX] == NAMESPACE_PATH_PREFIX) {
         int windowIndex = pathTokens[INDEX_WINDOW_NUMBER].toInt();
         qDebug() << "windowIndex" << windowIndex;
         if (getWindowById(windowIndex) == nullptr) {
@@ -101,6 +107,7 @@ void Controller::messageReceivedCb(const QString& oscAddress, const QVariantList
         }
 
         QString methodName = pathTokens[INDEX_METHOD];
+        int numArgs = arguments.size();
 
         // Handle methods:
         // The barchart method: /dataviz/1/barchart iii 70 20 10
@@ -116,6 +123,21 @@ void Controller::messageReceivedCb(const QString& oscAddress, const QVariantList
             }
         } else if (methodName == GOTO_SCREENSAVER_METHOD) {
             this->goToScreensaver(windowIndex);
+        } else if (methodName == SCREENSAVER_SET_PARAM_METHOD) {
+            if (numArgs < 2) {
+                qDebug() << "Invalid num of args";
+                return;
+            } else {
+                QString paramName = arguments[0].toString();
+                float paramValue = arguments[1].toFloat();
+                // TODO controller=> set Screensaver param
+            }
+        } else if (methodName == VIEW_ANSWER_BY_CULTURE_METHOD) {
+            // TODO
+        } else if (methodName == VIEW_ANSWER_BY_GENDER_METHOD) {
+            // TODO
+        } else if (methodName == VIEW_ANSWER_BY_AGE_METHOD) {
+            // TODO
         } else {
             qDebug() << "Unhandle OSC method" << methodName;
         }

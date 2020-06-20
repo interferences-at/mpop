@@ -83,23 +83,13 @@ Total: 22 integer arguments.
 ## view_answer_by_gender
 
 ```
-/dataviz/0/view_answer_by_gender sisisi "Hommes" 10 "Femmes" 20 "Autres" 30
-
+/dataviz/0/view_answer_by_gender iisisisi "Hommes" 10 "Femmes" 20 "Autres" 30
 ```
 
-## view_answers
+- First arg: my gender index.
+- Secong arg: my answer
 
-```
-/dataviz/0/view_answers isiisiisiisiisii 5 "Les victimes" 50 50 "Les personnes marginalisées" 50 50 "Les jeunes contrevenants" 50 50 "Les gens fortunés" 50 50 "Les minorités visibles ou culturelles" 50 50
-```
-
-The first int is: how many answers to show. (it should always be 5)
-
-Then, for each culture, there is:
-
-- the text (s)
-- the average (i)
-- my answer (i)
+Then, each pair is a string and int. (the gender name, the value)
 
 
 ## view_answer_by_culture
