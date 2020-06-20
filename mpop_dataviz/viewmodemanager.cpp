@@ -10,8 +10,8 @@ ViewModeManager::ViewModeManager() :
 {
     _timer.start();
 
-    _fairnessAverageAnswer = QVector<BarChartLayout>(5);
-    _fairnessUserAnswer = QVector<BarChartLayout>(5);
+    _multiAverageAnswer = QVector<BarChartLayout>(5);
+    _multiUserAnswer = QVector<BarChartLayout>(5);
 
     _viewTitles = QVector<QList<QString>>(6);
 
@@ -34,15 +34,15 @@ void ViewModeManager::showViewManagerBars(ViewMode mode)
         _screensaver.showSceneObject(currentTime());
         _userAnswers.showSceneObject(currentTime());
         break;
-    case FairnessAnswersMode:
+    case MultiAnswersMode:
         _screensaver.updateBarsPosition(currentTime());
         _screensaver.showSceneObject(currentTime());
-        for (int i = 0; i < _fairnessAverageAnswer.size(); i++) {
-            _fairnessAverageAnswer[i].updateBarsPosition(currentTime());
-            _fairnessAverageAnswer[i].showSceneObject(currentTime());
+        for (int i = 0; i < _multiAverageAnswer.size(); i++) {
+            _multiAverageAnswer[i].updateBarsPosition(currentTime());
+            _multiAverageAnswer[i].showSceneObject(currentTime());
 
-            _fairnessUserAnswer[i].updateBarsPosition(currentTime());
-            _fairnessUserAnswer[i].showSceneObject(currentTime());
+            _multiUserAnswer[i].updateBarsPosition(currentTime());
+            _multiUserAnswer[i].showSceneObject(currentTime());
         }
         break;
     default:
@@ -119,7 +119,7 @@ void ViewModeManager::moveBarsToLayouts(ViewMode viewIndex)
         _userAnswers.setAlignCenter(true);
         _userAnswers.moveObjectsToLayout(currentTime());
         break;
-    case FairnessAnswersMode:
+    case MultiAnswersMode:
         _screensaver.addPrisonerLines(_viewBars[ScreenSaverMode]);
         _screensaver.setBarsSize(sizeFromPixel(2, 35));
         _screensaver.setBarsColor("#3D3D3D");
@@ -129,30 +129,30 @@ void ViewModeManager::moveBarsToLayouts(ViewMode viewIndex)
         int interval = 182;
         int index = 0;
 
-        for (int i = 0; i < _fairnessAverageAnswer.size(); i++) {
+        for (int i = 0; i < _multiAverageAnswer.size(); i++) {
             ViewModeManager::viewBars averageVect = ViewModeManager::viewBars::create();
             ViewModeManager::viewBars userVect = ViewModeManager::viewBars::create();
-            for (int x = 0; x < _fairnessAverageAnswer[i].getRows().at(0); x++) {
-                averageVect->push_back(_viewBars[FairnessAnswersMode]->at(index));
+            for (int x = 0; x < _multiAverageAnswer[i].getRows().at(0); x++) {
+                averageVect->push_back(_viewBars[MultiAnswersMode]->at(index));
                 index++;
             }
-            for (int x = 0; x < _fairnessUserAnswer[i].getRows().at(0); x++) {
-                userVect->push_back(_viewBars[FairnessAnswersMode]->at(index));
+            for (int x = 0; x < _multiUserAnswer[i].getRows().at(0); x++) {
+                userVect->push_back(_viewBars[MultiAnswersMode]->at(index));
                 index++;
             }
 
-            _fairnessAverageAnswer[i].addPrisonerLines(averageVect);
-            _fairnessUserAnswer[i].addPrisonerLines(userVect);
+            _multiAverageAnswer[i].addPrisonerLines(averageVect);
+            _multiUserAnswer[i].addPrisonerLines(userVect);
 
-            _fairnessAverageAnswer[i].setBarsSize(sizeFromPixel(2, 35));
-            _fairnessAverageAnswer[i].setBarsColor("#FFFFFF");
-            _fairnessAverageAnswer[i].setStartPosition(coordinateFromPixel(95, y + i * interval));
-            _fairnessAverageAnswer[i].moveObjectsToLayout(currentTime());
+            _multiAverageAnswer[i].setBarsSize(sizeFromPixel(2, 35));
+            _multiAverageAnswer[i].setBarsColor("#FFFFFF");
+            _multiAverageAnswer[i].setStartPosition(coordinateFromPixel(95, y + i * interval));
+            _multiAverageAnswer[i].moveObjectsToLayout(currentTime());
 
-            _fairnessUserAnswer[i].setBarsSize(sizeFromPixel(2, 35));
-            _fairnessUserAnswer[i].setBarsColor("#AB3D33");
-            _fairnessUserAnswer[i].setStartPosition(coordinateFromPixel(95, y + 45 + i * interval));
-            _fairnessUserAnswer[i].moveObjectsToLayout(currentTime());
+            _multiUserAnswer[i].setBarsSize(sizeFromPixel(2, 35));
+            _multiUserAnswer[i].setBarsColor("#AB3D33");
+            _multiUserAnswer[i].setStartPosition(coordinateFromPixel(95, y + 45 + i * interval));
+            _multiUserAnswer[i].moveObjectsToLayout(currentTime());
         }
     }
         break;
@@ -242,9 +242,9 @@ void ViewModeManager::showAnswersData(const QList<AnswerDataPtr>& answers) {
 
     for (int i = 0; i < answers.size(); i++) {
         QList<int> list; list << answers.at(i)->their_answer;
-        _fairnessAverageAnswer[i].setRows(list);
+        _multiAverageAnswer[i].setRows(list);
         QList<int> list2; list2 << answers.at(i)->my_answer;
-        _fairnessUserAnswer[i].setRows(list2);
+        _multiUserAnswer[i].setRows(list2);
 
         answerTotal += answers.at(i)->their_answer;
         answerTotal += answers.at(i)->my_answer;
@@ -253,9 +253,9 @@ void ViewModeManager::showAnswersData(const QList<AnswerDataPtr>& answers) {
         titles << answers.at(i)->text;
     }
     setPointToPickFrom(coordinateFromPixel(_width, _height));
-    setViewBarsQuantity(answerTotal, FairnessAnswersMode);
-    setViewTitles(titles, FairnessAnswersMode);
-    setViewActiveMode(FairnessAnswersMode);
+    setViewBarsQuantity(answerTotal, MultiAnswersMode);
+    setViewTitles(titles, MultiAnswersMode);
+    setViewActiveMode(MultiAnswersMode);
 }
 
 void ViewModeManager::goToScreensaver()

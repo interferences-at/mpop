@@ -143,7 +143,7 @@ void TextObjectPainter::drawViewElements(ViewModeManager::ViewMode view, const Q
     _painter.drawLine(96, _height - 79, _width - 106, _height - 79);
 
     switch (view) {
-    case ViewModeManager::FairnessAnswersMode:
+    case ViewModeManager::MultiAnswersMode:
     {
         int y = 100;
         int interval = 182;
