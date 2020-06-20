@@ -15,7 +15,7 @@ public:
     enum ViewMode {
         ScreenSaverMode, // Default Mode
         UserAnswersMode, // See My answer
-        FairnessAnswersMode,
+        MultiAnswersMode, // Multiple answer
         AnswerByAgeMode,
         AnswerByGenderMode,
         AnswerByCultureMode
@@ -87,8 +87,8 @@ private:
     ScreensaverLayout _screensaver;
     BarChartLayout _userAnswers;
 
-    QVector<BarChartLayout> _fairnessAverageAnswer;
-    QVector<BarChartLayout> _fairnessUserAnswer;
+    QVector<BarChartLayout> _multiAverageAnswer;
+    QVector<BarChartLayout> _multiUserAnswer;
 
     QVector<QList<QString>> _viewTitles;
 

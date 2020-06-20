@@ -165,7 +165,7 @@ void DatavizWindow::paintGL() {
     case ViewModeManager::UserAnswersMode:
 
         break;
-    case ViewModeManager::FairnessAnswersMode:
+    case ViewModeManager::MultiAnswersMode:
         _painter->drawViewElements(viewActiveMode,
                                    _viewModeManager->getViewTitles(viewActiveMode));
         break;
