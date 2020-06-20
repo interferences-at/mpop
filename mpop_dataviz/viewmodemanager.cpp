@@ -202,25 +202,25 @@ ViewModeManager::viewBars ViewModeManager::getBarsFromScreenSaver(int number)
     qreal pointX = _pointToPickFrom.x();
     qreal pointY = -_pointToPickFrom.y();
 
+    // The Screensaver amount of bars must be greater by 100 than...
+    while (_viewBars[ScreenSaverMode]->size() - number < 100) {
+        // Add new line every time screensaver bar is about to finish
+        // To avoid out of range error
+        PrisonerLine::ptr line = PrisonerLine::ptr::create();
+        _viewBars[ScreenSaverMode]->push_back(line);
+    }
+    // And get the closest ones from a predefined point
+    _viewBars[ScreenSaverMode] = _screensaver.getClosestBars(QPointF(pointX, pointY));
+
     ViewModeManager::viewBars barChartBars = ViewModeManager::viewBars::create();
 
     for (int i = 0; i < number; i++) {
-        // The Screensaver amount of bars must be greater by 100 than...
-        while (_viewBars[ScreenSaverMode]->size() - i < 100) {
-            // Add new line every time screensaver bar is about to finish
-            // To avoid out of range error
-            PrisonerLine::ptr line = PrisonerLine::ptr::create();
-            _viewBars[ScreenSaverMode]->push_back(line);
-        }
-
-        _viewBars[ScreenSaverMode] = _screensaver.getClosestBars(QPointF(pointX, pointY));
 
         PrisonerLine::ptr line = _viewBars[ScreenSaverMode]->at(i);
-        line->setColor("#FF00FF");
         barChartBars->push_back(line);
-        _viewBars[ScreenSaverMode]->remove(i);
-
     }
+
+    _viewBars[ScreenSaverMode]->remove(0 , number);
 
     return barChartBars;
 }
