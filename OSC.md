@@ -74,7 +74,7 @@ Shows the answer to a single question, with one row for each
 ```
 
 The first argument is my answer.
-The second argument is my age.
+The second argument is the index of the row in which my age is. Example: If I am 21 years old, the index is 4. ([0,5], [5,10], [11,19], [20,25], etc.)
 Finally, the value for each of the twenty (20) rows.
 
 Total: 22 integer arguments.
@@ -105,10 +105,10 @@ Then, for each culture, there is:
 ## view_answer_by_culture
 
 ```
-/dataviz/0/view_answer_by_culture iiisisisisisisi 6 2 50 "Québécoise" 50 "Canadienne" 50 "Autochtone" 50 "Européenne" 50 "Autre" 50
+/dataviz/0/view_answer_by_culture iiisisisisisi 5 2 50 "Québécoise" 50 "Canadienne" 50 "Autochtone" 50 "Européenne" 50 "Autre" 50
 ```
 
-The first int is: how many cultures to show. (it should always be 6)
+The first int is: how many cultures to show. (it should always be 5)
 
 The 2n and 3rd int is:
 
@@ -118,24 +118,20 @@ The 2n and 3rd int is:
 The first number is how many rows to show
 
 
-## screensaver_speed_ratio
+## screensaver_set_param
 
-Sets the speed ratio for the screensaver.
-
-A ratio of 1.0 is normal. You can speed it up or slow it down by setting it to another value.
+Sets the value of a parameter for the screensaver.
 
 ```
-/dataviz/0/set_screensaver_speed_ratio f 1.0
+/dataviz/0/screensaver_set_param sf speed_ratio 1.0
 ```
 
+Default is one.
 
-# set_screensaver_radius_ratio
+- speed_ratio:: multiplier for the speed of each bar 
+- radius_ratio: multiplier for the radius of each bar
 
-Sets the radis ratio for the screensaver.
+A speed ratio of 1.0 is normal. You can speed it up or slow it down by setting it to another value.
 
-```
-/dataviz/0/set_creensaver_radius_ratio f 1.0
-```
-
-A ratio of 1.0 is normal. You can speed it up or slow it down by setting it to another value.
+A radius ratio of 1.0 is the default. You can make the radius of all bars bigger or smaller by changing that.
 
