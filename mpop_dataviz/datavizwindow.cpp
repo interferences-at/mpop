@@ -159,21 +159,13 @@ void DatavizWindow::paintGL() {
     _painter->endOpenGLPainting(); // Finish OpenGL painting
 
     switch (viewActiveMode) {
-    case ViewModeManager::ScreenSaverMode:
-
-        break;
-    case ViewModeManager::UserAnswersMode:
-
-        break;
     case ViewModeManager::MultiAnswersMode:
         _painter->drawViewElements(viewActiveMode,
                                    _viewModeManager->getViewTitles(viewActiveMode));
         break;
     case ViewModeManager::AnswerByAgeMode:
-        // Draw the horizontal coordinate
-        _painter->drawAbscissa();
-        // Draw the vertical coordinate
-        _painter->drawOrdinate();
+        _painter->drawViewElements(viewActiveMode,
+                                   _viewModeManager->getViewTitles(viewActiveMode));
         break;
     case ViewModeManager::AnswerByGenderMode:
 

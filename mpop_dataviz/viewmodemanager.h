@@ -52,6 +52,7 @@ public:
 
     void setUserAnswerBars(const QList<int> &bars);
     void showAnswersData(const QList<AnswerDataPtr>& answers);
+    void showAnswerByAge();
     void goToScreensaver();
 
     void setViewTitles(const QList<QString> &titles, ViewMode viewIndex);
@@ -76,23 +77,41 @@ public:
 private:
     ViewMode _viewActiveMode;
 
+    // Viewport coordinates and dimensions
     qreal _left, _right, _bottom, _top;
-
     int _width, _height;
-
+    // Point to pick bar from when needed by a layout
     QPointF _pointToPickFrom;
 
     QVector<ViewModeManager::viewBars> _viewBars;
-
+    // Screensaver layout
     ScreensaverLayout _screensaver;
-    BarChartLayout _userAnswers;
+    BarChartLayout _userAnswers; // User answer layout
 
+    // Multi answer layouts
     QVector<BarChartLayout> _multiAverageAnswer;
     QVector<BarChartLayout> _multiUserAnswer;
+
+    // Answers by age layout
+    QVector<BarChartLayout> _agesAnswerBarChart;
+    BarChartLayout _userAgeAnswer;
 
     QVector<QList<QString>> _viewTitles;
 
     QElapsedTimer _timer;
 
     static ViewModeManager *viewModeManager;
+
+    // Private functions
+    void setupScreensaverLayout(ViewMode activeView);
+    void moveBarsToMultiAnswerLayout();
+    void moveBarsToAnswerByAgeLayout();
+
+    qreal fitToScreenWidth(qreal size) {
+        return _width * (size / 1260);
+    }
+
+    qreal fitToScreenHeight(qreal size) {
+        return _height * (size / 1080);
+    }
 };

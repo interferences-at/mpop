@@ -21,7 +21,11 @@ public:
      * @param values
      */
     void setRows(const QList<int>& values);
+    // return list of rows
     QList<int> getRows() const { return _rowsValues; }
+    // Return a single row
+    int getRow(int i = 0) const { return _rowsValues.at(i); }
+
 
     void updateBarsPosition(qint64 currentTime) override;
 

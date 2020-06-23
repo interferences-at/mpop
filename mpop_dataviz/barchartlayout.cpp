@@ -31,7 +31,7 @@ void BarChartLayout::updateBarsPosition(qint64 currentTime) {
 
 void BarChartLayout::showSceneObject(qint64 currentTime)
 {
-    for (auto line : *_prisonerLines) {
+    for (auto line : *_barObjects) {
         if (line->getVisible()) {
             line->draw(currentTime);
         }
@@ -49,7 +49,7 @@ void BarChartLayout::setStartPosition(const QPointF &pos)
 
 void BarChartLayout::moveObjectsToLayout(qint64 currentTime) {
     // TODO: never ever iterate over size of line vector
-    const qreal DISTANCE_BETWEEN_BARS = _barsHeight / 5;
+    const qreal DISTANCE_BETWEEN_BARS = _barsHeight / 3.8;
     const qreal WIDTH_OF_EACH_COLUMN = DISTANCE_BETWEEN_BARS * 3;
     const qreal DISTANCE_BETWEEN_COLUMN = DISTANCE_BETWEEN_BARS;
     const qreal DISTANCE_BETWEEN_ROW = DISTANCE_BETWEEN_BARS;
@@ -79,11 +79,11 @@ void BarChartLayout::moveObjectsToLayout(qint64 currentTime) {
         // Each bar in the bar chart is a column
         // We group lines by groups of 5
         for (int barIndex = 0; barIndex < _rowsValues.at(rowIndex); barIndex++) {
-            if (lineIndex >= _prisonerLines->size()) {
+            if (lineIndex >= _barObjects->size()) {
                 qWarning() << "Out of bound: " << lineIndex;
                 break; // exitting this loop
             }
-            PrisonerLine::ptr line = _prisonerLines->at(lineIndex);
+            PrisonerLine::ptr line = _barObjects->at(lineIndex);
             SceneObject::ptr sceneObject = qSharedPointerDynamicCast<SceneObject>(line);
             int moduloFive = barIndex % 5;
 
@@ -95,6 +95,8 @@ void BarChartLayout::moveObjectsToLayout(qint64 currentTime) {
             if (moduloFive == 4) {
                 x = ((barIndex - 2) * DISTANCE_BETWEEN_BARS) - (DISTANCE_BETWEEN_BARS / 2) + columnOffset;
                 rotation = -60.0;
+                // Increase the size of the fifth bar to fit to user story proportion
+                line->setSize(_barsWidth, _barsHeight * 1.2);
 
                 columnIndex += 1;
             }
@@ -117,7 +119,7 @@ void BarChartLayout::moveObjectsToLayout(qint64 currentTime) {
     this->_groupTweenAnimator->start(currentTime);
 
     // When everything is done keep track of previous bars data
-    _previousBars = *_prisonerLines;
+    _previousBars = *_barObjects;
 }
 
 

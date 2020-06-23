@@ -21,7 +21,7 @@ public:
      * @brief Adds some prisoner lines to this layour.
      * @param prisonerLines
      */
-    void addPrisonerLines(QSharedPointer<QVector<PrisonerLine::ptr>> prisonerLines);
+    void addBarObjects(QSharedPointer<QVector<PrisonerLine::ptr>> barObjects);
 
     /**
      * @brief Move the objects managed by this layout into their desired position.
@@ -41,7 +41,7 @@ public:
 
 
 protected:
-    QSharedPointer<QVector<PrisonerLine::ptr>> _prisonerLines;
+    QSharedPointer<QVector<PrisonerLine::ptr>> _barObjects;
     QVector<PrisonerLine::ptr> _previousBars;
 
     float _left = -1.0;

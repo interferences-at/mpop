@@ -19,16 +19,16 @@ void ScreensaverLayout::moveObjectsToLayout(qint64 currentTime)
 
     QRandomGenerator generator;
 
-    if (!_previousBars.isEmpty() && _previousBars.size() < _prisonerLines->size()) {
+    if (!_previousBars.isEmpty() && _previousBars.size() < _barObjects->size()) {
 
-        for (int i = _previousBars.size(); i < _prisonerLines->size(); i++) {
+        for (int i = _previousBars.size(); i < _barObjects->size(); i++) {
 
             qreal posX = randomX(generator);
             qreal posY = randomY(generator);
             std::uniform_real_distribution<qreal> randomRotation(-360, 360);
             qreal rotation = randomRotation(generator);
 
-            PrisonerLine::ptr line = _prisonerLines->at(i);
+            PrisonerLine::ptr line = _barObjects->at(i);
 
             _groupTweenAnimator->addSceneObjectToAnimate(line, posX, posY, rotation);
         }
@@ -38,7 +38,7 @@ void ScreensaverLayout::moveObjectsToLayout(qint64 currentTime)
 
     if (currentTime < 1000) { // At launch
 
-        for (auto line : *_prisonerLines) {
+        for (auto line : *_barObjects) {
             qreal posX = randomX(generator);
             qreal posY = randomY(generator);
             std::uniform_real_distribution<qreal> randomRotation(-360, 360);
@@ -51,14 +51,14 @@ void ScreensaverLayout::moveObjectsToLayout(qint64 currentTime)
     }
 
     // When everything is done keep track of previous bars data
-    _previousBars = *_prisonerLines;
+    _previousBars = *_barObjects;
 }
 
 void ScreensaverLayout::updateBarsPosition(qint64 currentTime)
 {
     QRandomGenerator generator;
 
-    for (auto line : *_prisonerLines) {
+    for (auto line : *_barObjects) {
         qreal centerX = randomX(generator);
         qreal centerY = randomY(generator);
         qreal radius = randomRadius(generator);
@@ -87,7 +87,7 @@ void ScreensaverLayout::updateBarsPosition(qint64 currentTime)
 
 void ScreensaverLayout::showSceneObject(qint64 currentTime)
 {
-    for (auto line : *_prisonerLines) {
+    for (auto line : *_barObjects) {
         if (line->getVisible()) {
 
             line->draw(currentTime);
@@ -98,13 +98,13 @@ void ScreensaverLayout::showSceneObject(qint64 currentTime)
 QSharedPointer<QVector<PrisonerLine::ptr> > ScreensaverLayout::getClosestBars(const QPointF &pos)
 {
     // Sort bars by the closest to the point(x, y)
-    std::sort(std::begin(*_prisonerLines), std::end(*_prisonerLines),
+    std::sort(std::begin(*_barObjects), std::end(*_barObjects),
               [&](PrisonerLine::ptr a, PrisonerLine::ptr b) -> bool {
         return pow(abs(a->getX() - pos.x()), 2) + pow(abs(a->getY() - pos.y()), 2) <
                pow(abs(b->getX() - pos.x()), 2) + pow(abs(b->getY() - pos.y()), 2);
     });
 
-    return _prisonerLines;
+    return _barObjects;
 }
 
 ScreensaverLayout::~ScreensaverLayout()

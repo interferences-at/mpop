@@ -13,6 +13,8 @@ ViewModeManager::ViewModeManager() :
     _multiAverageAnswer = QVector<BarChartLayout>(5);
     _multiUserAnswer = QVector<BarChartLayout>(5);
 
+    _agesAnswerBarChart = QVector<BarChartLayout>(20);
+
     _viewTitles = QVector<QList<QString>>(6);
 
     for (int i = 0; i < 6; i++) {
@@ -23,20 +25,16 @@ ViewModeManager::ViewModeManager() :
 
 void ViewModeManager::showViewManagerBars(ViewMode mode)
 {
+    // Screensaver is shown by default
+    _screensaver.updateBarsPosition(currentTime());
+    _screensaver.showSceneObject(currentTime());
+
     switch (mode) {
-    case ScreenSaverMode:
-        _screensaver.updateBarsPosition(currentTime());
-        _screensaver.showSceneObject(currentTime());
-        break;
     case UserAnswersMode:
-        _screensaver.updateBarsPosition(currentTime());
         _userAnswers.updateBarsPosition(currentTime());
-        _screensaver.showSceneObject(currentTime());
         _userAnswers.showSceneObject(currentTime());
         break;
     case MultiAnswersMode:
-        _screensaver.updateBarsPosition(currentTime());
-        _screensaver.showSceneObject(currentTime());
         for (int i = 0; i < _multiAverageAnswer.size(); i++) {
             _multiAverageAnswer[i].updateBarsPosition(currentTime());
             _multiAverageAnswer[i].showSceneObject(currentTime());
@@ -44,6 +42,14 @@ void ViewModeManager::showViewManagerBars(ViewMode mode)
             _multiUserAnswer[i].updateBarsPosition(currentTime());
             _multiUserAnswer[i].showSceneObject(currentTime());
         }
+        break;
+    case AnswerByAgeMode:
+        for (int i = 0; i < _agesAnswerBarChart.size(); i++) {
+            _agesAnswerBarChart[i].updateBarsPosition(currentTime());
+            _agesAnswerBarChart[i].showSceneObject(currentTime());
+        }
+        _userAgeAnswer.updateBarsPosition(currentTime());
+        _userAgeAnswer.showSceneObject(currentTime());
         break;
     default:
         break;
@@ -65,17 +71,8 @@ void ViewModeManager::updateViewSize(int width, int height)
 {
     _width = width;
     _height = height;
-
-    switch (getViewActiveMode()) {
-    case ScreenSaverMode:
-        _screensaver.setBarsSize(sizeFromPixel(3, 60));
-        break;
-    case UserAnswersMode:
-
-        break;
-    default:
-        break;
-    }
+    // Update view at resize
+    moveBarsToLayouts(getViewActiveMode());
 }
 
 void ViewModeManager::setViewActiveMode(ViewMode mode)
@@ -99,62 +96,26 @@ void ViewModeManager::setBarChartRows(const QList<int> &bars, ViewMode viewIndex
 }
 
 void ViewModeManager::moveBarsToLayouts(ViewMode viewIndex)
-{
-    switch (viewIndex) {
-    case ScreenSaverMode:
-        _screensaver.addPrisonerLines(_viewBars[ScreenSaverMode]);
-        _screensaver.setBarsSize(sizeFromPixel(3, 60));
-        _screensaver.setBarsColor("#CCCCCC");
-        _screensaver.moveObjectsToLayout(currentTime());
-        break;
-    case UserAnswersMode:
-        _screensaver.addPrisonerLines(_viewBars[ScreenSaverMode]);
-        _screensaver.setBarsSize(sizeFromPixel(3, 40));
-        _screensaver.setBarsColor("#CCCCCC");
-        _screensaver.moveObjectsToLayout(currentTime());
+{   
+    // Setup screensaver behavior
+    setupScreensaverLayout(viewIndex);
 
-        _userAnswers.addPrisonerLines(_viewBars[UserAnswersMode]);
+    switch (viewIndex) {
+    case UserAnswersMode:
+        // Setup user answer Layout
+        _userAnswers.addBarObjects(_viewBars[viewIndex]);
         _userAnswers.setBarsSize(sizeFromPixel(3, 74));
         _userAnswers.setBarsColor("#FF0000");
         _userAnswers.setAlignCenter(true);
         _userAnswers.moveObjectsToLayout(currentTime());
         break;
     case MultiAnswersMode:
-        _screensaver.addPrisonerLines(_viewBars[ScreenSaverMode]);
-        _screensaver.setBarsSize(sizeFromPixel(2, 35));
-        _screensaver.setBarsColor("#3D3D3D");
-        _screensaver.moveObjectsToLayout(currentTime());
-    {
-        int y = 129;
-        int interval = 182;
-        int index = 0;
-
-        for (int i = 0; i < _multiAverageAnswer.size(); i++) {
-            ViewModeManager::viewBars averageVect = ViewModeManager::viewBars::create();
-            ViewModeManager::viewBars userVect = ViewModeManager::viewBars::create();
-            for (int x = 0; x < _multiAverageAnswer[i].getRows().at(0); x++) {
-                averageVect->push_back(_viewBars[MultiAnswersMode]->at(index));
-                index++;
-            }
-            for (int x = 0; x < _multiUserAnswer[i].getRows().at(0); x++) {
-                userVect->push_back(_viewBars[MultiAnswersMode]->at(index));
-                index++;
-            }
-
-            _multiAverageAnswer[i].addPrisonerLines(averageVect);
-            _multiUserAnswer[i].addPrisonerLines(userVect);
-
-            _multiAverageAnswer[i].setBarsSize(sizeFromPixel(2, 35));
-            _multiAverageAnswer[i].setBarsColor("#FFFFFF");
-            _multiAverageAnswer[i].setStartPosition(coordinateFromPixel(95, y + i * interval));
-            _multiAverageAnswer[i].moveObjectsToLayout(currentTime());
-
-            _multiUserAnswer[i].setBarsSize(sizeFromPixel(2, 35));
-            _multiUserAnswer[i].setBarsColor("#AB3D33");
-            _multiUserAnswer[i].setStartPosition(coordinateFromPixel(95, y + 45 + i * interval));
-            _multiUserAnswer[i].moveObjectsToLayout(currentTime());
-        }
-    }
+        // Setup multi answer layouts
+        moveBarsToMultiAnswerLayout();
+        break;
+    case AnswerByAgeMode:
+        // Setup answer by age layouts
+        moveBarsToAnswerByAgeLayout();
         break;
     default:
         break;
@@ -215,7 +176,6 @@ ViewModeManager::viewBars ViewModeManager::getBarsFromScreenSaver(int number)
     ViewModeManager::viewBars barChartBars = ViewModeManager::viewBars::create();
 
     for (int i = 0; i < number; i++) {
-
         PrisonerLine::ptr line = _viewBars[ScreenSaverMode]->at(i);
         barChartBars->push_back(line);
     }
@@ -241,10 +201,8 @@ void ViewModeManager::showAnswersData(const QList<AnswerDataPtr>& answers) {
     QList<QString> titles;
 
     for (int i = 0; i < answers.size(); i++) {
-        QList<int> list; list << answers.at(i)->their_answer;
-        _multiAverageAnswer[i].setRows(list);
-        QList<int> list2; list2 << answers.at(i)->my_answer;
-        _multiUserAnswer[i].setRows(list2);
+        _multiAverageAnswer[i].setRows({answers.at(i)->their_answer});
+        _multiUserAnswer[i].setRows({answers.at(i)->my_answer});
 
         answerTotal += answers.at(i)->their_answer;
         answerTotal += answers.at(i)->my_answer;
@@ -258,15 +216,41 @@ void ViewModeManager::showAnswersData(const QList<AnswerDataPtr>& answers) {
     setViewActiveMode(MultiAnswersMode);
 }
 
+void ViewModeManager::showAnswerByAge()
+{
+    QList<int> ages;
+    for (int i = 0; i < 20; i++) {
+        int randomNumber = QRandomGenerator::global()->bounded(100);
+        ages.push_back(randomNumber);
+    }
+
+    int myAge = QRandomGenerator::global()->bounded(100);
+    int barSum = 0;
+
+    for (int i = 0; i < ages.size(); i++) {
+        int reverseIndex = (ages.size() - 1) - i;
+        _agesAnswerBarChart[i].setRows({ages.at(reverseIndex)});
+
+        barSum += ages.at(i);
+    }
+    _userAgeAnswer.setRows({myAge});
+
+    setPointToPickFrom(coordinateFromPixel(_width, _height));
+    setViewBarsQuantity(barSum + myAge, AnswerByAgeMode);
+    setViewActiveMode(AnswerByAgeMode);
+}
+
 void ViewModeManager::goToScreensaver()
 {
-    int totalBars = _viewBars[_viewActiveMode]->size();
-    for (int i = 0; i < totalBars; i++) {
-        _viewBars[ScreenSaverMode]->push_back(_viewBars[_viewActiveMode]->at(i));
-    }
-    _viewBars[_viewActiveMode]->remove(0, totalBars);
-    moveBarsToLayouts(ScreenSaverMode);
-    setViewActiveMode(ScreenSaverMode);
+//    int totalBars = _viewBars[_viewActiveMode]->size();
+//    for (int i = 0; i < totalBars; i++) {
+//        _viewBars[ScreenSaverMode]->push_back(_viewBars[_viewActiveMode]->at(i));
+//    }
+//    _viewBars[_viewActiveMode]->remove(0, totalBars);
+//    moveBarsToLayouts(ScreenSaverMode);
+//    setViewActiveMode(ScreenSaverMode);
+
+    showAnswerByAge();
 }
 
 void ViewModeManager::setViewTitles(const QList<QString> &titles, ViewModeManager::ViewMode viewIndex)
@@ -296,4 +280,107 @@ void ViewModeManager::setPointToPickFrom(const QPointF &point)
 qreal ViewModeManager::mapValue(qreal value, qreal istart, qreal istop, qreal ostart, qreal ostop)
 {
     return ostart + (ostop - ostart) * ((value - istart) / (istop - istart));
+}
+
+void ViewModeManager::setupScreensaverLayout(ViewModeManager::ViewMode activeView)
+{
+    // Add object
+    _screensaver.addBarObjects(_viewBars[ScreenSaverMode]);
+
+    switch (activeView) {
+    case ScreenSaverMode:
+        _screensaver.setBarsSize(sizeFromPixel(3, 60));
+        _screensaver.setBarsColor("#CCCCCC");
+        break;
+    case UserAnswersMode:
+        _screensaver.setBarsSize(sizeFromPixel(3, 40));
+        _screensaver.setBarsColor("#CCCCCC");
+        break;
+    case MultiAnswersMode:
+        _screensaver.setBarsSize(sizeFromPixel(2, 35));
+        _screensaver.setBarsColor("#3D3D3D");
+        break;
+    case AnswerByAgeMode:
+        _screensaver.setBarsSize(sizeFromPixel(2, 35));
+        _screensaver.setBarsColor("#3D3D3D");
+        break;
+    case AnswerByGenderMode:
+        break;
+    case AnswerByCultureMode:
+        break;
+    }
+
+    _screensaver.moveObjectsToLayout(currentTime());
+}
+
+void ViewModeManager::moveBarsToMultiAnswerLayout()
+{
+    qreal barHeight = fitToScreenHeight(35.5);
+    qreal y = fitToScreenHeight(129) + (barHeight / 2);
+    qreal blockSpace = fitToScreenHeight(148);
+    qreal rowSpace = fitToScreenHeight(5);
+    qreal marginLeft = 93;
+    int index = 0;
+
+    for (int i = 0; i < _multiAverageAnswer.size(); i++) {
+        ViewModeManager::viewBars averageVect = ViewModeManager::viewBars::create();
+        ViewModeManager::viewBars userVect = ViewModeManager::viewBars::create();
+        for (int row = 0; row < _multiAverageAnswer[i].getRow(); row++) {
+            averageVect->push_back(_viewBars[MultiAnswersMode]->at(index));
+            index++;
+        }
+        for (int row = 0; row < _multiUserAnswer[i].getRow(); row++) {
+            userVect->push_back(_viewBars[MultiAnswersMode]->at(index));
+            index++;
+        }
+
+        _multiAverageAnswer[i].addBarObjects(averageVect);
+        _multiUserAnswer[i].addBarObjects(userVect);
+
+        _multiAverageAnswer[i].setBarsSize(sizeFromPixel(2, barHeight));
+        _multiAverageAnswer[i].setBarsColor("#FFFFFF");
+        _multiAverageAnswer[i].setStartPosition(coordinateFromPixel(marginLeft, y + i * (blockSpace + barHeight)));
+        _multiAverageAnswer[i].moveObjectsToLayout(currentTime());
+
+        _multiUserAnswer[i].setBarsSize(sizeFromPixel(2.5, barHeight));
+        _multiUserAnswer[i].setBarsColor("#AB3D33");
+        _multiUserAnswer[i].setStartPosition(coordinateFromPixel(marginLeft, y + barHeight + rowSpace + i * (blockSpace + barHeight)));
+        _multiUserAnswer[i].moveObjectsToLayout(currentTime());
+    }
+}
+
+void ViewModeManager::moveBarsToAnswerByAgeLayout()
+{
+    qreal barHeight = fitToScreenHeight(35.5);
+    qreal startY = fitToScreenHeight(92) + (barHeight / 2);
+    qreal rowSpace = fitToScreenHeight(10);
+    qreal marginLeft = 93;
+    int myAgeIndex = 20 - floor(_userAgeAnswer.getRow() / 5);
+    int index = 0;
+
+    for (int i = 0; i < _agesAnswerBarChart.size(); i++) {
+        ViewModeManager::viewBars answerAge = ViewModeManager::viewBars::create();
+        for (int row = 0; row < _agesAnswerBarChart[i].getRow(); row++) {
+            answerAge->push_back(_viewBars[AnswerByAgeMode]->at(index));
+            index++;
+        }
+
+        _agesAnswerBarChart[i].addBarObjects(answerAge);
+
+        _agesAnswerBarChart[i].setBarsSize(sizeFromPixel(2.5, barHeight));
+        _agesAnswerBarChart[i].setBarsColor("#667554");
+        _agesAnswerBarChart[i].setStartPosition(coordinateFromPixel(marginLeft, startY + i * (barHeight + rowSpace)));
+        _agesAnswerBarChart[i].moveObjectsToLayout(currentTime());
+    }
+
+    ViewModeManager::viewBars myAgeVect = ViewModeManager::viewBars::create();
+
+    for (int i = index; i < _viewBars[AnswerByAgeMode]->size(); i++) {
+        myAgeVect->push_back(_viewBars[AnswerByAgeMode]->at(i));
+    }
+    _userAgeAnswer.addBarObjects(myAgeVect);
+    _userAgeAnswer.setBarsSize(sizeFromPixel(2.5, barHeight));
+    _userAgeAnswer.setBarsColor("#AB3D33");
+    _userAgeAnswer.setStartPosition(coordinateFromPixel(marginLeft + 2.5, startY + myAgeIndex * (barHeight + rowSpace)));
+    _userAgeAnswer.moveObjectsToLayout(currentTime());
 }

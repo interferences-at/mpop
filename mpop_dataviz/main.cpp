@@ -142,7 +142,7 @@ int main(int argc, char* argv[]) {
         qDebug() << "Window" << i << "of size:" <<
             options.window_width << "x" << options.window_height <<
             "at position" << x << "," << y;
-        qDebug() << "Window ID: " << window->getWindowId() << endl;
+        qDebug() << "Window ID: " << window->getWindowId();
         if (options.show_window_frame) {
             window->setFlags(Qt::Window);
         } else {
