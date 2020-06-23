@@ -27,9 +27,9 @@ public:
     void showBottonTitle(bool visible = false); // Show/Hide bottom title
 
     // Draw the X Axis line and text
-    void drawAbscissa(int xMaxValue = 100, int xIntervalUnit = 10);
+    void drawHorizontalNumbers();
     // Draw the Y Axis line and text
-    void drawOrdinate(int yMaxValue = 100, int yIntervalUnit = 10);
+    void drawVerticalNumbers();
     // Draw the top title
     void drawTopTitles();
     // Draw the bottom title
@@ -39,7 +39,7 @@ public:
     // Draw frame per second
     void drawFramePerSecond(const int &framePerSecond);
     // Draw view answer element
-    void drawViewElements(ViewModeManager::ViewMode view, const QList<QString> &title);
+    void drawViewElements(ViewModeManager::ViewMode view, const QList<QString> &title = {});
 
     void beginOpenGLPainting(); // QPainter beginNativePainting wrapper
     void endOpenGLPainting();  // QPainter endNativePainting wrapper
@@ -50,9 +50,9 @@ private:
     QPen _linePen;
 
     // Font settings
-    QFont _axisNumberFont, _bottomTitleFont, _topTitleFont;
+    QFont _numbersFont, _bottomTitleFont, _topTitleFont;
     QFont _percentageFont, _fpsTextFont;
-    QFont _fairnessAnswerFont;
+    QFont _multiAnswerTitleFont;
 
     // List of top and bottom titles
     QList<QString> _topTitles;
@@ -68,15 +68,23 @@ private:
     // Constantes
 
     // Abscissa X Axis
-    const int X_AXIS_HEIGHT = 60; // From botton to the horizontal line
-    const int X_LINE_LEFT_MARGIN = 60; // == Y_AXIS_WIDTH
-    const int X_LINE_RIGHT_MARGIN = 30;
+    const int X_AXIS_HEIGHT = 78; // From botton to the horizontal line
+    const int X_LINE_LEFT_MARGIN = 76; // == Y_AXIS_WIDTH
+    const int X_LINE_RIGHT_MARGIN = 106;
 
     // Ordinate Y Axis
-    const int Y_AXIS_WIDTH = 60; // From the left side to the vertical line
-    const int Y_LINE_TOP_MARGIN = 30;
-    const int Y_LINE_BOTTOM_MARGIN = 60;
+    const int Y_AXIS_WIDTH = X_LINE_LEFT_MARGIN; // From the left side to the vertical line
+    const int Y_LINE_TOP_MARGIN = 50;
+    const int Y_LINE_BOTTOM_MARGIN = X_AXIS_HEIGHT;
 
     // Titles text boxes height
     const int TITLES_HEIGHT = 60;
+
+    qreal fitToScreenWidth(qreal size) {
+        return _width * (size / 1260);
+    }
+
+    qreal fitToScreenHeight(qreal size) {
+        return _height * (size / 1080);
+    }
 };

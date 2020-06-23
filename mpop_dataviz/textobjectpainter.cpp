@@ -11,12 +11,12 @@ TextObjectPainter::TextObjectPainter() :
     int id = QFontDatabase::addApplicationFont(":/base-font");
     QString fontFamily = QFontDatabase::applicationFontFamilies(id).at(0);
 
-    _axisNumberFont = QFont(fontFamily, 11, QFont::DemiBold);
+    _numbersFont = QFont(fontFamily, 11, QFont::DemiBold);
     _bottomTitleFont = QFont(fontFamily, 24);
     _topTitleFont = QFont(fontFamily, 22);
     _percentageFont = QFont(fontFamily, 22);
     _fpsTextFont = QFont(fontFamily, 12, QFont::DemiBold);
-    _fairnessAnswerFont = QFont(fontFamily, 14, QFont::DemiBold);
+    _multiAnswerTitleFont = QFont(fontFamily, 14, QFont::DemiBold);
 }
 
 TextObjectPainter::~TextObjectPainter()
@@ -40,47 +40,35 @@ void TextObjectPainter::setPaintDevice(QOpenGLPaintDevice *device)
     _painter.setViewport(0, 0, _width / _pixelRatio, _height / _pixelRatio);
 }
 
-void TextObjectPainter::drawAbscissa(int xMaxValue, int xIntervalUnit)
+void TextObjectPainter::drawHorizontalNumbers()
 {
     _painter.save(); // Start of using painter
-    // Compute new height if we decide to show bottom title
-    int height = _showBottomTitle ? _height - TITLES_HEIGHT : _height;
-    // The length of the horizontal line
-    int lineWidth = _width - (X_LINE_LEFT_MARGIN + X_LINE_RIGHT_MARGIN);
-    // Number of interval eg: maxValue(100) / intervalUnit(10) = 10 intervals
-    int intervalCount = xMaxValue / xIntervalUnit; // How many interval exist
-    QRect xAxisTextRect(0, 0, lineWidth / intervalCount, X_AXIS_HEIGHT);
-    _painter.setPen(_linePen);
-    _painter.drawLine(QPoint(X_LINE_LEFT_MARGIN, height - X_AXIS_HEIGHT),
-                      QPoint(_width - X_LINE_RIGHT_MARGIN, height - X_AXIS_HEIGHT));
-    _painter.translate(X_LINE_LEFT_MARGIN, height - X_AXIS_HEIGHT);
-    _painter.setFont(_axisNumberFont);
-    for (int xAxis = xIntervalUnit; xAxis <= xMaxValue; xAxis += xIntervalUnit) {
-        _painter.drawText(xAxisTextRect, Qt::AlignRight | Qt::AlignVCenter, QString::number(xAxis));
-        _painter.translate(lineWidth / intervalCount, 0);
+    qreal rowHeight = fitToScreenHeight(32);
+    qreal startY = _height - fitToScreenHeight(X_AXIS_HEIGHT);
+    qreal numberRectWidth = fitToScreenHeight(35.5) / 3.8 * 12;
+    QRect hNumbersRect(0, 0, numberRectWidth, rowHeight);
+
+    _painter.setFont(_numbersFont);
+    _painter.translate(Y_AXIS_WIDTH - numberRectWidth / 8, startY);
+    for (int hUnit = 10; hUnit <= 100; hUnit += 10) {
+        _painter.drawText(hNumbersRect, Qt::AlignRight | Qt::AlignBottom, QString::number(hUnit));
+        _painter.translate(numberRectWidth, 0);
     }
     _painter.restore(); // Finish using painter
 }
 
-void TextObjectPainter::drawOrdinate(int yMaxValue, int yIntervalUnit)
+void TextObjectPainter::drawVerticalNumbers()
 {
     _painter.save(); // Start of using painter
-    // Compute new height if we decide to show bottom title
-    int height = _showBottomTitle ? _height - TITLES_HEIGHT : _height;
-    int yLineTopMargin = _showPercentage ? Y_AXIS_WIDTH : Y_LINE_TOP_MARGIN;
-    // The height of the vertical line
-    int lineHeight = height - (yLineTopMargin + Y_LINE_BOTTOM_MARGIN);
-    // Number of interval eg: maxValue(100) / intervalUnit(10) = 10 intervals
-    int intervalCount = yMaxValue / yIntervalUnit;
-    QRect yAxisTextRect(0, 0, Y_AXIS_WIDTH, lineHeight / intervalCount);
-    _painter.setPen(_linePen);
-    _painter.drawLine(QPoint(Y_AXIS_WIDTH, yLineTopMargin),
-                      QPoint(Y_AXIS_WIDTH, height - Y_LINE_BOTTOM_MARGIN));
-    _painter.translate(0, yLineTopMargin);
-     _painter.setFont(_axisNumberFont);
-    for (int yAxis = yMaxValue; yAxis >= yIntervalUnit; yAxis -= yIntervalUnit) {
-        _painter.drawText(yAxisTextRect, Qt::AlignTop | Qt::AlignHCenter, QString::number(yAxis));
-        _painter.translate(0, lineHeight / intervalCount);
+    qreal columnHeight = fitToScreenHeight(45.5 * 20);
+    qreal startY = fitToScreenHeight(102);
+
+    QRect vNumbersRect(0, 0, Y_AXIS_WIDTH, columnHeight / 10);
+    _painter.translate(0, startY);
+     _painter.setFont(_numbersFont);
+    for (int vUnit = 100; vUnit >= 10; vUnit -= 10) {
+        _painter.drawText(vNumbersRect, Qt::AlignTop | Qt::AlignHCenter, QString::number(vUnit));
+        _painter.translate(0, columnHeight / 10);
     }
     _painter.restore(); // Finish using painter
 }
@@ -128,38 +116,64 @@ void TextObjectPainter::drawFramePerSecond(const int &framePerSecond)
 {
     _painter.save();
     _painter.setFont(_fpsTextFont);
-    _painter.drawText(100, 100, QString::number(framePerSecond) + " FPS");
-    _painter.drawLine(0, 0, _width, _height);
-    _painter.drawLine(_width, 0, 0, _height);
+    _painter.drawText(10, 10, QString::number(framePerSecond) + " FPS");
+//    _painter.drawLine(0, 0, _width, _height);
+//    _painter.drawLine(_width, 0, 0, _height);
+    _painter.setPen(QPen(Qt::red, 1));
+    //    for (int x = 0; x < _width; x++) {
+    //        for (int y = 0; y < _height; y++) {
+    //            _painter.drawLine(y * 10, 0, y * 10, _height);
+    //            _painter.drawLine(0, x * 10, _width, x * 10);
+    //        }
+    //    }
     _painter.restore();
 }
 
 void TextObjectPainter::drawViewElements(ViewModeManager::ViewMode view, const QList<QString> &title)
 {
     _painter.save();
+    qreal vLineMrgLeft = Y_AXIS_WIDTH;
+    qreal vLineMrgTop = fitToScreenHeight(Y_LINE_TOP_MARGIN);
+    qreal hLineMrgBottom = fitToScreenHeight(X_AXIS_HEIGHT);
+    qreal hLineMrgRight  = X_LINE_RIGHT_MARGIN;
 
     _painter.setPen(_linePen);
-    _painter.drawLine(79, 50, 79, _height - 79);
-    _painter.drawLine(96, _height - 79, _width - 106, _height - 79);
+    _painter.drawLine(vLineMrgLeft, vLineMrgTop, vLineMrgLeft, _height - hLineMrgBottom);
+    _painter.drawLine(vLineMrgLeft + 17, _height - hLineMrgBottom, _width - hLineMrgRight, _height - hLineMrgBottom);
 
     switch (view) {
     case ViewModeManager::MultiAnswersMode:
     {
-        int y = 100;
-        int interval = 182;
+        int y = fitToScreenHeight(114);
+        int interval = fitToScreenHeight(148 + 35.5);
+        int marginLeft = 93;
 
-        _painter.setFont(_fairnessAnswerFont);
+        _painter.setFont(_multiAnswerTitleFont);
         for (int i = 0; i < title.size(); i++) {
-            _painter.drawText(94, y + i * interval, title.at(i));
+            _painter.drawText(marginLeft, y + i * interval, title.at(i));
         }
+        qreal bottomTitlePosY = _height - fitToScreenHeight(hLineMrgBottom - 32);
+        _painter.drawText(64, bottomTitlePosY, "Pas du tout");
+        _painter.drawText(_width - 170, bottomTitlePosY, "Tout à fait");
     }
         break;
+    case ViewModeManager::AnswerByAgeMode:
+    {
+        QRect ageTextRect(0, 0, Y_AXIS_WIDTH, Y_LINE_TOP_MARGIN);
+        _painter.setFont(_topTitleFont);
+        _painter.drawText(ageTextRect, Qt::AlignBottom | Qt::AlignCenter, "Âge");
+        drawVerticalNumbers();
+        drawHorizontalNumbers();
+        QRect responseTextRect(0, 0, _width, X_AXIS_HEIGHT);
+        _painter.setFont(_bottomTitleFont);
+        _painter.translate(0, _height - X_AXIS_HEIGHT);
+        _painter.drawText(responseTextRect, Qt::AlignBottom | Qt::AlignCenter, "Réponses (%)");
+        break;
+    }
     default:
         break;
     }
 
-    _painter.drawText(65, _height - 40, "Pas du tout");
-    _painter.drawText(_width - 170, _height - 40, "Tout à fait");
     _painter.restore();
 }
 

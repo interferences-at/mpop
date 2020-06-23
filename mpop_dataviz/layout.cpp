@@ -11,13 +11,13 @@ Layout::~Layout()
 }
 
 
-void Layout::addPrisonerLines(QSharedPointer<QVector<PrisonerLine::ptr> > prisonerLines) {
-    _prisonerLines = prisonerLines;
+void Layout::addBarObjects(QSharedPointer<QVector<PrisonerLine::ptr> > barObjects) {
+    _barObjects = barObjects;
 }
 
 void Layout::setBarsSize(qreal width, qreal height)
 {
-    for (auto line : *_prisonerLines) {
+    for (auto line : *_barObjects) {
         line->setSize(width, height);
     }
 
@@ -34,7 +34,7 @@ void Layout::setBarsSize(const QPointF &size)
 
 void Layout::setBarsColor(const QString &colorHex)
 {
-    for (auto line : *_prisonerLines) {
+    for (auto line : *_barObjects) {
         line->setColor(colorHex);
     }
 }
