@@ -10,11 +10,6 @@ ViewModeManager::ViewModeManager() :
 {
     _timer.start();
 
-    _multiAverageAnswer = QVector<BarChartLayout>(5);
-    _multiUserAnswer = QVector<BarChartLayout>(5);
-
-    _agesAnswerBarChart = QVector<BarChartLayout>(20);
-
     _viewTitles = QVector<QList<QString>>(6);
 
     for (int i = 0; i < 6; i++) {
@@ -198,6 +193,11 @@ void ViewModeManager::setUserAnswerBars(const QList<int> &bars)
 void ViewModeManager::showAnswersData(const QList<AnswerDataPtr>& answers) {
     int answerTotal = 0;
 
+    _multiAverageAnswer = QVector<BarChartLayout>(answers.size());
+    _multiUserAnswer = QVector<BarChartLayout>(answers.size());
+
+    _viewTitles = QVector<QList<QString>>(6);
+
     QList<QString> titles;
 
     for (int i = 0; i < answers.size(); i++) {
@@ -216,41 +216,37 @@ void ViewModeManager::showAnswersData(const QList<AnswerDataPtr>& answers) {
     setViewActiveMode(MultiAnswersMode);
 }
 
-void ViewModeManager::showAnswerByAge()
+void ViewModeManager::showOneAnswerByAge(int myAge, int myAnswer, const QList<int>& values)
 {
-    QList<int> ages;
-    for (int i = 0; i < 20; i++) {
-        int randomNumber = QRandomGenerator::global()->bounded(100);
-        ages.push_back(randomNumber);
+    _agesAnswerBarChart = QVector<BarChartLayout>(values.size());
+    int barSum = std::accumulate(values.begin(), values.end(), myAnswer);
+    _myAgeReverseIndex = values.size() - floor(std::max(myAge, 5) / 5);
+
+    for (int i = 0, ri = values.size(); i < values.size(); i++, ri--) {
+
+        _agesAnswerBarChart[i].setRows({values.at(ri - 1)});
     }
 
-    int myAge = QRandomGenerator::global()->bounded(100);
-    int barSum = 0;
-
-    for (int i = 0; i < ages.size(); i++) {
-        int reverseIndex = (ages.size() - 1) - i;
-        _agesAnswerBarChart[i].setRows({ages.at(reverseIndex)});
-
-        barSum += ages.at(i);
-    }
-    _userAgeAnswer.setRows({myAge});
+    _userAgeAnswer.setRows({myAnswer});
 
     setPointToPickFrom(coordinateFromPixel(_width, _height));
-    setViewBarsQuantity(barSum + myAge, AnswerByAgeMode);
+    setViewBarsQuantity(barSum, AnswerByAgeMode);
     setViewActiveMode(AnswerByAgeMode);
+}
+
+void ViewModeManager::showOneAnswer(int numRows, int myRow, int myAnswer, const QList<TitleAndValuePtr>& titlesAndValues) {
+    qDebug() << "TODO: Implement showOneAnswer";
 }
 
 void ViewModeManager::goToScreensaver()
 {
-//    int totalBars = _viewBars[_viewActiveMode]->size();
-//    for (int i = 0; i < totalBars; i++) {
-//        _viewBars[ScreenSaverMode]->push_back(_viewBars[_viewActiveMode]->at(i));
-//    }
-//    _viewBars[_viewActiveMode]->remove(0, totalBars);
-//    moveBarsToLayouts(ScreenSaverMode);
-//    setViewActiveMode(ScreenSaverMode);
-
-    showAnswerByAge();
+    int totalBars = _viewBars[_viewActiveMode]->size();
+    for (int i = 0; i < totalBars; i++) {
+        _viewBars[ScreenSaverMode]->push_back(_viewBars[_viewActiveMode]->at(i));
+    }
+    _viewBars[_viewActiveMode]->remove(0, totalBars);
+    moveBarsToLayouts(ScreenSaverMode);
+    setViewActiveMode(ScreenSaverMode);
 }
 
 void ViewModeManager::setViewTitles(const QList<QString> &titles, ViewModeManager::ViewMode viewIndex)
@@ -315,7 +311,7 @@ void ViewModeManager::setupScreensaverLayout(ViewModeManager::ViewMode activeVie
 
 void ViewModeManager::moveBarsToMultiAnswerLayout()
 {
-    qreal barHeight = fitToScreenHeight(35.5);
+    qreal barHeight = fitToScreenHeight(35);
     qreal y = fitToScreenHeight(129) + (barHeight / 2);
     qreal blockSpace = fitToScreenHeight(148);
     qreal rowSpace = fitToScreenHeight(5);
@@ -351,11 +347,10 @@ void ViewModeManager::moveBarsToMultiAnswerLayout()
 
 void ViewModeManager::moveBarsToAnswerByAgeLayout()
 {
-    qreal barHeight = fitToScreenHeight(35.5);
+    qreal barHeight = fitToScreenHeight(35);
     qreal startY = fitToScreenHeight(92) + (barHeight / 2);
-    qreal rowSpace = fitToScreenHeight(10);
+    qreal rowSpace = fitToScreenHeight(10.5);
     qreal marginLeft = 93;
-    int myAgeIndex = 20 - floor(_userAgeAnswer.getRow() / 5);
     int index = 0;
 
     for (int i = 0; i < _agesAnswerBarChart.size(); i++) {
@@ -381,14 +376,6 @@ void ViewModeManager::moveBarsToAnswerByAgeLayout()
     _userAgeAnswer.addBarObjects(myAgeVect);
     _userAgeAnswer.setBarsSize(sizeFromPixel(2.5, barHeight));
     _userAgeAnswer.setBarsColor("#AB3D33");
-    _userAgeAnswer.setStartPosition(coordinateFromPixel(marginLeft + 2.5, startY + myAgeIndex * (barHeight + rowSpace)));
+    _userAgeAnswer.setStartPosition(coordinateFromPixel(marginLeft + 2.5, startY + _myAgeReverseIndex * (barHeight + rowSpace)));
     _userAgeAnswer.moveObjectsToLayout(currentTime());
-}
-
-void ViewModeManager::showOneAnswer(int numRows, int myRow, int myAnswer, const QList<TitleAndValuePtr>& titlesAndValues) {
-    qDebug() << "TODO: Implement showOneAnswer";
-}
-
-void ViewModeManager::showOneAnswerByAge(int myRowIndex, int myAnswer, const QList<int>& values) {
-    qDebug() << "TODO: Implement showOneAnswerByAge";
 }

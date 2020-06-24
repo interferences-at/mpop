@@ -45,7 +45,7 @@ void TextObjectPainter::drawHorizontalNumbers()
     _painter.save(); // Start of using painter
     qreal rowHeight = fitToScreenHeight(32);
     qreal startY = _height - fitToScreenHeight(X_AXIS_HEIGHT);
-    qreal numberRectWidth = fitToScreenHeight(35.5) / 3.8 * 12;
+    qreal numberRectWidth = fitToScreenHeight(35) / 3.6 * 11;
     QRect hNumbersRect(0, 0, numberRectWidth, rowHeight);
 
     _painter.setFont(_numbersFont);
@@ -135,7 +135,7 @@ void TextObjectPainter::drawViewElements(ViewModeManager::ViewMode view, const Q
     qreal vLineMrgLeft = Y_AXIS_WIDTH;
     qreal vLineMrgTop = fitToScreenHeight(Y_LINE_TOP_MARGIN);
     qreal hLineMrgBottom = fitToScreenHeight(X_AXIS_HEIGHT);
-    qreal hLineMrgRight  = X_LINE_RIGHT_MARGIN;
+    qreal hLineMrgRight  = fitToScreenWidth(X_LINE_RIGHT_MARGIN);
 
     _painter.setPen(_linePen);
     _painter.drawLine(vLineMrgLeft, vLineMrgTop, vLineMrgLeft, _height - hLineMrgBottom);
