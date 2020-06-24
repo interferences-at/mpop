@@ -23,13 +23,20 @@ public:
 
     typedef  QSharedPointer<QVector<PrisonerLine::ptr>> viewBars;
 
-    typedef struct {
+    struct AnswerData {
         QString text;
         int my_answer;
         int their_answer;
-    } AnswerData;
+    };
 
     typedef QSharedPointer<AnswerData> AnswerDataPtr;
+
+    struct TitleAndValue {
+        QString title;
+        int value;
+    };
+
+    typedef QSharedPointer<TitleAndValue> TitleAndValuePtr;
 
     // Methods:
     ViewModeManager();
@@ -54,6 +61,9 @@ public:
     void showAnswersData(const QList<AnswerDataPtr>& answers);
     void showAnswerByAge();
     void goToScreensaver();
+
+    void showOneAnswer(int numRows, int myRow, int myAnswer, const QList<TitleAndValuePtr>& titlesAndValues);
+    void showOneAnswerByAge(int myRowIndex, int myAnswer, const QList<int>& values);
 
     void setViewTitles(const QList<QString> &titles, ViewMode viewIndex);
     QList<QString> getViewTitles(ViewMode view) const { return _viewTitles[view]; }
