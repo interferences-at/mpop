@@ -59,11 +59,9 @@ public:
 
     void setUserAnswerBars(const QList<int> &bars);
     void showAnswersData(const QList<AnswerDataPtr>& answers);
-    void showAnswerByAge();
-    void goToScreensaver();
-
     void showOneAnswer(int numRows, int myRow, int myAnswer, const QList<TitleAndValuePtr>& titlesAndValues);
     void showOneAnswerByAge(int myRowIndex, int myAnswer, const QList<int>& values);
+    void goToScreensaver();
 
     void setViewTitles(const QList<QString> &titles, ViewMode viewIndex);
     QList<QString> getViewTitles(ViewMode view) const { return _viewTitles[view]; }
@@ -105,6 +103,7 @@ private:
     // Answers by age layout
     QVector<BarChartLayout> _agesAnswerBarChart;
     BarChartLayout _userAgeAnswer;
+    int _myAgeReverseIndex;
 
     QVector<QList<QString>> _viewTitles;
 
