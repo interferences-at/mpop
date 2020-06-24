@@ -44,6 +44,8 @@ public:
     // Alias for shared pointer of this class
     typedef QSharedPointer<DatavizWindow> ptr;
 
+    ScreensaverLayout* getScreensaver() { return &(this->_screensaverLayout); }
+
 protected:
     void keyPressEvent(QKeyEvent *event) override;
 

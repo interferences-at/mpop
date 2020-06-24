@@ -297,3 +297,11 @@ qreal ViewModeManager::mapValue(qreal value, qreal istart, qreal istop, qreal os
 {
     return ostart + (ostop - ostart) * ((value - istart) / (istop - istart));
 }
+
+void ViewModeManager::showOneAnswer(int numRows, int myRow, int myAnswer, const QList<TitleAndValuePtr>& titlesAndValues) {
+    qDebug() << "TODO: Implement showOneAnswer";
+}
+
+void ViewModeManager::showOneAnswerByAge(int myRowIndex, int myAnswer, const QList<int>& values) {
+    qDebug() << "TODO: Implement showOneAnswerByAge";
+}

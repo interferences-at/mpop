@@ -18,6 +18,8 @@ public:
 
     QSharedPointer<QVector<PrisonerLine::ptr>> getClosestBars(const QPointF &pos);
 
+    void setParam(const QString& paramName, float value);
+
 private:
     std::uniform_real_distribution<qreal> randomX, randomY, randomRadius;
     std::uniform_real_distribution<qreal> randomFrequency, randomRatioRotation;
