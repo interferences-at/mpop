@@ -107,6 +107,10 @@ QSharedPointer<QVector<PrisonerLine::ptr> > ScreensaverLayout::getClosestBars(co
     return _barObjects;
 }
 
+void ScreensaverLayout::setParam(const QString& paramName, float value) {
+    qDebug() << "TODO: implement setParam" << paramName << value;
+}
+
 ScreensaverLayout::~ScreensaverLayout()
 {
 

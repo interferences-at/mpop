@@ -22,7 +22,9 @@ public:
     void showUserAnswer(int windowIndex, const QList<int>& values);
     void showAnswers(int windowIndex, const QList<ViewModeManager::AnswerDataPtr>& answers);
     void goToScreensaver(int windowIndex);
-
+    void setScreenSaverParam(int windowIndex, const QString& paramName, float paramValue);
+    void showSingleAnswer(int windowIndex, int myRow, int myAnswer, const QList<ViewModeManager::TitleAndValuePtr>& titlesAndValues);
+    void showSingleAnswerByAge(int windowIndex, int myAnswer, int myRowIndex, const QList<int>& values);
 private:
     // data members
     OscReceiver* _oscReceiver;

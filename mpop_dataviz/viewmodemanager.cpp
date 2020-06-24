@@ -384,3 +384,11 @@ void ViewModeManager::moveBarsToAnswerByAgeLayout()
     _userAgeAnswer.setStartPosition(coordinateFromPixel(marginLeft + 2.5, startY + myAgeIndex * (barHeight + rowSpace)));
     _userAgeAnswer.moveObjectsToLayout(currentTime());
 }
+
+void ViewModeManager::showOneAnswer(int numRows, int myRow, int myAnswer, const QList<TitleAndValuePtr>& titlesAndValues) {
+    qDebug() << "TODO: Implement showOneAnswer";
+}
+
+void ViewModeManager::showOneAnswerByAge(int myRowIndex, int myAnswer, const QList<int>& values) {
+    qDebug() << "TODO: Implement showOneAnswerByAge";
+}
