@@ -16,7 +16,7 @@ ApplicationWindow {
     title: qsTr("MPOP Kiosk")
 
     function handleMessageReceived(oscPath, oscArguments) {
-        console.log("QML-Received OSC: " + oscPath + " " + oscArguments);
+        console.log("(QML) Received OSC: " + oscPath + " " + oscArguments);
         lastMessageReceived = oscPath + " " + oscArguments;
     }
 
@@ -24,7 +24,10 @@ ApplicationWindow {
         target: rfidReader
         onLastRfidReadChanged: {
             lastRfidRead = rfidReader.lastRfidRead;
-            console.log("Last RFID read: " + lastRfidRead);
+            console.log("(QML) Last RFID read: " + lastRfidRead);
+        }
+        onTagRead: {
+            console.log("(QML) RFID read: " + tag);
         }
     }
 
