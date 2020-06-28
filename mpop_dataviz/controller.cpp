@@ -148,8 +148,8 @@ static bool parseViewAnswerRows(const QVariantList& arguments, int& outMyAnswer,
  */
 bool parseViewAnswerByAge(const QVariantList& arguments, int& outMyAnswer, int& outMyRowIndex, QList<int>& outValues) {
     static const int NUM_ARGS = 22; // We expect exactly this many args
-    static const int INDEX_MY_ROW = 0; // 0th arg is in which row my answer is.
-    static const int INDEX_MY_VALUE = 1; // 1st arg is that value to show for my answer
+    static const int INDEX_MY_VALUE = 0; // 0th arg is that value to show for my answer
+    static const int INDEX_MY_ROW = 1; // 1st arg is in which row my answer is.
     static const int OFFSET_ROWS = 2; // And then we start to specify
 
     // check number of arguments

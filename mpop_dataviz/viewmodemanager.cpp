@@ -37,10 +37,9 @@ void ViewModeManager::showViewManagerBars(ViewMode mode)
         _multiUserAnswer.showSceneObject(currentTime());
         break;
     case AnswerByAgeMode:
-        for (int i = 0; i < _agesAnswerBarChart.size(); i++) {
-            _agesAnswerBarChart[i].updateBarsPosition(currentTime());
-            _agesAnswerBarChart[i].showSceneObject(currentTime());
-        }
+        _agesAnswerBarChart.updateBarsPosition(currentTime());
+        _agesAnswerBarChart.showSceneObject(currentTime());
+
         _userAgeAnswer.updateBarsPosition(currentTime());
         _userAgeAnswer.showSceneObject(currentTime());
         break;
@@ -205,16 +204,13 @@ void ViewModeManager::setMultiAnswersBars(AnswerDataPtr answers)
 
 void ViewModeManager::showOneAnswerByAge(int myAge, int myAnswer, const QList<int>& values)
 {
-    _agesAnswerBarChart = QVector<BarChartLayout>(values.size());
-    int barSum = std::accumulate(values.begin(), values.end(), myAnswer);
-    _myAgeReverseIndex = values.size() - floor(std::max(myAge, 5) / 5);
-
-    for (int i = 0, ri = values.size(); i < values.size(); i++, ri--) {
-
-        _agesAnswerBarChart[i].setRows({values.at(ri - 1)});
-    }
-
+    QList<int> rows = values;
+    std::reverse(rows.begin(), rows.end());
+    _agesAnswerBarChart.setRows(rows);
     _userAgeAnswer.setRows({myAnswer});
+
+    int barSum = _agesAnswerBarChart.getBarsCount() + myAnswer;
+    _myAgeReverseIndex = values.size() - floor(std::max(myAge, 5) / 5);
 
     setPointToPickFrom(coordinateFromPixel(_width, _height));
     setViewBarsQuantity(barSum, AnswerByAgeMode);
@@ -341,28 +337,24 @@ void ViewModeManager::moveBarsToAnswerByAgeLayout()
     qreal startY = fitToScreenHeight(92) + (barHeight / 2);
     qreal rowSpace = fitToScreenHeight(10.5);
     qreal marginLeft = 93;
-    int index = 0;
 
-    for (int i = 0; i < _agesAnswerBarChart.size(); i++) {
-        ViewModeManager::viewBars answerAge = ViewModeManager::viewBars::create();
-        for (int row = 0; row < _agesAnswerBarChart[i].getRow(); row++) {
-            answerAge->push_back(_viewBars[AnswerByAgeMode]->at(index));
-            index++;
-        }
-
-        _agesAnswerBarChart[i].addBarObjects(answerAge);
-
-        _agesAnswerBarChart[i].setBarsSize(sizeFromPixel(2.5, barHeight));
-        _agesAnswerBarChart[i].setBarsColor("#667554");
-        _agesAnswerBarChart[i].setStartPosition(coordinateFromPixel(marginLeft, startY + i * (barHeight + rowSpace)));
-        _agesAnswerBarChart[i].moveObjectsToLayout(currentTime());
-    }
-
+    ViewModeManager::viewBars otherAgeVect = ViewModeManager::viewBars::create();
     ViewModeManager::viewBars myAgeVect = ViewModeManager::viewBars::create();
 
-    for (int i = index; i < _viewBars[AnswerByAgeMode]->size(); i++) {
-        myAgeVect->push_back(_viewBars[AnswerByAgeMode]->at(i));
-    }
+    int otherAgeBarsCount = _agesAnswerBarChart.getBarsCount();
+    int userAgeBarsCount = _userAgeAnswer.getBarsCount();
+
+    *otherAgeVect = _viewBars[AnswerByAgeMode]->mid(0, otherAgeBarsCount);
+    *myAgeVect = _viewBars[AnswerByAgeMode]->mid(otherAgeBarsCount, userAgeBarsCount);
+
+    _agesAnswerBarChart.addBarObjects(otherAgeVect);
+
+    _agesAnswerBarChart.setBarsSize(sizeFromPixel(2.5, barHeight));
+    _agesAnswerBarChart.setBarsColor("#667554");
+    _agesAnswerBarChart.setStartPosition(coordinateFromPixel(marginLeft, startY));
+    _agesAnswerBarChart.setDistanceBetweenRows(heightFromPixel(rowSpace));
+    _agesAnswerBarChart.moveObjectsToLayout(currentTime());
+
     _userAgeAnswer.addBarObjects(myAgeVect);
     _userAgeAnswer.setBarsSize(sizeFromPixel(2.5, barHeight));
     _userAgeAnswer.setBarsColor("#AB3D33");
