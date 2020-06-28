@@ -100,10 +100,9 @@ private:
     // Multi answer layouts
     BarChartLayout _multiAverageAnswer;
     BarChartLayout _multiUserAnswer;
-    int _averageTotalBars, _userTotalBars = 0;
 
     // Answers by age layout
-    QVector<BarChartLayout> _agesAnswerBarChart;
+    BarChartLayout _agesAnswerBarChart;
     BarChartLayout _userAgeAnswer;
     int _myAgeReverseIndex;
 
