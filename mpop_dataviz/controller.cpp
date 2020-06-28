@@ -54,7 +54,7 @@ QStringList splitPath(const QString& oscPath) {
  * @param toPopulate List of answers to populate.
  * @return Success if it successfully parsed it.
  */
-static bool parseViewAnswers(const QVariantList& arguments, QList<ViewModeManager::AnswerDataPtr>& toPopulate) {
+static bool parseViewAnswers(const QVariantList& arguments, ViewModeManager::AnswerDataPtr toPopulate) {
     int num_answers = 0;
     static const int OFFSET_NUM_VALUES = 1;
     static const int NUM_ARGS_PER_ITEM = 3;
@@ -75,11 +75,9 @@ static bool parseViewAnswers(const QVariantList& arguments, QList<ViewModeManage
             int mine_index = ( i * NUM_ARGS_PER_ITEM ) + OFFSET_NUM_VALUES + INDEX_MINE;
             int theirs_index = ( i * NUM_ARGS_PER_ITEM ) + OFFSET_NUM_VALUES + INDEX_THEIRS;
 
-            auto item = ViewModeManager::AnswerDataPtr(new ViewModeManager::AnswerData);
-            item->text = arguments.at(text_index).toString();
-            item->my_answer = arguments.at(mine_index).toInt();
-            item->their_answer = arguments.at(theirs_index).toInt();
-            toPopulate.append(item);
+            toPopulate->text.append(arguments.at(text_index).toString());
+            toPopulate->my_answer.append(arguments.at(mine_index).toInt());
+            toPopulate->their_answer.append(arguments.at(theirs_index).toInt());
         }
         return true;
     }
@@ -214,7 +212,7 @@ void Controller::messageReceivedCb(const QString& oscAddress, const QVariantList
             qDebug() << "Calling showBarChart" << methodName << windowIndex << ints;
             this->showUserAnswer(windowIndex, ints);
         } else if (methodName == VIEW_ANSWERS_METHOD) {
-            QList<ViewModeManager::AnswerDataPtr> toPopulate;
+            ViewModeManager::AnswerDataPtr toPopulate = ViewModeManager::AnswerDataPtr::create();
             if (parseViewAnswers(arguments, toPopulate)) {
                 qDebug() << "Calling view_answers";
                 this->showAnswers(windowIndex, toPopulate);
@@ -274,10 +272,10 @@ void Controller::setScreenSaverParam(int windowIndex, const QString& paramName, 
 }
 
 
-void Controller::showAnswers(int windowIndex, const QList<ViewModeManager::AnswerDataPtr>& answers) {
+void Controller::showAnswers(int windowIndex, ViewModeManager::AnswerDataPtr answers) {
     DatavizWindow::ptr window = getWindowById(windowIndex);
     if (window) {
-        window->viewManager()->showAnswersData(answers);
+        window->viewManager()->setMultiAnswersBars(answers);
     }
 }
 

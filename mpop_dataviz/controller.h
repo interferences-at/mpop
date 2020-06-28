@@ -20,7 +20,7 @@ public:
     Controller(OscReceiver* oscReceiver, const QVector<QSharedPointer<DatavizWindow>>& windows);
 
     void showUserAnswer(int windowIndex, const QList<int>& values);
-    void showAnswers(int windowIndex, const QList<ViewModeManager::AnswerDataPtr>& answers);
+    void showAnswers(int windowIndex, ViewModeManager::AnswerDataPtr answers);
     void goToScreensaver(int windowIndex);
     void setScreenSaverParam(int windowIndex, const QString& paramName, float paramValue);
     void showSingleAnswer(int windowIndex, int myRow, int myAnswer, const QList<ViewModeManager::TitleAndValuePtr>& titlesAndValues);

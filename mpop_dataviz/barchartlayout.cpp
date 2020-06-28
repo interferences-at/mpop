@@ -52,7 +52,7 @@ void BarChartLayout::moveObjectsToLayout(qint64 currentTime) {
     const qreal DISTANCE_BETWEEN_BARS = _barsHeight / 3.6;
     const qreal WIDTH_OF_EACH_COLUMN = DISTANCE_BETWEEN_BARS * 3;
     const qreal DISTANCE_BETWEEN_COLUMN = DISTANCE_BETWEEN_BARS / 2;
-    const qreal DISTANCE_BETWEEN_ROW = DISTANCE_BETWEEN_BARS;
+    const qreal DISTANCE_BETWEEN_ROW = _spaceBetweenRows;
     //static const QEasingCurve easing(QEasingCurve::InOutQuad);
     static const QEasingCurve::Type easingCurveType = QEasingCurve::InOutQuad;
     static const qint64 animationSeconds = 1;

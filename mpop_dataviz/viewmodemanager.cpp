@@ -30,13 +30,11 @@ void ViewModeManager::showViewManagerBars(ViewMode mode)
         _userAnswers.showSceneObject(currentTime());
         break;
     case MultiAnswersMode:
-        for (int i = 0; i < _multiAverageAnswer.size(); i++) {
-            _multiAverageAnswer[i].updateBarsPosition(currentTime());
-            _multiAverageAnswer[i].showSceneObject(currentTime());
+        _multiAverageAnswer.updateBarsPosition(currentTime());
+        _multiAverageAnswer.showSceneObject(currentTime());
 
-            _multiUserAnswer[i].updateBarsPosition(currentTime());
-            _multiUserAnswer[i].showSceneObject(currentTime());
-        }
+        _multiUserAnswer.updateBarsPosition(currentTime());
+        _multiUserAnswer.showSceneObject(currentTime());
         break;
     case AnswerByAgeMode:
         for (int i = 0; i < _agesAnswerBarChart.size(); i++) {
@@ -100,6 +98,7 @@ void ViewModeManager::moveBarsToLayouts(ViewMode viewIndex)
         // Setup user answer Layout
         _userAnswers.addBarObjects(_viewBars[viewIndex]);
         _userAnswers.setBarsSize(sizeFromPixel(3, 74));
+        _userAnswers.setDistanceBetweenRows(heightFromPixel(fitToScreenHeight(20)));
         _userAnswers.setBarsColor("#FF0000");
         _userAnswers.setAlignCenter(true);
         _userAnswers.moveObjectsToLayout(currentTime());
@@ -190,29 +189,17 @@ void ViewModeManager::setUserAnswerBars(const QList<int> &bars)
     setViewActiveMode(UserAnswersMode);
 }
 
-void ViewModeManager::showAnswersData(const QList<AnswerDataPtr>& answers) {
-    int answerTotal = 0;
+void ViewModeManager::setMultiAnswersBars(AnswerDataPtr answers)
+{
+    _multiAverageAnswer.setRows(answers->their_answer);
+    _multiUserAnswer.setRows(answers->my_answer);
 
-    _multiAverageAnswer = QVector<BarChartLayout>(answers.size());
-    _multiUserAnswer = QVector<BarChartLayout>(answers.size());
+    int averageBarsCount = _multiAverageAnswer.getBarsCount();
+    int userBarsCount = _multiUserAnswer.getBarsCount();
 
-    _viewTitles = QVector<QList<QString>>(6);
-
-    QList<QString> titles;
-
-    for (int i = 0; i < answers.size(); i++) {
-        _multiAverageAnswer[i].setRows({answers.at(i)->their_answer});
-        _multiUserAnswer[i].setRows({answers.at(i)->my_answer});
-
-        answerTotal += answers.at(i)->their_answer;
-        answerTotal += answers.at(i)->my_answer;
-
-        // Set titles
-        titles << answers.at(i)->text;
-    }
     setPointToPickFrom(coordinateFromPixel(_width, _height));
-    setViewBarsQuantity(answerTotal, MultiAnswersMode);
-    setViewTitles(titles, MultiAnswersMode);
+    setViewBarsQuantity(averageBarsCount + userBarsCount, MultiAnswersMode);
+    setViewTitles(answers->text, MultiAnswersMode);
     setViewActiveMode(MultiAnswersMode);
 }
 
@@ -268,6 +255,11 @@ QPointF ViewModeManager::sizeFromPixel(qreal width, qreal height)
                    mapValue(height, 0, _height, 0, _top * 2));
 }
 
+qreal ViewModeManager::heightFromPixel(qreal height)
+{
+    return mapValue(height, 0, _height, 0, _top * 2);
+}
+
 void ViewModeManager::setPointToPickFrom(const QPointF &point)
 {
     _pointToPickFrom = point;
@@ -316,33 +308,31 @@ void ViewModeManager::moveBarsToMultiAnswerLayout()
     qreal blockSpace = fitToScreenHeight(148);
     qreal rowSpace = fitToScreenHeight(5);
     qreal marginLeft = 93;
-    int index = 0;
 
-    for (int i = 0; i < _multiAverageAnswer.size(); i++) {
-        ViewModeManager::viewBars averageVect = ViewModeManager::viewBars::create();
-        ViewModeManager::viewBars userVect = ViewModeManager::viewBars::create();
-        for (int row = 0; row < _multiAverageAnswer[i].getRow(); row++) {
-            averageVect->push_back(_viewBars[MultiAnswersMode]->at(index));
-            index++;
-        }
-        for (int row = 0; row < _multiUserAnswer[i].getRow(); row++) {
-            userVect->push_back(_viewBars[MultiAnswersMode]->at(index));
-            index++;
-        }
 
-        _multiAverageAnswer[i].addBarObjects(averageVect);
-        _multiUserAnswer[i].addBarObjects(userVect);
+    ViewModeManager::viewBars averageVect = ViewModeManager::viewBars::create();
+    ViewModeManager::viewBars userVect = ViewModeManager::viewBars::create();
 
-        _multiAverageAnswer[i].setBarsSize(sizeFromPixel(2, barHeight));
-        _multiAverageAnswer[i].setBarsColor("#FFFFFF");
-        _multiAverageAnswer[i].setStartPosition(coordinateFromPixel(marginLeft, y + i * (blockSpace + barHeight)));
-        _multiAverageAnswer[i].moveObjectsToLayout(currentTime());
+    int averageBarsCount = _multiAverageAnswer.getBarsCount();
+    int userBarsCount = _multiUserAnswer.getBarsCount();
 
-        _multiUserAnswer[i].setBarsSize(sizeFromPixel(2.5, barHeight));
-        _multiUserAnswer[i].setBarsColor("#AB3D33");
-        _multiUserAnswer[i].setStartPosition(coordinateFromPixel(marginLeft, y + barHeight + rowSpace + i * (blockSpace + barHeight)));
-        _multiUserAnswer[i].moveObjectsToLayout(currentTime());
-    }
+    *averageVect = _viewBars[MultiAnswersMode]->mid(0, averageBarsCount);
+    *userVect = _viewBars[MultiAnswersMode]->mid(averageBarsCount, userBarsCount);
+
+    _multiAverageAnswer.addBarObjects(averageVect);
+    _multiUserAnswer.addBarObjects(userVect);
+
+    _multiAverageAnswer.setBarsSize(sizeFromPixel(2, barHeight));
+    _multiAverageAnswer.setBarsColor("#FFFFFF");
+    _multiAverageAnswer.setStartPosition(coordinateFromPixel(marginLeft, y));
+    _multiAverageAnswer.setDistanceBetweenRows(heightFromPixel(blockSpace));
+    _multiAverageAnswer.moveObjectsToLayout(currentTime());
+
+    _multiUserAnswer.setBarsSize(sizeFromPixel(2.5, barHeight));
+    _multiUserAnswer.setBarsColor("#AB3D33");
+    _multiUserAnswer.setStartPosition(coordinateFromPixel(marginLeft, y + barHeight + rowSpace));
+    _multiUserAnswer.setDistanceBetweenRows(heightFromPixel(blockSpace));
+    _multiUserAnswer.moveObjectsToLayout(currentTime());
 }
 
 void ViewModeManager::moveBarsToAnswerByAgeLayout()
@@ -379,3 +369,4 @@ void ViewModeManager::moveBarsToAnswerByAgeLayout()
     _userAgeAnswer.setStartPosition(coordinateFromPixel(marginLeft + 2.5, startY + _myAgeReverseIndex * (barHeight + rowSpace)));
     _userAgeAnswer.moveObjectsToLayout(currentTime());
 }
+
