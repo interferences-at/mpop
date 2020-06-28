@@ -24,9 +24,9 @@ public:
     typedef  QSharedPointer<QVector<PrisonerLine::ptr>> viewBars;
 
     struct AnswerData {
-        QString text;
-        int my_answer;
-        int their_answer;
+        QList<QString> text;
+        QList<int> my_answer;
+        QList<int> their_answer;
     };
 
     typedef QSharedPointer<AnswerData> AnswerDataPtr;
@@ -58,7 +58,7 @@ public:
     ViewModeManager::viewBars getBarsFromScreenSaver(int number);
 
     void setUserAnswerBars(const QList<int> &bars);
-    void showAnswersData(const QList<AnswerDataPtr>& answers);
+    void setMultiAnswersBars(AnswerDataPtr answers);
     void showOneAnswer(int numRows, int myRow, int myAnswer, const QList<TitleAndValuePtr>& titlesAndValues);
     void showOneAnswerByAge(int myRowIndex, int myAnswer, const QList<int>& values);
     void goToScreensaver();
@@ -68,6 +68,7 @@ public:
 
     QPointF coordinateFromPixel(qreal x, qreal y);
     QPointF sizeFromPixel(qreal width, qreal height);
+    qreal heightFromPixel(qreal height);
 
     void setPointToPickFrom(const QPointF &point);
 
@@ -97,8 +98,9 @@ private:
     BarChartLayout _userAnswers; // User answer layout
 
     // Multi answer layouts
-    QVector<BarChartLayout> _multiAverageAnswer;
-    QVector<BarChartLayout> _multiUserAnswer;
+    BarChartLayout _multiAverageAnswer;
+    BarChartLayout _multiUserAnswer;
+    int _averageTotalBars, _userTotalBars = 0;
 
     // Answers by age layout
     QVector<BarChartLayout> _agesAnswerBarChart;
