@@ -50,7 +50,6 @@ public:
     void setViewActiveMode(ViewMode mode);
     ViewMode getViewActiveMode() const { return _viewActiveMode; }
 
-    void setBarChartRows(const QList<int> &list, ViewMode viewIndex);
     void moveBarsToLayouts(ViewMode viewIndex);
 
     void setViewBarsQuantity(int number, ViewMode viewIndex);
@@ -106,6 +105,11 @@ private:
     BarChartLayout _userAgeAnswer;
     int _myAgeReverseIndex;
 
+    // Answer by gender layout
+    BarChartLayout _genderOtherAnswer;
+    BarChartLayout _genderUserAnswer;
+    int _myGenderIndex;
+
     QVector<QList<QString>> _viewTitles;
 
     QElapsedTimer _timer;
@@ -116,6 +120,8 @@ private:
     void setupScreensaverLayout(ViewMode activeView);
     void moveBarsToMultiAnswerLayout();
     void moveBarsToAnswerByAgeLayout();
+    void moveBarsToAnswerByGenderLayout();
+    void moveBarsToAnswerByCultureLayout();
 
     qreal fitToScreenWidth(qreal size) {
         return _width * (size / 1260);

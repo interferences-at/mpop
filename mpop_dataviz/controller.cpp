@@ -123,7 +123,7 @@ static bool parseViewAnswerRows(const QVariantList& arguments, int& outMyAnswer,
     for (int i = OFFSET_ROWS; i < expectedNumArgs; i += NUM_ARGS_PER_ROW) {
         QString title = arguments.at(i).toString();
         int value = arguments.at(i + 1).toInt();
-        auto item = ViewModeManager::TitleAndValuePtr();
+        auto item = ViewModeManager::TitleAndValuePtr::create();
         item->title = title;
         item->value = value;
         toPopulate.append(item);
