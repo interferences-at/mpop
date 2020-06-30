@@ -153,10 +153,10 @@ void DatavizWindow::paintGL() {
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
 
+    _painter->endOpenGLPainting(); // Finish OpenGL painting
+
     ViewModeManager::ViewMode viewActiveMode = _viewModeManager->getViewActiveMode();
     _viewModeManager->showViewManagerBars(viewActiveMode);
-
-    _painter->endOpenGLPainting(); // Finish OpenGL painting
 
     switch (viewActiveMode) {
     case ViewModeManager::MultiAnswersMode:
@@ -168,7 +168,8 @@ void DatavizWindow::paintGL() {
                                    _viewModeManager->getViewTitles(viewActiveMode));
         break;
     case ViewModeManager::AnswerByGenderMode:
-
+        _painter->drawViewElements(viewActiveMode,
+                                   _viewModeManager->getViewTitles(viewActiveMode));
         break;
     case ViewModeManager::AnswerByCultureMode:
 

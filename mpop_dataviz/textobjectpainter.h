@@ -52,7 +52,7 @@ private:
     // Font settings
     QFont _numbersFont, _bottomTitleFont, _topTitleFont;
     QFont _percentageFont, _fpsTextFont;
-    QFont _multiAnswerTitleFont;
+    QFont _answersTitlesFont;
 
     // List of top and bottom titles
     QList<QString> _topTitles;

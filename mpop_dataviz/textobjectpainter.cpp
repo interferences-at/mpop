@@ -16,7 +16,7 @@ TextObjectPainter::TextObjectPainter() :
     _topTitleFont = QFont(fontFamily, 22);
     _percentageFont = QFont(fontFamily, 22);
     _fpsTextFont = QFont(fontFamily, 12, QFont::DemiBold);
-    _multiAnswerTitleFont = QFont(fontFamily, 14, QFont::DemiBold);
+    _answersTitlesFont = QFont(fontFamily, 14, QFont::DemiBold);
 }
 
 TextObjectPainter::~TextObjectPainter()
@@ -141,20 +141,24 @@ void TextObjectPainter::drawViewElements(ViewModeManager::ViewMode view, const Q
     _painter.drawLine(vLineMrgLeft, vLineMrgTop, vLineMrgLeft, _height - hLineMrgBottom);
     _painter.drawLine(vLineMrgLeft + 17, _height - hLineMrgBottom, _width - hLineMrgRight, _height - hLineMrgBottom);
 
+    auto drawRangeBottomText = [&]() {
+        qreal bottomTitlePosY = _height - fitToScreenHeight(hLineMrgBottom - 32);
+        _painter.drawText(64, bottomTitlePosY, "Pas du tout");
+        _painter.drawText(_width - 170, bottomTitlePosY, "Tout à fait");
+    };
+
     switch (view) {
     case ViewModeManager::MultiAnswersMode:
     {
         int y = fitToScreenHeight(114);
-        int interval = fitToScreenHeight(148 + 35.5);
+        int interval = fitToScreenHeight(148 + 35);
         int marginLeft = 93;
 
-        _painter.setFont(_multiAnswerTitleFont);
+        _painter.setFont(_answersTitlesFont);
         for (int i = 0; i < title.size(); i++) {
             _painter.drawText(marginLeft, y + i * interval, title.at(i));
         }
-        qreal bottomTitlePosY = _height - fitToScreenHeight(hLineMrgBottom - 32);
-        _painter.drawText(64, bottomTitlePosY, "Pas du tout");
-        _painter.drawText(_width - 170, bottomTitlePosY, "Tout à fait");
+        drawRangeBottomText();
     }
         break;
     case ViewModeManager::AnswerByAgeMode:
@@ -170,6 +174,19 @@ void TextObjectPainter::drawViewElements(ViewModeManager::ViewMode view, const Q
         _painter.drawText(responseTextRect, Qt::AlignBottom | Qt::AlignCenter, "Réponses (%)");
         break;
     }
+    case ViewModeManager::AnswerByGenderMode:
+    {
+        int y = fitToScreenHeight(213.5);
+        int interval = fitToScreenHeight(213 + 35);
+        int marginLeft = 93;
+
+        _painter.setFont(_answersTitlesFont);
+        for (int i = 0; i < title.size(); i++) {
+            _painter.drawText(marginLeft, y + i * interval, title.at(i));
+        }
+        drawRangeBottomText();
+    }
+        break;
     default:
         break;
     }

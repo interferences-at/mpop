@@ -43,6 +43,13 @@ void ViewModeManager::showViewManagerBars(ViewMode mode)
         _userAgeAnswer.updateBarsPosition(currentTime());
         _userAgeAnswer.showSceneObject(currentTime());
         break;
+    case AnswerByGenderMode:
+        _genderOtherAnswer.updateBarsPosition(currentTime());
+        _genderOtherAnswer.showSceneObject(currentTime());
+
+        _genderUserAnswer.updateBarsPosition(currentTime());
+        _genderUserAnswer.showSceneObject(currentTime());
+        break;
     default:
         break;
     }
@@ -73,20 +80,6 @@ void ViewModeManager::setViewActiveMode(ViewMode mode)
         _viewActiveMode = mode;
 }
 
-void ViewModeManager::setBarChartRows(const QList<int> &bars, ViewMode viewIndex)
-{
-    switch (viewIndex) {
-    case ScreenSaverMode:
-
-        break;
-    case UserAnswersMode:
-        _userAnswers.setRows(bars);
-        break;
-    default:
-        break;
-    }
-}
-
 void ViewModeManager::moveBarsToLayouts(ViewMode viewIndex)
 {   
     // Setup screensaver behavior
@@ -109,6 +102,10 @@ void ViewModeManager::moveBarsToLayouts(ViewMode viewIndex)
     case AnswerByAgeMode:
         // Setup answer by age layouts
         moveBarsToAnswerByAgeLayout();
+        break;
+    case AnswerByGenderMode:
+        // Setup answer by gender layouts
+        moveBarsToAnswerByGenderLayout();
         break;
     default:
         break;
@@ -180,11 +177,9 @@ ViewModeManager::viewBars ViewModeManager::getBarsFromScreenSaver(int number)
 
 void ViewModeManager::setUserAnswerBars(const QList<int> &bars)
 {
-    int barSum = std::accumulate(bars.begin(), bars.end(), 0);
-
-    setBarChartRows(bars, UserAnswersMode);
+    _userAnswers.setRows(bars);
     setPointToPickFrom(QPointF(0, 0));
-    setViewBarsQuantity(barSum, UserAnswersMode);
+    setViewBarsQuantity(_userAnswers.getBarsCount(), UserAnswersMode);
     setViewActiveMode(UserAnswersMode);
 }
 
@@ -204,9 +199,9 @@ void ViewModeManager::setMultiAnswersBars(AnswerDataPtr answers)
 
 void ViewModeManager::showOneAnswerByAge(int myAge, int myAnswer, const QList<int>& values)
 {
-    QList<int> rows = values;
-    std::reverse(rows.begin(), rows.end());
-    _agesAnswerBarChart.setRows(rows);
+    QList<int> ageRows = values;
+    std::reverse(ageRows.begin(), ageRows.end());
+    _agesAnswerBarChart.setRows(ageRows);
     _userAgeAnswer.setRows({myAnswer});
 
     int barSum = _agesAnswerBarChart.getBarsCount() + myAnswer;
@@ -218,7 +213,25 @@ void ViewModeManager::showOneAnswerByAge(int myAge, int myAnswer, const QList<in
 }
 
 void ViewModeManager::showOneAnswer(int numRows, int myRow, int myAnswer, const QList<TitleAndValuePtr>& titlesAndValues) {
-    qDebug() << "TODO: Implement showOneAnswer";
+
+    if (numRows == 3) {
+        QList<int> genderRows;
+        QList<QString> genderTitles;
+        for (auto gender : titlesAndValues) {
+            genderRows << gender->value;
+            genderTitles << gender->title;
+        }
+        _genderOtherAnswer.setRows(genderRows);
+        _genderUserAnswer.setRows({myAnswer});
+
+        int genderBarsCount = _genderOtherAnswer.getBarsCount();
+        _myGenderIndex = myRow;
+
+        setPointToPickFrom(QPointF(0, 0));
+        setViewBarsQuantity(genderBarsCount + myAnswer, AnswerByGenderMode);
+        setViewTitles(genderTitles, AnswerByGenderMode);
+        setViewActiveMode(AnswerByGenderMode);
+    }
 }
 
 void ViewModeManager::goToScreensaver()
@@ -270,7 +283,7 @@ void ViewModeManager::setupScreensaverLayout(ViewModeManager::ViewMode activeVie
 {
     // Add object
     _screensaver.addBarObjects(_viewBars[ScreenSaverMode]);
-
+    
     switch (activeView) {
     case ScreenSaverMode:
         _screensaver.setBarsSize(sizeFromPixel(3, 60));
@@ -280,20 +293,12 @@ void ViewModeManager::setupScreensaverLayout(ViewModeManager::ViewMode activeVie
         _screensaver.setBarsSize(sizeFromPixel(3, 40));
         _screensaver.setBarsColor("#CCCCCC");
         break;
-    case MultiAnswersMode:
+    default:
         _screensaver.setBarsSize(sizeFromPixel(2, 35));
         _screensaver.setBarsColor("#3D3D3D");
-        break;
-    case AnswerByAgeMode:
-        _screensaver.setBarsSize(sizeFromPixel(2, 35));
-        _screensaver.setBarsColor("#3D3D3D");
-        break;
-    case AnswerByGenderMode:
-        break;
-    case AnswerByCultureMode:
         break;
     }
-
+    
     _screensaver.moveObjectsToLayout(currentTime());
 }
 
@@ -348,7 +353,6 @@ void ViewModeManager::moveBarsToAnswerByAgeLayout()
     *myAgeVect = _viewBars[AnswerByAgeMode]->mid(otherAgeBarsCount, userAgeBarsCount);
 
     _agesAnswerBarChart.addBarObjects(otherAgeVect);
-
     _agesAnswerBarChart.setBarsSize(sizeFromPixel(2.5, barHeight));
     _agesAnswerBarChart.setBarsColor("#667554");
     _agesAnswerBarChart.setStartPosition(coordinateFromPixel(marginLeft, startY));
@@ -360,5 +364,35 @@ void ViewModeManager::moveBarsToAnswerByAgeLayout()
     _userAgeAnswer.setBarsColor("#AB3D33");
     _userAgeAnswer.setStartPosition(coordinateFromPixel(marginLeft + 2.5, startY + _myAgeReverseIndex * (barHeight + rowSpace)));
     _userAgeAnswer.moveObjectsToLayout(currentTime());
+}
+
+void ViewModeManager::moveBarsToAnswerByGenderLayout()
+{
+    qreal barHeight = fitToScreenHeight(35);
+    qreal startY = fitToScreenHeight(228.5) + (barHeight / 2);
+    qreal rowSpace = fitToScreenHeight(213);
+    qreal marginLeft = 93;
+
+    ViewModeManager::viewBars otherGenderBars = ViewModeManager::viewBars::create();
+    ViewModeManager::viewBars userGenderBars = ViewModeManager::viewBars::create();
+
+    int otherGenderBarsCount = _genderOtherAnswer.getBarsCount();
+    int userGenderBarsCount = _genderUserAnswer.getBarsCount();
+
+    *otherGenderBars = _viewBars[AnswerByGenderMode]->mid(0, otherGenderBarsCount);
+    *userGenderBars = _viewBars[AnswerByGenderMode]->mid(otherGenderBarsCount, userGenderBarsCount);
+
+    _genderOtherAnswer.addBarObjects(otherGenderBars);
+    _genderOtherAnswer.setBarsSize(sizeFromPixel(2.5, barHeight));
+    _genderOtherAnswer.setBarsColor("#667554");
+    _genderOtherAnswer.setStartPosition(coordinateFromPixel(marginLeft, startY));
+    _genderOtherAnswer.setDistanceBetweenRows(heightFromPixel(rowSpace));
+    _genderOtherAnswer.moveObjectsToLayout(currentTime());
+
+    _genderUserAnswer.addBarObjects(userGenderBars);
+    _genderUserAnswer.setBarsSize(sizeFromPixel(2.5, barHeight));
+    _genderUserAnswer.setBarsColor("#AB3D33");
+    _genderUserAnswer.setStartPosition(coordinateFromPixel(marginLeft + 2.5, startY + _myGenderIndex * (barHeight + rowSpace)));
+    _genderUserAnswer.moveObjectsToLayout(currentTime());
 }
 
