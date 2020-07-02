@@ -50,6 +50,13 @@ void ViewModeManager::showViewManagerBars(ViewMode mode)
         _genderUserAnswer.updateBarsPosition(currentTime());
         _genderUserAnswer.showSceneObject(currentTime());
         break;
+    case AnswerByCultureMode:
+        _cultureOtherAnswer.updateBarsPosition(currentTime());
+        _cultureOtherAnswer.showSceneObject(currentTime());
+
+        _cultureUserAnswer.updateBarsPosition(currentTime());
+        _cultureUserAnswer.showSceneObject(currentTime());
+        break;
     default:
         break;
     }
@@ -106,6 +113,10 @@ void ViewModeManager::moveBarsToLayouts(ViewMode viewIndex)
     case AnswerByGenderMode:
         // Setup answer by gender layouts
         moveBarsToAnswerByGenderLayout();
+        break;
+    case AnswerByCultureMode:
+        // Setup answer by culture layouts
+        moveBarsToAnswerByCultureLayout();
         break;
     default:
         break;
@@ -212,8 +223,8 @@ void ViewModeManager::showOneAnswerByAge(int myAge, int myAnswer, const QList<in
     setViewActiveMode(AnswerByAgeMode);
 }
 
-void ViewModeManager::showOneAnswer(int numRows, int myRow, int myAnswer, const QList<TitleAndValuePtr>& titlesAndValues) {
-
+void ViewModeManager::showOneAnswer(int numRows, int myRow, int myAnswer, const QList<TitleAndValuePtr>& titlesAndValues)
+{
     if (numRows == 3) {
         QList<int> genderRows;
         QList<QString> genderTitles;
@@ -231,6 +242,25 @@ void ViewModeManager::showOneAnswer(int numRows, int myRow, int myAnswer, const 
         setViewBarsQuantity(genderBarsCount + myAnswer, AnswerByGenderMode);
         setViewTitles(genderTitles, AnswerByGenderMode);
         setViewActiveMode(AnswerByGenderMode);
+    } else {
+        QList<int> cultureRows;
+        QList<QString> cultureTitles;
+
+        for (auto culture : titlesAndValues) {
+            cultureRows << culture->value;
+            cultureTitles << culture->title;
+        }
+
+        _cultureOtherAnswer.setRows(cultureRows);
+        _cultureUserAnswer.setRows({myAnswer});
+
+        int cultureBarsCount = _cultureOtherAnswer.getBarsCount();
+        _myCultureIndex = myRow;
+
+        setPointToPickFrom(QPointF(0, 0));
+        setViewBarsQuantity(cultureBarsCount + myAnswer, AnswerByCultureMode);
+        setViewTitles(cultureTitles, AnswerByCultureMode);
+        setViewActiveMode(AnswerByCultureMode);
     }
 }
 
@@ -394,5 +424,35 @@ void ViewModeManager::moveBarsToAnswerByGenderLayout()
     _genderUserAnswer.setBarsColor("#AB3D33");
     _genderUserAnswer.setStartPosition(coordinateFromPixel(marginLeft + 2.5, startY + _myGenderIndex * (barHeight + rowSpace)));
     _genderUserAnswer.moveObjectsToLayout(currentTime());
+}
+
+void ViewModeManager::moveBarsToAnswerByCultureLayout()
+{
+    qreal barHeight = fitToScreenHeight(35);
+    qreal startY = fitToScreenHeight(130) + (barHeight / 2);
+    qreal rowSpace = fitToScreenHeight(125);
+    qreal marginLeft = 93;
+
+    ViewModeManager::viewBars otherCultureBars = ViewModeManager::viewBars::create();
+    ViewModeManager::viewBars userCultureBars = ViewModeManager::viewBars::create();
+
+    int otherCultureBarsCount = _cultureOtherAnswer.getBarsCount();
+    int userCultureBarsCount = _cultureUserAnswer.getBarsCount();
+
+    *otherCultureBars = _viewBars[AnswerByCultureMode]->mid(0, otherCultureBarsCount);
+    *userCultureBars = _viewBars[AnswerByCultureMode]->mid(otherCultureBarsCount, userCultureBarsCount);
+
+    _cultureOtherAnswer.addBarObjects(otherCultureBars);
+    _cultureOtherAnswer.setBarsSize(sizeFromPixel(2.5, barHeight));
+    _cultureOtherAnswer.setBarsColor("#667554");
+    _cultureOtherAnswer.setStartPosition(coordinateFromPixel(marginLeft, startY));
+    _cultureOtherAnswer.setDistanceBetweenRows(heightFromPixel(rowSpace));
+    _cultureOtherAnswer.moveObjectsToLayout(currentTime());
+
+    _cultureUserAnswer.addBarObjects(userCultureBars);
+    _cultureUserAnswer.setBarsSize(sizeFromPixel(2.5, barHeight));
+    _cultureUserAnswer.setBarsColor("#AB3D33");
+    _cultureUserAnswer.setStartPosition(coordinateFromPixel(marginLeft + 2.5, startY + _myCultureIndex * (barHeight + rowSpace)));
+    _cultureUserAnswer.moveObjectsToLayout(currentTime());
 }
 

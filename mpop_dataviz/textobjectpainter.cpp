@@ -147,6 +147,13 @@ void TextObjectPainter::drawViewElements(ViewModeManager::ViewMode view, const Q
         _painter.drawText(_width - 170, bottomTitlePosY, "Tout à fait");
     };
 
+    auto drawResponseBottomText = [&]() {
+        QRect responseTextRect(0, 0, _width, X_AXIS_HEIGHT);
+        _painter.setFont(_bottomTitleFont);
+        _painter.translate(0, _height - X_AXIS_HEIGHT);
+        _painter.drawText(responseTextRect, Qt::AlignBottom | Qt::AlignCenter, "Réponses (%)");
+    };
+
     switch (view) {
     case ViewModeManager::MultiAnswersMode:
     {
@@ -168,10 +175,7 @@ void TextObjectPainter::drawViewElements(ViewModeManager::ViewMode view, const Q
         _painter.drawText(ageTextRect, Qt::AlignBottom | Qt::AlignCenter, "Âge");
         drawVerticalNumbers();
         drawHorizontalNumbers();
-        QRect responseTextRect(0, 0, _width, X_AXIS_HEIGHT);
-        _painter.setFont(_bottomTitleFont);
-        _painter.translate(0, _height - X_AXIS_HEIGHT);
-        _painter.drawText(responseTextRect, Qt::AlignBottom | Qt::AlignCenter, "Réponses (%)");
+        drawResponseBottomText();
         break;
     }
     case ViewModeManager::AnswerByGenderMode:
@@ -185,6 +189,20 @@ void TextObjectPainter::drawViewElements(ViewModeManager::ViewMode view, const Q
             _painter.drawText(marginLeft, y + i * interval, title.at(i));
         }
         drawRangeBottomText();
+    }
+        break;
+    case ViewModeManager::AnswerByCultureMode:
+    {
+        int y = fitToScreenHeight(115);
+        int interval = fitToScreenHeight(125 + 35);
+        int marginLeft = 93;
+
+        _painter.setFont(_answersTitlesFont);
+        for (int i = 0; i < title.size(); i++) {
+            _painter.drawText(marginLeft, y + i * interval, title.at(i));
+        }
+        drawHorizontalNumbers();
+        drawResponseBottomText();
     }
         break;
     default:

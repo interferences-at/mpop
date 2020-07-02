@@ -172,7 +172,8 @@ void DatavizWindow::paintGL() {
                                    _viewModeManager->getViewTitles(viewActiveMode));
         break;
     case ViewModeManager::AnswerByCultureMode:
-
+        _painter->drawViewElements(viewActiveMode,
+                                   _viewModeManager->getViewTitles(viewActiveMode));
         break;
     default:
         break;
