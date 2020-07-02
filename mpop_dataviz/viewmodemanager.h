@@ -100,15 +100,20 @@ private:
     BarChartLayout _multiAverageAnswer;
     BarChartLayout _multiUserAnswer;
 
-    // Answers by age layout
+    // Answers by age layouts
     BarChartLayout _agesAnswerBarChart;
     BarChartLayout _userAgeAnswer;
     int _myAgeReverseIndex;
 
-    // Answer by gender layout
+    // Answer by gender layouts
     BarChartLayout _genderOtherAnswer;
     BarChartLayout _genderUserAnswer;
     int _myGenderIndex;
+
+    // Answer by culture layouts
+    BarChartLayout _cultureOtherAnswer;
+    BarChartLayout _cultureUserAnswer;
+    int _myCultureIndex;
 
     QVector<QList<QString>> _viewTitles;
 
