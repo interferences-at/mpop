@@ -1,7 +1,8 @@
 #!/bin/bash
 
 DATAVIZ_WINDOW_INDEX=0
-MY_ROW=$((RANDOM % 5))
+ROW_COUNT=5
+MY_ROW=$((RANDOM % $ROW_COUNT))
 MY_ANSWER=$((RANDOM % 100))
 ALL_VALUES=() # array
 TITLES=("Québécoise" "Canadienne" "Autochtone" "Européenne" "Autre")
@@ -14,9 +15,9 @@ done
 set -o verbose
 
 oscsend osc.udp://localhost:31337 /dataviz/${DATAVIZ_WINDOW_INDEX}/view_answer_by_culture iiisisisisisi \
-  $DATAVIZ_WINDOW_INDEX \
-  $MY_ANSWER \
+  $ROW_COUNT \
   $MY_ROW \
+  $MY_ANSWER \
   ${TITLES[0]} \
   ${ALL_VALUES[0]} \
   "${TITLES[1]}" \
