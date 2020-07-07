@@ -205,6 +205,8 @@ void Controller::messageReceivedCb(const QString& oscAddress, const QVariantList
         QString methodName = pathTokens[INDEX_METHOD];
         int numArgs = arguments.size();
 
+        qDebug() << "methodName" << methodName;
+
         // Handle methods:
         // The barchart method: /dataviz/1/barchart iii 70 20 10
         if (methodName == BARCHART_METHOD) {
@@ -255,7 +257,7 @@ void Controller::messageReceivedCb(const QString& oscAddress, const QVariantList
                 this->showSingleAnswerByAge(windowIndex, myAnswer, myRowIndex, values);
             }
         } else {
-            qDebug() << "Unhandle OSC method" << methodName;
+            qDebug() << "Unhandled OSC method" << methodName;
         }
     } else {
         qDebug() << "Unhandle OSC path" << oscAddress;
