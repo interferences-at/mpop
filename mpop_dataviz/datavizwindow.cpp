@@ -153,30 +153,15 @@ void DatavizWindow::paintGL() {
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
 
-    _painter->endOpenGLPainting(); // Finish OpenGL painting
-
     ViewModeManager::ViewMode viewActiveMode = _viewModeManager->getViewActiveMode();
     _viewModeManager->showViewManagerBars(viewActiveMode);
 
-    switch (viewActiveMode) {
-    case ViewModeManager::MultiAnswersMode:
+    _painter->endOpenGLPainting(); // Finish OpenGL painting
+
+    if (viewActiveMode > ViewModeManager::UserAnswersMode &&
+        viewActiveMode < ViewModeManager::AnswerByCultureMode + 1) {
         _painter->drawViewElements(viewActiveMode,
                                    _viewModeManager->getViewTitles(viewActiveMode));
-        break;
-    case ViewModeManager::AnswerByAgeMode:
-        _painter->drawViewElements(viewActiveMode,
-                                   _viewModeManager->getViewTitles(viewActiveMode));
-        break;
-    case ViewModeManager::AnswerByGenderMode:
-        _painter->drawViewElements(viewActiveMode,
-                                   _viewModeManager->getViewTitles(viewActiveMode));
-        break;
-    case ViewModeManager::AnswerByCultureMode:
-        _painter->drawViewElements(viewActiveMode,
-                                   _viewModeManager->getViewTitles(viewActiveMode));
-        break;
-    default:
-        break;
     }
 
     // Draw Frame per second
