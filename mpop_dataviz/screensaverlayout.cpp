@@ -8,7 +8,7 @@ ScreensaverLayout::ScreensaverLayout()
     randomY = std::uniform_real_distribution<qreal>(_bottom * 2, _top * 2);
     randomRadius = std::uniform_real_distribution<qreal>(-1, 1);
     randomFrequency = std::uniform_real_distribution<qreal>(0.01, 0.1);
-    randomRatioRotation = std::uniform_real_distribution<qreal>(-1.1, 1.1);
+    randomRatioRotation = std::uniform_real_distribution<qreal>(-0.1, 0.1);
 }
 
 void ScreensaverLayout::moveObjectsToLayout(qint64 currentTime)
@@ -25,7 +25,7 @@ void ScreensaverLayout::moveObjectsToLayout(qint64 currentTime)
 
             qreal posX = randomX(generator);
             qreal posY = randomY(generator);
-            std::uniform_real_distribution<qreal> randomRotation(-360, 360);
+            std::uniform_real_distribution<qreal> randomRotation(0, 360);
             qreal rotation = randomRotation(generator);
 
             PrisonerLine::ptr line = _barObjects->at(i);
@@ -34,20 +34,6 @@ void ScreensaverLayout::moveObjectsToLayout(qint64 currentTime)
         }
         _groupTweenAnimator->start(currentTime);
 
-    }
-
-    if (currentTime < 1000) { // At launch
-
-        for (auto line : *_barObjects) {
-            qreal posX = randomX(generator);
-            qreal posY = randomY(generator);
-            std::uniform_real_distribution<qreal> randomRotation(0, 360);
-            qreal rotation = randomRotation(generator);
-
-            line->setX(posX);
-            line->setY(posY);
-            line->setRotation(rotation);
-        }
     }
 
     // When everything is done keep track of previous bars data
@@ -69,13 +55,11 @@ void ScreensaverLayout::updateBarsPosition(qint64 currentTime)
 
         qreal posX = centerX + cos(timeNow * frequency) * radius;
         qreal posY = centerY + sin(timeNow * frequency) * radius;
-        qreal rotation = line->getRotation() + frequency * ratioRotation;
+        qreal rotation = (currentTime + 10000) * frequency * ratioRotation;
 
         line->setX(line->getX() + (posX - line->getX()));
         line->setY(line->getY() + (posY - line->getY()));
         line->setRotation(fmod(rotation, 360));
-
-
     }
 
     if (! _groupTweenAnimator.isNull()) {
