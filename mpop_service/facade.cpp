@@ -9,6 +9,10 @@
 
 static const int EXPECTED_NUM_TABLES = 3;
 
+/**
+ * @brief Returns the path to our SQLite database.
+ * @return
+ */
 static QString getSQLitePath() {
     //QString dataLocation = QStandardPaths::displayName(QStandardPaths::AppDataLocation);
     //QString dataLocation = QStandardPaths::displayName(QStandardPaths::HomeLocation);
@@ -19,34 +23,30 @@ static QString getSQLitePath() {
 }
 
 Facade::Facade(
-        const QString& database, const QString& host, const QString& username,
-        const QString& password, quint16 port, QObject* parent) : QObject(parent)
+        const Config& config, QObject* parent) : QObject(parent), _config(config)
 {
-    Q_UNUSED(database);
-    Q_UNUSED(host);
-    Q_UNUSED(username);
-    Q_UNUSED(password);
-    Q_UNUSED(port);
-
-    QString sqlitePath = getSQLitePath();
-    qInfo() << "Open database " << sqlitePath << endl;
-
-    _database = QSqlDatabase::addDatabase("QSQLITE", sqlitePath);
-    //_database.setHostName(host);
-    _database.setDatabaseName(sqlitePath);
-    //_database.setUserName(username);
-    //_database.setPassword(password);
-    //_database.setPort(static_cast<int>(port));
-
-    bool ok = _database.open();
-
-    if (! ok) {
-        qWarning() << "ERROR: Could not open database";
+    if (config.use_sqlite) {
+        QString sqlitePath = getSQLitePath();
+        qInfo() << "Open database " << sqlitePath << endl;
+        _database = QSqlDatabase::addDatabase("QSQLITE", sqlitePath);
+        _database.setDatabaseName(sqlitePath);
     } else {
+        _database = QSqlDatabase::addDatabase("QMYSQL");
+        _database.setHostName(_config.mysql_host);
+        _database.setDatabaseName(_config.mysql_database);
+        _database.setUserName(_config.mysql_user);
+        _database.setPassword(_config.mysql_password);
+        _database.setPort(_config.mysql_port);
+    }
 
+    _is_db_open = _database.open();
+
+    if (_is_db_open) {
         if (! this->isDatabaseReady()) {
-            ok = this->createTables();
+            bool tables_created = this->createTables();
         }
+    } else {
+        qWarning() << "ERROR: Could not open database";
     }
 }
 
@@ -62,6 +62,9 @@ bool Facade::isDatabaseReady() {
 
 bool Facade::createTables() {
     qInfo() << "Create tables" << endl;
+    qInfo() << "createTables() is disabled. We handle this in the migration script with MySQL" << endl;
+    bool success = true;
+    /*
     QStringList sqls;
     bool success = true;
     sqls.append(
@@ -102,6 +105,8 @@ bool Facade::createTables() {
             success = false;
         }
     }
+    */
+
     return success;
 }
 
