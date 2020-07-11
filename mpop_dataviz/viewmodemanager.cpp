@@ -94,13 +94,18 @@ void ViewModeManager::moveBarsToLayouts(ViewMode viewIndex)
 
     switch (viewIndex) {
     case UserAnswersMode:
+    {
         // Setup user answer Layout
+        QList<int> rows = _userAnswers.getRows();
+        int biggerNumber = *std::max_element(rows.begin(), rows.end());
+        int barHeight = mapValue(biggerNumber, 100, 30, 35, 74);
         _userAnswers.addBarObjects(_viewBars[viewIndex]);
-        _userAnswers.setBarsSize(sizeFromPixel(3, 74));
+        _userAnswers.setBarsSize(sizeFromPixel(3, barHeight));
         _userAnswers.setDistanceBetweenRows(heightFromPixel(fitToScreenHeight(20)));
         _userAnswers.setBarsColor("#FF0000");
         _userAnswers.setAlignCenter(true);
         _userAnswers.moveObjectsToLayout(currentTime());
+    }
         break;
     case MultiAnswersMode:
         // Setup multi answer layouts
