@@ -2,26 +2,31 @@
 
 #include <QtWebSockets>
 #include <exception>
-
 #include <QtCore>
 #include <QDebug>
 #include <cstdio>
-
 #include "notification.h"
 #include <iostream>
 
 QT_USE_NAMESPACE
 
+/**
+ * @brief Returns an identifier for a given Websocket client.
+ * @param peer Websocket client.
+ * @return Host and port, concatenated.
+ */
 static QString getIdentifier(QWebSocket* peer) {
     return QStringLiteral("%1:%2").arg(peer->peerAddress().toString(),
         QString::number(peer->peerPort()));
 }
 
-MPopService::MPopService(quint16 port, QObject* parent) :
+MPopService::MPopService(const Config& config, QObject* parent) :
         QObject(parent),
         m_pWebSocketServer(new QWebSocketServer(QStringLiteral("MPOP Service"), QWebSocketServer::NonSecureMode, this)),
-        _facade("mpop")
-    {
+        _facade(config),
+        _config(config)
+{
+    quint16 port = config.service_port_number;
     if (m_pWebSocketServer->listen(QHostAddress::Any, port)) {
         QTextStream(stdout) << "Server listening on port " << port << '\n';
         connect(m_pWebSocketServer, &QWebSocketServer::newConnection,  this, &MPopService::newConnectionCb);

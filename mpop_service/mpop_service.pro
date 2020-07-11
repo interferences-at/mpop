@@ -1,6 +1,7 @@
 QT += websockets
 QT += sql
 QT += core
+# QT -= gui
 
 TARGET = mpop_service
 CONFIG += console
@@ -17,6 +18,7 @@ SOURCES += \
     response.cpp
 
 HEADERS += \
+    config.h \
     facade.h \
     mpopservice.h \
     notification.h \

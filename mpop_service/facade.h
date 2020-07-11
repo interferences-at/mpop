@@ -4,7 +4,14 @@
 #include <QObject>
 #include <QSqlDatabase>
 #include <QMap>
+#include "config.h"
 
+
+/**
+ * @brief The Facade class implements most business logic for this application.
+ *
+ * Different API can call the methods of the single instance of this object, if needed.
+ */
 class Facade : public QObject
 {
     Q_OBJECT
@@ -18,11 +25,7 @@ public:
      * @param port MySQL port number.
      */
     explicit Facade(
-            const QString& database,
-            const QString& host="localhost",
-            const QString& username="root",
-            const QString& password="",
-            quint16 port=3306,
+            const Config& config,
             QObject* parent=nullptr);
     /**
      * @brief Retrieves the favourite language for a given user.
@@ -75,6 +78,8 @@ signals:
 
 private: // data members:
     QSqlDatabase _database;
+    bool _is_db_open = false;
+    const Config& _config;
 
 private: // methods:
     bool createTables();

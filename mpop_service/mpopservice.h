@@ -55,6 +55,7 @@
 #include "facade.h"
 #include "request.h"
 #include "response.h"
+#include "config.h"
 
 QT_FORWARD_DECLARE_CLASS(QWebSocketServer)
 QT_FORWARD_DECLARE_CLASS(QWebSocket)
@@ -64,7 +65,7 @@ class MPopService : public QObject
 {
     Q_OBJECT
 public:
-    explicit MPopService(quint16 port, QObject* parent = nullptr);
+    explicit MPopService(const Config& config, QObject* parent = nullptr);
     ~MPopService() override;
 
 private slots:
@@ -79,8 +80,7 @@ private:
     QWebSocketServer* m_pWebSocketServer;
     QList<QWebSocket*> m_clients;
     Facade _facade;
-
-
+    const Config& _config;
 };
 
 #endif
