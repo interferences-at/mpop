@@ -8,7 +8,7 @@ ScreensaverLayout::ScreensaverLayout()
     randomY = std::uniform_real_distribution<qreal>(_bottom * 2, _top * 2);
     randomRadius = std::uniform_real_distribution<qreal>(-1, 1);
     randomFrequency = std::uniform_real_distribution<qreal>(0.01, 0.1);
-    randomRatioRotation = std::uniform_real_distribution<qreal>(-0.1, 0.1);
+    randomRatioRotation = std::uniform_real_distribution<qreal>(-1.1, 1.1);
 }
 
 void ScreensaverLayout::moveObjectsToLayout(qint64 currentTime)
@@ -41,7 +41,7 @@ void ScreensaverLayout::moveObjectsToLayout(qint64 currentTime)
         for (auto line : *_barObjects) {
             qreal posX = randomX(generator);
             qreal posY = randomY(generator);
-            std::uniform_real_distribution<qreal> randomRotation(-360, 360);
+            std::uniform_real_distribution<qreal> randomRotation(0, 360);
             qreal rotation = randomRotation(generator);
 
             line->setX(posX);
@@ -69,11 +69,13 @@ void ScreensaverLayout::updateBarsPosition(qint64 currentTime)
 
         qreal posX = centerX + cos(timeNow * frequency) * radius;
         qreal posY = centerY + sin(timeNow * frequency) * radius;
-        qreal rotation = timeNow * frequency * ratioRotation;
+        qreal rotation = line->getRotation() + frequency * ratioRotation;
 
         line->setX(line->getX() + (posX - line->getX()));
         line->setY(line->getY() + (posY - line->getY()));
-        line->setRotation(line->getRotation() + rotation);
+        line->setRotation(fmod(rotation, 360));
+
+
     }
 
     if (! _groupTweenAnimator.isNull()) {
