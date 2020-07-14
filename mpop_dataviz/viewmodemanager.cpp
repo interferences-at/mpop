@@ -434,8 +434,8 @@ void ViewModeManager::moveBarsToAnswerByGenderLayout()
 void ViewModeManager::moveBarsToAnswerByCultureLayout()
 {
     qreal barHeight = fitToScreenHeight(35);
-    qreal startY = fitToScreenHeight(130) + (barHeight / 2);
-    qreal rowSpace = fitToScreenHeight(125);
+    qreal startY = fitToScreenHeight(128) + (barHeight / 2);
+    qreal rowSpace = fitToScreenHeight(115);
     qreal marginLeft = 93;
 
     ViewModeManager::viewBars otherCultureBars = ViewModeManager::viewBars::create();
