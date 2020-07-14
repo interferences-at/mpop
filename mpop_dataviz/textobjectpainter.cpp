@@ -194,7 +194,7 @@ void TextObjectPainter::drawViewElements(ViewModeManager::ViewMode view, const Q
     case ViewModeManager::AnswerByCultureMode:
     {
         int y = fitToScreenHeight(115);
-        int interval = fitToScreenHeight(125 + 35);
+        int interval = fitToScreenHeight(115 + 35);
         int marginLeft = 93;
 
         _painter.setFont(_answersTitlesFont);
