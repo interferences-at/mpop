@@ -8,6 +8,8 @@
 #include <QProcessEnvironment>
 #include "mpopservice.h"
 #include "config.h"
+#include <QDebug>
+
 
 /**
  * @brief Converts a string to a boolean.
@@ -38,9 +40,21 @@ void load_config_from_env_vars(Config& config) {
     config.mysql_user = env.value("CONFIG_MYSQL_USER", "admin");
     config.mysql_database = env.value("CONFIG_MYSQL_DATABASE", "mpop_database");
     config.mysql_password = env.value("CONFIG_MYSQL_PASSWORD", "secret");
-    config.mysql_host = env.value("CONFIG_MYSQL_HOST", "localhost");
+    config.mysql_host = env.value("CONFIG_MYSQL_HOST", "0.0.0.0"); // Use 'db' as a hostname, if you use within Docker Compose
     config.service_port_number = env.value("MPOP_SERVICE_PORT_NUMBER", "3333").toUInt();
     config.use_sqlite = toBoolean(env.value("CONFIG_USE_SQLITE", "false"));
+    config.is_verbose = toBoolean(env.value("CONFIG_IS_VERBOSE", "true"));
+    if (config.is_verbose) {
+        qDebug() << "mysql_port:" << config.mysql_port;
+        qDebug() << "mysql_user:" << config.mysql_user;
+        qDebug() << "mysql_database:" << config.mysql_database;
+        qDebug() << "mysql_password:" << config.mysql_password;
+        qDebug() << "mysql_host:" << config.mysql_host;
+        qDebug() << "service_port_number:" << config.service_port_number;
+        qDebug() << "use_sqlite:" << config.use_sqlite;
+        qDebug() << "is_verbose:" << config.is_verbose;
+
+    }
 }
 
 
