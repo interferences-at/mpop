@@ -15,6 +15,13 @@ qmake .
 make
 ```
 
+## Install dependencies on Ubuntu
+
+```
+sudo apt-get install -y libqt5sql5-mysql qt5-default libqt5opengl5-dev libqt5serialport5-dev libqt5websockets5-dev libqt5quickcontrols2-5 liblo-tools qtdeclarative5-dev mysql-client clang-8
+```
+
+
 ## Deployment on Windows
 
 To use the mpop_dataviz program in production on Windows, you should run the 

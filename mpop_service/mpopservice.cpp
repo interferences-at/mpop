@@ -28,7 +28,7 @@ MPopService::MPopService(const Config& config, QObject* parent) :
 {
     quint16 port = config.service_port_number;
     if (m_pWebSocketServer->listen(QHostAddress::Any, port)) {
-        QTextStream(stdout) << "Server listening on port " << port << '\n';
+        QTextStream(stdout) << "Websocket server listening on port " << port << '\n';
         connect(m_pWebSocketServer, &QWebSocketServer::newConnection,  this, &MPopService::newConnectionCb);
     }
 }

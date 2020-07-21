@@ -15,4 +15,5 @@ public:
     QString mysql_user;
     quint16 service_port_number;
     bool use_sqlite; // If true, use SQLite, not MySQL, as a backend.
+    bool is_verbose; // if true, print a lot of info
 };
