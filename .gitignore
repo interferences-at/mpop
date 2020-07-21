@@ -16,6 +16,7 @@ mpop_service/mpop_service
 test_mpop_kiosk/test_mpop_kiosk
 
 qrc_qml.cpp
+qrc_resources.cpp
 Makefile.Debug
 Makefile.Release
 lib*.a
