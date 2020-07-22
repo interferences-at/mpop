@@ -26,6 +26,7 @@ CREATE TABLE IF NOT EXISTS visitor
 CREATE TABLE IF NOT EXISTS answer
 (
   `id` SERIAL,
+  `is_latest` ENUM('yes', 'no') DEFAULT 'yes',
   `visitor_id` BIGINT UNSIGNED NOT NULL,
   `question_identifier` VARCHAR(100) DEFAULT NULL,
   `answer_value` TINYINT UNSIGNED NOT NULL, -- number within the range [0,100]
