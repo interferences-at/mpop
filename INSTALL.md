@@ -17,6 +17,12 @@ Do `docker-compose up` or `docker-compose up -d` to run it.
 
 It will also run its database migrations scripts. Those script create the tables and populate them.
 
+To reset your database: (for example, if a migration script has beed modified)
+
+`docker-compose down --volumes`
+
+The migration scripts are in the flyway/sql folder.
+
 
 ## Deploying MPOP service
 
