@@ -25,6 +25,7 @@ ListModel {
         max_fr: "Faible"
         min_en: "TODO"
         max_en: "TODO"
+        db_row_id: 1
     }
     ListElement {
         identifier: "decriminalisation_crimes_non_violents"
@@ -34,6 +35,7 @@ ListModel {
         max_fr: "TODO"
         min_en: "TODO"
         max_en: "TODO"
+        db_row_id: 2
     }
     ListElement {
         identifier: "systeme_bureaucrate"
@@ -43,6 +45,7 @@ ListModel {
         max_fr: "TODO"
         min_en: "TODO"
         max_en: "TODO"
+        db_row_id: 3
     }
     ListElement {
         identifier: "equitable_victimes"
@@ -52,6 +55,7 @@ ListModel {
         max_fr: "Équitable"
         min_en: "Unfair"
         max_en: "Fair"
+        db_row_id: 4
     }
     ListElement {
         identifier: "equitable_vulnerables"
@@ -61,6 +65,7 @@ ListModel {
         max_fr: "Équitable"
         min_en: "Unfair"
         max_en: "Fair"
+        db_row_id: 5
     }
     ListElement {
         identifier: "equitable_jeunes_contrevenants"
@@ -70,6 +75,7 @@ ListModel {
         max_fr: "Équitable"
         min_en: "Unfair"
         max_en: "Fair"
+        db_row_id: 6
     }
     ListElement {
         identifier: "equitable_riches"
@@ -79,6 +85,7 @@ ListModel {
         max_fr: "Équitable"
         min_en: "Unfair"
         max_en: "Fair"
+        db_row_id: 7
     }
     ListElement {
         identifier: "equitable_minorites_culturelles"
@@ -88,6 +95,7 @@ ListModel {
         max_fr: "Équitable"
         min_en: "Unfair"
         max_en: "Fair"
+        db_row_id: 8
     }
     ListElement {
         identifier: "confiance_systeme"
@@ -97,6 +105,7 @@ ListModel {
         max_fr: "Confiance"
         min_en: "TODO"
         max_en: "TODO"
+        db_row_id: 9
     }
     ListElement {
         identifier: "interner"
@@ -106,6 +115,7 @@ ListModel {
         max_fr: "Juste"
         min_en: "TODO"
         max_en: "TODO"
+        db_row_id: 10
     }
     ListElement {
         identifier: "peine_plus_severes"
@@ -115,6 +125,7 @@ ListModel {
         max_fr: "Oui"
         min_en: "TODO"
         max_en: "TODO"
+        db_row_id: 11
     }
     ListElement {
         identifier: "taux_recidive"
@@ -124,6 +135,7 @@ ListModel {
         max_fr: "Élevé"
         min_en: "TODO"
         max_en: "TODO"
+        db_row_id: 12
     }
     ListElement {
         identifier: "bon_traitement"
@@ -133,6 +145,7 @@ ListModel {
         max_fr: "Bien traités"
         min_en: "TODO"
         max_en: "TODO"
+        db_row_id: 13
     }
     ListElement {
         identifier: "confinement_solitaire"
@@ -142,6 +155,7 @@ ListModel {
         max_fr: "Oui"
         min_en: "TODO"
         max_en: "TODO"
+        db_row_id: 14
     }
     ListElement {
         identifier: "soins_physiques"
@@ -151,6 +165,7 @@ ListModel {
         max_fr: "TODO"
         min_en: "TODO"
         max_en: "TODO"
+        db_row_id: 15
     }
     ListElement {
         identifier: "soins_mentaux"
@@ -160,6 +175,7 @@ ListModel {
         max_fr: "TODO"
         min_en: "TODO"
         max_en: "TODO"
+        db_row_id: 16
     }
     ListElement {
         identifier: "ressources_reinsertion"
@@ -169,6 +185,7 @@ ListModel {
         max_fr: "TODO"
         min_en: "TODO"
         max_en: "TODO"
+        db_row_id: 17
     }
     ListElement {
         identifier: "benefice_justice_reparatrice"
@@ -178,6 +195,7 @@ ListModel {
         max_fr: "la guérison des victimes"
         min_en: "TODO"
         max_en: "TODO"
+        db_row_id: 18
     }
     ListElement {
         identifier: "developper_alternatives_prison"
@@ -187,6 +205,7 @@ ListModel {
         max_fr: "TODO"
         min_en: "TODO"
         max_en: "TODO"
+        db_row_id: 19
     }
     ListElement {
         identifier: "investir_education"
@@ -196,6 +215,7 @@ ListModel {
         max_fr: "L’éducation"
         min_en: "TODO"
         max_en: "TODO"
+        db_row_id: 20
     }
     ListElement {
         identifier: "investir_sante_services_sociaux"
@@ -205,6 +225,7 @@ ListModel {
         max_fr: "La santé et de services sociaux"
         min_en: "TODO"
         max_en: "TODO"
+        db_row_id: 21
     }
     ListElement {
         identifier: "investir_emploi"
@@ -214,6 +235,7 @@ ListModel {
         max_fr: "Différents programmes liés à l’emploi"
         min_en: "TODO"
         max_en: "TODO"
+        db_row_id: 22
     }
     ListElement {
         identifier: "importance_assurance_protection_population"
@@ -223,6 +245,7 @@ ListModel {
         max_fr: "Assurer la sécurité et la protection de la population"
         min_en: "TODO"
         max_en: "TODO"
+        db_row_id: 23
     }
     ListElement {
         identifier: "importance_repondre_actes"
@@ -232,6 +255,7 @@ ListModel {
         max_fr: "Veiller à ce que les délinquants répondent de leurs actes"
         min_en: "TODO"
         max_en: "TODO"
+        db_row_id: 24
     }
     ListElement {
         identifier: "importance_soutien_rehabilitation"
@@ -241,6 +265,7 @@ ListModel {
         max_fr: "Offrir le soutien nécessaire pour assurer la réhabilitation réussie des délinquants"
         min_en: "TODO"
         max_en: "TODO"
+        db_row_id: 25
     }
 }
 
