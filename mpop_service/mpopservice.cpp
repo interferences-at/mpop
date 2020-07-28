@@ -10,6 +10,37 @@
 
 QT_USE_NAMESPACE
 
+bool MPopService::toBoolean(const QString& value) {
+    bool ret = false;
+    if (value.toLower() == "true" || value.toInt() == 1) {
+        ret = true;
+    }
+    // I think we could also simply do:
+    // return QVariant(value).toBool();
+    return ret;
+}
+
+void MPopService::load_config_from_env_vars(Config& config) {
+    QProcessEnvironment env = QProcessEnvironment::systemEnvironment();
+    config.mysql_port = env.value("CONFIG_MYSQL_PORT", "3306").toUInt();
+    config.mysql_user = env.value("CONFIG_MYSQL_USER", "admin");
+    config.mysql_database = env.value("CONFIG_MYSQL_DATABASE", "mpop_database");
+    config.mysql_password = env.value("CONFIG_MYSQL_PASSWORD", "secret");
+    config.mysql_host = env.value("CONFIG_MYSQL_HOST", "0.0.0.0"); // Use 'db' as a hostname, if you use within Docker Compose
+    config.service_port_number = env.value("MPOP_SERVICE_PORT_NUMBER", "3333").toUInt();
+    config.is_verbose = toBoolean(env.value("CONFIG_IS_VERBOSE", "true"));
+    if (config.is_verbose) {
+        qDebug() << "mysql_port:" << config.mysql_port;
+        qDebug() << "mysql_user:" << config.mysql_user;
+        qDebug() << "mysql_database:" << config.mysql_database;
+        qDebug() << "mysql_password:" << config.mysql_password;
+        qDebug() << "mysql_host:" << config.mysql_host;
+        qDebug() << "service_port_number:" << config.service_port_number;
+        qDebug() << "is_verbose:" << config.is_verbose;
+
+    }
+}
+
 /**
  * @brief Returns an identifier for a given Websocket client.
  * @param peer Websocket client.
