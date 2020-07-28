@@ -89,7 +89,6 @@ private: // data members:
     const Config& _config;
 
 private: // methods:
-    bool createTables();
     /**
      * @brief Checks if the database is ready.
      * @return True if the database is ready.

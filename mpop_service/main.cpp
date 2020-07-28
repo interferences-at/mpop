@@ -42,7 +42,6 @@ void load_config_from_env_vars(Config& config) {
     config.mysql_password = env.value("CONFIG_MYSQL_PASSWORD", "secret");
     config.mysql_host = env.value("CONFIG_MYSQL_HOST", "0.0.0.0"); // Use 'db' as a hostname, if you use within Docker Compose
     config.service_port_number = env.value("MPOP_SERVICE_PORT_NUMBER", "3333").toUInt();
-    config.use_sqlite = toBoolean(env.value("CONFIG_USE_SQLITE", "false"));
     config.is_verbose = toBoolean(env.value("CONFIG_IS_VERBOSE", "true"));
     if (config.is_verbose) {
         qDebug() << "mysql_port:" << config.mysql_port;
@@ -51,7 +50,6 @@ void load_config_from_env_vars(Config& config) {
         qDebug() << "mysql_password:" << config.mysql_password;
         qDebug() << "mysql_host:" << config.mysql_host;
         qDebug() << "service_port_number:" << config.service_port_number;
-        qDebug() << "use_sqlite:" << config.use_sqlite;
         qDebug() << "is_verbose:" << config.is_verbose;
 
     }

@@ -3,112 +3,36 @@
 #include <QVariant>
 #include <QSqlError>
 #include <QDebug>
-
 #include <QStandardPaths>
 #include <QDir>
 
-static const int EXPECTED_NUM_TABLES = 3;
-
-/**
- * @brief Returns the path to our SQLite database.
- * @return
- */
-static QString getSQLitePath() {
-    //QString dataLocation = QStandardPaths::displayName(QStandardPaths::AppDataLocation);
-    //QString dataLocation = QStandardPaths::displayName(QStandardPaths::HomeLocation);
-    QString dataLocation = QDir::homePath();
-    QDir dir = QDir(dataLocation);
-    QString fileName = ".mpop_database.sqlite";
-    return dir.absoluteFilePath(fileName);
-}
 
 Facade::Facade(
         const Config& config, QObject* parent) : QObject(parent), _config(config)
 {
-    if (config.use_sqlite) {
-        QString sqlitePath = getSQLitePath();
-        qInfo() << "Open database " << sqlitePath << endl;
-        _database = QSqlDatabase::addDatabase("QSQLITE", sqlitePath);
-        _database.setDatabaseName(sqlitePath);
-    } else {
-        _database = QSqlDatabase::addDatabase("QMYSQL");
-        _database.setHostName(_config.mysql_host);
-        _database.setDatabaseName(_config.mysql_database);
-        _database.setUserName(_config.mysql_user);
-        _database.setPassword(_config.mysql_password);
-        _database.setPort(_config.mysql_port);
-    }
+    _database = QSqlDatabase::addDatabase("QMYSQL");
+    _database.setHostName(_config.mysql_host);
+    _database.setDatabaseName(_config.mysql_database);
+    _database.setUserName(_config.mysql_user);
+    _database.setPassword(_config.mysql_password);
+    _database.setPort(_config.mysql_port);
 
     _is_db_open = _database.open();
 
     if (_is_db_open) {
-        if (! this->isDatabaseReady()) {
-            bool tables_created = this->createTables();
-        }
+        qInfo() << "Success connecting to the database.";
     } else {
         qWarning() << "ERROR: Could not open database";
     }
+
+    // TODO: Periodically make sure that our connection with the database is active.
+    // Attempt to re-open it if not.
 }
 
 bool Facade::isDatabaseReady() {
-    QStringList tables = _database.tables();
-    if (tables.length() == EXPECTED_NUM_TABLES) {
-        qInfo() << "Found " << EXPECTED_NUM_TABLES << " tables, as expected." << endl;
-        return true;
-    } else {
-        return false;
-    }
+    return _database.open();
 }
 
-bool Facade::createTables() {
-    qInfo() << "Create tables" << endl;
-    qInfo() << "createTables() is disabled. We handle this in the migration script with MySQL" << endl;
-    bool success = true;
-    /*
-    QStringList sqls;
-    bool success = true;
-    sqls.append(
-        " CREATE TABLE IF NOT EXISTS tag "
-        " ( "
-        "   id BIGINT UNSIGNED NOT NULL PRIMARY KEY, "
-        "   rfid VARCHAR(256) NOT NULL UNIQUE, "
-        "   visitor_id BIGINT UNSIGNED NULL UNIQUE, "
-        "   last_used_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP "
-        " ) "
-        );
-    sqls.append(
-        " CREATE TABLE IF NOT EXISTS visitor "
-        " ( "
-        "   id BIGINT UNSIGNED NOT NULL PRIMARY KEY, "
-        "   gender VARCHAR(6) DEFAULT 'other', "
-        "   language VARCHAR(2) DEFAULT 'fr', "
-        "   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP "
-        " ) "
-        );
-    sqls.append(
-        " CREATE TABLE IF NOT EXISTS answer "
-        " ( "
-        "   id BIGINT UNSIGNED NOT NULL PRIMARY KEY, "
-        "   question_identifier VARCHAR(100), "
-        "   value TINYINT UNSIGNED, "
-        "   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP "
-        " ) "
-        );
-
-    for (int i = 0; i < sqls.size(); ++ i) {
-        qInfo() << "Running SQL Query: ";
-        qInfo() << sqls[i];
-        QSqlQuery query(sqls[i], _database);
-        bool ok = query.exec();
-        if (! ok) {
-            qWarning() << "ERROR: " << query.lastError().text();
-            success = false;
-        }
-    }
-    */
-
-    return success;
-}
 
 int Facade::getOrCreateUser(const QString& rfidTag) {
     return getUserForTag(rfidTag);
