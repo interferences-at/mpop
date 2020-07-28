@@ -18,3 +18,12 @@ Developers can look in the CONTRIBUTING.md file.
 
 See doc/OSC.md and all the files in doc/.
 
+## Authors
+
+- Alexandre Quessy - Lead software developer
+- Aveline Barlerin - Business analyst
+- Dame Diongue (Bay Dam) - Software developer
+- Mandeep Kaur Hari - Software developer
+- Mehul Bhavsar - Software developer
+- Rajwinder Kaur - Software developer
+
