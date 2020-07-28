@@ -68,6 +68,25 @@ public:
     explicit MPopService(const Config& config, QObject* parent = nullptr);
     ~MPopService() override;
 
+    /**
+     * @brief Load configuration options from environment variables.
+     * @param config The Config struct to populate.
+     */
+    static void load_config_from_env_vars(Config& config);
+
+    /**
+     * @brief Converts a string to a boolean.
+     * @param value String to convert
+     *
+     * Values evaluated as true include: "True", "TRUE", "true", "1".
+     * Otherwise, it's false.
+     *
+     * Useful for parsing the environment variables.
+     *
+     * @return True if it's evaluated as true;
+     */
+    static bool toBoolean(const QString& value);
+
 private slots:
     void newConnectionCb();
     void textMessageReceivedCb(const QString &message);

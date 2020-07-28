@@ -11,7 +11,6 @@ CONFIG += sdk_no_version_check
 # mpop_kiosk:
 sub_mpop_kiosk.subdir = mpop_kiosk
 sub_mpop_kiosk.target = sub_mpop_kiosk
-# sub_mpop_kiosk.depends = qosc
 SUBDIRS += mpop_kiosk
 
 # mpop_service:
@@ -28,5 +27,11 @@ SUBDIRS += mpop_dataviz
 sub_test_mpop_kiosk.subdir = test_mpop_kiosk
 sub_test_mpop_kiosk.target = sub_test_mpop_kiosk
 sub_test_mpop_kiosk.depends += sub_mpop_kiosk
-# sub_test_mpop_kiosk.depends += qosc
 SUBDIRS += test_mpop_kiosk
+
+# test_mpop_service:
+sub_test_mpop_service.subdir = test_mpop_service
+sub_test_mpop_service.target = sub_test_mpop_service
+sub_test_mpop_service.depends += sub_mpop_service
+SUBDIRS += test_mpop_service
+
