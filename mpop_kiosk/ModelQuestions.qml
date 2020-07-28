@@ -1,7 +1,18 @@
 import QtQuick 2.0
 
+/**
+ * Model for all the questions.
+ *
+ * Contains the full text of each question in French and English.
+ * Also contains the text to display near each end of the slider.
+ * All questions are answered with a slider whose int value ranges from 0 to 100.
+ * We also store the MySQL `id` field for each row. (those are hard-coded in the SQL migration script, so that it's easier and faster)
+ * The questions won't change much, anyways.
+ *
+ * Some pages contains more than one (1) question, but handling those is not done here. It's done in the layout.s
+ */
 ListModel {
-    id: questionsModel
+    id: thisModel
 
     function _find(model, criteria) {
         for (var i = 0; i < model.count; ++i) {
@@ -11,12 +22,22 @@ ListModel {
         }
         return null;
     }
+
+    /**
+     * Finds a question given its identifier.
+     * @param string question_identifier
+     * @return ListElements
+     */
     function findQuestion(question_identifier) {
-        return _find(questionsModel, function(item) {
+        return _find(thisModel, function(item) {
             return item.identifier === question_identifier;
         });
     }
 
+    /**
+     * Here is the list of questions.
+     * They are ordered in the same initial way as the questions in the layout.
+     */
     ListElement {
         identifier: "incidence_drogue"
         question_fr: "D’après vous, quelle est l’incidence du marché de la drogue sur les infractions criminelles?"

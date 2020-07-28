@@ -1,7 +1,11 @@
 import QtQuick 2.0
 
+
+/**
+ * Model for the nation selection.
+ */
 ListModel {
-    id: nationsModel
+    id: thisModel
 
     function _find(model, criteria) {
         for (var i = 0; i < model.count; ++i) {
@@ -16,7 +20,7 @@ ListModel {
      * Returns a ListElement given its identifier field.
      */
     function findQuestion(nation_identifier) {
-        return _find(nationsModel, function(item) {
+        return _find(thisModel, function(item) {
             return item.identifier === nation_identifier;
         });
     }
@@ -61,4 +65,3 @@ ListModel {
         db_row_id: 6
     }
 }
-

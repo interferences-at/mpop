@@ -7,6 +7,8 @@ import QtQuick.Layouts 1.3
  */
 ColumnLayout {
     property string questionName: ""
+    property string questionIdentifier: ""
+    property int pageNumber: 0
 
     Button {
         text: questionName

@@ -3,40 +3,19 @@ import QtQuick.Controls 2.2
 import QtQuick.Layouts 1.3
 import QtQuick.Window 2.11
 
-// Main window of this application
+/**
+ * Main window of this application
+ * We follow the standard QML conventions: https://doc.qt.io/qt-5/qml-codingconventions.html
+ */
 ApplicationWindow {
     id: window
 
     property string lastRfidRead: ""
     property string lastMessageReceived: ""
 
-    visible: true
-    width: 1920
-    height: 1080
-    title: qsTr("MPOP Kiosk")
-
     function handleMessageReceived(oscPath, oscArguments) {
         console.log("(QML) Received OSC: " + oscPath + " " + oscArguments);
         lastMessageReceived = oscPath + " " + oscArguments;
-    }
-
-    Connections {
-        target: rfidReader
-        onLastRfidReadChanged: {
-            lastRfidRead = rfidReader.lastRfidRead;
-            console.log("(QML) Last RFID read: " + lastRfidRead);
-        }
-        onTagRead: {
-            console.log("(QML) RFID read: " + tag);
-        }
-    }
-
-    Connections {
-        target: oscReceiver
-
-        onMessageReceived: {
-            handleMessageReceived(oscAddress, message);
-        }
     }
 
     /**
@@ -58,6 +37,33 @@ ApplicationWindow {
         stackLayout0.currentIndex = (stackLayout0.currentIndex + 1) % 2;
     }
 
+    visible: true
+    width: 1920
+    height: 1080
+    title: qsTr("MPOP Kiosk")
+
+
+    Connections {
+        target: rfidReader
+        onLastRfidReadChanged: {
+            lastRfidRead = rfidReader.lastRfidRead;
+            console.log("(QML) Last RFID read: " + lastRfidRead);
+        }
+        onTagRead: {
+            console.log("(QML) RFID read: " + tag);
+        }
+    }
+
+
+    Connections {
+        target: oscReceiver
+
+        onMessageReceived: {
+            handleMessageReceived(oscAddress, message);
+        }
+    }
+
+
     // Shortcuts:
     Shortcut {
         sequence: "Esc"
@@ -68,10 +74,12 @@ ApplicationWindow {
         sequence: "Ctrl+Q"
         onActivated: quitThisApp()
     }
+
     Shortcut {
         sequence: "Tab"
         onActivated: toggleDebugView()
     }
+
 
     // Main two-column layout
     RowLayout {
@@ -85,14 +93,19 @@ ApplicationWindow {
             Layout.fillHeight: true
             orientation: Qt.Vertical
             width: currentItem.width
-            model: questionModel
-            delegate: QuestionButton {
-                questionName: name
+            /**
+             * The main model that contains all the questions.
+             */
+            model: ModelQuestions {
+                id: modelQuestions
+            }
+
+            delegate: WidgetQuestionButton {
+                questionName: question_fr
                 height: parent.height / parent.count
                 spacing: 0
             }
         }
-        //            }
 
         // Contents
         StackLayout {
@@ -128,7 +141,7 @@ ApplicationWindow {
                         }
                         Label {
                             Layout.alignment: Qt.AlignCenter
-                            text: "Combien de bière par semaine buvez-vous ?"
+                            text: "Ceci est une question."
                             font.pixelSize: 36
                         }
                         AnswerSlider {
@@ -143,17 +156,10 @@ ApplicationWindow {
                             text: "Sous-titre pour le slider."
                             font.pixelSize: 24
                         }
-                        RowLayout {
+                        WidgetPreviousNext {
                             Layout.alignment: Qt.AlignRight
                             Layout.fillWidth: false
                             Layout.fillHeight: false
-
-                            Button {
-                                text: "<-"
-                            }
-                            Button {
-                                text: "->"
-                            }
                         }
                     }
 
@@ -196,85 +202,6 @@ ApplicationWindow {
                     }
                 }
             }
-        }
-    }
-
-    ListModel {
-        id: questionModel
-        ListElement {
-            name: "Question 01"
-        }
-        ListElement {
-            name: "Question 02"
-        }
-        ListElement {
-            name: "Question 03"
-        }
-        ListElement {
-            name: "Question 04"
-        }
-        ListElement {
-            name: "Question 05"
-        }
-        ListElement {
-            name: "Question 06"
-        }
-        ListElement {
-            name: "Question 07"
-        }
-        ListElement {
-            name: "Question 08"
-        }
-        ListElement {
-            name: "Question 09"
-        }
-        ListElement {
-            name: "Question 10"
-        }
-        ListElement {
-            name: "Question 11"
-        }
-        ListElement {
-            name: "Question 12"
-        }
-        ListElement {
-            name: "Question 13"
-        }
-        ListElement {
-            name: "Question 14"
-        }
-        ListElement {
-            name: "Question 15"
-        }
-        ListElement {
-            name: "Question 16"
-        }
-        ListElement {
-            name: "Question 17"
-        }
-        ListElement {
-            name: "Question 18"
-        }
-        ListElement {
-            name: "Question 19"
-        }
-        ListElement {
-            name: "Question 20"
-        }
-        ListElement {
-            name: "Question 21"
-        }
-        ListElement {
-            name: "Question 22"
-        }
-        ListElement {
-            name: "Question 23"
-        }
-        ListElement {
-            name: "Question 24"
-        }
-        ListElement {
-            name: "Question 25"
         }
     }
 }
