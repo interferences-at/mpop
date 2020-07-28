@@ -45,22 +45,7 @@ ColumnLayout {
         text: "Sous-titre pour le slider."
         font.pixelSize: 24
     }
-    RowLayout {
-        Layout.alignment: Qt.AlignRight
-        Layout.fillWidth: false
-        Layout.fillHeight: false
+    WidgetPreviousNext {
 
-        Button {
-            text: "<-"
-            onClicked: {
-                thisPage.previousButtonClicked();
-            }
-        }
-        Button {
-            text: "->"
-            onClicked: {
-                thisPage.nextButtonClicked();
-            }
-        }
     }
 }

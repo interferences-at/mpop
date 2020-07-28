@@ -63,6 +63,10 @@ ApplicationWindow {
         }
     }
 
+    UserProfile {
+        id: userProfile
+    }
+
 
     // Shortcuts:
     Shortcut {
