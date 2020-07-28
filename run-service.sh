@@ -8,5 +8,5 @@ CONFIG_IS_VERBOSE=true \
     CONFIG_MYSQL_USER=admin \
     CONFIG_USE_SQLITE=false \
     MPOP_SERVICE_PORT_NUMBER=3333 \
-    ../build-Mpop-Desktop-Debug/mpop_service/mpop_service
+    ./mpop_service/mpop_service
 

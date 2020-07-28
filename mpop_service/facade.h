@@ -33,12 +33,14 @@ public:
      * @return The favourite language of the user. ("en" or "fr")
      */
     QString getUserLanguage(int userId);
+
     /**
      * @brief Returns an active user for a RFID tag
      * @param rfidTag The RFID tag that is associated to it, or to associate it with.
      * @return The user ID of the user.
      */
     int getOrCreateUser(const QString& rfidTag);
+
     /**
      * @brief Retrieves all answers for a given user.
      * @param userId The user ID of the user.
@@ -46,6 +48,7 @@ public:
      * TODO: perhaps return a QVariant
      */
     QMap<QString, int> getUserAnswers(int userId);
+
     /**
      * @brief Creates or update the answer to a specific question for a given user.
      * @param userId The user ID of the user.
@@ -53,11 +56,13 @@ public:
      * @param value The value of the answer.
      */
     void setUserAnswer(int userId, const QString& questionId, int value);
+
     /*
      * TODO: perhaps return a QVariant
      * TODO: sort out the format of the result.
      */
     QList<int> getStatsForQuestion(const QString& questionId);
+
     /**
      * @brief Frees a RFID tag that is no longer owned by a user.
      * @param rfidTag The RFID tag.
@@ -73,6 +78,8 @@ public:
     bool setUserLanguage(int userId, const QString& language);
     bool setUserGender(int userId, const QString& gender);
     QString getUserGender(int userId);
+
+    QMap<QString, QVariant> getUserInfo(int userId);
 
 signals:
 

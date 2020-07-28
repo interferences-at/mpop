@@ -2,8 +2,16 @@
     <qresource prefix="/">
         <file>main.qml</file>
         <file>qtquickcontrols2.conf</file>
-        <file>QuestionButton.qml</file>
-        <file>QuestionsModel.qml</file>
+        <file>WidgetQuestionButton.qml</file>
+        <file>ModelQuestions.qml</file>
         <file>AnswerSlider.qml</file>
+        <file>UserProfile.qml</file>
+        <file>PageMultipleQuestion.qml</file>
+        <file>ModelGenders.qml</file>
+        <file>ModelNations.qml</file>
+        <file>DatavizManager.qml</file>
+        <file>PageGender.qml</file>
+        <file>WidgetPreviousNext.qml</file>
+        <file>WidgetChoiceButton.qml</file>
     </qresource>
 </RCC>
