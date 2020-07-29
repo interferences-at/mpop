@@ -2,6 +2,7 @@ import QtQuick 2.9
 import QtQuick.Controls 2.2
 import QtQuick.Layouts 1.3
 import QtQuick.Window 2.11
+import Screensaver 1.0
 
 /**
  * Main window of this application
@@ -170,6 +171,29 @@ ApplicationWindow {
 
                 }
             }
+
+            // This is a code screensaver
+            // TODO: Put this code below to the right trigger
+            StackLayout {
+                id: screensaverLayout
+                Layout.fillWidth: true
+                Layout.fillHeight: true
+                Layout.margins: 0
+
+                Rectangle {
+                    width: parent.width
+                    height: parent.height
+                    color: "black"
+                    visible: true
+
+                    Screensaver {
+                        id: screensaver
+                        anchors.fill: parent
+                    }
+                }
+            }
+
+            // End of the StackLayout
 
             // OSC debug layout:
             ColumnLayout {

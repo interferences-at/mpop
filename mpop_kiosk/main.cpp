@@ -4,6 +4,7 @@
 #include "rfidreader.h"
 #include "oscreceiver.h"
 #include "oscsender.h"
+#include "screensaver.h"
 
 int main(int argc, char *argv[])
 {
@@ -12,6 +13,9 @@ int main(int argc, char *argv[])
     QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
 
     QGuiApplication app(argc, argv);
+
+    // Create Screensaver type
+    qmlRegisterType<Screensaver>("Screensaver", 1, 0, "Screensaver");
 
     int argumentCount = QCoreApplication::arguments().size();
     QStringList argumentList = QCoreApplication::arguments();

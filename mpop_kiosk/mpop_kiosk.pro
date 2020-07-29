@@ -26,7 +26,9 @@ SOURCES += \
     ../qosc/oscreceiver.cpp \
     ../qosc/oscsender.cpp \
     main.cpp \
-    rfidreader.cpp
+    rfidreader.cpp \
+    screensaver.cpp \
+    stick.cpp
 
 RESOURCES += qml.qrc
 
@@ -52,7 +54,9 @@ HEADERS += \
     ../qosc/contrib/oscpack/OscTypes.h \
     ../qosc/oscreceiver.h \
     ../qosc/oscsender.h \
-    rfidreader.h
+    rfidreader.h \
+    screensaver.h \
+    stick.h
 
 INCLUDEPATH += $$PWD/../qosc
 INCLUDEPATH += $$PWD/../qosc/contrib/packosc
