@@ -1,6 +1,8 @@
 QT += quick
 QT += core
 QT += serialport
+QT += opengl
+win32:LIBS += -lOpengl32
 CONFIG += c++11
 
 # Disable macOS version check (it prints a WARNING)
