@@ -5,6 +5,7 @@
 #include <QDebug>
 #include <QStandardPaths>
 #include <QDir>
+#include <QSqlRecord>
 
 
 Facade::Facade(
@@ -85,7 +86,7 @@ int Facade::createTagAndUser(const QString& rfidTag) {
 }
 
 int Facade::createNewUser() {
-    QString sql = "INSERT INTO visitor";
+    QString sql = "INSERT INTO visitor(	created_at) values(now())";
     QSqlQuery query(sql, _database);
     bool ok = query.exec();
     if (! ok) {
@@ -136,17 +137,53 @@ QString Facade::getUserGender(int userId) {
     return ret;
 }
 
-QMap<QString, int> Facade::getUserAnswers(int userId) {
-    QMap<QString, int> ret;
-    Q_UNUSED(userId);
-    return ret;
-    // TODO
+QMap<QString, QVariant> Facade::getUserAnswers(int userId) {
+    QMap<QString, QVariant> ret;
+        QString sql = "SELECT question.identifier,answer.answer_value FROM answer join question on"
+                      "answer.question_id=question.id  WHERE answer.visitor_id = :userId";
+        QSqlQuery query(sql, _database);
+        query.bindValue(":userId", QVariant(userId));
+        bool ok = query.exec();
+        if (! ok) {
+            qWarning() << "ERROR: " << query.lastError().text();
+        }
+        while (query.next()) {
+            ret.insert( query.value(0).toString(), query.value(1).toString());
+        }
+        return ret;
 }
 
+
+QMap<QString, QVariant> Facade::getUserInfo(int userId) {
+    QMap<QString, QVariant> ret;
+        QString sql = "SELECT visitor.age, visitor.gender,visitor.language, nation.identifier from visitor join nation on visitor.nation=nation.id  WHERE visitor.id = :userId";
+        QSqlQuery query(sql, _database);
+        query.bindValue(":userId", QVariant(userId));
+        bool ok = query.exec();
+        if (! ok) {
+            qWarning() << "ERROR: " << query.lastError().text();
+        }
+       QSqlRecord rec = query.record();
+        query.next();
+        for (int i=0; i<rec.count(); ++i) {
+            ret.insert(rec.fieldName(i), query.value(i));
+        }
+        return ret;
+}
+
+
+
+
 void Facade::setUserAnswer(int userId, const QString& questionId, int value) {
-    Q_UNUSED(userId);
-    Q_UNUSED(questionId);
-    Q_UNUSED(value);
+   QString sql= "insert into answer(visitor_id,question_id,answer_value) select :userId, id, :answer_value from question where identifier=:questionId ";
+   QSqlQuery query(sql, _database);
+   query.bindValue(":userId", QVariant(userId));
+   query.bindValue(":questionId", QVariant(questionId));
+   query.bindValue(":answer_value", QVariant(value));
+   bool ok = query.exec();
+   if (! ok) {
+       qWarning() << "ERROR: " << query.lastError().text();
+   }
 }
 
 QList<int> Facade::getStatsForQuestion(const QString& questionId) {
@@ -157,11 +194,26 @@ QList<int> Facade::getStatsForQuestion(const QString& questionId) {
 }
 
 void Facade::freeTag(const QString& rfidTag) {
-    Q_UNUSED(rfidTag);
+
+    QString sql= "update tag set visitor_id=null where rfid=:rfidTag";
+    QSqlQuery query(sql, _database);
+    query.bindValue(":rfidTag", QVariant(rfidTag));
+    bool ok = query.exec();
+    if (! ok) {
+        qWarning() << "ERROR: " << query.lastError().text();
+    }
+
+
 }
 
 void Facade::freeUnusedTags() {
 
+    QString sql= "";
+    QSqlQuery query(sql, _database);
+    bool ok = query.exec();
+    if (! ok) {
+        qWarning() << "ERROR: " << query.lastError().text();
+    }
 }
 
 bool Facade::setUserLanguage(int userId, const QString& language) {
@@ -181,6 +233,19 @@ bool Facade::setUserGender(int userId, const QString& gender) {
     QSqlQuery query(sql, _database);
     query.bindValue(":userId", QVariant(userId));
     query.bindValue(":gender", QVariant(gender));
+    bool ok = query.exec();
+    if (! ok) {
+        qWarning() << "ERROR: " << query.lastError().text();
+    }
+    return query.numRowsAffected() == 1;
+}
+
+bool Facade::setUserNation(int userId, const QString& nation){
+
+    QString sql = "UPDATE visitor SET `nation` = (select id from nation  WHERE `identifier`=:nation) where id= :userId ";
+    QSqlQuery query(sql, _database);
+    query.bindValue(":userId", QVariant(userId));
+    query.bindValue(":nation", QVariant(nation));
     bool ok = query.exec();
     if (! ok) {
         qWarning() << "ERROR: " << query.lastError().text();

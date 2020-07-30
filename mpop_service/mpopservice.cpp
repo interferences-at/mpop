@@ -136,17 +136,17 @@ QString MPopService::handleJsonRpcTwoMethod(const QString& message, bool &broadc
         QTextStream(stdout) << "Response: " << ret;
         return ret;
     } else if (request.method == "ping") {
-        QTextStream(stdout) << "Got method ping" << endl;
+        QTextStream(stdout) << "Got method ping"<< endl;
         response.result = QVariant::fromValue(QString("pong"));
-        QTextStream(stdout) << "Answer with pong" << endl;
+        QTextStream(stdout) << "Answer with pong"<< endl;
     } else if (request.method == "echo") {
-        QTextStream(stdout) << "Got method echo" << endl;
+        QTextStream(stdout) << "Got method echo"<< endl;
         response.result = QVariant(request.paramsByName);
-        QTextStream(stdout) << "Answer with echo" << endl;
+        QTextStream(stdout) << "Answer with echo"<< endl;
     } else if (this->handleFacadeMethod(request, response)) {
         // success
     } else {
-        QTextStream(stdout) << "unhandled request";
+        QTextStream(stdout) << "unhandled request"<< endl;
     }
 
     QString ret = response.toString(); // return string response (JSON)
@@ -160,19 +160,57 @@ bool MPopService::handleFacadeMethod(const Request& request, Response& response)
     if (method == "getOrCreateUser") {
         QString rfidTag = request.paramsByPosition[0].toString();
         response.result = QVariant(this->_facade.getOrCreateUser(rfidTag));
-// TODO int (const QString& rfidTag);
+    }
+   else if(method == "getUserInfo"){
+         int  userId= request.paramsByPosition[0].toInt();
+         response.result = QVariant(this->_facade.getUserInfo(userId));
+    }
+   else if(method== "getUserLanguage"){
+        int  userId= request.paramsByPosition[0].toInt();
+        response.result = QVariant(this->_facade.getUserLanguage(userId));
+    }
+    else if (method == "getUserGender"){
+        int  userId= request.paramsByPosition[0].toInt();
+        response.result = QVariant(this->_facade.getUserGender(userId));
+    }
+    else if(method == "getUserAnswers"){
+        int  userId= request.paramsByPosition[0].toInt();
+        response.result = QVariant(this->_facade.getUserAnswers(userId));
+    }
+    else if(method == "setUserAnswer"){
+        int  userId= request.paramsByPosition[0].toInt();
+        QString question= request.paramsByPosition[1].toString();
+        int value = request.paramsByPosition[2].toInt();
+        this->_facade.setUserAnswer(userId,question,value);
+   }
+    else if(method=="freeTag"){
+        QString rfidTag= request.paramsByPosition[0].toString();
+        this->_facade.freeTag(rfidTag);
+    }
+    else if(method=="freeUnusedTags"){
+        this->_facade.freeUnusedTags();
+    }
+    else if(method=="setUserLanguage"){
+
+        int  userId= request.paramsByPosition[0].toInt();
+        QString language= request.paramsByPosition[1].toString();
+        response.result =  QVariant(this->_facade.setUserLanguage(userId,language));
+    }
+    else if(method=="setUserGender"){
+
+        int  userId= request.paramsByPosition[0].toInt();
+        QString gender= request.paramsByPosition[1].toString();
+        response.result =  QVariant(this->_facade.setUserGender(userId,gender));
+    }
+    else if(method=="setUserNation"){
+
+        int  userId= request.paramsByPosition[0].toInt();
+        QString nation= request.paramsByPosition[1].toString();
+        response.result =  QVariant(this->_facade.setUserNation(userId,nation));
     }
 
-    // TODO QString getUserLanguage(int userId);
-
-    // TODO QMap<QString, int> getUserAnswers(int userId);
-    // TODO void setUserAnswer(int userId, const QString& questionId, int value);
     // TODO QList<int> getStatsForQuestion(const QString& questionId);
-    // TODO void freeTag(const QString& rfidTag);
-    // TODO void freeUnusedTags();
-    // TODO bool setUserLanguage(int userId, const QString& language);
-    // TODO bool setUserGender(int userId, const QString& gender);
-    // TODO QString getUserGender(int userId);
+
 
     return true;
 }
