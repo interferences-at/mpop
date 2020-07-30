@@ -175,6 +175,21 @@ ApplicationWindow {
          */
         StackLayout {
             id: demographicQuestionsStackLayout
+
+            /**
+             * Go to the previous page.
+             */
+            function previousPage() {
+                currentIndex -= 1
+            }
+
+            /**
+             * Go to the next page.
+             */
+            function nextPage() {
+                currentIndex += 1
+            }
+
             Layout.fillWidth: true
             Layout.fillHeight: true
             Layout.margins: 0
@@ -185,11 +200,14 @@ ApplicationWindow {
             readonly property int index_MY_AGE: 3
             readonly property int index_ENJOY_YOUR_VISIT: 4
 
-            // Select your language
-            ColumnLayout {
-                Label {
-                    text: qsTr("Select your language.")
-                    font.capitalization: Font.AllUppercase
+            PageLanguage {
+                id: pageLanguage
+                onPreviousButtonClicked: {
+                    // TODO
+                    // FIXME: there should be no previous button here.
+                }
+                onNextButtonClicked: {
+                    demographicQuestionsStackLayout.nextPage();
                 }
             }
 
@@ -197,11 +215,10 @@ ApplicationWindow {
             PageGender {
                 id: pageGender
                 onPreviousButtonClicked: {
-                    // TODO
-                    // FIXME: there should be no previous button here.
+                    demographicQuestionsStackLayout.previousPage();
                 }
                 onNextButtonClicked: {
-                    demographicQuestionsStackLayout.currentIndex += 1
+                    demographicQuestionsStackLayout.nextPage();
                 }
             }
 
@@ -209,10 +226,10 @@ ApplicationWindow {
             PageEthnicity {
                 id: pageEthnicity
                 onPreviousButtonClicked: {
-                    demographicQuestionsStackLayout.currentIndex -= 1
+                    demographicQuestionsStackLayout.previousPage();
                 }
                 onNextButtonClicked: {
-                    demographicQuestionsStackLayout.currentIndex += 1
+                    demographicQuestionsStackLayout.nextPage();
                 }
             }
 
@@ -220,17 +237,17 @@ ApplicationWindow {
             PageAge {
                 id: pageAge
                 onPreviousButtonClicked: {
-                    demographicQuestionsStackLayout.currentIndex -= 1
+                    demographicQuestionsStackLayout.previousPage();
                 }
                 onNextButtonClicked: {
                     // TODO
                     // if this is the entry kiosk, show the "enjoy your visit" page.
                     // if this is the center kiosk, go to the questions
-                    demographicQuestionsStackLayout.currentIndex += 1
+                    demographicQuestionsStackLayout.nextPage();
                 }
             }
 
-            // Enjoy your visit
+            // Enjoy your visit (only shown in the entry kiosk)
             ColumnLayout {
                 Label {
                     text: qsTr("Thank you so much")
@@ -299,7 +316,7 @@ ApplicationWindow {
                 PageSingleQuestion {
                     modelQuestions: modelQuestions
                     questionIdentifier: "incidence_drogue"
-                    oscSender: oscSender
+                    datavizSender: oscSender
                     serviceClient: userProfile
                 }
 

@@ -3,7 +3,7 @@ import QtQuick.Controls 2.2
 import QtQuick.Layouts 1.3
 
 /**
- * Page that contains the widget to select my age.
+ * Page that contains the widget to select my language.
  */
 RowLayout {
     id: thisPage
@@ -11,34 +11,34 @@ RowLayout {
     signal nextButtonClicked()
     signal previousButtonClicked()
 
-    // There should be no age set if we show this page.
-    property int selectedAge: -1
-
     Label {
         Layout.alignment: Qt.AlignCenter
-        text: qsTr("How old are you?")
-        font.capitalization: Font.AllUppercase
+        text: qsTr("Choose a language")
         font.pixelSize: 36
     }
 
     ListView {
-        id: listView0
-
         Layout.margins: 0
         Layout.fillWidth: false
         Layout.fillHeight: true
         orientation: Qt.Vertical
         width: currentItem.width
-        model: 120 // There are 120 items in this model.
+        // This model contains only two items: fr and en.
+        model: ListModel {
+            ListElement {
+                language_identifier: "fr"
+                language_text: qsTr("French");
+            }
+            ListElement {
+                language_identifier: "en"
+                language_text: qsTr("English");
+            }
+        }
 
         delegate: WidgetChoiceButton {
-            text: index + ((index > 1) ? " ans" : " an") // Index of the item in the model.
+            text: language_text // Property of items in the model.
             height: parent.height / parent.count
             spacing: 0
-
-            onClicked: {
-                thisPage.selectedAge = index;
-            }
         }
     }
 
