@@ -17,10 +17,11 @@ ColumnLayout {
     Button {
         text: thisWidget.text
         font.pixelSize: 12
-        font.capitalization: Font.MixedCase
         Layout.fillWidth: true
         topPadding: 0
         bottomPadding: 0
+        // To disable AllUppercase: font.capitalization: Font.MixedCase
+        font.capitalization: Font.AllUppercase
 
         onClicked: {
             thisWidget.clicked();

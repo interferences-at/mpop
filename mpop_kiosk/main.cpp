@@ -8,14 +8,9 @@
 
 int main(int argc, char *argv[])
 {
-    // qputenv("QT_IM_MODULE", QByteArray("qtvirtualkeyboard"));
-
     QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
 
     QGuiApplication app(argc, argv);
-
-    // Create Screensaver type
-    qmlRegisterType<Screensaver>("Screensaver", 1, 0, "Screensaver");
 
     int argumentCount = QCoreApplication::arguments().size();
     QStringList argumentList = QCoreApplication::arguments();
@@ -23,7 +18,6 @@ int main(int argc, char *argv[])
 
     QString sendOscHost = "127.0.0.1";
     quint16 sendOscPort = 14444;
-    // TODO: remove OSC receiver. We don't use it.
     quint16 receiveOscPort = 14444;
 
     if (argumentCount > 1) {
@@ -40,8 +34,10 @@ int main(int argc, char *argv[])
                               argumentList.first()) << endl;
     }
 
-    standardOutput << QObject::tr("Receive OSC on port %1").arg(receiveOscPort) << endl;
     standardOutput << QObject::tr("Send OSC to %1:%2").arg(sendOscHost).arg(sendOscPort) << endl;
+
+    // Create Screensaver QML type
+    qmlRegisterType<Screensaver>("Screensaver", 1, 0, "Screensaver");
 
     QQmlApplicationEngine engine;
 
@@ -53,6 +49,8 @@ int main(int argc, char *argv[])
     engine.rootContext()->setContextProperty("rfidReader", &rfidReader);
     engine.rootContext()->setContextProperty("oscSender", &oscSender);
     engine.rootContext()->setContextProperty("oscReceiver", &oscReceiver);
+
+    // Load main QML file
     engine.load(QUrl(QStringLiteral("qrc:/main.qml")));
     if (engine.rootObjects().isEmpty())
         return -1;

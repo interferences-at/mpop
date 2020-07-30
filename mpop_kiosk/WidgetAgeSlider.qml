@@ -3,16 +3,17 @@ import QtQuick.Controls 2.2
 import QtQuick.Layouts 1.3
 
 /**
- * Slider to answer a question.
+ * Slider to select my age.
  */
 ColumnLayout {
+    // Provides signal onSliderValueChanged
 
     property string textLeft: ""
     property string textRight: ""
     property bool showNumber: false
-    property real sliderValue: 50
+    property real sliderValue: 0
     property real sliderFrom: 0
-    property real sliderTo: 100
+    property real sliderTo: 120
     property real sliderStepSize: 1
     property real leftAndRightMargin: 100
 

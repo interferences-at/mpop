@@ -3,30 +3,38 @@ import QtQuick.Controls 2.2
 import QtQuick.Layouts 1.3
 
 /**
- * Page that contains multiple questions.
+ * Page that contains a single question.
  */
 ColumnLayout {
     id: thisPage
 
-
     property var modelQuestions: null
     property var serviceClient: null
     property var oscSender: null
-
     property string minText: ""
     property string maxText: ""
     property string titleText: ""
-    // List for the questions in this page:
-    property var questionIdentifiers: null
-    property string mainQuestionText: null
+    property var questionIdentifier: null
+    property string questionText: null
 
     signal nextButtonClicked()
     signal previousButtonClicked()
 
-    Button {
-        Layout.alignment: Qt.AlignRight
-        text: "X"
-        font.pixelSize: 24
+    Component.onCompleted: {
+        var item = modelQuestions.findQuestion(questionIdentifier);
+
+        var current_lang = "fr"; // TODO: check what current language is
+        if (current_lang === "fr") {
+            questionText = item.question_fr;
+            minText = item.min_fr;
+            maxText = item.max_fr;
+        } else {
+            questionText = item.question_en;
+            minText = item.min_en;
+            maxText = item.max_en;
+        }
+
+        // TODO: Retrieve value for user from service and populate the slider, if set.
     }
 
     Label {
@@ -36,7 +44,7 @@ ColumnLayout {
     }
     Label {
         Layout.alignment: Qt.AlignCenter
-        text: mainQuestionText
+        text: questionText
         font.pixelSize: 36
     }
     WidgetAnswerSlider {
@@ -53,5 +61,8 @@ ColumnLayout {
         onPreviousButtonClicked: thisPage.previousButtonClicked()
     }
 
-    // TODO: Sub-page: Dataviz Multiple Questions
+    // TODO: Sub-page: Choose Single Question Mode
+    // TODO: Sub-page: Dataviz Single Question By Age
+    // TODO: Sub-page: Dataviz Single Question By Gender
+    // TODO: Sub-page: Dataviz Single Question By Ethnicity
 }

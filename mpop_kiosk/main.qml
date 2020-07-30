@@ -14,6 +14,9 @@ ApplicationWindow {
     property string lastRfidRead: ""
     property string lastMessageReceived: ""
 
+    /**
+     * Handles the incoming OSC messages.
+     */
     function handleMessageReceived(oscPath, oscArguments) {
         console.log("(QML) Received OSC: " + oscPath + " " + oscArguments);
         lastMessageReceived = oscPath + " " + oscArguments;
@@ -30,20 +33,29 @@ ApplicationWindow {
         }
     }
 
+    /**
+     * Quits this application.
+     */
     function quitThisApp() {
         Qt.quit();
     }
 
+    /**
+     * Shows or hides the debug view.
+     */
     function toggleDebugView() {
         stackLayout0.currentIndex = (stackLayout0.currentIndex + 1) % 2;
     }
 
+    // assigning properties
     visible: true
     width: 1920
     height: 1080
     title: qsTr("MPOP Kiosk")
 
-
+    /**
+     * Handles the signals from the RFID serial reader.
+     */
     Connections {
         target: rfidReader
         onLastRfidReadChanged: {
@@ -55,7 +67,9 @@ ApplicationWindow {
         }
     }
 
-
+    /**
+     * Handles the signals from the OSC receiver.
+     */
     Connections {
         target: oscReceiver
 
@@ -64,12 +78,27 @@ ApplicationWindow {
         }
     }
 
+    Timer {
+        id: idleTimer
+
+        interval: 500 // TODO: change this
+        running: true
+        repeat: true
+        onTriggered: {
+            // TODO: detect clicks, and time how time elapsed since last click
+            // if idle for too long, go to screensaver
+        }
+    }
+
+
+    /**
+     * Communicates with the kiosk_service via JSON-RPC 2.0 to INSERT/UPDATE/SELECT in the MySQL database.
+     */
     UserProfile {
         id: userProfile
     }
 
-
-    // Shortcuts:
+    // Keyboard shortcuts:
     Shortcut {
         sequence: "Esc"
         onActivated: toggleFullscreen()
@@ -85,149 +114,274 @@ ApplicationWindow {
         onActivated: toggleDebugView()
     }
 
+    Shortcut {
+        sequence: "PgDown"
+        onActivated: mainStackLayout.nextIndex()
+    }
 
-    // Main two-column layout
-    RowLayout {
+    Shortcut {
+        sequence: "PgUp"
+        onActivated: mainStackLayout.previousIndex()
+    }
+
+    /**
+     * The main model that contains all the questions.
+     */
+    ModelQuestions {
+        id: modelQuestions
+    }
+
+    /**
+     * Main StackLayout
+     */
+    StackLayout {
+        id: mainStackLayout
+
+        readonly property int index_SCREENSAVER: 0
+        readonly property int index_DEMOGRAPHIC_QUESTIONS: 1
+        readonly property int index_SURVEY_QUESTIONS: 2
+        readonly property int index_EXIT_SECTION: 2
+
+        function nextIndex() {
+            mainStackLayout.currentIndex = (mainStackLayout.currentIndex + 1) % mainStackLayout.count;
+        }
+
+        function previousIndex() {
+            mainStackLayout.currentIndex = (mainStackLayout.count + mainStackLayout.currentIndex - 1) % mainStackLayout.count;
+        }
+
+        currentIndex: index_SCREENSAVER
         anchors.fill: parent
-        spacing: 6
 
-        // List of questions (buttons)
-        ListView {
-            Layout.margins: 0
-            Layout.fillWidth: false
+        /**
+         * The Screensaver shows floating bars.
+         */
+        Rectangle {
+            Layout.fillWidth: true
             Layout.fillHeight: true
-            orientation: Qt.Vertical
-            width: currentItem.width
-            /**
-             * The main model that contains all the questions.
-             */
-            model: ModelQuestions {
-                id: modelQuestions
-            }
+            Layout.margins: 0
+            color: "black"
 
-            delegate: WidgetQuestionButton {
-                questionName: question_fr
-                height: parent.height / parent.count
-                spacing: 0
+            Screensaver {
+                id: screensaver
+                anchors.fill: parent
             }
         }
 
-        // Contents
+        /**
+         * Section with the demographic question of the entry kiosk.
+         *
+         * This is our main two-column layout.
+         */
         StackLayout {
-            id: stackLayout0
-            currentIndex: 0
+            id: demographicQuestionsStackLayout
             Layout.fillWidth: true
             Layout.fillHeight: true
+            Layout.margins: 0
 
+            readonly property int index_MY_LANGUAGE: 0
+            readonly property int index_MY_GENDER: 1
+            readonly property int index_MY_ETHNICITY: 2
+            readonly property int index_MY_AGE: 3
+            readonly property int index_ENJOY_YOUR_VISIT: 4
+
+            // Select your language
             ColumnLayout {
-                Layout.fillWidth: true
-                Layout.fillHeight: true
-                Layout.margins: 0
-
-                StackLayout {
-                    Layout.fillWidth: true
-                    Layout.fillHeight: true
-                    Layout.margins: 0
-
-                    ColumnLayout {
-                        Layout.fillWidth: true
-                        Layout.fillHeight: true
-
-                        Button {
-                            Layout.alignment: Qt.AlignRight
-                            text: "X"
-                            font.pixelSize: 24
-                        }
-
-                        Label {
-                            Layout.alignment: Qt.AlignCenter
-                            text: "Question 01"
-                            font.pixelSize: 36
-                        }
-                        Label {
-                            Layout.alignment: Qt.AlignCenter
-                            text: "Ceci est une question."
-                            font.pixelSize: 36
-                        }
-                        AnswerSlider {
-                            Layout.fillWidth: true
-                            sliderValue: 50
-                            textLeft: "Peu"
-                            textRight: "Beaucoup"
-                            showNumber: false
-                        }
-                        Label {
-                            Layout.alignment: Qt.AlignCenter
-                            text: "Sous-titre pour le slider."
-                            font.pixelSize: 24
-                        }
-                        WidgetPreviousNext {
-                            Layout.alignment: Qt.AlignRight
-                            Layout.fillWidth: false
-                            Layout.fillHeight: false
-                        }
-                    }
-
-
+                Label {
+                    text: qsTr("Select your language.")
+                    font.capitalization: Font.AllUppercase
                 }
             }
 
-            // This is a code screensaver
-            // TODO: Put this code below to the right trigger
+            // Select your gender
+            PageGender {
+                id: pageGender
+                onPreviousButtonClicked: {
+                    // TODO
+                    // FIXME: there should be no previous button here.
+                }
+                onNextButtonClicked: {
+                    demographicQuestionsStackLayout.currentIndex += 1
+                }
+            }
+
+            // Select your ethnicity
+            PageEthnicity {
+                id: pageEthnicity
+                onPreviousButtonClicked: {
+                    demographicQuestionsStackLayout.currentIndex -= 1
+                }
+                onNextButtonClicked: {
+                    demographicQuestionsStackLayout.currentIndex += 1
+                }
+            }
+
+            // Select your age
+            PageAge {
+                id: pageAge
+                onPreviousButtonClicked: {
+                    demographicQuestionsStackLayout.currentIndex -= 1
+                }
+                onNextButtonClicked: {
+                    // TODO
+                    // if this is the entry kiosk, show the "enjoy your visit" page.
+                    // if this is the center kiosk, go to the questions
+                    demographicQuestionsStackLayout.currentIndex += 1
+                }
+            }
+
+            // Enjoy your visit
+            ColumnLayout {
+                Label {
+                    text: qsTr("Thank you so much")
+                    font.capitalization: Font.AllUppercase
+                }
+                Label {
+                    text: qsTr("You can now")
+                    font.capitalization: Font.AllUppercase
+                }
+                Label {
+                    text: qsTr("start your visit!")
+                    font.capitalization: Font.AllUppercase
+                }
+            }
+        }
+
+        /**
+         * Section with the questions.
+         *
+         * This is our main two-column layout.
+         */
+        RowLayout {
+            Layout.fillWidth: true
+            Layout.fillHeight: true
+            Layout.margins: 0
+            spacing: 6
+
+            /**
+             * List of buttons to access each question page.
+             */
+            ListView {
+                Layout.margins: 0
+                Layout.fillWidth: false
+                Layout.fillHeight: true
+                orientation: Qt.Vertical
+                width: currentItem.width
+
+                // There are 15 pages, and that should not change.
+                model: ["01", "02", "03", "04", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13", "14", "15"]
+
+                // Let's draw each button:
+                delegate: WidgetQuestionButton {
+                    // modelData retrieves the text in the current item from model
+                    buttonTitle: modelData
+                    // FIXME: Perhaps we should fine-tune the height of these buttons
+                    height: parent.height / parent.count
+                    spacing: 0
+
+                    onButtonClicked: {
+                        questionsStackLayout.currentIndex = index;
+                    }
+                }
+            }
+
+            // Contents
             StackLayout {
-                id: screensaverLayout
+                id: questionsStackLayout
+
+                currentIndex: 0
                 Layout.fillWidth: true
                 Layout.fillHeight: true
-                Layout.margins: 0
 
-                Rectangle {
-                    width: parent.width
-                    height: parent.height
-                    color: "black"
-                    visible: true
+                // The pages for single and multiple questions:
 
-                    Screensaver {
-                        id: screensaver
-                        anchors.fill: parent
-                    }
+                // Page 01
+                PageSingleQuestion {
+                    modelQuestions: modelQuestions
+                    questionIdentifier: "incidence_drogue"
+                    oscSender: oscSender
+                    serviceClient: userProfile
+                }
+
+                // TODO: page 02 single decriminalisation_crimes_non_violents
+
+                // TODO page 03 single systeme_bureaucrate
+
+                // page 03 (multiple)
+                PageMultipleQuestion {
+                    // FIXME: the main question text should be common (most often) to all questions in a multiple-question page:
+                    questionIdentifiers: ["equitable_victimes", "equitable_vulnerables", "equitable_jeunes_contrevenants", "equitable_riches", "equitable_minorites_culturelles"]
+                }
+
+                // TODO: remaining questions
+            }
+        }
+
+        // Exit section:
+        StackLayout {
+            id: exitSection
+
+            readonly property int index_LAST_QUESTIONS: 0
+
+            Layout.fillWidth: true
+            Layout.fillHeight: true
+            Layout.margins: 0
+
+            PageFinalQuestion {
+                // TODO
+            }
+
+            ColumnLayout {
+                Label {
+                    text: qsTr("Thanks a lot.")
+                    font.capitalization: Font.AllUppercase
+                }
+                Label {
+                    text: qsTr("Don't forget")
+                    font.capitalization: Font.AllUppercase
+                }
+                Label {
+                    text: qsTr("to give your key back.")
+                    font.capitalization: Font.AllUppercase
+                }
+            }
+        }
+
+        // OSC debug layout:
+        ColumnLayout {
+            RowLayout {
+                SpinBox {
+                    id: someInt
+                    value: 2
+                }
+
+                Slider {
+                    id: someDouble
+                    value: 3.14159
+                    from: 0.0
+                    to: 5.0
+                }
+
+                TextField {
+                    id: someText
+                    text: "hello"
                 }
             }
 
-            // End of the StackLayout
+            Button {
+                text: "Send OSC"
+                onClicked: {
+                    oscSender.send("/hello", [someInt.value, someDouble.value, someText.text]);
+                }
+            }
 
-            // OSC debug layout:
-            ColumnLayout {
-                RowLayout {
-                    SpinBox {
-                        id: someInt
-                        value: 2
-                    }
-                    Slider {
-                        id: someDouble
-                        value: 3.14159
-                        from: 0.0
-                        to: 5.0
-                    }
-                    TextField {
-                        id: someText
-                        text: "hello"
-                    }
+            RowLayout {
+                Label {
+                    text: "Received:"
                 }
 
-                Button {
-                    text: "Send OSC"
-                    onClicked: {
-                        oscSender.send("/hello", [someInt.value, someDouble.value, someText.text]);
-                    }
-                }
-
-                RowLayout {
-                    Label {
-                        text: "Received:"
-                    }
-                    Label {
-                        text: lastMessageReceived
-                    }
+                Label {
+                    text: lastMessageReceived
                 }
             }
         }
