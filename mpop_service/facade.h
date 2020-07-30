@@ -47,7 +47,7 @@ public:
      * @return A number of each question identifier.
      * TODO: perhaps return a QVariant
      */
-    QMap<QString, int> getUserAnswers(int userId);
+    QMap<QString, QVariant> getUserAnswers(int userId);
 
     /**
      * @brief Creates or update the answer to a specific question for a given user.
@@ -74,7 +74,7 @@ public:
      * FIXME: Define what is the timeout?
      */
     void freeUnusedTags();
-
+    bool setUserNation(int userId, const QString& nation);
     bool setUserLanguage(int userId, const QString& language);
     bool setUserGender(int userId, const QString& gender);
     QString getUserGender(int userId);
