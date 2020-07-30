@@ -18,5 +18,6 @@
         <file>PageSingleQuestion.qml</file>
         <file>WidgetAgeSlider.qml</file>
         <file>PageFinalQuestion.qml</file>
+        <file>PageLanguage.qml</file>
     </qresource>
 </RCC>

@@ -44,7 +44,7 @@ RowLayout {
 
         delegate: WidgetChoiceButton {
             // TODO: Make this multilingual
-            text: name_fr // Property of items in the model.
+            text: text_fr // Property of items in the model.
             height: parent.height / parent.count
             spacing: 0
         }
@@ -52,6 +52,6 @@ RowLayout {
 
     WidgetPreviousNext {
         onNextButtonClicked: thisPage.nextButtonClicked()
-        onPreviousButtonClicked: thisPage.previoiusButtonClicked()
+        onPreviousButtonClicked: thisPage.previousButtonClicked()
     }
 }

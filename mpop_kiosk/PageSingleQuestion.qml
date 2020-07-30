@@ -10,7 +10,7 @@ ColumnLayout {
 
     property var modelQuestions: null
     property var serviceClient: null
-    property var oscSender: null
+    property var datavizSender: null
     property string minText: ""
     property string maxText: ""
     property string titleText: ""

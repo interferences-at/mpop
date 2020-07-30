@@ -52,3 +52,28 @@ A dialog will prompt you for the location of your Qt installation. C:\Qt is typi
 
 We follow the Qt style guide for C++ and QML.
 
+## Layout of the kiosk
+
+The layout of the kiosk - in QML - looks like something like this:
+
+- Screensaver (visible in all three kiosk modes)
+- SectionProfile (visible in both entry and central kiosk)
+  - PageLanguage
+  - PageAge
+  - PageGender
+  - PageEthnicity
+  - PageEnjoyYourVisit (visible only in entry kiosk)
+- Section Questions (visible only in the central kiosk)
+  - Page Single Question
+    - Dataviz Choose Single Question Mode
+    - Dataviz Single Question By Age
+    - Dataviz Single Question By Gender
+    - Dataviz Single Question By Ethnicity
+  - Page Multiple Questions
+    - ataviz for Multiple Questions
+  - Page Dataviz All Questions
+- Section Final (visible only in the exit kiosk)
+  - Page Final Three Questions
+  - Page Dataviz Final Three Questions
+  - Page Thank You
+
