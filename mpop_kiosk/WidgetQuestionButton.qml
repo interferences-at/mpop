@@ -6,16 +6,23 @@ import QtQuick.Layouts 1.3
  * Button for choosing a question.
  */
 ColumnLayout {
-    property string questionName: ""
-    property string questionIdentifier: ""
-    property int pageNumber: 0
+    id: thisWidget
 
+    signal buttonClicked()
+
+    property string buttonTitle: ""
+
+    // TODO: Improve the look of this buttons
     Button {
-        text: questionName
+        text: thisWidget.buttonTitle
         font.pixelSize: 12
         font.capitalization: Font.MixedCase
         Layout.fillWidth: true
         topPadding: 0
         bottomPadding: 0
+
+        onClicked: {
+            thisWidget.buttonClicked();
+        }
     }
 }

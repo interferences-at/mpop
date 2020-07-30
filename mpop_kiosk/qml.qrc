@@ -4,14 +4,19 @@
         <file>qtquickcontrols2.conf</file>
         <file>WidgetQuestionButton.qml</file>
         <file>ModelQuestions.qml</file>
-        <file>AnswerSlider.qml</file>
+        <file>WidgetAnswerSlider.qml</file>
         <file>UserProfile.qml</file>
         <file>PageMultipleQuestion.qml</file>
         <file>ModelGenders.qml</file>
+        <file>PageEthnicity.qml</file>
         <file>ModelNations.qml</file>
         <file>DatavizManager.qml</file>
         <file>PageGender.qml</file>
         <file>WidgetPreviousNext.qml</file>
         <file>WidgetChoiceButton.qml</file>
+        <file>PageAge.qml</file>
+        <file>PageSingleQuestion.qml</file>
+        <file>WidgetAgeSlider.qml</file>
+        <file>PageFinalQuestion.qml</file>
     </qresource>
 </RCC>

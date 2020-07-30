@@ -3,7 +3,7 @@ import QtQuick.Controls 2.2
 import QtQuick.Layouts 1.3
 
 /**
- * Page that contains the widget to select my gender.
+ * Page that contains the widget to select my ethnicity.
  */
 RowLayout {
     id: thisPage
@@ -11,10 +11,25 @@ RowLayout {
     signal nextButtonClicked()
     signal previousButtonClicked()
 
-    Label {
-        Layout.alignment: Qt.AlignCenter
-        text: qsTr("You are...")
-        font.pixelSize: 36
+    property string ethnicityChoice: null
+
+    ColumnLayout {
+
+        Label {
+            Layout.alignment: Qt.AlignCenter
+            text: qsTr("To which nation")
+            font.pixelSize: 36
+        }
+        Label {
+            Layout.alignment: Qt.AlignCenter
+            text: qsTr("do you identify")
+            font.pixelSize: 36
+        }
+        Label {
+            Layout.alignment: Qt.AlignCenter
+            text: qsTr("the most?")
+            font.pixelSize: 36
+        }
     }
 
     ListView {
@@ -23,11 +38,12 @@ RowLayout {
         Layout.fillHeight: true
         orientation: Qt.Vertical
         width: currentItem.width
-        model: ModelGenders {
-            id: modelGenders
+        model: ModelNations {
+            id: modelNations
         }
 
         delegate: WidgetChoiceButton {
+            // TODO: Make this multilingual
             text: name_fr // Property of items in the model.
             height: parent.height / parent.count
             spacing: 0
