@@ -61,7 +61,7 @@ void TestMpopService::test_getUserAnswers() {
     // Set an answer, and get it:
     int value = 99;
     this->facade->setUserAnswer(userId, TEST_QUESTION_ID, value);
-    QMap<QString, int> answers = this->facade->getUserAnswers(userId);
-    int actual = answers[TEST_QUESTION_ID];
+    QMap<QString, QVariant> answers = this->facade->getUserAnswers(userId);
+    QVariant actual = answers[TEST_QUESTION_ID];
     QCOMPARE(actual, value);
 }
