@@ -6,12 +6,13 @@
 #include <QStandardPaths>
 #include <QDir>
 #include <QSqlRecord>
-
+#include <QSqlDriver>
 
 Facade::Facade(
         const Config& config, QObject* parent) : QObject(parent), _config(config)
 {
     _database = QSqlDatabase::addDatabase("QMYSQL");
+    qDebug() << "QSqlDriver hasFeature NamedPlaceholders:" << _database.driver()->hasFeature(QSqlDriver::NamedPlaceholders);
     _database.setHostName(_config.mysql_host);
     _database.setDatabaseName(_config.mysql_database);
     _database.setUserName(_config.mysql_user);
@@ -36,17 +37,19 @@ bool Facade::isDatabaseReady() {
 
 
 int Facade::getOrCreateUser(const QString& rfidTag) {
+    qDebug() << "getOrCreateUser";
     return getUserForTag(rfidTag);
 }
 
 int Facade::getUserForTag(const QString& rfidTag) {
+    qDebug() << "getUserForTag";
     int visitorId = -1;
     bool tagExists = false;
     //QString selectSql = "SELECT visitor.id FROM visitor JOIN tag on tag.id = visitor.tag_id WHERE tag.rfid = :rfid";
     //QString sql = "INSERT INTO users VALUES ()";
-    QString sql = "SELECT visitor_id FROM tag WHERE rfid = :rfid";
+    QString sql = "SELECT `visitor_id` FROM `tag` WHERE `rfid` = ?";
     QSqlQuery query(sql, _database);
-    query.bindValue(":rfid", QVariant(rfidTag));
+    query.addBindValue(QVariant(rfidTag));
     bool ok = query.exec();
     if (! ok) {
         qWarning() << "ERROR: " << query.lastError().text();
@@ -71,12 +74,14 @@ int Facade::getUserForTag(const QString& rfidTag) {
 
 
 int Facade::createTagAndUser(const QString& rfidTag) {
-    // rreturn the created user id
+    qDebug() << "createTagAndUser";
+    // return the created user id
+    // FIXME: It seems that createNewUser() should not be called every time. Check the logic.
     int visitorId = createNewUser();
-    QString createSql = "INSERT INTO tag (`rfid`, `visitorId`) VALUES (:rfid, :visitor_id)";
+    QString createSql = "INSERT INTO tag (`rfid`, `visitor_id`) VALUES (?, ?)";
     QSqlQuery query(createSql, _database);
-    query.bindValue(":rfid", QVariant(rfidTag));
-    query.bindValue(":visitorId", QVariant(visitorId));
+    query.addBindValue(QVariant(rfidTag));
+    query.addBindValue(QVariant(visitorId));
     query.exec();
     bool ok = query.exec();
     if (! ok) {
@@ -86,7 +91,8 @@ int Facade::createTagAndUser(const QString& rfidTag) {
 }
 
 int Facade::createNewUser() {
-    QString sql = "INSERT INTO visitor(	created_at) values(now())";
+    qDebug() << "createNewUser";
+    QString sql = "INSERT INTO `visitor` (`id`) VALUES (NULL)";
     QSqlQuery query(sql, _database);
     bool ok = query.exec();
     if (! ok) {
@@ -96,10 +102,12 @@ int Facade::createNewUser() {
 }
 
 bool Facade::updateTagSetVisitorId(const QString& rfidTag, int visitorId) {
-    QString sql = "UPDATE tag SET `visitor_id` = :visitorId WHERE `rfid` = :rfid";
+    qDebug() << "updateTagSetVisitorId";
+    QString sql = "UPDATE `tag` SET `visitor_id` = ? WHERE `rfid` = ?";
     QSqlQuery query(sql, _database);
-    query.bindValue(":rfid", QVariant(rfidTag));
-    query.bindValue(":visitorId", QVariant(visitorId));
+    query.addBindValue(QVariant(visitorId));
+    query.addBindValue(QVariant(rfidTag));
+
     bool ok = query.exec();
     if (! ok) {
         qWarning() << "ERROR: " << query.lastError().text();
@@ -108,10 +116,11 @@ bool Facade::updateTagSetVisitorId(const QString& rfidTag, int visitorId) {
 }
 
 QString Facade::getUserLanguage(int userId) {
+    qDebug() << "getUserLanguage";
     QString ret;
-    QString sql = "SELECT language FROM visitor WHERE id = :userId";
+    QString sql = "SELECT `language` FROM `visitor` WHERE `id` = ?";
     QSqlQuery query(sql, _database);
-    query.bindValue(":userId", QVariant(userId));
+    query.addBindValue(QVariant(userId));
     bool ok = query.exec();
     if (! ok) {
         qWarning() << "ERROR: " << query.lastError().text();
@@ -123,10 +132,11 @@ QString Facade::getUserLanguage(int userId) {
 }
 
 QString Facade::getUserGender(int userId) {
+    qDebug() << "getUserGender";
     QString ret;
-    QString sql = "SELECT gender FROM visitor WHERE id = :userId";
+    QString sql = "SELECT `gender` FROM `visitor` WHERE `id` = ?";
     QSqlQuery query(sql, _database);
-    query.bindValue(":userId", QVariant(userId));
+    query.addBindValue(QVariant(userId));
     bool ok = query.exec();
     if (! ok) {
         qWarning() << "ERROR: " << query.lastError().text();
@@ -139,10 +149,10 @@ QString Facade::getUserGender(int userId) {
 
 QMap<QString, QVariant> Facade::getUserAnswers(int userId) {
     QMap<QString, QVariant> ret;
-        QString sql = "SELECT question.identifier,answer.answer_value FROM answer join question on"
-                      "answer.question_id=question.id  WHERE answer.visitor_id = :userId";
+        QString sql = "SELECT question.identifier, answer.answer_value FROM `answer` JOIN `question` ON "
+                      "answer.question_id=question.id  WHERE answer.visitor_id = ?";
         QSqlQuery query(sql, _database);
-        query.bindValue(":userId", QVariant(userId));
+        query.addBindValue(QVariant(userId));
         bool ok = query.exec();
         if (! ok) {
             qWarning() << "ERROR: " << query.lastError().text();
@@ -156,9 +166,9 @@ QMap<QString, QVariant> Facade::getUserAnswers(int userId) {
 
 QMap<QString, QVariant> Facade::getUserInfo(int userId) {
     QMap<QString, QVariant> ret;
-        QString sql = "SELECT visitor.age, visitor.gender,visitor.language, nation.identifier from visitor join nation on visitor.nation=nation.id  WHERE visitor.id = :userId";
+        QString sql = "SELECT visitor.age, visitor.gender,visitor.language, nation.identifier FROM `visitor` JOIN nation ON visitor.nation=nation.id  WHERE visitor.id = ?";
         QSqlQuery query(sql, _database);
-        query.bindValue(":userId", QVariant(userId));
+        query.addBindValue(QVariant(userId));
         bool ok = query.exec();
         if (! ok) {
             qWarning() << "ERROR: " << query.lastError().text();
@@ -172,19 +182,20 @@ QMap<QString, QVariant> Facade::getUserInfo(int userId) {
 }
 
 
-
-
 void Facade::setUserAnswer(int userId, const QString& questionId, int value) {
-   QString sql= "insert into answer(visitor_id,question_id,answer_value) select :userId, id, :answer_value from question where identifier=:questionId ";
-   QSqlQuery query(sql, _database);
-   query.bindValue(":userId", QVariant(userId));
-   query.bindValue(":questionId", QVariant(questionId));
-   query.bindValue(":answer_value", QVariant(value));
-   bool ok = query.exec();
-   if (! ok) {
-       qWarning() << "ERROR: " << query.lastError().text();
-   }
+    qDebug() << "setUserAnswer";
+    QString sql= "INSERT INTO answer(visitor_id, question_id, answer_value) SELECT ?, id, ? FROM question WHERE identifier = ?";
+    QSqlQuery query(sql, _database);
+    query.addBindValue(QVariant(userId));
+    query.addBindValue(QVariant(value));
+    query.addBindValue(QVariant(questionId));
+
+    bool ok = query.exec();
+    if (! ok) {
+        qWarning() << "ERROR: " << query.lastError().text();
+    }
 }
+
 
 QList<int> Facade::getStatsForQuestion(const QString& questionId) {
     QList<int> ret;
@@ -193,22 +204,21 @@ QList<int> Facade::getStatsForQuestion(const QString& questionId) {
     // TODO not sure what to return
 }
 
-void Facade::freeTag(const QString& rfidTag) {
 
-    QString sql= "update tag set visitor_id=null where rfid=:rfidTag";
+void Facade::freeTag(const QString& rfidTag) {
+    qDebug() << "freeTag";
+    QString sql= "UPDATE `tag` SET visitor_id = NULL WHERE rfid = ?";
     QSqlQuery query(sql, _database);
-    query.bindValue(":rfidTag", QVariant(rfidTag));
+    query.addBindValue(QVariant(rfidTag));
     bool ok = query.exec();
     if (! ok) {
         qWarning() << "ERROR: " << query.lastError().text();
     }
-
-
 }
 
 void Facade::freeUnusedTags() {
-
-    QString sql= "";
+    qDebug() << "freeUnusedTags";
+    QString sql = "UPDATE `tag` SET visitor_id = NULL";
     QSqlQuery query(sql, _database);
     bool ok = query.exec();
     if (! ok) {
@@ -217,10 +227,11 @@ void Facade::freeUnusedTags() {
 }
 
 bool Facade::setUserLanguage(int userId, const QString& language) {
-    QString sql = "UPDATE visitor SET `language` = :language WHERE `id` = :userId";
+    qDebug() << "setUserLanguage";
+    QString sql = "UPDATE `visitor` SET `language` = ? WHERE `id` = ?";
     QSqlQuery query(sql, _database);
-    query.bindValue(":userId", QVariant(userId));
-    query.bindValue(":language", QVariant(language));
+    query.addBindValue(QVariant(language));
+    query.addBindValue(QVariant(userId));
     bool ok = query.exec();
     if (! ok) {
         qWarning() << "ERROR: " << query.lastError().text();
@@ -228,27 +239,72 @@ bool Facade::setUserLanguage(int userId, const QString& language) {
     return query.numRowsAffected() == 1;
 }
 
-bool Facade::setUserGender(int userId, const QString& gender) {
-    QString sql = "UPDATE visitor SET `gender` = :gender WHERE `id` = :userId";
+bool Facade::setUserGender(int userId, const QString& gender) {\
+    qDebug() << "setUserGender";
+    QString sql = "UPDATE `visitor` SET `gender` = ? WHERE `id` = ?";
     QSqlQuery query(sql, _database);
-    query.bindValue(":userId", QVariant(userId));
-    query.bindValue(":gender", QVariant(gender));
+    query.addBindValue(QVariant(gender));
+    query.addBindValue(QVariant(userId));
+
     bool ok = query.exec();
     if (! ok) {
         qWarning() << "ERROR: " << query.lastError().text();
     }
     return query.numRowsAffected() == 1;
 }
+
 
 bool Facade::setUserNation(int userId, const QString& nation){
 
-    QString sql = "UPDATE visitor SET `nation` = (select id from nation  WHERE `identifier`=:nation) where id= :userId ";
+    QString sql = "UPDATE visitor SET `nation` = (SELECT `id` FROM `nation` WHERE `identifier` = ?) WHERE `id` = ?";
     QSqlQuery query(sql, _database);
-    query.bindValue(":userId", QVariant(userId));
-    query.bindValue(":nation", QVariant(nation));
+    query.addBindValue(QVariant(nation));
+    query.addBindValue(QVariant(userId));
+
     bool ok = query.exec();
     if (! ok) {
         qWarning() << "ERROR: " << query.lastError().text();
     }
     return query.numRowsAffected() == 1;
+}
+
+bool Facade::deleteAllFromDatabase() {
+    qDebug() << "deleteAllFromDatabase";
+
+    bool ret = false;
+    static const bool deleteVisitors = true;
+    static const bool deleteAnswers = true;
+    static const bool deleteTags = true;
+
+    if (deleteVisitors) {
+        QString sql = "DELETE FROM `visitor`";
+        QSqlQuery query(sql, _database);
+        bool ok = query.exec();
+        if (! ok) {
+            qWarning() << "ERROR: " << query.lastError().text();
+        }
+        ret = ret || query.numRowsAffected() > 0;
+    }
+
+    if (deleteAnswers) {
+        QString sql = "DELETE FROM `answer`";
+        QSqlQuery query(sql, _database);
+        bool ok = query.exec();
+        if (! ok) {
+            qWarning() << "ERROR: " << query.lastError().text();
+        }
+        ret = ret || query.numRowsAffected() > 0;
+    }
+
+    if (deleteTags) {
+        QString sql = "DELETE FROM `tag`";
+        QSqlQuery query(sql, _database);
+        bool ok = query.exec();
+        if (! ok) {
+            qWarning() << "ERROR: " << query.lastError().text();
+        }
+        ret = ret || query.numRowsAffected() > 0;
+    }
+
+    return ret;
 }

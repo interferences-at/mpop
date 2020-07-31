@@ -10,6 +10,8 @@ void TestMpopService::init_TestCase()
     // Relies on it.
     this->facade = QSharedPointer<Facade>(new Facade(config));
 
+    this->facade->deleteAllFromDatabase();
+
     // TODO: Perhaps clean all users that we've created in previous tests, as well as all their answers
 }
 
@@ -17,6 +19,8 @@ void TestMpopService::init_TestCase()
 // called after the last test function was executed
 void TestMpopService::cleanupTestCase()
 {
+    this->facade->deleteAllFromDatabase();
+
     // No need to delete the MPopService
     // Though, once the destructor is called, the MySQL connection will close.
 }
