@@ -81,6 +81,12 @@ public:
 
     QMap<QString, QVariant> getUserInfo(int userId);
 
+    /**
+     * @brief Delete all the entries in the database. (the user/answer ones)
+     * @return true if some rows were affected.
+     */
+    bool deleteAllFromDatabase();
+
 signals:
 
 private: // data members:
