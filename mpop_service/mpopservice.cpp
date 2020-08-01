@@ -26,7 +26,7 @@ void MPopService::load_config_from_env_vars(Config& config) {
     config.mysql_user = env.value("CONFIG_MYSQL_USER", "admin");
     config.mysql_database = env.value("CONFIG_MYSQL_DATABASE", "mpop_database");
     config.mysql_password = env.value("CONFIG_MYSQL_PASSWORD", "secret");
-    config.mysql_host = env.value("CONFIG_MYSQL_HOST", "0.0.0.0"); // Use 'db' as a hostname, if you use within Docker Compose
+    config.mysql_host = env.value("CONFIG_MYSQL_HOST", "db"); // Use '0.0.0.0' as a hostname, if you use from outside docker-compose
     config.service_port_number = env.value("MPOP_SERVICE_PORT_NUMBER", "3333").toUInt();
     config.is_verbose = toBoolean(env.value("CONFIG_IS_VERBOSE", "true"));
     if (config.is_verbose) {

@@ -45,8 +45,6 @@ int Facade::getUserForTag(const QString& rfidTag) {
     qDebug() << "getUserForTag";
     int visitorId = -1;
     bool tagExists = false;
-    //QString selectSql = "SELECT visitor.id FROM visitor JOIN tag on tag.id = visitor.tag_id WHERE tag.rfid = :rfid";
-    //QString sql = "INSERT INTO users VALUES ()";
     QString sql = "SELECT `visitor_id` FROM `tag` WHERE `rfid` = ?";
     QSqlQuery query(sql, _database);
     query.addBindValue(QVariant(rfidTag));
