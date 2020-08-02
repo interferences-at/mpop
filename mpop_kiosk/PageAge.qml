@@ -44,6 +44,6 @@ RowLayout {
 
     WidgetPreviousNext {
         onNextButtonClicked: thisPage.nextButtonClicked()
-        onPreviousButtonClicked: thisPage.previoiusButtonClicked()
+        onPreviousButtonClicked: thisPage.previousButtonClicked()
     }
 }

@@ -18,7 +18,9 @@ RowLayout {
     }
 
     ListView {
-        Layout.margins: 0
+        Layout.topMargin: 320
+        Layout.leftMargin: 80
+        Layout.rightMargin: 80
         Layout.fillWidth: false
         Layout.fillHeight: true
         orientation: Qt.Vertical

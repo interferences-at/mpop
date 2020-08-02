@@ -16,7 +16,7 @@ ColumnLayout {
 
     Button {
         text: thisWidget.text
-        font.pixelSize: 12
+        font.pixelSize: 15
         Layout.fillWidth: true
         topPadding: 0
         bottomPadding: 0
