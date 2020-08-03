@@ -12,7 +12,7 @@ services:
       - flyway
       - phpmyadmin
     ports:
-      - "1234:1234"
+      - "3333:3333"
     labels:
       ca.interferences.mpop.description: "Provides the API to read/write from/to the database for the project."
     environment:
@@ -24,8 +24,6 @@ services:
       CONFIG_MYSQL_PORT: '3306'
       CONFIG_USE_SQLITE: 'false'
       MPOP_SERVICE_PORT_NUMBER: '3333'
-    ports:
-      - "1234:1234"
 
   phpmyadmin:
     image: phpmyadmin/phpmyadmin

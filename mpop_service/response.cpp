@@ -15,14 +15,12 @@ Response Response::fromString(const QString& str) {
     // TODO: catch exceptions
     QVariantMap map = doc.toVariant().toMap();
     ret.id = map["id"].toString();
-    ret.method = map["method"].toString();
     ret.result = map["result"].toMap();
     return ret;
 }
 
 QString Response::toString() {
     QVariantMap map;
-    map["method"] = QVariant(this->method);
     map["result"] = this->result;
     map["id"] = this->id;
     QJsonDocument doc = QJsonDocument::fromVariant(QVariant(map));

@@ -14,8 +14,6 @@ public:
         QVariant data;
     };
     QString jsonrpc = "2.0";
-    QString method = "";
-    //QList<QVariant> result; // FIXME: should contain any JSON object
     QVariant result;
     Error error;
     QString id = "";
