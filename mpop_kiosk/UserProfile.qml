@@ -90,10 +90,27 @@ Item {
     function getUserId() {
 
     }
+    function timer() {
+        return Qt.createQmlObject("import QtQuick 2.0; Timer {}", root);
+    }
 
     /**
      * Client websocket to communicate with the mpop_service.
      */
+
+    Timer {
+        id: timer
+        function setTimeout(cb, delayTime) {
+            timer.interval = delayTime;
+            timer.repeat = true;
+            timer.triggered.connect(cb);
+            timer.triggered.connect(function release () {
+                timer.triggered.disconnect(cb); // This is important
+                timer.triggered.disconnect(release); // This is important as well
+            });
+            timer.start();
+        }
+    }
     WebSocket {
         id: websocket
 
@@ -135,7 +152,10 @@ Item {
             } else if (websocket.status === WebSocket.Closed) {
                 // messageBox.text += "\nSocket closed"'
                 console.log("websocket connection closed");
-                active = false; // close the websocket
+                //active = false; // close the websocket
+                if(active === false){
+                    timer.setTimeout(function(){ active = true; }, 3000);
+                }
             }
         }
     }

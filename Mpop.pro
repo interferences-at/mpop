@@ -34,4 +34,3 @@ sub_test_mpop_service.subdir = test_mpop_service
 sub_test_mpop_service.target = sub_test_mpop_service
 sub_test_mpop_service.depends += sub_mpop_service
 SUBDIRS += test_mpop_service
-
