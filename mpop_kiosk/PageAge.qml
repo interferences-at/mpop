@@ -10,6 +10,7 @@ RowLayout {
 
     signal nextButtonClicked()
     signal previousButtonClicked()
+    signal ageChosen(int value)
 
     // There should be no age set if we show this page.
     property int selectedAge: -1
@@ -38,6 +39,7 @@ RowLayout {
 
             onClicked: {
                 thisPage.selectedAge = index;
+                thisPage.ageChosen(index);
             }
         }
     }

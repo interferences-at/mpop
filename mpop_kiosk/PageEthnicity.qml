@@ -10,8 +10,7 @@ RowLayout {
 
     signal nextButtonClicked()
     signal previousButtonClicked()
-
-    property string ethnicityChoice: null
+    signal ethnicityChosen(string value)
 
     ColumnLayout {
         Rectangle {
@@ -38,36 +37,18 @@ RowLayout {
             id: modelNations
         }
         // provide delegate component.
-         delegate: delegateComponent
+        delegate: delegateComponent
 
-        /*delegate: WidgetChoiceButton {
-            // TODO: Make this multilingual
-            text: text_fr // Property of items in the model.
-            height: parent.height / parent.count
-            spacing: 0
-        }*/
         Component {
             id: delegateComponent
 
-            Rectangle {
-                width:  600
-                height: 100
-                color: "black"
-                border.color: "white"
-                border.width: 2
-
-                Item {
-                    width: 400; height: 100
-                    Column{
-                        Text {
-                            id: myText
-                            text: text_fr
-                            color: "#ffffff"
-                            font.pixelSize: 72
-                            font.capitalization: Font.AllUppercase
-                            font.weight: Font.ExtraBold
-                        }
-                    }
+            WidgetChoiceButton {
+                // TODO: Make this multilingual
+                text: text_en // Property of items in the model.
+                height: parent.height / parent.count
+                spacing: 0
+                onClicked: {
+                    thisPage.ethnicityChosen(identifier);
                 }
             }
         }

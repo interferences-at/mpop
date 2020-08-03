@@ -10,15 +10,16 @@ RowLayout {
 
     signal nextButtonClicked()
     signal previousButtonClicked()
+    signal genderChosen(string value)
 
-    Rectangle{
+    Rectangle {
         Layout.minimumWidth: 400
         Layout.minimumHeight: 500
         color: "black"
 
         Label {
             Layout.alignment: Qt.AlignCenter
-            text: qsTr("VOUS ETES...")
+            text: qsTr("You are...")
             color: "#ffffff"
             font.pixelSize: 40
         }
@@ -26,6 +27,7 @@ RowLayout {
 
     ListView {
         Layout.margins: 0
+        Layout.topMargin: 10
         Layout.fillWidth: false
         Layout.fillHeight: true
         orientation: Qt.Vertical
@@ -37,34 +39,17 @@ RowLayout {
         // provide delegate component.
         delegate: delegateComponent
     }
+
     Component {
         id: delegateComponent
 
-        Rectangle {
-            width: 400
-            height: 100
-            color: "black"
-            border.color: "white"
-            border.width: 2
-
-            Item {
-                width: 400; height: 100
-
-                Column{
-                    Text {
-                        text: name_fr
-                        color: "#ffffff"
-                        font.pixelSize: 72
-                        //leftPadding: 10
-                        font.capitalization: Font.AllUppercase
-                        font.weight: Font.ExtraBold
-                    }
-                }
+        WidgetChoiceButton {
+            text: name_en // TODO: if language is French, show it in French
+            onClicked: {
+                thisPage.genderChosen(identifier);
             }
         }
     }
-
-
 
     WidgetPreviousNext {
         onNextButtonClicked: thisPage.nextButtonClicked()

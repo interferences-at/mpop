@@ -31,7 +31,7 @@ ListModel {
     }
     ListElement {
         identifier: "female"
-        name_fr: "Femmee"
+        name_fr: "Femme"
         name_en: "Female"
     }
     ListElement {

@@ -202,6 +202,10 @@ ApplicationWindow {
 
             PageLanguage {
                 id: pageLanguage
+
+                onLanguageChosen: {
+                    console.log("onLanguageChosen " + value);
+                }
                 onPreviousButtonClicked: {
                     // TODO
                     // FIXME: there should be no previous button here.
@@ -214,6 +218,10 @@ ApplicationWindow {
             // Select your gender
             PageGender {
                 id: pageGender
+
+                onGenderChosen: {
+                    console.log("onGenderChosen " + value);
+                }
                 onPreviousButtonClicked: {
                     demographicQuestionsStackLayout.previousPage();
                 }
@@ -225,6 +233,10 @@ ApplicationWindow {
             // Select your ethnicity
             PageEthnicity {
                 id: pageEthnicity
+
+                onEthnicityChosen: {
+                    console.log("onEthnicityChosen " + value);
+                }
                 onPreviousButtonClicked: {
                     demographicQuestionsStackLayout.previousPage();
                 }
@@ -236,6 +248,10 @@ ApplicationWindow {
             // Select your age
             PageAge {
                 id: pageAge
+
+                onAgeChosen: {
+                    console.log("onAgeChosen " + value);
+                }
                 onPreviousButtonClicked: {
                     demographicQuestionsStackLayout.previousPage();
                 }
