@@ -10,43 +10,47 @@ RowLayout {
 
     signal nextButtonClicked()
     signal previousButtonClicked()
-
-    property string ethnicityChoice: null
+    signal ethnicityChosen(string value)
 
     ColumnLayout {
+        Rectangle {
+            width:  550
+            height: 300
+            color: "black"
 
-        Label {
-            Layout.alignment: Qt.AlignCenter
-            text: qsTr("To which nation")
-            font.pixelSize: 36
-        }
-        Label {
-            Layout.alignment: Qt.AlignCenter
-            text: qsTr("do you identify")
-            font.pixelSize: 36
-        }
-        Label {
-            Layout.alignment: Qt.AlignCenter
-            text: qsTr("the most?")
-            font.pixelSize: 36
+            Label {
+                Layout.alignment: Qt.AlignCenter
+                text: qsTr("To which nation \n do you identify \n the most?")
+                font.pixelSize: 36
+            }
         }
     }
 
     ListView {
-        Layout.margins: 0
+        Layout.topMargin: 10
         Layout.fillWidth: false
         Layout.fillHeight: true
         orientation: Qt.Vertical
         width: currentItem.width
+        // create a model item instance
         model: ModelNations {
             id: modelNations
         }
+        // provide delegate component.
+        delegate: delegateComponent
 
-        delegate: WidgetChoiceButton {
-            // TODO: Make this multilingual
-            text: text_fr // Property of items in the model.
-            height: parent.height / parent.count
-            spacing: 0
+        Component {
+            id: delegateComponent
+
+            WidgetChoiceButton {
+                // TODO: Make this multilingual
+                text: text_en // Property of items in the model.
+                height: parent.height / parent.count
+                spacing: 0
+                onClicked: {
+                    thisPage.ethnicityChosen(identifier);
+                }
+            }
         }
     }
 

@@ -10,6 +10,7 @@ RowLayout {
 
     signal nextButtonClicked()
     signal previousButtonClicked()
+    signal languageChosen(string value)
 
     Label {
         Layout.alignment: Qt.AlignCenter
@@ -18,7 +19,9 @@ RowLayout {
     }
 
     ListView {
-        Layout.margins: 0
+        Layout.topMargin: 320
+        Layout.leftMargin: 80
+        Layout.rightMargin: 80
         Layout.fillWidth: false
         Layout.fillHeight: true
         orientation: Qt.Vertical
@@ -39,6 +42,7 @@ RowLayout {
             text: language_text // Property of items in the model.
             height: parent.height / parent.count
             spacing: 0
+            onClicked: thisPage.languageChosen(language_identifier)
         }
     }
 

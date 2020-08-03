@@ -10,7 +10,7 @@ RowLayout {
 
     signal nextButtonClicked()
     signal previousButtonClicked()
-
+    signal finalQuestionChosen(string value)
 
 
     Label {

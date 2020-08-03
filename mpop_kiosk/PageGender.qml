@@ -10,32 +10,49 @@ RowLayout {
 
     signal nextButtonClicked()
     signal previousButtonClicked()
+    signal genderChosen(string value)
 
-    Label {
-        Layout.alignment: Qt.AlignCenter
-        text: qsTr("You are...")
-        font.pixelSize: 36
+    Rectangle {
+        Layout.minimumWidth: 400
+        Layout.minimumHeight: 500
+        color: "black"
+
+        Label {
+            Layout.alignment: Qt.AlignCenter
+            text: qsTr("You are...")
+            color: "#ffffff"
+            font.pixelSize: 40
+        }
     }
 
     ListView {
         Layout.margins: 0
+        Layout.topMargin: 10
         Layout.fillWidth: false
         Layout.fillHeight: true
         orientation: Qt.Vertical
         width: currentItem.width
+        // create a model item instance
         model: ModelGenders {
             id: modelGenders
         }
+        // provide delegate component.
+        delegate: delegateComponent
+    }
 
-        delegate: WidgetChoiceButton {
-            text: name_fr // Property of items in the model.
-            height: parent.height / parent.count
-            spacing: 0
+    Component {
+        id: delegateComponent
+
+        WidgetChoiceButton {
+            text: name_en // TODO: if language is French, show it in French
+            onClicked: {
+                thisPage.genderChosen(identifier);
+            }
         }
     }
 
     WidgetPreviousNext {
         onNextButtonClicked: thisPage.nextButtonClicked()
-        onPreviousButtonClicked: thisPage.previoiusButtonClicked()
+        onPreviousButtonClicked: thisPage.previousButtonClicked()
     }
 }
