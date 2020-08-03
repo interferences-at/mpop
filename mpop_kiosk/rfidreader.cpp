@@ -92,7 +92,7 @@ QString RFIDReader::guessSerialPortName() {
             out << endl;
             out << "Port: " << serialPortInfo.portName() << endl;
         }
-        if (verbose) {
+        if (veryVerbose) {
             out << "Location: " << serialPortInfo.systemLocation() << endl;
         }
         if (veryVerbose) {
@@ -110,7 +110,7 @@ QString RFIDReader::guessSerialPortName() {
         for (int i = 0; i < serialPortExpectedFileNamePatterns.size(); ++ i) {
             QString item = serialPortExpectedFileNamePatterns.at(i).toLocal8Bit().constData();
             QString systemLocation = serialPortInfo.systemLocation();
-            if (verbose) {
+            if (veryVerbose) {
                 out << "Check if" << systemLocation << "contains the string" << item;
             }
             if (systemLocation.contains(item, Qt::CaseInsensitive)) {

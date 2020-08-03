@@ -120,7 +120,7 @@ QString MPopService::handleJsonRpcTwoMethod(const QString& message, bool &broadc
     //}
     Response response;
     response.id = request.id; // FIXME: should allow string, int or null
-    response.method = request.method;
+    // response.method = request.method;
     bool sendResponse = true;
 
     if (request.method == "message") {
