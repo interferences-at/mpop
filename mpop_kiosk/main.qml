@@ -61,6 +61,7 @@ ApplicationWindow {
         onLastRfidReadChanged: {
             lastRfidRead = rfidReader.lastRfidRead;
             console.log("(QML) Last RFID read: " + lastRfidRead);
+            userProfile.setRfidTag(lastRfidRead);
         }
         onTagRead: {
             console.log("(QML) RFID read: " + tag);
@@ -96,6 +97,10 @@ ApplicationWindow {
      */
     UserProfile {
         id: userProfile
+
+        service_port_number: kioskConfig.service_port_number
+        service_host: kioskConfig.service_host
+        is_verbose: kioskConfig.is_verbose
     }
 
     // Keyboard shortcuts:
@@ -123,6 +128,59 @@ ApplicationWindow {
         sequence: "PgUp"
         onActivated: mainStackLayout.previousIndex()
     }
+
+    // handle number key press event
+
+    Shortcut {
+        sequence: "0"
+        onActivated: userProfile.setFakeRfidTag(0)
+    }
+
+    Shortcut {
+        sequence: "1"
+        onActivated: userProfile.setFakeRfidTag(1)
+    }
+
+    Shortcut {
+        sequence: "2"
+        onActivated: userProfile.setFakeRfidTag(2)
+    }
+
+    Shortcut {
+        sequence: "3"
+        onActivated: userProfile.setFakeRfidTag(3)
+    }
+
+    Shortcut {
+        sequence: "4"
+        onActivated: userProfile.setFakeRfidTag(4)
+    }
+
+    Shortcut {
+        sequence: "5"
+        onActivated: userProfile.setFakeRfidTag(5)
+    }
+
+    Shortcut {
+        sequence: "6"
+        onActivated: userProfile.setFakeRfidTag(6)
+    }
+
+    Shortcut {
+        sequence: "7"
+        onActivated: userProfile.setFakeRfidTag(7)
+    }
+
+    Shortcut {
+        sequence: "8"
+        onActivated: userProfile.setFakeRfidTag(8)
+    }
+
+    Shortcut {
+        sequence: "9"
+        onActivated: userProfile.setFakeRfidTag(9)
+    }
+
 
     /**
      * The main model that contains all the questions.

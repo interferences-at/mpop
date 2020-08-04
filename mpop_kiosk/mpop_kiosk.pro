@@ -27,6 +27,7 @@ SOURCES += \
     ../qosc/contrib/oscpack/OscTypes.cpp \
     ../qosc/oscreceiver.cpp \
     ../qosc/oscsender.cpp \
+    kioskconfig.cpp \
     main.cpp \
     rfidreader.cpp \
     screensaver.cpp \
@@ -56,6 +57,7 @@ HEADERS += \
     ../qosc/contrib/oscpack/OscTypes.h \
     ../qosc/oscreceiver.h \
     ../qosc/oscsender.h \
+    kioskconfig.h \
     rfidreader.h \
     screensaver.h \
     stick.h
