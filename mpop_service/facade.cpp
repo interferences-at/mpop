@@ -147,36 +147,36 @@ QString Facade::getUserGender(int userId) {
 
 QMap<QString, QVariant> Facade::getUserAnswers(int userId) {
     QMap<QString, QVariant> ret;
-        QString sql = "SELECT question.identifier, answer.answer_value FROM `answer` JOIN `question` ON "
-                      "answer.question_id=question.id  WHERE answer.visitor_id = ?";
-        QSqlQuery query(sql, _database);
-        query.addBindValue(QVariant(userId));
-        bool ok = query.exec();
-        if (! ok) {
-            qWarning() << "ERROR: " << query.lastError().text();
-        }
-        while (query.next()) {
-            ret.insert( query.value(0).toString(), query.value(1).toString());
-        }
-        return ret;
+    QString sql = "SELECT question.identifier, answer.answer_value FROM `answer` JOIN `question` ON "
+                  "answer.question_id=question.id  WHERE answer.visitor_id = ?";
+    QSqlQuery query(sql, _database);
+    query.addBindValue(QVariant(userId));
+    bool ok = query.exec();
+    if (! ok) {
+        qWarning() << "ERROR: " << query.lastError().text();
+    }
+    while (query.next()) {
+        ret.insert( query.value(0).toString(), query.value(1).toString());
+    }
+    return ret;
 }
 
 
 QMap<QString, QVariant> Facade::getUserInfo(int userId) {
     QMap<QString, QVariant> ret;
-        QString sql = "SELECT visitor.age, visitor.gender,visitor.language, nation.identifier FROM `visitor` JOIN nation ON visitor.nation=nation.id  WHERE visitor.id = ?";
-        QSqlQuery query(sql, _database);
-        query.addBindValue(QVariant(userId));
-        bool ok = query.exec();
-        if (! ok) {
-            qWarning() << "ERROR: " << query.lastError().text();
-        }
-       QSqlRecord rec = query.record();
-        query.next();
-        for (int i=0; i<rec.count(); ++i) {
-            ret.insert(rec.fieldName(i), query.value(i));
-        }
-        return ret;
+    QString sql = "SELECT `visitor`.`age` AS `age`, `visitor`.`gender` AS `gender`, `visitor`.`language` AS `language`, `nation`.`identifier` AS `ethnicity` FROM `visitor` JOIN `nation` ON `visitor`.`nation` = `nation`.`id` WHERE visitor.id = ?";
+    QSqlQuery query(sql, _database);
+    query.addBindValue(QVariant(userId));
+    bool ok = query.exec();
+    if (! ok) {
+        qWarning() << "ERROR: " << query.lastError().text();
+    }
+    QSqlRecord rec = query.record();
+    query.next();
+    for (int i = 0; i < rec.count(); ++ i) {
+        ret.insert(rec.fieldName(i), query.value(i));
+    }
+    return ret;
 }
 
 

@@ -3,6 +3,13 @@ import QtWebSockets 1.0
 
 /**
  * Informations about the current user.
+ *
+ * We follow the coding conventions of NodeJS for the callbacks in this file.
+ * For callback functions:
+ *
+ * - Thefirst argument to a callback is an error object or null
+ * - The second argument is the result, and there can be more than one.
+ * - The function who take a callback always take it as their last argument
  */
 Item {
     // constants
@@ -11,25 +18,31 @@ Item {
 
     // properties
     // Connection with the mpop_service:
+    // These default value will be overriden:
     property int service_port_number: 3333
     property string service_host: "0.0.0.0"
+    property bool is_verbose: false
 
     // user's profile:
     property string gender: null
-    property string culture: null
+    property string ethnicity: null
     property int age: const_INVALID_NUMBER
     property string language: null
     property var answers: []
     property string rfidTag: null
     property int userId: const_INVALID_NUMBER
+    property bool sent_user_info_to_service: false
+    property bool did_read_user_info_from_service: false
 
 
     // functions
 
-    // TODO
+    /**
+     * Resets all the properties that are relevant to the current user.
+     */
     function resetUser(cb) {
         gender = null;
-        culture = null;
+        ethnicity = null;
         age = const_INVALID_NUMBER;
         language = null;
         answers = [];
@@ -39,7 +52,7 @@ Item {
         for (var i = 0; i < const_NUM_QUESTIONS; i ++) {
             answers[i] = null;
         }
-        cb();
+        cb(null);
     }
 
     // TODO
@@ -53,17 +66,27 @@ Item {
     }
 
     // TODO
-    function setUserGender(cb, value) {
+    function setUserGender(value, cb) {
 
     }
 
     // TODO
-    function setUserLanguage(cb, value) {
+    function setUserLanguage(value, cb) {
 
     }
 
     // TODO
-    function setUserAge(cb, value) {
+    function getUserEthnicity(cb) {
+
+    }
+
+    // TODO
+    function setUserEthnicity(value, cb) {
+
+    }
+
+    // TODO
+    function setUserAge(value, cb) {
 
     }
 
@@ -73,36 +96,151 @@ Item {
     }
 
     // TODO
-    function setUserAnswer(cb, question_identifier, value) {
+    function setUserAnswer(question_identifier, value, cb) {
 
     }
 
     // TODO
-    function getUserAnswer(cb, question_identifier) {
-
-    }
-
-    // TODO
-    function setRfidTag(cb, tag) {
-
-    }
-
-    // TODO
-    function getRfidTag(cb) {
-
-    }
-
-    // TODO
-    function getUserId(cb) {
+    function getUserAnswer(question_identifier, cb) {
 
     }
 
     /**
-     * Client websocket to communicate with the mpop_service.
+     * Sets the RFID tag.
+     * Reads the info from the service, if any.
+     * Populate the info here.
+     *
+     * @param tag string RFID tag to set it to.
+     * @param cb Callback that expects no result.
      */
+    function setRfidTag(tag, cb) {
+        resetUser(function (err) {
+            if (err) {
+                cb(err);
+            } else {
+                rfidTag = tag;
+                // call setOrCreateUser method from the service.
+                websocket.callRemoteMethod("getOrCreateUser", [tag], function (err2, user_id) {
+                    if (err2) {
+                        cb(err2);
+                    } else {
+                        userId = user_id;
+                        _populateUserInfo(userId, function (err3) {
+                            if (err3) {
+                                console.log(err3); // let's no pass this error upstream
+                                cb(null); // done (even if an error occured)
+                            } else {
+                                cb(null); // done
+                            }
+                        });
+                    }
+                });
+            }
+        });
+    }
 
+    /**
+     * Retrieves all user info that we have from the service.
+     * and populates the variables here.
+     */
+    function _populateUserInfo(userId, cb) {
+        if (userId === const_INVALID_NUMBER) {
+            cb(new Error("Currently no user id."));
+        } else {
+            callRemoteMethod("getUserInfo", [userId], function (err1, userInfo) {
+                if (err1) {
+                    cb(err1);
+                } else {
+                    language = userInfo.language;
+                    gender = userInfo.gender;
+                    age = userInfo.age;
+                    ethnicity = userInfo.ethnicity;
+                    cb(null); // done
+                }
+            });
+        }
+    }
+
+    /**
+     * Sets the current RFID tag to one within the range [0,9]
+     * This is so that developers can easily test the system by pressing a number.
+     *
+     * The callback function should handle an error, but no result.
+     */
+    function setFakeRfidTag(index, cb) {
+        var tagToSet = "";
+        switch (index) {
+        case 0:
+            tagToSet = "DEADBEEF0000";
+            break;
+        case 1:
+            tagToSet = "DEADBEEF0001";
+            break;
+        case 2:
+            tagToSet = "DEADBEEF0002";
+            break;
+        case 3:
+            tagToSet = "DEADBEEF0003";
+            break;
+        case 4:
+            tagToSet = "DEADBEEF0004";
+            break;
+        case 5:
+            tagToSet = "DEADBEEF0005";
+            break;
+        case 6:
+            tagToSet = "DEADBEEF0006";
+            break;
+        case 7:
+            tagToSet = "DEADBEEF0007";
+            break;
+        case 8:
+            tagToSet = "DEADBEEF0008";
+            break;
+        case 9:
+            tagToSet = "DEADBEEF0009";
+            break;
+        }
+        setRfidTag(tagToSet, function (err) {
+            if (err) {
+                cb(err);
+            } else {
+                cb(null);
+            }
+        });
+    }
+
+    /**
+     * Retrieves the current RFID tag.
+     *
+     * @param cb Callback whose result is the current RFID tag as a string.
+     */
+    function getRfidTag(cb) {
+        if (rfidTag) {
+            cb(null, rfidTag);
+        } else {
+            cb(new Error("Currently no RFID tag is set."));
+        }
+    }
+
+    /**
+     * Retrieves the current user id.
+     *
+     * @param cb Callback whose result is the current user id as an int.
+     */
+    function getUserId(cb) {
+        if (userId === const_INVALID_NUMBER) {
+            cb(new Error("Currently no user id."));
+        } else {
+            cb(null, userId);
+        }
+    }
+
+    /**
+     * Makes the client periodically reconnect with the weboscket server, if necessary.
+     */
     Timer {
-        id: timer
+        id: reconnectTimer
 
         interval: 5000 // ms
         running: false // started when the websocket is ready.
@@ -112,7 +250,6 @@ Item {
             var reconnect = false;
 
             if (websocket.active === false) {
-
                 reconnect = true;
             }
 
@@ -137,6 +274,9 @@ Item {
         }
     }
 
+    /**
+     * Client websocket to communicate with the mpop_service.
+     */
     WebSocket {
         id: websocket
 
@@ -167,14 +307,22 @@ Item {
                 console.log("string sent :", '"' + strToSend + '"');
             } else {
                 console.log("Cannot call remote method: no websocket connection.");
+                cb(new Error("Cannot call remote method: no websocket connection."));
             }
         }
 
         // TODO: Periodically clear all callbacks
         function clearAllCallback() {
+            for (var key in responseCallbacks) {
+                var cb = responseCallbacks[key];
+                cb(new Error("This callback has expired, and never got called."));
+            }
             responseCallbacks = ({});
         }
 
+        /**
+         * Calls the ping method.
+         */
         function sendPing(cb) {
             callRemoteMethod("ping", [], cb);
         }
@@ -186,7 +334,8 @@ Item {
                 if (key === callId) {
                     console.log("Found registered callback for " + callId);
                     // Calling the callback:
-                    responseCallbacks[key](result);
+                    var cb = responseCallbacks[key];
+                    cb(null, result);
                     // Removing the callback:
                     delete responseCallbacks[key];
                     foundCb = true;
@@ -198,6 +347,9 @@ Item {
             }
         }
 
+        /**
+         * Returns a string for a given WebSocket.status value.
+         */
         function statusToString(websocketStatus) {
             if (websocketStatus === WebSocket.Open) {
                 return "Open";
@@ -223,7 +375,7 @@ Item {
 
         Component.onCompleted: {
             console.log("Websocket URL: " + url);
-            timer.running = true;
+            reconnectTimer.running = true;
         }
 
         onTextMessageReceived: {
@@ -249,7 +401,10 @@ Item {
                 console.log("Error: " + websocket.errorString)
             } else if (websocket.status === WebSocket.Open) {
                 console.log("CONNECTED to mpop_service via websockets.");
-                sendPing(function cb(result) {
+                sendPing(function cb(err, result) {
+                    if (err) {
+                        console.log("Error calling ping: " + err);
+                    }
                     console.log("Got answer from ping: " + result);
                 });
             } else if (websocket.status === WebSocket.Closed) {
