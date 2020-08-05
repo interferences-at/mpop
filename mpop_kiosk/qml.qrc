@@ -19,5 +19,7 @@
         <file>WidgetAgeSlider.qml</file>
         <file>PageFinalQuestion.qml</file>
         <file>PageLanguage.qml</file>
+        <file alias="mpop_kiosk_en">mpop_kiosk_en.qm</file>
+        <file alias="mpop_kiosk_fr">mpop_kiosk_fr.qm</file>
     </qresource>
 </RCC>
