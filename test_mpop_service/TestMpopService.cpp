@@ -69,3 +69,40 @@ void TestMpopService::test_getUserAnswers() {
     QVariant actual = answers[TEST_QUESTION_ID];
     QCOMPARE(actual, value);
 }
+
+void TestMpopService::test_getUserLanguage(){
+    static const QString TEST_RFID_TAG = "test_RFID_tag_0002";
+    static const QString TEST_LANGUAGE = "fr";
+    int userId = this->facade->getOrCreateUser(TEST_RFID_TAG);
+
+    this->facade->setUserLanguage(userId, TEST_LANGUAGE);
+    QString language = this->facade->getUserLanguage(userId);
+
+    QCOMPARE(TEST_LANGUAGE, language);
+}
+
+
+void TestMpopService::test_getUserGender(){
+    static const QString TEST_RFID_TAG = "test_RFID_tag_0003";
+    static const QString TEST_USER_GENDER = "male";
+    int userId = this->facade->getOrCreateUser(TEST_RFID_TAG);
+
+    this->facade->setUserGender(userId, TEST_USER_GENDER);
+    QString gender = this->facade->getUserGender(userId);
+
+    QCOMPARE(TEST_USER_GENDER, gender);
+}
+
+void TestMpopService::test_getUserNation(){
+    static const QString TEST_RFID_TAG = "test_RFID_tag_0004";
+    static const QString TEST_USER_NATION = "quebecer";
+    int userId = this->facade->getOrCreateUser(TEST_RFID_TAG);
+
+    // get an ethenicity.
+    static const QString value="ethnicity";
+    this->facade->setUserNation(userId, TEST_USER_NATION);
+    QMap<QString, QVariant> userInfo = this->facade->getUserInfo(userId);
+    QVariant userNation = userInfo[value];
+    QCOMPARE(TEST_USER_NATION, userNation);
+}
+

@@ -18,7 +18,9 @@ private slots:
     void test_toBoolean();
     void test_getOrCreateUser();
     void test_getUserAnswers();
-
+    void test_getUserLanguage();
+    void test_getUserGender();
+    void test_getUserNation();
     // called after the last test function was executed
     void cleanupTestCase();
 
