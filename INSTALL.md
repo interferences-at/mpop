@@ -50,8 +50,22 @@ We plan to use Lunch to launch it. For now, we parse command-line options.
 There are three (3) flavours of MPOP kiosk:
 
 - entrance: Only asks visitors the demographic questions.
-- center: Asks demographic questions, if not answered, and then allows visitors to answer all question and control the dataviz.
+- central: Asks demographic questions, if not answered, and then allows visitors to answer all question and control the dataviz.
 - exit: Frees the RFID tag, so that other users can use it. (they also all expire at midnight)
+
+The mpop_kiosk is configured mainly via environment variables. Here is the list of variables with their default value:
+(see in KioskConfig.h and main.cpp for the most up-to-date list)
+
+```
+SEND_OSC_DATAVIZ_PORT=14444
+SEND_OSC_DATAVIZ_HOST=127.0.0.1
+MPOP_SERVICE_HOST=0.0.0.0
+MPOP_SERVICE_PORT_NUMBER=3333
+RECEIVE_OSC_PORT=15555
+CONFIG_IS_VERBOSE=true
+CONFIG_IS_FULLSCREEN=false
+MPOP_KIOSK_MODE=central
+```
 
 
 ## Deploying MPOP dataviz

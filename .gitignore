@@ -8,6 +8,7 @@ qt/
 moc_*
 Makefile
 *.o
+=*.tmp
 
 # Executables:
 mpop_dataviz/mpop_dataviz

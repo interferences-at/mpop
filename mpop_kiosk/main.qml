@@ -53,6 +53,16 @@ ApplicationWindow {
     height: 1080
     title: qsTr("MPOP Kiosk")
 
+    Component.onCompleted: {
+        if (kioskConfig.is_fullscreen) {
+            console.log("Turning on fullscreen mode");
+            visibility = Window.FullScreen;
+        }
+
+        // TODO: Show/hide sections according the kiosk_mode we are in.
+        console.log("Kiosk mode is " + kioskConfig.kiosk_mode);
+    }
+
     /**
      * Handles the signals from the RFID serial reader.
      */
