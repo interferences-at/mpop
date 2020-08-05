@@ -17,14 +17,32 @@ LanguageSwitcher::LanguageSwitcher(QObject *parent) : QObject(parent)
 
 
 void LanguageSwitcher::setLanguage(const QString& value) {
+    bool is_loaded = false;
+    qDebug() << "Current directory is : " << qApp->applicationDirPath();
     if (value == languageCodeFrench) {
-        qDebug() << "Loading translation file" << translationFileFrench;
-       _translatorFrench->load(translationFileFrench, translationDirectory);
-       qApp->installTranslator(_translatorFrench);
+        qDebug() << "Loading translation file" << translationFileFrench << "from dir" << translationDirectory;
+        is_loaded = _translatorFrench->load(translationFileFrench);
+        // TODO: If already loaded, avoid to reload it
+        if (is_loaded) {
+            qDebug() << "installTranslator";
+            qApp->installTranslator(_translatorFrench);
+        } else {
+            qDebug() << "Could not load the translation file.";
+        }
     } else if (value == languageCodeEnglish) {
-        qDebug() << "Loading translation file" << translationFileEnglish;
-        _translatorFrench->load(translationFileEnglish, translationDirectory);
-        qApp->installTranslator(_translatorEnglish);
+        qDebug() << "Loading translation file" << translationFileEnglish << "from dir" << translationDirectory;
+        is_loaded = _translatorEnglish->load(translationFileEnglish);
+        // TODO: If already loaded, avoid to reload it
+
+        if (is_loaded) {
+            qDebug() << "installTranslator";
+            qApp->installTranslator(_translatorEnglish);
+        } else {
+            qDebug() << "Could not load the translation file.";
+        }
     }
-    emit languageChanged();
+    if (is_loaded) {
+        this->_language = value;
+        emit languageChanged();
+    }
 }
