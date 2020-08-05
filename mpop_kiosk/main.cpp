@@ -6,6 +6,8 @@
 #include "oscsender.h"
 #include "screensaver.h"
 #include "kioskconfig.h"
+#include "languageswitcher.h"
+
 
 /**
  * @brief Load the kiosk configuration from the environment variables.
@@ -47,6 +49,7 @@ void load_kiosk_config_from_env_vars(KioskConfig& config) {
         config.kiosk_mode = "central";
     }
 }
+
 
 /**
  * @brief Main entry point for this software.
@@ -96,12 +99,14 @@ int main(int argc, char *argv[])
     RFIDReader rfidReader;
     OscReceiver oscReceiver(kioskConfig.receive_osc_port);
     OscSender oscSender(kioskConfig.send_osc_dataviz_host, kioskConfig.send_osc_dataviz_port);
+    LanguageSwitcher languageSwitcher;
 
     // Pass C++ objects to QML.
     engine.rootContext()->setContextProperty("rfidReader", &rfidReader);
     engine.rootContext()->setContextProperty("oscSender", &oscSender);
     engine.rootContext()->setContextProperty("oscReceiver", &oscReceiver);
     engine.rootContext()->setContextProperty("kioskConfig", &kioskConfig);
+    engine.rootContext()->setContextProperty("languageSwitcher", &languageSwitcher);
 
     // Load main QML file
     engine.load(QUrl(QStringLiteral("qrc:/main.qml")));
