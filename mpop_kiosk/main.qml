@@ -273,6 +273,7 @@ ApplicationWindow {
 
                 onLanguageChosen: {
                     console.log("onLanguageChosen " + value);
+                    languageSwitcher.language = value;
                 }
                 onPreviousButtonClicked: {
                     // TODO

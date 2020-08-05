@@ -28,6 +28,7 @@ SOURCES += \
     ../qosc/oscreceiver.cpp \
     ../qosc/oscsender.cpp \
     kioskconfig.cpp \
+    languageswitcher.cpp \
     main.cpp \
     rfidreader.cpp \
     screensaver.cpp \
@@ -58,6 +59,7 @@ HEADERS += \
     ../qosc/oscreceiver.h \
     ../qosc/oscsender.h \
     kioskconfig.h \
+    languageswitcher.h \
     rfidreader.h \
     screensaver.h \
     stick.h
@@ -68,6 +70,9 @@ INCLUDEPATH += $$PWD/../qosc/contrib/packosc
 # Should disable assertions # FIXME: It doesn't
 CONFIG(release, debug|release): DEFINES += NDEBUG
 
+TRANSLATIONS = \
+    mpop_kiosk_en.ts
+    mpop_kiosk_fr.ts
 
 # # Add the qosc library:
 # win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../qosc/release/ -lqosc_release_binary
