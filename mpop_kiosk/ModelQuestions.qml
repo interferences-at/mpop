@@ -15,6 +15,8 @@ ListModel {
     id: thisModel
 
     function _find(model, criteria) {
+        console.log('model');
+        console.log(model.count);
         for (var i = 0; i < model.count; ++i) {
             if (criteria(model.get(i))) {
                 return model.get(i);
@@ -46,7 +48,7 @@ ListModel {
         max_fr: "Faible"
         min_en: "TODO"
         max_en: "TODO"
-        db_row_id: 1
+        db_row_id: 11
     }
     ListElement {
         identifier: "decriminalisation_crimes_non_violents"

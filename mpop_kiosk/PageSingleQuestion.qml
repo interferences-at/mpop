@@ -13,9 +13,11 @@ ColumnLayout {
     property var datavizSender: null
     property string minText: ""
     property string maxText: ""
-    property string titleText: ""
+    property string titleText: "Question 01"
     property var questionIdentifier: null
     property string questionText: null
+    property bool sliderWidgetVisibility: true
+    property bool buttonsVisibility: false
 
     signal nextButtonClicked()
     signal previousButtonClicked()
@@ -36,23 +38,111 @@ ColumnLayout {
 
         // TODO: Retrieve value for user from service and populate the slider, if set.
     }
+    StackLayout{
+        currentIndex: 0
+        ColumnLayout{
+            Button{
+               Layout.alignment: Qt.AlignHCenter
+               text: "Data visualization"
+               background: none
+               font.pixelSize: 30
+               onClicked: {
+                   buttonsVisibility = true
+                   sliderWidgetVisibility  = false
+               }
+            }
+            Label {
+                Layout.alignment: Qt.AlignCenter
+                text: titleText
+                font.pixelSize: 36
+            }
+            Label {
+                Layout.alignment: Qt.AlignCenter
+                text: questionText
+                font.pixelSize: 30
+            }
 
-    Label {
-        Layout.alignment: Qt.AlignCenter
-        text: titleText
-        font.pixelSize: 36
-    }
-    Label {
-        Layout.alignment: Qt.AlignCenter
-        text: questionText
-        font.pixelSize: 36
-    }
-    WidgetAnswerSlider {
-        Layout.fillWidth: true
-        sliderValue: 50
-        textLeft: minText
-        textRight: maxText
-        showNumber: false
+            WidgetAnswerSlider {
+                Layout.fillWidth: true
+                sliderValue: 50
+                textLeft: minText
+                textRight: maxText
+                showNumber: false
+                visible: sliderWidgetVisibility
+            }
+
+            Label {
+                Layout.alignment: Qt.AlignCenter
+                text: 'Please select a basic viewing setting'
+                font.pixelSize: 30
+                visible: buttonsVisibility
+            }
+            RowLayout{
+                Layout.fillWidth: true
+                Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
+                spacing: 24
+                visible: buttonsVisibility
+                Button {
+                    text: "Age"
+                    background: Rectangle {
+                       color: "#000"
+                       implicitWidth: 140
+                       implicitHeight: 55
+                       border.color: "#fff"
+                       border.width: 1
+                       radius: 2
+                   }
+                   onClicked: {
+
+                   }
+                }
+                Button{
+                   text: "Genre"
+                   background: Rectangle {
+                      color: "#000"
+                      implicitWidth: 140
+                      implicitHeight: 55
+                      border.color: "#fff"
+                      border.width: 1
+                      radius: 2
+                   }
+                   onClicked: {
+
+                   }
+                }
+
+                Button{
+                   text: "Culture"
+                   background: Rectangle {
+                      color: "#000"
+                      implicitWidth: 140
+                      implicitHeight: 55
+                      border.color: "#fff"
+                      border.width: 1
+                      radius: 2
+                   }
+                   onClicked: {
+
+                   }
+                }
+                Button{
+                   text: "Language"
+                   background: Rectangle {
+                      color: "#000"
+                      implicitWidth: 140
+                      implicitHeight: 55
+                      border.color: "#fff"
+                      border.width: 1
+                      radius: 2
+                   }
+                   onClicked: {
+
+                   }
+                }
+            }
+
+        }
+
     }
 
     // FIXME: Should the WidgetPreviousNext be part of the main.qml instead?
