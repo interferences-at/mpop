@@ -28,8 +28,8 @@ signals:
  void languageChanged();
 
 private: // attributes
-    QTranslator* _translatorEnglish;
-    QTranslator* _translatorFrench;
+    QTranslator _translatorEnglish;
+    QTranslator _translatorFrench;
     QString _language;
 
     // constants:

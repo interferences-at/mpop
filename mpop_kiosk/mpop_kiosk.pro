@@ -71,8 +71,8 @@ INCLUDEPATH += $$PWD/../qosc/contrib/packosc
 CONFIG(release, debug|release): DEFINES += NDEBUG
 
 TRANSLATIONS = \
-    mpop_kiosk_en.ts
-    mpop_kiosk_fr.ts
+    mpop_kiosk.en.ts
+    mpop_kiosk.fr.ts
 
 # # Add the qosc library:
 # win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../qosc/release/ -lqosc_release_binary
