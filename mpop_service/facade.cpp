@@ -72,16 +72,16 @@ int Facade::getUserForTag(const QString& rfidTag) {
 
 int Facade::createTagAndUser(const QString& rfidTag) {
     qDebug() << "createTagAndUser";
-      int  visitorId = createNewUser();
-       QString createSql = "INSERT INTO tag (`rfid`, `visitor_id`) VALUES (?, ?)";
-       QSqlQuery query;
-       query.prepare(createSql);
-       query.addBindValue(QVariant(rfidTag));
-       query.addBindValue(QVariant(visitorId));
-       bool ok = query.exec();
-       if (! ok) {
-           qWarning() << "ERROR: " << query.lastError().text();
-       }
+    int  visitorId = createNewUser();
+    QString createSql = "INSERT INTO tag (`rfid`, `visitor_id`) VALUES (?, ?)";
+    QSqlQuery query;
+    query.prepare(createSql);
+    query.addBindValue(QVariant(rfidTag));
+    query.addBindValue(QVariant(visitorId));
+    bool ok = query.exec();
+    if (! ok) {
+        qWarning() << "ERROR: " << query.lastError().text();
+    }
     return visitorId;
 }
 
