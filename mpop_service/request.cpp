@@ -41,3 +41,17 @@ QString Request::toString() {
     QString ret = QString(doc.toBinaryData().constData());
     return ret;
 }
+
+QVariant Request::getParamByName(const QString& name) const {
+    if (this->paramsByName.find(name) == this->paramsByName.end()) {
+        throw MissingParamemeterByName(this->method, name);
+    }
+    return this->paramsByName[name];
+}
+
+QVariant Request::getParamByPosition(int position) const {
+    if (this->paramsByPosition.size() < position) {
+        throw MissingParamemeterByPosition(this->method, position);
+    }
+    return this->paramsByPosition[position];
+}

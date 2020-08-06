@@ -21,6 +21,7 @@ SOURCES += \
 HEADERS += \
     config.h \
     facade.h \
+    missingparametererror.h \
     mpopservice.h \
     notification.h \
     request.h \
