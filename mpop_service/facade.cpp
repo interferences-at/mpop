@@ -12,21 +12,25 @@ Facade::Facade(
         const Config& config, QObject* parent) : QObject(parent), _config(config)
 {
     _database = QSqlDatabase::addDatabase("QMYSQL");
-     qDebug() << "QSqlDriver hasFeature NamedPlaceholders:" << _database.driver()->hasFeature(QSqlDriver::NamedPlaceholders);
-    _database.setHostName(_config.mysql_host);
-    _database.setDatabaseName(_config.mysql_database);
-    _database.setUserName(_config.mysql_user);
-    _database.setPassword(_config.mysql_password);
-    _database.setPort(_config.mysql_port);
+    if (_database.isValid()) {
+        qDebug() << "Database is valid";
+        qDebug() << "QSqlDriver hasFeature NamedPlaceholders:" << _database.driver()->hasFeature(QSqlDriver::NamedPlaceholders);
+       _database.setHostName(_config.mysql_host);
+       _database.setDatabaseName(_config.mysql_database);
+       _database.setUserName(_config.mysql_user);
+       _database.setPassword(_config.mysql_password);
+       _database.setPort(_config.mysql_port);
 
-    _is_db_open = _database.open();
+       _is_db_open = _database.open();
 
-    if (_is_db_open) {
-        qInfo() << "Success connecting to the database.";
+       if (_is_db_open) {
+           qInfo() << "Success connecting to the database.";
+       } else {
+           qWarning() << "ERROR: Could not open database";
+       }
     } else {
-        qWarning() << "ERROR: Could not open database";
+        qDebug() << "Database is not valid. The QMYSQL driver for Qt is probably not installed.";
     }
-
     // TODO: Periodically make sure that our connection with the database is active.
     // Attempt to re-open it if not.
 }
@@ -38,6 +42,11 @@ bool Facade::isDatabaseReady() {
 
 int Facade::getOrCreateUser(const QString& rfidTag) {
     qDebug() << "getOrCreateUser";
+    // TODO: make sure to call createNewUser() if no user is associated to this RFID tag.
+    // (it seems like getUserForTag takes care of that - but it should probably be moved here,
+    // so that it's simpler)
+    // FIXME: it seems like this returns 0 when no connection to the database was possible.
+    // It should probably throw an error, instead.
     return getUserForTag(rfidTag);
 }
 

@@ -2,6 +2,8 @@
 #include "mpopservice.h"
 #include "response.h"
 #include "request.h"
+#include <QDebug>
+
 
 // called before the first test function is executed
 void TestMpopService::init_TestCase()
@@ -12,8 +14,11 @@ void TestMpopService::init_TestCase()
     // Relies on it.
     this->facade = QSharedPointer<Facade>(new Facade(config));
 
-    this->facade->deleteAllFromDatabase();
+    this->is_mysql_supported = this->facade->isDatabaseReady();
 
+    if (this->is_mysql_supported) {
+        this->facade->deleteAllFromDatabase();
+    }
     // TODO: Perhaps clean all users that we've created in previous tests, as well as all their answers
 }
 
@@ -21,8 +26,9 @@ void TestMpopService::init_TestCase()
 // called after the last test function was executed
 void TestMpopService::cleanupTestCase()
 {
-    this->facade->deleteAllFromDatabase();
-
+    if (this->is_mysql_supported) {
+        this->facade->deleteAllFromDatabase();
+    }
     // No need to delete the MPopService
     // Though, once the destructor is called, the MySQL connection will close.
 }
@@ -50,6 +56,9 @@ void TestMpopService::test_toBoolean()
 }
 
 void TestMpopService::test_getOrCreateUser() {
+    if (! this->is_mysql_supported) {
+        QSKIP("This test requires MySQL");
+    }
     static const QString TEST_RFID_TAG = "test_RFID_tag_0000";
     int userId = this->facade->getOrCreateUser(TEST_RFID_TAG);
 
@@ -60,6 +69,9 @@ void TestMpopService::test_getOrCreateUser() {
 
 
 void TestMpopService::test_getUserAnswers() {
+    if (! this->is_mysql_supported) {
+        QSKIP("This test requires MySQL");
+    }
     static const QString TEST_RFID_TAG = "test_RFID_tag_0001";
     static const QString TEST_QUESTION_ID = "confiance_systeme";
     int userId = this->facade->getOrCreateUser(TEST_RFID_TAG);
@@ -72,7 +84,10 @@ void TestMpopService::test_getUserAnswers() {
     QCOMPARE(actual, value);
 }
 
-void TestMpopService::test_getUserLanguage(){
+void TestMpopService::test_getUserLanguage() {
+    if (! this->is_mysql_supported) {
+        QSKIP("This test requires MySQL");
+    }
     static const QString TEST_RFID_TAG = "test_RFID_tag_0002";
     static const QString TEST_LANGUAGE = "fr";
     int userId = this->facade->getOrCreateUser(TEST_RFID_TAG);
@@ -84,7 +99,10 @@ void TestMpopService::test_getUserLanguage(){
 }
 
 
-void TestMpopService::test_getUserGender(){
+void TestMpopService::test_getUserGender() {
+    if (! this->is_mysql_supported) {
+        QSKIP("This test requires MySQL");
+    }
     static const QString TEST_RFID_TAG = "test_RFID_tag_0003";
     static const QString TEST_USER_GENDER = "male";
     int userId = this->facade->getOrCreateUser(TEST_RFID_TAG);
@@ -95,7 +113,10 @@ void TestMpopService::test_getUserGender(){
     QCOMPARE(TEST_USER_GENDER, gender);
 }
 
-void TestMpopService::test_getUserNation(){
+void TestMpopService::test_getUserNation() {
+    if (! this->is_mysql_supported) {
+        QSKIP("This test requires MySQL");
+    }
     static const QString TEST_RFID_TAG = "test_RFID_tag_0004";
     static const QString TEST_USER_NATION = "quebecer";
     int userId = this->facade->getOrCreateUser(TEST_RFID_TAG);
@@ -109,15 +130,23 @@ void TestMpopService::test_getUserNation(){
 }
 
 void TestMpopService::test_requestParams() {
+    static const QString EXPECTED_RFID_TAG = "test_RFID_tag_doesntexist";
+    static const int EXPECTED_REQUEST_ID = 9999;
     static const QString request_getOrCreateUser_01 =
         "{"
-            "{"
-            "\"id\": 3, "
+            "\"id\": 9999, "
             "\"method\":\"getOrCreateUser\", "
-            "\"param\": ["
+            "\"params\": ["
                 "\"test_RFID_tag_doesntexist\""
             "]"
         "}";
      Request request = Request::fromString(request_getOrCreateUser_01);
-     // TODO: check its attribute
+     QString requestToString = request.toString();
+     qDebug() << "request_getOrCreateUser_01:" << request_getOrCreateUser_01;
+     qDebug() << "requestToString:" << requestToString;
+     QString method = request.method;
+     //QString param_1 = request.getParamByPosition(0).toString();
+     //QCOMPARE(EXPECTED_RFID_TAG, param_1);
+     int request_id = request.intId;
+     QCOMPARE(EXPECTED_REQUEST_ID, request_id);
 }
