@@ -282,8 +282,15 @@ Item {
 
         // Maximum int value in QML
         readonly property int max_INT: 2147483647
+        // Associative array whose keys are the callId for the JSON-RPC 2.0 requests
+        // and the values are the callbacks to trigger when we get a response for them,
+        // or if the timeout expires.
+        // TODO: expire timeouts
         property var responseCallbacks: ({})
 
+        /**
+         * @return int
+         */
         function generateRequestId() {
             currentRequestId = (currentRequestId + 1) % max_INT;
             var ret = currentRequestId;
@@ -298,8 +305,11 @@ Item {
                 id: callId
             };
 
+            // Store the callback and the callId, so that we check later if we have received an answer,
+            // or handle it right away when we get the response.
             responseCallbacks[callId] = cb;
 
+            // FIXME: it seems like the JSON.stringify function adds double quotes around integers.
             var strToSend = JSON.stringify(request);
 
             if (websocket.status === WebSocket.Open) {

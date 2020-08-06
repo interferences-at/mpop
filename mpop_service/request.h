@@ -19,7 +19,7 @@ public:
     QString id;
 public: // methods
     static Request fromString(const QString& str);
-    QString toString();
+    QString toString() const;
 
     // Might throw a MissingParameterByName exception
     QVariant getParamByName(const QString& name) const;
