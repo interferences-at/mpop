@@ -114,6 +114,7 @@ QString MPopService::handleJsonRpcTwoMethod(const QString& message, bool &broadc
     //std::string str = message.toStdString();
     //QJsonDocument requestDocument = QJsonDocument::fromRawData(str.c_str(), str.size(), QJsonDocument::Validate);
     Request request = Request::fromString(message);
+    QTextStream(stdout) << "Request received: " << request.toString() << endl;
     //if (document == nullptr) {
     //    qDebug << "Could not parse JSON from JSON-RPC 2.0 message.";
     //}
@@ -159,6 +160,7 @@ bool MPopService::handleFacadeMethod(const Request& request, Response& response)
     QString msg;
 
     QTextStream(stdout) << "Attempt to handle a facade method." << endl;
+
 
     // Write to the response object.
     QString method = request.method;

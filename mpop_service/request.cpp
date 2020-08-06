@@ -28,17 +28,20 @@ Request Request::fromString(const QString& str) {
     return ret;
 }
 
-QString Request::toString() {
+QString Request::toString() const {
     QVariantMap map;
     map["method"] = this->method;
-    if (! this->paramsByName.empty()) { //FIXME: can we have both?
-        map["params"] = this->paramsByName;
+    // Params are either a list, or a map.
+    // JSON-RPC 2.0 support only either one, but not both at the same time.
+    if (! this->paramsByName.empty()) {
+        map["params"] = this->paramsByName; // a QVariantMap
     } else {
-        map["params"] = this->paramsByPosition;
+        map["params"] = this->paramsByPosition; // a QVariantList
     }
     map["id"] = this->id;
     QJsonDocument doc = QJsonDocument::fromVariant(map);
-    QString ret = QString(doc.toBinaryData().constData());
+    QString ret = doc.toJson(QJsonDocument::Compact);
+    // QString(doc.toBinaryData().constData());
     return ret;
 }
 

@@ -1,5 +1,7 @@
 #include "TestMpopService.h"
 #include "mpopservice.h"
+#include "response.h"
+#include "request.h"
 
 // called before the first test function is executed
 void TestMpopService::init_TestCase()
@@ -106,3 +108,16 @@ void TestMpopService::test_getUserNation(){
     QCOMPARE(TEST_USER_NATION, userNation);
 }
 
+void TestMpopService::test_requestParams() {
+    static const QString request_getOrCreateUser_01 =
+        "{"
+            "{"
+            "\"id\": 3, "
+            "\"method\":\"getOrCreateUser\", "
+            "\"param\": ["
+                "\"test_RFID_tag_doesntexist\""
+            "]"
+        "}";
+     Request request = Request::fromString(request_getOrCreateUser_01);
+     // TODO: check its attribute
+}
