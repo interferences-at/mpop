@@ -15,7 +15,7 @@ ColumnLayout {
     RoundButton {
         id: button
         //text: "\u2191"
-        icon.source: "Downloads/uparrow.svg"
+        icon.source: "uparrow.svg"
         Layout.fillHeight: true
         Layout.fillWidth: true
         Layout.maximumWidth: 80
@@ -29,19 +29,19 @@ ColumnLayout {
 
     Label {
         id: label1
-        text: qsTr("PRECEDENTE")
+        text: qsTr("Previous")
         font.capitalization: Font.AllUppercase
         color: "#ffffff"
         font.pixelSize: 12
         anchors.topMargin: 5
         Layout.bottomMargin: 30
-        leftPadding : 5
+        leftPadding : 10
     }
 
 
     RoundButton {
         id: downbutton
-        icon.source: "Downloads/downarrow.svg"
+        icon.source: "downarrow.svg"
         Layout.fillHeight: true
         Layout.fillWidth: true
         Layout.maximumWidth: 80
@@ -51,11 +51,11 @@ ColumnLayout {
         }
     }
     Label {
-        text: qsTr("suivante")
+        text: qsTr("next")
         font.capitalization: Font.AllUppercase
         color: "#ffffff"
         font.pixelSize: 12
         anchors.topMargin: 5
-        leftPadding : 10
+        leftPadding : 22
     }
 }
