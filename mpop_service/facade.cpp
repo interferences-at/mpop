@@ -12,7 +12,7 @@ Facade::Facade(
         const Config& config, QObject* parent) : QObject(parent), _config(config)
 {
     _database = QSqlDatabase::addDatabase("QMYSQL");
-    qDebug() << "QSqlDriver hasFeature NamedPlaceholders:" << _database.driver()->hasFeature(QSqlDriver::NamedPlaceholders);
+     qDebug() << "QSqlDriver hasFeature NamedPlaceholders:" << _database.driver()->hasFeature(QSqlDriver::NamedPlaceholders);
     _database.setHostName(_config.mysql_host);
     _database.setDatabaseName(_config.mysql_database);
     _database.setUserName(_config.mysql_user);
