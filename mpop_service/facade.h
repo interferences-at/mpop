@@ -87,6 +87,12 @@ public:
      */
     bool deleteAllFromDatabase();
 
+    /**
+     * @brief Checks if the database is ready.
+     * @return True if the database is ready.
+     */
+    bool isDatabaseReady();
+
 signals:
 
 private: // data members:
@@ -95,11 +101,7 @@ private: // data members:
     const Config& _config;
 
 private: // methods:
-    /**
-     * @brief Checks if the database is ready.
-     * @return True if the database is ready.
-     */
-    bool isDatabaseReady();
+
     int getUserForTag(const QString& rfidTag);
     int createTagAndUser(const QString& rfidTag);
     int createNewUser();

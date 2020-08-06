@@ -30,4 +30,5 @@ private slots:
 
 private:
     QSharedPointer<Facade> facade;
+    bool is_mysql_supported;
 };

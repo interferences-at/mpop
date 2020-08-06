@@ -119,7 +119,7 @@ QString MPopService::handleJsonRpcTwoMethod(const QString& message, bool &broadc
     //    qDebug << "Could not parse JSON from JSON-RPC 2.0 message.";
     //}
     Response response;
-    response.id = request.id; // FIXME: should allow string, int or null
+    response.copyIdFromRequest(request);
     // response.method = request.method;
     // bool sendResponse = true;
 
@@ -161,6 +161,13 @@ bool MPopService::handleFacadeMethod(const Request& request, Response& response)
 
     QTextStream(stdout) << "Attempt to handle a facade method." << endl;
 
+    qDebug() << "paramsByPosition: ";
+    QVariantList paramsByPosition = request.paramsByPosition;
+    for (QVariantList::iterator iter = paramsByPosition.begin(); iter != paramsByPosition.end(); iter ++)
+    {
+        qDebug() << (* iter).typeName();
+        qDebug() << (* iter).toString(); // Print QVariant
+    }
 
     // Write to the response object.
     QString method = request.method;
@@ -170,7 +177,7 @@ bool MPopService::handleFacadeMethod(const Request& request, Response& response)
             QTextStream(stdout) << "getParamByPosition 0..." << endl;
             QString rfidTag = request.getParamByPosition(0).toString();
             QTextStream(stdout) << "getOrCreateUser: parsed rfidTag: " << rfidTag << endl;
-            QTextStream(stdout) << "getOrCreateUser: calling the Facade method" << rfidTag << endl;
+            QTextStream(stdout) << "getOrCreateUser: calling the Facade method with arg " << rfidTag << endl;
             response.result = QVariant(this->_facade.getOrCreateUser(rfidTag));
         } catch(MissingParameterError& e) {
             msg.append(e.what());

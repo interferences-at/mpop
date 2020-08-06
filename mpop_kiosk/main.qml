@@ -40,6 +40,14 @@ ApplicationWindow {
         Qt.quit();
     }
 
+    function setFakeRfidTagCb(err) {
+        if (err) {
+            console.log(err);
+        } else {
+            console.log("setFakeRfidTagCb has been called.");
+        }
+    }
+
     /**
      * Shows or hides the debug view.
      */
@@ -143,52 +151,52 @@ ApplicationWindow {
 
     Shortcut {
         sequence: "0"
-        onActivated: userProfile.setFakeRfidTag(0)
+        onActivated: userProfile.setFakeRfidTag(0, setFakeRfidTagCb)
     }
 
     Shortcut {
         sequence: "1"
-        onActivated: userProfile.setFakeRfidTag(1)
+        onActivated: userProfile.setFakeRfidTag(1, setFakeRfidTagCb)
     }
 
     Shortcut {
         sequence: "2"
-        onActivated: userProfile.setFakeRfidTag(2)
+        onActivated: userProfile.setFakeRfidTag(2, setFakeRfidTagCb)
     }
 
     Shortcut {
         sequence: "3"
-        onActivated: userProfile.setFakeRfidTag(3)
+        onActivated: userProfile.setFakeRfidTag(3, setFakeRfidTagCb)
     }
 
     Shortcut {
         sequence: "4"
-        onActivated: userProfile.setFakeRfidTag(4)
+        onActivated: userProfile.setFakeRfidTag(4, setFakeRfidTagCb)
     }
 
     Shortcut {
         sequence: "5"
-        onActivated: userProfile.setFakeRfidTag(5)
+        onActivated: userProfile.setFakeRfidTag(5, setFakeRfidTagCb)
     }
 
     Shortcut {
         sequence: "6"
-        onActivated: userProfile.setFakeRfidTag(6)
+        onActivated: userProfile.setFakeRfidTag(6, setFakeRfidTagCb)
     }
 
     Shortcut {
         sequence: "7"
-        onActivated: userProfile.setFakeRfidTag(7)
+        onActivated: userProfile.setFakeRfidTag(7, setFakeRfidTagCb)
     }
 
     Shortcut {
         sequence: "8"
-        onActivated: userProfile.setFakeRfidTag(8)
+        onActivated: userProfile.setFakeRfidTag(8, setFakeRfidTagCb)
     }
 
     Shortcut {
         sequence: "9"
-        onActivated: userProfile.setFakeRfidTag(9)
+        onActivated: userProfile.setFakeRfidTag(9, setFakeRfidTagCb)
     }
 
 

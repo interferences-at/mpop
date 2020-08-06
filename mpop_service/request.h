@@ -6,6 +6,13 @@
 #include <QVariant>
 #include "missingparametererror.h"
 
+
+/**
+ * Check that a map has a given key
+ */
+bool mapHasKey(const QVariantMap& map, const QString& key);
+
+
 /**
  * @brief A JSON-RPC 2.0 request received.
  */
@@ -16,7 +23,11 @@ public:
     QString method;
     QVariantList paramsByPosition;
     QVariantMap paramsByName;
-    QString id;
+    QString stringId;
+    int intId;
+
+    typedef enum { NUMBER_ID = 0, STRING_ID = 1, NULL_ID = 3} RequestIdType;
+    RequestIdType idType;
 public: // methods
     static Request fromString(const QString& str);
     QString toString() const;

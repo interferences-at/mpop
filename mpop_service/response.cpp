@@ -14,16 +14,50 @@ Response Response::fromString(const QString& str) {
     //} else {
     // TODO: catch exceptions
     QVariantMap map = doc.toVariant().toMap();
-    ret.id = map["id"].toString();
+
+    if (mapHasKey(map, "id")) {
+        if (map["id"].type() == QVariant::Int) {
+            ret.intId = map["id"].toInt();
+            ret.idType = Response::ResponseIdType::NUMBER_ID;
+        } else if (map["id"].type() == QVariant::String) {
+            ret.stringId = map["id"].toString();
+            ret.idType = Response::ResponseIdType::STRING_ID;
+        } else {
+            ret.idType = Response::ResponseIdType::NULL_ID;
+        }
+    } else {
+        ret.idType = Response::ResponseIdType::NULL_ID;
+    }
+
     ret.result = map["result"].toMap();
     // TODO: parse the error structure as well
     return ret;
 }
 
-QString Response::toString() {
+void Response::copyIdFromRequest(const Request& request) {
+    if (request.idType == Request::NUMBER_ID) {
+        this->idType = Response::NUMBER_ID;
+        this->stringId = request.stringId;
+    } else if (request.idType == Request::STRING_ID) {
+        this->idType = Response::STRING_ID;
+        this->intId = request.intId;
+    } else if (request.idType == Request::NULL_ID) {
+        this->idType = Response::NULL_ID;
+    }
+}
+
+QString Response::toString() const {
     QVariantMap map;
 
-    map["id"] = this->id;
+    // TODO: Create a base class for Response and Request, to avoid duplicate code arount the id type.
+    if (this->idType == Response::ResponseIdType::NULL_ID) {
+        // TODO: provide null id
+    } else if (this->idType == Response::ResponseIdType::STRING_ID) {
+        map["id"] = this->stringId; // string
+    } else if (this->idType == Response::ResponseIdType::NUMBER_ID) {
+        map["id"] = this->intId; // int
+    }
+
     if (this->error.message != "") {
         map["error"] = QVariantMap();
         map["error"].toMap()["message"] = QVariant::fromValue(QString(this->error.message));
