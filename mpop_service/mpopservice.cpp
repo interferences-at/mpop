@@ -120,13 +120,13 @@ QString MPopService::handleJsonRpcTwoMethod(const QString& message, bool &broadc
     Response response;
     response.id = request.id; // FIXME: should allow string, int or null
     // response.method = request.method;
-    bool sendResponse = true;
+    // bool sendResponse = true;
 
     if (request.method == "message") {
         QTextStream(stdout) << "Got method message" << endl;
         //response.result = QVariant::fromValue(QString("pong"));
         QTextStream(stdout) << "Answer with pong" << endl;
-        sendResponse = false;
+        // sendResponse = false;
         broadcastNotification = true;
         Notification notification;
         notification.method = "message";
@@ -135,17 +135,18 @@ QString MPopService::handleJsonRpcTwoMethod(const QString& message, bool &broadc
         QTextStream(stdout) << "Response: " << ret;
         return ret;
     } else if (request.method == "ping") {
-        QTextStream(stdout) << "Got method ping"<< endl;
+        QTextStream(stdout) << "Got method ping" << endl;
         response.result = QVariant::fromValue(QString("pong"));
-        QTextStream(stdout) << "Answer with pong"<< endl;
+        QTextStream(stdout) << "Answer with pong" << endl;
     } else if (request.method == "echo") {
-        QTextStream(stdout) << "Got method echo"<< endl;
+        QTextStream(stdout) << "Got method echo" << endl;
         response.result = QVariant(request.paramsByName);
-        QTextStream(stdout) << "Answer with echo"<< endl;
+        QTextStream(stdout) << "Answer with echo" << endl;
     } else if (this->handleFacadeMethod(request, response)) {
+        QTextStream(stdout) << "Successfully handled a facade method." << endl;
         // success
     } else {
-        QTextStream(stdout) << "unhandled request"<< endl;
+        QTextStream(stdout) << "unhandled request" << endl;
     }
 
     QString ret = response.toString(); // return string response (JSON)
@@ -156,127 +157,135 @@ QString MPopService::handleJsonRpcTwoMethod(const QString& message, bool &broadc
 bool MPopService::handleFacadeMethod(const Request& request, Response& response) {
     // write error message in case of exception
     QString msg;
+
+    QTextStream(stdout) << "Attempt to handle a facade method." << endl;
+
     // Write to the response object.
     QString method = request.method;
     if (method == "getOrCreateUser") {
-        try{
-            QString rfidTag = request.paramsByPosition[0].toString();
+        QTextStream(stdout) << "Method is: getOrCreateUser" << endl;
+        try {
+            QTextStream(stdout) << "getParamByPosition 0..." << endl;
+            QString rfidTag = request.getParamByPosition(0).toString();
+            QTextStream(stdout) << "getOrCreateUser: parsed rfidTag: " << rfidTag << endl;
+            QTextStream(stdout) << "getOrCreateUser: calling the Facade method" << rfidTag << endl;
             response.result = QVariant(this->_facade.getOrCreateUser(rfidTag));
-        }catch(QException &e ){
-            msg.append("Exception thrown : ");
+        } catch(MissingParameterError& e) {
             msg.append(e.what());
-            response.error.message=msg;
+            response.error.message = msg;
         }
     }
-    else if(method == "getUserInfo"){
+    else if (method == "getUserInfo") {
+        QTextStream(stdout) << "Method is: getUserInfo" << endl;
         try {
-            int  userId= request.paramsByPosition[0].toInt();
+            int  userId= request.getParamByPosition(0).toInt();
             response.result = QVariant(this->_facade.getUserInfo(userId));
-        } catch (QException &e) {
-            msg.append("Exception thrown : ");
+        } catch (MissingParameterError& e) {
             msg.append(e.what());
-            response.error.message=msg;
+            response.error.message = msg;
         }
 
     }
-    else if(method== "getUserLanguage"){
+    else if (method== "getUserLanguage") {
+        QTextStream(stdout) << "Method is: getUserLanguage" << endl;
         try {
-            int  userId= request.paramsByPosition[0].toInt();
+            int userId = request.getParamByPosition(0).toInt();
             response.result = QVariant(this->_facade.getUserLanguage(userId));
-        } catch (QException &e) {
-            msg.append("Exception thrown : ");
+        } catch (MissingParameterError& e) {
             msg.append(e.what());
-            response.error.message=msg;
+            response.error.message = msg;
         }     
     }
-    else if (method == "getUserGender"){
+    else if (method == "getUserGender") {
+        QTextStream(stdout) << "Method is: getUserGender" << endl;
         try {
-            int  userId= request.paramsByPosition[0].toInt();
+            int userId = request.getParamByPosition(0).toInt();
             response.result = QVariant(this->_facade.getUserGender(userId));
-        } catch (QException &e) {
-            msg.append("Exception thrown : ");
+        } catch (MissingParameterError& e) {
             msg.append(e.what());
-            response.error.message=msg;
+            response.error.message = msg;
         }
     }
-    else if(method == "getUserAnswers"){
+    else if (method == "getUserAnswers") {
+        QTextStream(stdout) << "Method is: getUserAnswers" << endl;
         try {
-            int  userId= request.paramsByPosition[0].toInt();
+            int userId = request.getParamByPosition(0).toInt();
             response.result = QVariant(this->_facade.getUserAnswers(userId));
-        } catch (QException &e) {
-            msg.append("Exception thrown : ");
+        } catch (MissingParameterError& e) {
             msg.append(e.what());
-            response.error.message=msg;
+            response.error.message = msg;
         }
     }
-    else if(method == "setUserAnswer"){
+    else if (method == "setUserAnswer") {
+        QTextStream(stdout) << "Method is: setUserAnswer" << endl;
         try {
-            int  userId= request.paramsByPosition[0].toInt();
-            QString question= request.paramsByPosition[1].toString();
-            int value = request.paramsByPosition[2].toInt();
-            this->_facade.setUserAnswer(userId,question,value);
-        } catch (QException &e) {
-            msg.append("Exception thrown : ");
+            int userId = request.getParamByPosition(0).toInt();
+            QString question= request.getParamByPosition(1).toString();
+            int value = request.getParamByPosition(2).toInt();
+            this->_facade.setUserAnswer(userId, question, value);
+        } catch (MissingParameterError& e) {
             msg.append(e.what());
-            response.error.message=msg;
+            response.error.message = msg;
         }
     }
-    else if(method=="freeTag"){
+    else if (method=="freeTag") {
+        QTextStream(stdout) << "Method is: freeTag" << endl;
         try {
-            QString rfidTag= request.paramsByPosition[0].toString();
+            QString rfidTag = request.getParamByPosition(0).toString();
             this->_facade.freeTag(rfidTag);
-        } catch (QException &e) {
-            msg.append("Exception thrown : ");
+        } catch (MissingParameterError& e) {
             msg.append(e.what());
-            response.error.message=msg;
+            response.error.message = msg;
         }
     }
-    else if(method=="freeUnusedTags"){
+    else if (method == "freeUnusedTags") {
+        QTextStream(stdout) << "Method is: freeUnusedTags" << endl;
         try {
             this->_facade.freeUnusedTags();
-        } catch (QException &e) {
-            msg.append("Exception thrown : ");
+        } catch (MissingParameterError& e) {
             msg.append(e.what());
-            response.error.message=msg;
+            response.error.message = msg;
         }
     }
-    else if(method=="setUserLanguage"){
+    else if (method == "setUserLanguage") {
+        QTextStream(stdout) << "Method is: setUserLanguage" << endl;
         try {
-            int  userId= request.paramsByPosition[0].toInt();
-            QString language= request.paramsByPosition[1].toString();
-            response.result =  QVariant(this->_facade.setUserLanguage(userId,language));
-        } catch (QException &e) {
-            msg.append("Exception thrown : ");
+            int userId = request.getParamByPosition(0).toInt();
+            QString language = request.getParamByPosition(1).toString();
+            response.result = QVariant(this->_facade.setUserLanguage(userId, language));
+        } catch (MissingParameterError& e) {
             msg.append(e.what());
-            response.error.message=msg;
+            response.error.message = msg;
         }
     }
-    else if(method=="setUserGender"){
+    else if (method == "setUserGender") {
+        QTextStream(stdout) << "Method is: setUserGender" << endl;
         try {
-            int  userId= request.paramsByPosition[0].toInt();
-            QString gender= request.paramsByPosition[1].toString();
-            response.result =  QVariant(this->_facade.setUserGender(userId,gender));
-        } catch (QException &e) {
-            msg.append("Exception thrown : ");
+            int userId = request.getParamByPosition(0).toInt();
+            QString gender = request.getParamByPosition(1).toString();
+            response.result = QVariant(this->_facade.setUserGender(userId, gender));
+        } catch (MissingParameterError& e) {
             msg.append(e.what());
-            response.error.message=msg;
+            response.error.message = msg;
         }
     }
-    else if(method=="setUserNation"){
+    else if (method == "setUserNation") {
+        QTextStream(stdout) << "Method is: setUserNation" << endl;
         try {
-            int  userId= request.paramsByPosition[0].toInt();
-            QString nation= request.paramsByPosition[1].toString();
-            response.result =  QVariant(this->_facade.setUserNation(userId,nation));
-
-        } catch (QException &e) {
-            msg.append("Exception thrown : ");
+            int userId = request.getParamByPosition(0).toInt();
+            QString nation = request.getParamByPosition(1).toString();
+            response.result = QVariant(this->_facade.setUserNation(userId, nation));
+        } catch (MissingParameterError &e) {
             msg.append(e.what());
-            response.error.message=msg;
+            response.error.message = msg;
         }
+    }
+    else {
+        QTextStream(stdout) << "Method " << method << " is unknown" << endl;
+        response.error.message = QString("No such method: %1").arg(method);
     }
 
     // TODO QList<int> getStatsForQuestion(const QString& questionId);
-
 
     return true;
 }
