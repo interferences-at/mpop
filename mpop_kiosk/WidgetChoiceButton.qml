@@ -41,7 +41,7 @@ ColumnLayout {
         }
 
         background: Rectangle {
-            implicitWidth: 400
+            implicitWidth: 420
             implicitHeight: 100
             height: 100
             opacity: enabled ? 1.0 : 0.3

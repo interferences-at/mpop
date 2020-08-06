@@ -20,6 +20,7 @@ RowLayout {
         Label {
             Layout.alignment: Qt.AlignCenter
             text: qsTr("You are...")
+            font.capitalization: Font.AllUppercase
             color: "#ffffff"
             font.pixelSize: 40
         }
@@ -28,6 +29,7 @@ RowLayout {
     ListView {
         Layout.margins: 0
         Layout.topMargin: 10
+        Layout.rightMargin: 50
         Layout.fillWidth: false
         Layout.fillHeight: true
         orientation: Qt.Vertical

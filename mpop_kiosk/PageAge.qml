@@ -15,17 +15,26 @@ RowLayout {
     // There should be no age set if we show this page.
     property int selectedAge: -1
 
-    Label {
-        Layout.alignment: Qt.AlignCenter
-        text: qsTr("How old are you?")
-        font.capitalization: Font.AllUppercase
-        font.pixelSize: 36
+    ColumnLayout {
+        Rectangle {
+            width:  550
+            height: 300
+            color: "black"
+
+            Label {
+                Layout.alignment: Qt.AlignCenter
+                text: qsTr("How old are you?")
+                font.capitalization: Font.AllUppercase
+                font.pixelSize: 36
+            }
+        }
     }
 
     ListView {
         id: listView0
-
         Layout.margins: 0
+        Layout.topMargin: 10
+        Layout.rightMargin: 50
         Layout.fillWidth: false
         Layout.fillHeight: true
         orientation: Qt.Vertical
