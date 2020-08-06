@@ -37,7 +37,6 @@ void MPopService::load_config_from_env_vars(Config& config) {
         qDebug() << "mysql_host:" << config.mysql_host;
         qDebug() << "service_port_number:" << config.service_port_number;
         qDebug() << "is_verbose:" << config.is_verbose;
-
     }
 }
 
@@ -48,14 +47,14 @@ void MPopService::load_config_from_env_vars(Config& config) {
  */
 static QString getIdentifier(QWebSocket* peer) {
     return QStringLiteral("%1:%2").arg(peer->peerAddress().toString(),
-        QString::number(peer->peerPort()));
+                                       QString::number(peer->peerPort()));
 }
 
 MPopService::MPopService(const Config& config, QObject* parent) :
-        QObject(parent),
-        m_pWebSocketServer(new QWebSocketServer(QStringLiteral("MPOP Service"), QWebSocketServer::NonSecureMode, this)),
-        _facade(config),
-        _config(config)
+    QObject(parent),
+    m_pWebSocketServer(new QWebSocketServer(QStringLiteral("MPOP Service"), QWebSocketServer::NonSecureMode, this)),
+    _facade(config),
+    _config(config)
 {
     quint16 port = config.service_port_number;
     if (m_pWebSocketServer->listen(QHostAddress::Any, port)) {
@@ -155,58 +154,132 @@ QString MPopService::handleJsonRpcTwoMethod(const QString& message, bool &broadc
 }
 
 bool MPopService::handleFacadeMethod(const Request& request, Response& response) {
+    // write error message in case of exception
+    QString msg;
     // Write to the response object.
     QString method = request.method;
     if (method == "getOrCreateUser") {
-        QString rfidTag = request.paramsByPosition[0].toString();
-        response.result = QVariant(this->_facade.getOrCreateUser(rfidTag));
+        try{
+            QString rfidTag = request.paramsByPosition[0].toString();
+            response.result = QVariant(this->_facade.getOrCreateUser(rfidTag));
+        }catch(QException &e ){
+            msg.append("Exception thrown : ");
+            msg.append(e.what());
+            response.error.message=msg;
+        }
     }
-   else if(method == "getUserInfo"){
-         int  userId= request.paramsByPosition[0].toInt();
-         response.result = QVariant(this->_facade.getUserInfo(userId));
+    else if(method == "getUserInfo"){
+        try {
+            int  userId= request.paramsByPosition[0].toInt();
+            response.result = QVariant(this->_facade.getUserInfo(userId));
+        } catch (QException &e) {
+            msg.append("Exception thrown : ");
+            msg.append(e.what());
+            response.error.message=msg;
+        }
+
     }
-   else if(method== "getUserLanguage"){
-        int  userId= request.paramsByPosition[0].toInt();
-        response.result = QVariant(this->_facade.getUserLanguage(userId));
+    else if(method== "getUserLanguage"){
+        try {
+            int  userId= request.paramsByPosition[0].toInt();
+            response.result = QVariant(this->_facade.getUserLanguage(userId));
+        } catch (QException &e) {
+            msg.append("Exception thrown : ");
+            msg.append(e.what());
+            response.error.message=msg;
+        }
+
     }
     else if (method == "getUserGender"){
-        int  userId= request.paramsByPosition[0].toInt();
-        response.result = QVariant(this->_facade.getUserGender(userId));
+        try {
+            int  userId= request.paramsByPosition[0].toInt();
+            response.result = QVariant(this->_facade.getUserGender(userId));
+        } catch (QException &e) {
+            msg.append("Exception thrown : ");
+            msg.append(e.what());
+            response.error.message=msg;
+        }
+
     }
     else if(method == "getUserAnswers"){
-        int  userId= request.paramsByPosition[0].toInt();
-        response.result = QVariant(this->_facade.getUserAnswers(userId));
+        try {
+            int  userId= request.paramsByPosition[0].toInt();
+            response.result = QVariant(this->_facade.getUserAnswers(userId));
+        } catch (QException &e) {
+            msg.append("Exception thrown : ");
+            msg.append(e.what());
+            response.error.message=msg;
+        }
+
     }
     else if(method == "setUserAnswer"){
-        int  userId= request.paramsByPosition[0].toInt();
-        QString question= request.paramsByPosition[1].toString();
-        int value = request.paramsByPosition[2].toInt();
-        this->_facade.setUserAnswer(userId,question,value);
-   }
+        try {
+            int  userId= request.paramsByPosition[0].toInt();
+            QString question= request.paramsByPosition[1].toString();
+            int value = request.paramsByPosition[2].toInt();
+            this->_facade.setUserAnswer(userId,question,value);
+        } catch (QException &e) {
+            msg.append("Exception thrown : ");
+            msg.append(e.what());
+            response.error.message=msg;
+        }
+
+    }
     else if(method=="freeTag"){
-        QString rfidTag= request.paramsByPosition[0].toString();
-        this->_facade.freeTag(rfidTag);
+        try {
+            QString rfidTag= request.paramsByPosition[0].toString();
+            this->_facade.freeTag(rfidTag);
+        } catch (QException &e) {
+            msg.append("Exception thrown : ");
+            msg.append(e.what());
+            response.error.message=msg;
+        }
     }
     else if(method=="freeUnusedTags"){
-        this->_facade.freeUnusedTags();
+        try {
+            this->_facade.freeUnusedTags();
+        } catch (QException &e) {
+            msg.append("Exception thrown : ");
+            msg.append(e.what());
+            response.error.message=msg;
+        }
+
     }
     else if(method=="setUserLanguage"){
+        try {
+            int  userId= request.paramsByPosition[0].toInt();
+            QString language= request.paramsByPosition[1].toString();
+            response.result =  QVariant(this->_facade.setUserLanguage(userId,language));
+        } catch (QException &e) {
+            msg.append("Exception thrown : ");
+            msg.append(e.what());
+            response.error.message=msg;
+        }
 
-        int  userId= request.paramsByPosition[0].toInt();
-        QString language= request.paramsByPosition[1].toString();
-        response.result =  QVariant(this->_facade.setUserLanguage(userId,language));
     }
     else if(method=="setUserGender"){
-
-        int  userId= request.paramsByPosition[0].toInt();
-        QString gender= request.paramsByPosition[1].toString();
-        response.result =  QVariant(this->_facade.setUserGender(userId,gender));
+        try {
+            int  userId= request.paramsByPosition[0].toInt();
+            QString gender= request.paramsByPosition[1].toString();
+            response.result =  QVariant(this->_facade.setUserGender(userId,gender));
+        } catch (QException &e) {
+            msg.append("Exception thrown : ");
+            msg.append(e.what());
+            response.error.message=msg;
+        }
     }
     else if(method=="setUserNation"){
+        try {
+            int  userId= request.paramsByPosition[0].toInt();
+            QString nation= request.paramsByPosition[1].toString();
+            response.result =  QVariant(this->_facade.setUserNation(userId,nation));
 
-        int  userId= request.paramsByPosition[0].toInt();
-        QString nation= request.paramsByPosition[1].toString();
-        response.result =  QVariant(this->_facade.setUserNation(userId,nation));
+        } catch (QException &e) {
+            msg.append("Exception thrown : ");
+            msg.append(e.what());
+            response.error.message=msg;
+        }
+
     }
 
     // TODO QList<int> getStatsForQuestion(const QString& questionId);
