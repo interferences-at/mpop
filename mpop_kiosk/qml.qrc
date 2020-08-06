@@ -21,5 +21,7 @@
         <file>PageLanguage.qml</file>
         <file alias="mpop_kiosk_en">mpop_kiosk_en.qm</file>
         <file alias="mpop_kiosk_fr">mpop_kiosk_fr.qm</file>
+        <file>uparrow.svg</file>
+        <file>downarrow.svg</file>
     </qresource>
 </RCC>

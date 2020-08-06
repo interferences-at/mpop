@@ -12,16 +12,24 @@ RowLayout {
     signal previousButtonClicked()
     signal languageChosen(string value)
 
-    Label {
-        Layout.alignment: Qt.AlignCenter
-        text: qsTr("Choose a language")
-        font.pixelSize: 36
+    Rectangle {
+        Layout.minimumWidth: 400
+        Layout.minimumHeight: 500
+        color: "black"
+
+        Label {
+            Layout.alignment: Qt.AlignCenter
+            text: qsTr("Choose a language")
+            font.capitalization: Font.AllUppercase
+            font.pixelSize: 36
+        }
     }
 
     ListView {
-        Layout.topMargin: 320
+        Layout.margins: 0
+        Layout.topMargin: 10
         Layout.leftMargin: 80
-        Layout.rightMargin: 80
+        Layout.rightMargin: 50
         Layout.fillWidth: false
         Layout.fillHeight: true
         orientation: Qt.Vertical

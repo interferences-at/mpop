@@ -21,13 +21,16 @@ RowLayout {
             Label {
                 Layout.alignment: Qt.AlignCenter
                 text: qsTr("To which nation \n do you identify \n the most?")
+                font.capitalization: Font.AllUppercase
                 font.pixelSize: 36
             }
         }
     }
 
     ListView {
+        Layout.margins: 0
         Layout.topMargin: 10
+        Layout.rightMargin: 50
         Layout.fillWidth: false
         Layout.fillHeight: true
         orientation: Qt.Vertical
