@@ -18,6 +18,7 @@ ColumnLayout {
     property string questionText: null
     property bool sliderWidgetVisibility: true
     property bool buttonsVisibility: false
+    property bool ageVisualization: false
 
     signal nextButtonClicked()
     signal previousButtonClicked()
@@ -60,6 +61,7 @@ ColumnLayout {
                 Layout.alignment: Qt.AlignCenter
                 text: questionText
                 font.pixelSize: 30
+                bottomPadding: 30
             }
 
             WidgetAnswerSlider {
@@ -77,6 +79,7 @@ ColumnLayout {
                 font.pixelSize: 30
                 visible: buttonsVisibility
             }
+
             RowLayout{
                 Layout.fillWidth: true
                 Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
@@ -93,7 +96,9 @@ ColumnLayout {
                        radius: 2
                    }
                    onClicked: {
-
+                       buttonsVisibility = false
+                       sliderWidgetVisibility  = false
+                       ageVisualization = true
                    }
                 }
                 Button{
@@ -107,7 +112,9 @@ ColumnLayout {
                       radius: 2
                    }
                    onClicked: {
-
+                       buttonsVisibility = false
+                       sliderWidgetVisibility  = false
+                       ageVisualization = true
                    }
                 }
 
@@ -122,7 +129,9 @@ ColumnLayout {
                       radius: 2
                    }
                    onClicked: {
-
+                       buttonsVisibility = false
+                       sliderWidgetVisibility  = false
+                       ageVisualization = true
                    }
                 }
                 Button{
@@ -136,11 +145,300 @@ ColumnLayout {
                       radius: 2
                    }
                    onClicked: {
+                       buttonsVisibility = false
+                       sliderWidgetVisibility  = false
+                       ageVisualization = true
+                   }
+                }
+            }
+
+            Label {
+                Layout.alignment: Qt.AlignLeft
+                text: 'Visualization by age of respondents'
+                font.pixelSize: 24
+                visible: ageVisualization
+                leftPadding: 35
+            }
+            Label {
+                Layout.alignment: Qt.AlignLeft
+                text: 'You can select the following filters to discover new correlations'
+                font.pixelSize: 24
+                visible: ageVisualization
+                leftPadding: 35
+                bottomPadding: 30
+            }
+
+            RowLayout{
+
+                Layout.fillWidth: true
+                Layout.alignment: Qt.AlignLeft | Qt.AlignLeft
+                spacing: 24
+                visible: ageVisualization
+                Button {
+                    text: "Culture"
+                    background: Rectangle {
+                       color: "#000"
+                       implicitWidth: 130
+                       implicitHeight: 55
+                   }
+                   onClicked: {
+
+                   }
+                }
+                Button {
+                    text: "Tous"
+                    background: Rectangle {
+                       color: "#000"
+                       implicitWidth: 130
+                       implicitHeight: 55
+                       border.color: "#fff"
+                       border.width: 1
+                       radius: 2
+                   }
+                   onClicked: {
+
+                   }
+                }
+                Button{
+                   text: "Québécoise"
+                   background: Rectangle {
+                      color: "#000"
+                      implicitWidth: 130
+                      implicitHeight: 55
+                      border.color: "#fff"
+                      border.width: 1
+                      radius: 2
+                   }
+                   onClicked: {
+
+                   }
+                }
+
+                Button{
+                   text: "Canadienne"
+                   background: Rectangle {
+                      color: "#000"
+                      implicitWidth: 130
+                      implicitHeight: 55
+                      border.color: "#fff"
+                      border.width: 1
+                      radius: 2
+                   }
+                   onClicked: {
+
+                   }
+                }
+                Button{
+                   text: "Autochtone"
+                   background: Rectangle {
+                      color: "#000"
+                      implicitWidth: 130
+                      implicitHeight: 55
+                      border.color: "#fff"
+                      border.width: 1
+                      radius: 2
+                   }
+                   onClicked: {
+
+                   }
+                }
+                Button{
+                   text: "Américaine"
+                   background: Rectangle {
+                      color: "#000"
+                      implicitWidth: 130
+                      implicitHeight: 55
+                      border.color: "#fff"
+                      border.width: 1
+                      radius: 2
+                   }
+                   onClicked: {
+
+                   }
+                }
+                Button{
+                   text: "Européenne"
+                   background: Rectangle {
+                      color: "#000"
+                      implicitWidth: 130
+                      implicitHeight: 55
+                      border.color: "#fff"
+                      border.width: 1
+                      radius: 2
+                   }
+                   onClicked: {
+
+                   }
+                }
+                Button{
+                   text: "Autre"
+                   background: Rectangle {
+                      color: "#000"
+                      implicitWidth: 130
+                      implicitHeight: 55
+                      border.color: "#fff"
+                      border.width: 1
+                      radius: 2
+                   }
+                   onClicked: {
 
                    }
                 }
             }
 
+            RowLayout{
+
+                Layout.fillWidth: true
+                Layout.alignment: Qt.AlignLeft | Qt.AlignLeft
+                spacing: 24
+                visible: ageVisualization
+                Button {
+                    text: "Genre"
+                    background: Rectangle {
+                       color: "#000"
+                       implicitWidth: 130
+                       implicitHeight: 55
+                   }
+                   onClicked: {
+
+                   }
+                }
+                Button {
+                    text: "Tous"
+                    background: Rectangle {
+                       color: "#000"
+                       implicitWidth: 130
+                       implicitHeight: 55
+                       border.color: "#fff"
+                       border.width: 1
+                       radius: 2
+                   }
+                   onClicked: {
+
+                   }
+                }
+                Button{
+                   text: "Femme"
+                   background: Rectangle {
+                      color: "#000"
+                      implicitWidth: 130
+                      implicitHeight: 55
+                      border.color: "#fff"
+                      border.width: 1
+                      radius: 2
+                   }
+                   onClicked: {
+
+                   }
+                }
+
+                Button{
+                   text: "Homme"
+                   background: Rectangle {
+                      color: "#000"
+                      implicitWidth: 130
+                      implicitHeight: 55
+                      border.color: "#fff"
+                      border.width: 1
+                      radius: 2
+                   }
+                   onClicked: {
+
+                   }
+                }
+
+                Button{
+                   text: "Autre"
+                   background: Rectangle {
+                      color: "#000"
+                      implicitWidth: 130
+                      implicitHeight: 55
+                      border.color: "#fff"
+                      border.width: 1
+                      radius: 2
+                   }
+                   onClicked: {
+
+                   }
+                }
+            }
+
+            RowLayout{
+
+                Layout.fillWidth: true
+                Layout.alignment: Qt.AlignLeft | Qt.AlignLeft
+                spacing: 24
+                visible: ageVisualization
+                Button {
+                    text: "Temps"
+                    background: Rectangle {
+                       color: "#000"
+                       implicitWidth: 130
+                       implicitHeight: 55
+                   }
+                   onClicked: {
+
+                   }
+                }
+                Button {
+                    text: "Tous"
+                    background: Rectangle {
+                       color: "#000"
+                       implicitWidth: 130
+                       implicitHeight: 55
+                       border.color: "#fff"
+                       border.width: 1
+                       radius: 2
+                   }
+                   onClicked: {
+
+                   }
+                }
+                Button{
+                   text: "Aujourd'hui"
+                   background: Rectangle {
+                      color: "#000"
+                      implicitWidth: 130
+                      implicitHeight: 55
+                      border.color: "#fff"
+                      border.width: 1
+                      radius: 2
+                   }
+                   onClicked: {
+
+                   }
+                }
+
+                Button{
+                   text: "Cette année"
+                   background: Rectangle {
+                      color: "#000"
+                      implicitWidth: 130
+                      implicitHeight: 55
+                      border.color: "#fff"
+                      border.width: 1
+                      radius: 2
+                   }
+                   onClicked: {
+
+                   }
+                }
+
+                Button{
+                   text: "Depuis le début"
+                   background: Rectangle {
+                      color: "#000"
+                      implicitWidth: 140
+                      implicitHeight: 55
+                      border.color: "#fff"
+                      border.width: 1
+                      radius: 2
+                   }
+                   onClicked: {
+
+                   }
+                }
+            }
         }
 
     }
