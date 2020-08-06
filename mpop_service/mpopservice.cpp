@@ -187,8 +187,7 @@ bool MPopService::handleFacadeMethod(const Request& request, Response& response)
             msg.append("Exception thrown : ");
             msg.append(e.what());
             response.error.message=msg;
-        }
-
+        }     
     }
     else if (method == "getUserGender"){
         try {
@@ -199,7 +198,6 @@ bool MPopService::handleFacadeMethod(const Request& request, Response& response)
             msg.append(e.what());
             response.error.message=msg;
         }
-
     }
     else if(method == "getUserAnswers"){
         try {
@@ -210,7 +208,6 @@ bool MPopService::handleFacadeMethod(const Request& request, Response& response)
             msg.append(e.what());
             response.error.message=msg;
         }
-
     }
     else if(method == "setUserAnswer"){
         try {
@@ -223,7 +220,6 @@ bool MPopService::handleFacadeMethod(const Request& request, Response& response)
             msg.append(e.what());
             response.error.message=msg;
         }
-
     }
     else if(method=="freeTag"){
         try {
@@ -243,7 +239,6 @@ bool MPopService::handleFacadeMethod(const Request& request, Response& response)
             msg.append(e.what());
             response.error.message=msg;
         }
-
     }
     else if(method=="setUserLanguage"){
         try {
@@ -255,7 +250,6 @@ bool MPopService::handleFacadeMethod(const Request& request, Response& response)
             msg.append(e.what());
             response.error.message=msg;
         }
-
     }
     else if(method=="setUserGender"){
         try {
@@ -279,7 +273,6 @@ bool MPopService::handleFacadeMethod(const Request& request, Response& response)
             msg.append(e.what());
             response.error.message=msg;
         }
-
     }
 
     // TODO QList<int> getStatsForQuestion(const QString& questionId);
