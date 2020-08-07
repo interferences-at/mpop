@@ -44,7 +44,7 @@ ColumnLayout {
         ColumnLayout{
             Button{
                Layout.alignment: Qt.AlignHCenter
-               text: "Data visualization"
+               text: qsTr("Data visualization")
                background: none
                font.pixelSize: 30
                onClicked: {
@@ -54,12 +54,12 @@ ColumnLayout {
             }
             Label {
                 Layout.alignment: Qt.AlignCenter
-                text: titleText
+                text: qsTr(titleText)
                 font.pixelSize: 36
             }
             Label {
                 Layout.alignment: Qt.AlignCenter
-                text: questionText
+                text: qsTr(questionText)
                 font.pixelSize: 30
                 bottomPadding: 30
             }
@@ -75,7 +75,7 @@ ColumnLayout {
 
             Label {
                 Layout.alignment: Qt.AlignCenter
-                text: 'Please select a basic viewing setting'
+                text: qsTr("Please select a basic viewing setting")
                 font.pixelSize: 30
                 visible: buttonsVisibility
             }
@@ -86,7 +86,7 @@ ColumnLayout {
                 spacing: 24
                 visible: buttonsVisibility
                 Button {
-                    text: "Age"
+                    text: qsTr("Age")
                     background: Rectangle {
                        color: "#000"
                        implicitWidth: 140
@@ -101,8 +101,8 @@ ColumnLayout {
                        ageVisualization = true
                    }
                 }
-                Button{
-                   text: "Genre"
+                Button {
+                   text: qsTr("Genre")
                    background: Rectangle {
                       color: "#000"
                       implicitWidth: 140
@@ -117,9 +117,8 @@ ColumnLayout {
                        ageVisualization = true
                    }
                 }
-
-                Button{
-                   text: "Culture"
+                Button {
+                   text: qsTr("Culture")
                    background: Rectangle {
                       color: "#000"
                       implicitWidth: 140
@@ -134,8 +133,8 @@ ColumnLayout {
                        ageVisualization = true
                    }
                 }
-                Button{
-                   text: "Language"
+                Button {
+                   text: qsTr("Language")
                    background: Rectangle {
                       color: "#000"
                       implicitWidth: 140
@@ -154,14 +153,14 @@ ColumnLayout {
 
             Label {
                 Layout.alignment: Qt.AlignLeft
-                text: 'Visualization by age of respondents'
+                text: qsTr("Visualization by age of respondents")
                 font.pixelSize: 24
                 visible: ageVisualization
                 leftPadding: 35
             }
             Label {
                 Layout.alignment: Qt.AlignLeft
-                text: 'You can select the following filters to discover new correlations'
+                text: qsTr("You can select the following filters to discover new correlations")
                 font.pixelSize: 24
                 visible: ageVisualization
                 leftPadding: 35
@@ -175,7 +174,7 @@ ColumnLayout {
                 spacing: 24
                 visible: ageVisualization
                 Button {
-                    text: "Culture"
+                    text: qsTr("Culture")
                     background: Rectangle {
                        color: "#000"
                        implicitWidth: 130
@@ -186,7 +185,7 @@ ColumnLayout {
                    }
                 }
                 Button {
-                    text: "Tous"
+                    text: qsTr("All")
                     background: Rectangle {
                        color: "#000"
                        implicitWidth: 130
@@ -200,7 +199,7 @@ ColumnLayout {
                    }
                 }
                 Button{
-                   text: "Québécoise"
+                   text: qsTr("Quebecois")
                    background: Rectangle {
                       color: "#000"
                       implicitWidth: 130
@@ -215,7 +214,7 @@ ColumnLayout {
                 }
 
                 Button{
-                   text: "Canadienne"
+                   text: qsTr("Canadian")
                    background: Rectangle {
                       color: "#000"
                       implicitWidth: 130
@@ -229,7 +228,7 @@ ColumnLayout {
                    }
                 }
                 Button{
-                   text: "Autochtone"
+                   text: qsTr("Native")
                    background: Rectangle {
                       color: "#000"
                       implicitWidth: 130
@@ -243,7 +242,7 @@ ColumnLayout {
                    }
                 }
                 Button{
-                   text: "Américaine"
+                   text: qsTr("American")
                    background: Rectangle {
                       color: "#000"
                       implicitWidth: 130
@@ -257,7 +256,7 @@ ColumnLayout {
                    }
                 }
                 Button{
-                   text: "Européenne"
+                   text: qsTr("European")
                    background: Rectangle {
                       color: "#000"
                       implicitWidth: 130
@@ -271,7 +270,7 @@ ColumnLayout {
                    }
                 }
                 Button{
-                   text: "Autre"
+                   text: qsTr("Other")
                    background: Rectangle {
                       color: "#000"
                       implicitWidth: 130
@@ -293,7 +292,7 @@ ColumnLayout {
                 spacing: 24
                 visible: ageVisualization
                 Button {
-                    text: "Genre"
+                    text: qsTr("Genre")
                     background: Rectangle {
                        color: "#000"
                        implicitWidth: 130
@@ -304,7 +303,7 @@ ColumnLayout {
                    }
                 }
                 Button {
-                    text: "Tous"
+                    text: qsTr("All")
                     background: Rectangle {
                        color: "#000"
                        implicitWidth: 130
@@ -318,7 +317,7 @@ ColumnLayout {
                    }
                 }
                 Button{
-                   text: "Femme"
+                   text: qsTr("Women")
                    background: Rectangle {
                       color: "#000"
                       implicitWidth: 130
@@ -333,7 +332,7 @@ ColumnLayout {
                 }
 
                 Button{
-                   text: "Homme"
+                   text: qsTr("Men")
                    background: Rectangle {
                       color: "#000"
                       implicitWidth: 130
@@ -348,7 +347,7 @@ ColumnLayout {
                 }
 
                 Button{
-                   text: "Autre"
+                   text: qsTr("Other")
                    background: Rectangle {
                       color: "#000"
                       implicitWidth: 130
@@ -370,7 +369,7 @@ ColumnLayout {
                 spacing: 24
                 visible: ageVisualization
                 Button {
-                    text: "Temps"
+                    text: qsTr("Time")
                     background: Rectangle {
                        color: "#000"
                        implicitWidth: 130
@@ -381,7 +380,7 @@ ColumnLayout {
                    }
                 }
                 Button {
-                    text: "Tous"
+                    text: qsTr("All")
                     background: Rectangle {
                        color: "#000"
                        implicitWidth: 130
@@ -395,7 +394,7 @@ ColumnLayout {
                    }
                 }
                 Button{
-                   text: "Aujourd'hui"
+                   text: qsTr("Today")
                    background: Rectangle {
                       color: "#000"
                       implicitWidth: 130
@@ -410,7 +409,7 @@ ColumnLayout {
                 }
 
                 Button{
-                   text: "Cette année"
+                   text: qsTr("This Year")
                    background: Rectangle {
                       color: "#000"
                       implicitWidth: 130
@@ -425,7 +424,7 @@ ColumnLayout {
                 }
 
                 Button{
-                   text: "Depuis le début"
+                   text: qsTr("From the beginning")
                    background: Rectangle {
                       color: "#000"
                       implicitWidth: 140
