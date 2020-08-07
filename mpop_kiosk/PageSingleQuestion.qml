@@ -42,6 +42,24 @@ ColumnLayout {
     StackLayout{
         currentIndex: 0
         ColumnLayout{
+
+            RowLayout{
+            Layout.fillWidth: true
+            Layout.alignment: Qt.AlignCenter | Qt.AlignCenter
+            RoundButton {
+                id: button
+                icon.source: "uparrow.svg"
+                Layout.fillHeight: true
+                Layout.fillWidth: true
+                Layout.maximumWidth: 80
+                Layout.maximumHeight: 80
+
+                onClicked: {
+                    sliderWidgetVisibility = true
+                    buttonsVisibility = false
+                    ageVisualization = false
+                }
+            }
             Button{
                Layout.alignment: Qt.AlignHCenter
                text: qsTr("Data visualization")
@@ -50,8 +68,10 @@ ColumnLayout {
                onClicked: {
                    buttonsVisibility = true
                    sliderWidgetVisibility  = false
+                   ageVisualization = false
                }
             }
+        }
             Label {
                 Layout.alignment: Qt.AlignCenter
                 text: qsTr(titleText)
@@ -149,6 +169,41 @@ ColumnLayout {
                        ageVisualization = true
                    }
                 }
+            }
+
+            RowLayout{
+                Layout.fillWidth: true
+                Layout.alignment: Qt.AlignRight | Qt.AlignRight
+                visible: buttonsVisibility
+                RoundButton {
+                    text: qsTr("Left")
+                    //icon.source: "leftarrow.svg"
+                    Layout.fillHeight: true
+                    Layout.fillWidth: true
+                    Layout.maximumWidth: 80
+                    Layout.maximumHeight: 80
+
+                    onClicked: {
+                        sliderWidgetVisibility = true
+                        buttonsVisibility = false
+                        ageVisualization = false
+                    }
+                }
+                RoundButton {
+                    text: qsTr("Right")
+                    //icon.source: "rightarrow.svg"
+                    Layout.fillHeight: true
+                    Layout.fillWidth: true
+                    Layout.maximumWidth: 80
+                    Layout.maximumHeight: 80
+
+                    onClicked: {
+                        sliderWidgetVisibility = false
+                        buttonsVisibility = false
+                        ageVisualization = true
+                    }
+                }
+
             }
 
             Label {
@@ -438,15 +493,52 @@ ColumnLayout {
                    }
                 }
             }
+
+            RowLayout{
+                Layout.fillWidth: true
+                Layout.alignment: Qt.AlignRight | Qt.AlignRight
+                visible: ageVisualization
+                RoundButton {
+                    text: qsTr("Left")
+                    //icon.source: "leftarrow.svg"
+                    Layout.fillHeight: true
+                    Layout.fillWidth: true
+                    Layout.maximumWidth: 80
+                    Layout.maximumHeight: 80
+
+                    onClicked: {
+                        sliderWidgetVisibility = false
+                        buttonsVisibility = true
+                        ageVisualization = false
+                    }
+                }
+                RoundButton {
+                    text: qsTr("Right")
+                    //icon.source: "rightarrow.svg"
+                    Layout.fillHeight: true
+                    Layout.fillWidth: true
+                    Layout.maximumWidth: 80
+                    Layout.maximumHeight: 80
+
+                    onClicked: {
+                        //sliderWidgetVisibility = false
+                        //buttonsVisibility = false
+                        //ageVisualization = true
+                    }
+                }
+
+            }
+
+
         }
 
     }
 
     // FIXME: Should the WidgetPreviousNext be part of the main.qml instead?
-    WidgetPreviousNext {
+    /*WidgetPreviousNext {
         onNextButtonClicked: thisPage.nextButtonClicked()
         onPreviousButtonClicked: thisPage.previousButtonClicked()
-    }
+    }*/
 
     // TODO: Sub-page: Choose Single Question Mode
     // TODO: Sub-page: Dataviz Single Question By Age
