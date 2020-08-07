@@ -13,9 +13,9 @@ ColumnLayout {
     property var datavizSender: null
     property string minText: ""
     property string maxText: ""
-    property string titleText: "Question 01"
+    property string titleText: ""
     property var questionIdentifier: null
-    property string questionText: null
+    property string questionText: ""
     property bool sliderWidgetVisibility: true
     property bool buttonsVisibility: false
     property bool ageVisualization: false
