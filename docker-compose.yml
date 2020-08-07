@@ -40,7 +40,8 @@ services:
       MYSQL_USER: 'admin'
       MYSQL_PASSWORD: 'secret'
     ports:
-      - "3306:3306"
+      # Exporse port 13306 - In case we need it. Just for debugging purposes:
+      - "13306:3306"
     
   flyway:
     image: flyway/flyway
