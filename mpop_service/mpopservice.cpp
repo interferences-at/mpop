@@ -22,7 +22,7 @@ bool MPopService::toBoolean(const QString& value) {
 
 void MPopService::load_config_from_env_vars(Config& config) {
     QProcessEnvironment env = QProcessEnvironment::systemEnvironment();
-    config.mysql_port = env.value("CONFIG_MYSQL_PORT", "3306").toUInt();
+    config.mysql_port = env.value("CONFIG_MYSQL_PORT", "13306").toUInt();
     config.mysql_user = env.value("CONFIG_MYSQL_USER", "admin");
     config.mysql_database = env.value("CONFIG_MYSQL_DATABASE", "mpop_database");
     config.mysql_password = env.value("CONFIG_MYSQL_PASSWORD", "secret");

@@ -22,6 +22,15 @@ sudo apt-get install -y libqt5sql5-mysql qt5-default libqt5opengl5-dev libqt5ser
 ```
 
 
+## Developer setup on Windows
+
+- Make sure you've installed Docker Desktop as an administrator.
+- You might need to share your C: drive in your Docker Desktop preferences.
+- Start Powershell as an administrator
+- Run `docker-compose down --volumes` to erase your previous database, if any.
+- Run `docker-compose up --build` to build your Docker images and run the service and database.
+- Run the mpop\_kiosk from Qt Creator. It should connect to the service.
+
 ## Deployment on Windows
 
 To use the mpop_dataviz program in production on Windows, you should run the 

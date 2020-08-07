@@ -21,7 +21,7 @@ services:
       CONFIG_MYSQL_PASSWORD: 'secret'
       CONFIG_MYSQL_DATABASE: 'mpop_database'
       CONFIG_IS_VERBOSE: 'true'
-      CONFIG_MYSQL_PORT: '3306'
+      CONFIG_MYSQL_PORT: '13306'
       CONFIG_USE_SQLITE: 'false'
       MPOP_SERVICE_PORT_NUMBER: '3333'
 
@@ -40,7 +40,7 @@ services:
       MYSQL_USER: 'admin'
       MYSQL_PASSWORD: 'secret'
     ports:
-      - "3306:3306"
+      - "13306:3306"
     
   flyway:
     image: flyway/flyway
