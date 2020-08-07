@@ -12,7 +12,7 @@ ViewModeManager::ViewModeManager() :
 
     _viewTitles = QVector<QList<QString>>(6);
 
-    for (int i = 0; i < 6; i++) {
+    for (int i = 0; i < 7; i++) {
         ViewModeManager::viewBars sharedVector = ViewModeManager::viewBars::create();
         _viewBars.push_back(sharedVector);
     }
@@ -20,9 +20,13 @@ ViewModeManager::ViewModeManager() :
 
 void ViewModeManager::showViewManagerBars(ViewMode mode)
 {
-    // Screensaver is shown by default
-    _screensaver.updateBarsPosition(currentTime());
-    _screensaver.showSceneObject(currentTime());
+    /* Screensaver is shown by default
+     * Except for the All Answer layout
+     */
+    if (mode != AllAnswersMode) {
+        _screensaver.updateBarsPosition(currentTime());
+        _screensaver.showSceneObject(currentTime());
+    }
 
     switch (mode) {
     case UserAnswersMode:
@@ -57,6 +61,9 @@ void ViewModeManager::showViewManagerBars(ViewMode mode)
         _cultureUserAnswer.updateBarsPosition(currentTime());
         _cultureUserAnswer.showSceneObject(currentTime());
         break;
+    case AllAnswersMode:
+        _allAnswers.updateBarsPosition(currentTime());
+        _allAnswers.showSceneObject(currentTime());
     default:
         break;
     }
@@ -71,6 +78,7 @@ void ViewModeManager::updateViewCoordinate(qreal left, qreal right, qreal bottom
 
     // Update layouts Coordinates
     _screensaver.setLayoutCoordinate(_left, _right, _bottom, _top);
+    _allAnswers.setLayoutCoordinate(_left, _right, _bottom, _top);
 }
 
 void ViewModeManager::updateViewSize(int width, int height)
@@ -121,6 +129,11 @@ void ViewModeManager::moveBarsToLayouts(ViewMode viewIndex)
         // Setup answer by culture layouts
         moveBarsToAnswerByCultureLayout();
         break;
+    case AllAnswersMode:
+        _allAnswers.addBarObjects(_viewBars[viewIndex]);
+        _allAnswers.setBarsSize(sizeFromPixel(3, 60));
+        _allAnswers.setBarsColor("#CCCCCC");
+        _allAnswers.moveObjectsToLayout(currentTime());
     default:
         break;
     }
@@ -309,7 +322,7 @@ void ViewModeManager::setPointToPickFrom(const QPointF &point)
     _pointToPickFrom = point;
 }
 
-qreal ViewModeManager::mapValue(qreal value, qreal istart, qreal istop, qreal ostart, qreal ostop)
+qreal ViewModeManager::mapValue(qreal value, qreal istart, qreal istop, qreal ostart, qreal ostop) const
 {
     return ostart + (ostop - ostart) * ((value - istart) / (istop - istart));
 }

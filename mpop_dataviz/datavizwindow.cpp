@@ -125,8 +125,8 @@ void DatavizWindow::paintGL() {
 
     _painter->endOpenGLPainting(); // Finish OpenGL painting
 
-    if (viewActiveMode > ViewModeManager::UserAnswersMode &&
-        viewActiveMode < ViewModeManager::AnswerByCultureMode + 1) {
+    if (viewActiveMode >= ViewModeManager::MultiAnswersMode &&
+        viewActiveMode <= ViewModeManager::AnswerByCultureMode) {
         _painter->drawViewElements(viewActiveMode,
                                    _viewModeManager->getViewTitles(viewActiveMode));
     }

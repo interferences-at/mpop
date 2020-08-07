@@ -11,6 +11,7 @@ CONFIG += sdk_no_version_check # disable warning on macOS
 INCLUDEPATH += $$PWD
 
 SOURCES += \
+    allanswerslayout.cpp \
     main.cpp \
     datavizwindow.cpp \
     sceneobject.cpp \
@@ -24,6 +25,7 @@ SOURCES += \
     viewmodemanager.cpp
 
 HEADERS += \
+    allanswerslayout.h \
     datavizwindow.h \
     sceneobject.h \
     layout.h \
