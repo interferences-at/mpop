@@ -63,7 +63,7 @@ ColumnLayout {
             Button{
                Layout.alignment: Qt.AlignHCenter
                text: qsTr("Data visualization")
-               background: none
+               // background: none
                font.pixelSize: 30
                onClicked: {
                    buttonsVisibility = true
