@@ -12,9 +12,12 @@ import QtWebSockets 1.0
  * - The function who take a callback always take it as their last argument
  */
 Item {
+    id: thisUserProfile
+
     // constants
     readonly property int const_NUM_QUESTIONS: 999 // FIXME
     readonly property int const_INVALID_NUMBER: -1
+    readonly property string const_INVALID_STRING: ""
 
     // properties
     // Connection with the mpop_service:
@@ -24,12 +27,12 @@ Item {
     property bool is_verbose: false
 
     // user's profile:
-    property string gender: null
-    property string ethnicity: null
+    property string gender: const_INVALID_STRING
+    property string ethnicity: const_INVALID_STRING
     property int age: const_INVALID_NUMBER
-    property string language: null
+    property string language: const_INVALID_STRING
     property var answers: []
-    property string rfidTag: null
+    property string rfidTag: const_INVALID_STRING
     property int userId: const_INVALID_NUMBER
     property bool sent_user_info_to_service: false
     property bool did_read_user_info_from_service: false
@@ -41,13 +44,13 @@ Item {
      * Resets all the properties that are relevant to the current user.
      */
     function resetUser(cb) {
-        gender = null;
-        ethnicity = null;
+        gender = const_INVALID_STRING;
+        ethnicity = const_INVALID_STRING;
         age = const_INVALID_NUMBER;
-        language = null;
+        language = const_INVALID_STRING;
         answers = [];
         userId = const_INVALID_NUMBER
-        rfidTag = null
+        rfidTag = const_INVALID_STRING
 
         for (var i = 0; i < const_NUM_QUESTIONS; i ++) {
             answers[i] = null;
@@ -57,7 +60,12 @@ Item {
 
     // TODO
     function getUserGender(cb) {
-
+        // TODO TODO
+        if (thisUserProfile.gender === const_INVALID_STRING) {
+            //
+        } else {
+            cb(null, thisUserProfile.gender);
+        }
     }
 
     // TODO
@@ -125,12 +133,21 @@ Item {
                         cb(err2);
                     } else {
                         userId = user_id;
-                        _populateUserInfo(userId, function (err3) {
+                        _populateUserInfo(userId, function (err3, userInfo) {
                             if (err3) {
                                 console.log(err3); // let's no pass this error upstream
                                 cb(null); // done (even if an error occured)
                             } else {
-                                cb(null); // done
+                                // Here, we populate the user info from the resul received from the service!
+                                thisUserProfile.gender = userInfo.gender;
+                                thisUserProfile.ethnicity = userInfo.ethnicity;
+                                age = userInfo.age;
+                                language = userInfo.language;
+                                userId = userInfo.user_id;
+
+                                // TODO: also populate their answers
+
+                                cb(null); // Success. Call the callback with no error.
                             }
                         });
                     }
@@ -147,14 +164,19 @@ Item {
         if (userId === const_INVALID_NUMBER) {
             cb(new Error("Currently no user id."));
         } else {
-            callRemoteMethod("getUserInfo", [userId], function (err1, userInfo) {
+            websocket.callRemoteMethod("getUserInfo", [userId], function (err1, userInfo) {
                 if (err1) {
                     cb(err1);
                 } else {
-                    language = userInfo.language;
+                    // FIXME
+                    if (userInfo.language) {
+                        language = userInfo.language;
+                    }
                     gender = userInfo.gender;
                     age = userInfo.age;
                     ethnicity = userInfo.ethnicity;
+                    // TODO: store rfidTag for user
+                    // TODO: store userId for user
                     cb(null); // done
                 }
             });
@@ -286,6 +308,7 @@ Item {
         // and the values are the callbacks to trigger when we get a response for them,
         // or if the timeout expires.
         // TODO: expire timeouts
+        // Keys are strings, so we convert the numbers to strings with .toString()
         property var responseCallbacks: ({})
 
         /**
@@ -297,6 +320,22 @@ Item {
             return ret;
         }
 
+        /**
+         * Calls a remote method of the mpop_service.
+         *
+         * Sends a JSON-RPC 2.0 via websockets.
+         * Then, it stores a callback associated to a call id.
+         * Call ids are integers, but we stores them as an associative array
+         * whose keys are strings.
+         * When we receive a response from the service, we check
+         * if we have a callback for its id and call the callback with the result.
+         *
+         * @param string methodsName Name of the method of the mpop_service to call.
+         * @param array params List of params to provide to the method.
+         * @param callable cb Function to call with the result once we receive a response.
+         *
+         * The callbacks are called with an Error, if any, as the first argument, or with the result as the second argument.
+         */
         function callRemoteMethod(methodName, params, cb) {
             var callId = generateRequestId();
             var request = {
@@ -307,7 +346,7 @@ Item {
 
             // Store the callback and the callId, so that we check later if we have received an answer,
             // or handle it right away when we get the response.
-            responseCallbacks[callId] = cb;
+            responseCallbacks[callId.toString()] = cb;
 
             // FIXME: it seems like the JSON.stringify function adds double quotes around integers.
             var strToSend = JSON.stringify(request);
@@ -337,12 +376,17 @@ Item {
             callRemoteMethod("ping", [], cb);
         }
 
+        /**
+         * @param Number callId
+         */
         function _callCallbackForKeyIfFound(callId, result) {
             var foundCb = false;
             console.log("_callCallbackForKeyIfFound " + JSON.stringify(result));
             for (var key in responseCallbacks) {
-                if (key === callId) {
-                    console.log("Found registered callback for " + callId);
+                console.log("Check if callback " + key + " matches what we are looking for: " + callId.toString());
+                console.log("Types are " + (typeof key) + " and " + (typeof callId.toString()));
+                if (key === callId.toString()) {
+                    console.log("Found registered callback for " + callId.toString());
                     // Calling the callback:
                     var cb = responseCallbacks[key];
                     cb(null, result);
@@ -353,7 +397,7 @@ Item {
                 }
             }
             if (! foundCb) {
-                console.log("_callCallbackForKeyIfFound: Cound not find a callback for " + callId);
+                console.log("_callCallbackForKeyIfFound: Could not find a callback for " + callId);
             }
         }
 

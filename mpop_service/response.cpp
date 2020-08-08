@@ -35,12 +35,17 @@ Response Response::fromString(const QString& str) {
 }
 
 void Response::copyIdFromRequest(const Request& request) {
+    // The ID might be a number:
     if (request.idType == Request::NUMBER_ID) {
         this->idType = Response::NUMBER_ID;
-        this->stringId = request.stringId;
+        this->intId = request.intId;
+
+    // Or it might be a string:
     } else if (request.idType == Request::STRING_ID) {
         this->idType = Response::STRING_ID;
-        this->intId = request.intId;
+        this->stringId = request.stringId;
+
+    // Or maybe there is no ID at all:
     } else if (request.idType == Request::NULL_ID) {
         this->idType = Response::NULL_ID;
     }
@@ -53,9 +58,9 @@ QString Response::toString() const {
     if (this->idType == Response::ResponseIdType::NULL_ID) {
         // TODO: provide null id
     } else if (this->idType == Response::ResponseIdType::STRING_ID) {
-        map["id"] = this->stringId; // string
+        map["id"] = QVariant::fromValue(this->stringId); // string
     } else if (this->idType == Response::ResponseIdType::NUMBER_ID) {
-        map["id"] = this->intId; // int
+        map["id"] = QVariant::fromValue(this->intId); // int
     }
 
     if (this->error.message != "") {

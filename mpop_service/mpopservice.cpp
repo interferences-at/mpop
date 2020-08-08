@@ -120,6 +120,7 @@ QString MPopService::handleJsonRpcTwoMethod(const QString& message, bool &broadc
     //}
     Response response;
     response.copyIdFromRequest(request);
+    QTextStream(stdout) << "The ID of our response will be: " << response.intId << endl;
     // response.method = request.method;
     // bool sendResponse = true;
 

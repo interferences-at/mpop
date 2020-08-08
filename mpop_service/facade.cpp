@@ -62,17 +62,20 @@ int Facade::getUserForTag(const QString& rfidTag) {
     if (! ok) {
         qWarning() << "ERROR: " << query.lastError().text();
     }
-   if (query.next()) {
+    bool foundSomeVisitorWhoseTagMatches = query.next();
+    if (foundSomeVisitorWhoseTagMatches) {
         tagExists = true;
         bool tagExistsButHasNoUser = query.isNull(0);
         if (tagExistsButHasNoUser) {
             visitorId = this->createNewUser();
-            updateTagSetVisitorId(rfidTag, visitorId);
+            bool ok = updateTagSetVisitorId(rfidTag, visitorId);
+            if (ok) {
+                ok = updateVisitorSetRfid(visitorId, rfidTag);
+            }
         } else {
             visitorId = query.value(0).toInt(); // value("visitor_id") would also work, but is less efficient
         }
-    }
-    if (! tagExists) {
+    } else {
         visitorId = this->createTagAndUser(rfidTag);
     }
     return visitorId;
@@ -112,6 +115,21 @@ bool Facade::updateTagSetVisitorId(const QString& rfidTag, int visitorId) {
     query.prepare(sql);
     query.addBindValue(QVariant(visitorId));
     query.addBindValue(QVariant(rfidTag));
+
+    bool ok = query.exec();
+    if (! ok) {
+        qWarning() << "ERROR: " << query.lastError().text();
+    }
+    return query.numRowsAffected() == 1;
+}
+
+bool Facade::updateVisitorSetRfid(int visitorId, const QString& rfidTag) {
+    qDebug() << "updateVisitorSetRfid";
+    QString sql = "UPDATE `visitor` SET `rfid` = ? WHERE `visitor_id` = ?";
+    QSqlQuery query;
+    query.prepare(sql);
+    query.addBindValue(QVariant(rfidTag));
+    query.addBindValue(QVariant(visitorId));
 
     bool ok = query.exec();
     if (! ok) {
@@ -174,7 +192,7 @@ QMap<QString, QVariant> Facade::getUserAnswers(int userId) {
 
 QMap<QString, QVariant> Facade::getUserInfo(int userId) {
     QMap<QString, QVariant> ret;
-    QString sql = "SELECT `visitor`.`age` AS `age`, `visitor`.`gender` AS `gender`, `visitor`.`language` AS `language`, `nation`.`identifier` AS `ethnicity` FROM `visitor` JOIN `nation` ON `visitor`.`nation` = `nation`.`id` WHERE visitor.id = ?";
+    QString sql = "SELECT `visitor`.`age` AS `age`, `visitor`.`visitor_id` AS `visitor_id`, `visitor`.`gender` AS `gender`, `visitor`.`language` AS `language`, `nation`.`identifier` AS `ethnicity` FROM `visitor` JOIN `nation` ON `visitor`.`nation` = `nation`.`id` WHERE visitor.id = ?";
     QSqlQuery query;
     query.prepare(sql);
     query.addBindValue(QVariant(userId));
