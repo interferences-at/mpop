@@ -188,7 +188,7 @@ bool MPopService::handleFacadeMethod(const Request& request, Response& response)
     else if (method == "getUserInfo") {
         QTextStream(stdout) << "Method is: getUserInfo" << endl;
         try {
-            int  userId= request.getParamByPosition(0).toInt();
+            int userId = request.getParamByPosition(0).toInt();
             response.result = QVariant(this->_facade.getUserInfo(userId));
         } catch (MissingParameterError& e) {
             msg.append(e.what());
