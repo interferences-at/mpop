@@ -23,5 +23,7 @@
         <file alias="mpop_kiosk_fr">mpop_kiosk_fr.qm</file>
         <file>uparrow.svg</file>
         <file>downarrow.svg</file>
+        <file>leftarrow.svg</file>
+        <file>rightarrow.svg</file>
     </qresource>
 </RCC>
