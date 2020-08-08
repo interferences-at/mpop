@@ -63,6 +63,8 @@ public:
      */
     QList<int> getStatsForQuestion(const QString& questionId);
 
+    bool updateVisitorSetRfid(int visitorId, const QString& rfidTag);
+
     /**
      * @brief Frees a RFID tag that is no longer owned by a user.
      * @param rfidTag The RFID tag.

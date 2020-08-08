@@ -16,6 +16,7 @@ CREATE TABLE IF NOT EXISTS visitor
 (
   `id` SERIAL,
   `gender` ENUM('male', 'female', 'other') DEFAULT NULL,
+  `rfid` VARCHAR(256) DEFAULT NULL,
   `language` ENUM('fr', 'en') DEFAULT NULL,
   `nation` BIGINT UNSIGNED DEFAULT NULL, -- Relation with the nation table
   `age` TINYINT UNSIGNED DEFAULT NULL, -- number within the range [0,255]
