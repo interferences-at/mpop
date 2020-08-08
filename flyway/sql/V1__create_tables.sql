@@ -19,7 +19,7 @@ CREATE TABLE IF NOT EXISTS visitor
   `rfid` VARCHAR(256) DEFAULT NULL,
   `language` ENUM('fr', 'en') DEFAULT NULL,
   `nation` BIGINT UNSIGNED DEFAULT NULL, -- Relation with the nation table
-  `age` TINYINT UNSIGNED DEFAULT NULL, -- number within the range [0,255]
+  `age` TINYINT DEFAULT -1, -- number within the range [-1,127]
   `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 ) CHARACTER SET utf8 COLLATE utf8_general_ci;
 

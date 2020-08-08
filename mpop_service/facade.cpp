@@ -47,6 +47,8 @@ int Facade::getOrCreateUser(const QString& rfidTag) {
     // so that it's simpler)
     // FIXME: it seems like this returns 0 when no connection to the database was possible.
     // It should probably throw an error, instead.
+
+    // TODO: remove the following duplicate:
     return getUserForTag(rfidTag);
 }
 
@@ -105,7 +107,8 @@ int Facade::createNewUser() {
     if (! ok) {
         qWarning() << "ERROR: " << query.lastError().text();
     }
-    return query.lastInsertId().toInt();
+    int visitorId = query.lastInsertId().toInt();
+    return visitorId;
 }
 
 bool Facade::updateTagSetVisitorId(const QString& rfidTag, int visitorId) {
@@ -120,7 +123,8 @@ bool Facade::updateTagSetVisitorId(const QString& rfidTag, int visitorId) {
     if (! ok) {
         qWarning() << "ERROR: " << query.lastError().text();
     }
-    return query.numRowsAffected() == 1;
+    ok = query.numRowsAffected() == 1;
+    return ok;
 }
 
 bool Facade::updateVisitorSetRfid(int visitorId, const QString& rfidTag) {
@@ -135,12 +139,13 @@ bool Facade::updateVisitorSetRfid(int visitorId, const QString& rfidTag) {
     if (! ok) {
         qWarning() << "ERROR: " << query.lastError().text();
     }
-    return query.numRowsAffected() == 1;
+    ok = query.numRowsAffected() == 1;
+    return ok;
 }
 
 QString Facade::getUserLanguage(int userId) {
     qDebug() << "getUserLanguage";
-    QString ret;
+    QString userLanguage;
     QString sql = "SELECT `language` FROM `visitor` WHERE `id` = ?";
     QSqlQuery query;
     query.prepare(sql);
@@ -150,14 +155,14 @@ QString Facade::getUserLanguage(int userId) {
         qWarning() << "ERROR: " << query.lastError().text();
     }
     while (query.next()) {
-        ret = query.value(0).toString();
+        userLanguage = query.value(0).toString();
     }
-    return ret;
+    return userLanguage;
 }
 
 QString Facade::getUserGender(int userId) {
     qDebug() << "getUserGender";
-    QString ret;
+    QString userGender;
     QString sql = "SELECT `gender` FROM `visitor` WHERE `id` = ?";
     QSqlQuery query;
     query.prepare(sql);
@@ -167,15 +172,20 @@ QString Facade::getUserGender(int userId) {
         qWarning() << "ERROR: " << query.lastError().text();
     }
     while (query.next()) {
-        ret = query.value(0).toString();
+        userGender = query.value(0).toString();
     }
-    return ret;
+    return userGender;
 }
 
 QMap<QString, QVariant> Facade::getUserAnswers(int userId) {
-    QMap<QString, QVariant> ret;
-    QString sql = "SELECT question.identifier, answer.answer_value FROM `answer` JOIN `question` ON "
-                  "answer.question_id=question.id  WHERE answer.visitor_id = ?";
+    QMap<QString, QVariant> answers;
+
+    QString sql = "SELECT "
+                  "question.identifier, "
+                  "answer.answer_value "
+                  "FROM `answer` "
+                  "JOIN `question` ON answer.question_id = question.id "
+                  "WHERE answer.visitor_id = ?";
     QSqlQuery query;
     query.prepare(sql);
     query.addBindValue(QVariant(userId));
@@ -184,15 +194,29 @@ QMap<QString, QVariant> Facade::getUserAnswers(int userId) {
         qWarning() << "ERROR: " << query.lastError().text();
     }
     while (query.next()) {
-        ret.insert( query.value(0).toString(), query.value(1).toString());
+        QString questionId = query.value(0).toString();
+        int answerValue = query.value(1).toInt();
+        answers.insert(questionId, answerValue);
     }
-    return ret;
+    return answers;
 }
 
-
+/**
+ * @brief Facade::getUserInfo
+ * @param userId
+ * @return an associative array where keys are fields name, and the values can be strings or ints.
+ */
 QMap<QString, QVariant> Facade::getUserInfo(int userId) {
     QMap<QString, QVariant> ret;
-    QString sql = "SELECT `visitor`.`age` AS `age`, `visitor`.`visitor_id` AS `visitor_id`, `visitor`.`gender` AS `gender`, `visitor`.`language` AS `language`, `nation`.`identifier` AS `ethnicity` FROM `visitor` JOIN `nation` ON `visitor`.`nation` = `nation`.`id` WHERE visitor.id = ?";
+    QString sql = "SELECT "
+                  "`visitor`.`age` AS `age`, "
+                  "`visitor`.`rfid` AS `rfid`, "
+                  "`visitor`.`gender` AS `gender`, "
+                  "`visitor`.`language` AS `language`, "
+                  "`nation`.`identifier` AS `ethnicity` "
+                  "FROM `visitor` "
+                  "JOIN `nation` ON `visitor`.`nation` = `nation`.`id` "
+                  "WHERE visitor.id = ?";
     QSqlQuery query;
     query.prepare(sql);
     query.addBindValue(QVariant(userId));
@@ -200,10 +224,18 @@ QMap<QString, QVariant> Facade::getUserInfo(int userId) {
     if (! ok) {
         qWarning() << "ERROR: " << query.lastError().text();
     }
-    QSqlRecord rec = query.record();
-    query.next();
-    for (int i = 0; i < rec.count(); ++ i) {
-        ret.insert(rec.fieldName(i), query.value(i));
+
+    bool retrieved = query.next();
+    if (retrieved) {
+        QSqlRecord rec = query.record();
+        qDebug() << "Number of columns: " << rec.count();
+        qDebug() << "getUserInfo for " << userId;
+        for (int i = 0; i < rec.count(); ++ i) {
+            QString keyName = rec.fieldName(i);
+            QVariant value = rec.value(i);
+            qDebug() << "User" << userId << ":" << keyName << value;
+            ret.insert(keyName, value);
+        }
     }
     return ret;
 }
@@ -211,7 +243,7 @@ QMap<QString, QVariant> Facade::getUserInfo(int userId) {
 
 void Facade::setUserAnswer(int userId, const QString& questionId, int value) {
     qDebug() << "setUserAnswer";
-    QString sql= "INSERT INTO answer(visitor_id, question_id, answer_value) SELECT ?, id, ? FROM question WHERE identifier = ?";
+    QString sql= "INSERT INTO `answer` (`visitor_id`, `question_id`, `answer_value`) SELECT ?, id, ? FROM question WHERE identifier = ?";
     QSqlQuery query;
     query.prepare(sql);
     query.addBindValue(QVariant(userId));
