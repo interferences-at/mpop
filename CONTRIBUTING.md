@@ -21,6 +21,64 @@ make
 sudo apt-get install -y libqt5sql5-mysql qt5-default libqt5opengl5-dev libqt5serialport5-dev libqt5websockets5-dev libqt5quickcontrols2-5 liblo-tools qtdeclarative5-dev mysql-client clang-8
 ```
 
+## Developer setup with VirtualBox on Windows
+
+### Download VirtualBox and Xubuntu
+
+
+- https://download.virtualbox.org/virtualbox/6.1.12/VirtualBox-6.1.12-139181-Win.exe - http://mirror.csclub.uwaterloo.ca/xubuntu-releases/20.04/release/xubuntu-20.04.1-desktop-amd64.iso 
+## Install Ubuntu (or Xubuntu) on VirtualBox machine
+
+
+- 4 Gb of RAM
+- Extensible hard drive (20 Gb)
+
+### Start a terminal and install the packages
+
+sudo apt-get install \
+        build-essential \
+        docker.io \
+        git \
+        liblo-tools \
+        libmysqlclient-dev \
+        libqt5opengl5-dev \
+        libqt5quickcontrols2-5 \
+        libqt5serialport5-dev \
+        libqt5sql5-mysql \
+        libqt5websockets5-dev \
+        mysql-client \
+        qml-module-qt-labs-platform \
+        qml-module-qt-labs-settings \
+        qml-module-qt-websockets \
+        qml-module-qtquick-controls2 \
+        qml-module-qtquick-dialogs \
+        qml-module-qtquick-extras \
+        qml-module-qtquick-localstorage \
+        qml-module-qttest \
+        qt5-default \
+        qtcreator \
+        qtdeclarative5-dev \
+        qttools5-dev-tools
+
+and then git clone
+
+Don't forget to setup your git config user.name and user.email:
+
+```
+git config --global user.name "Your Name"
+git config --global user.email "your@email.com"
+```
+
+Then, you should start the mpop\_service within the Docker Compose setup.
+You can then start mpop\_kiosk from Qt Creator, and mpop\_dataviz.
+
+To launch mpop\_dataviz, there should be a directory created at the same level as your mpop folder.
+It contains the built version of the project for your architecture. In that folder, you should be able to find
+mpop\_dataviz/mpop\_dataviz - that is the executable for the kiosk. `cd` into that directory and call it:
+
+```
+./mpop_dataviz/mpop_dataviz
+```
 
 ## Developer setup on Windows
 
