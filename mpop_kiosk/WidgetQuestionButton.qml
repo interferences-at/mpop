@@ -11,9 +11,11 @@ ColumnLayout {
     signal buttonClicked()
 
     property string buttonTitle: ""
+    property alias highlighted: childButton.highlighted
 
     // TODO: Improve the look of this buttons
     Button {
+        id: childButton
         text: thisWidget.buttonTitle
         font.pixelSize: 12
         font.capitalization: Font.MixedCase
