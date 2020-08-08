@@ -25,5 +25,6 @@
         <file>downarrow.svg</file>
         <file>leftarrow.svg</file>
         <file>rightarrow.svg</file>
+        <file>ModelPageButtons.qml</file>
     </qresource>
 </RCC>

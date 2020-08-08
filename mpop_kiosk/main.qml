@@ -139,12 +139,12 @@ ApplicationWindow {
 
     Shortcut {
         sequence: "PgDown"
-        onActivated: mainStackLayout.nextIndex()
+        onActivated: mainStackLayout.nextPage()
     }
 
     Shortcut {
         sequence: "PgUp"
-        onActivated: mainStackLayout.previousIndex()
+        onActivated: mainStackLayout.previousPage()
     }
 
     // handle number key press event
@@ -218,11 +218,11 @@ ApplicationWindow {
         readonly property int index_SURVEY_QUESTIONS: 2
         readonly property int index_EXIT_SECTION: 2
 
-        function nextIndex() {
+        function nextPage() {
             mainStackLayout.currentIndex = (mainStackLayout.currentIndex + 1) % mainStackLayout.count;
         }
 
-        function previousIndex() {
+        function previousPage() {
             mainStackLayout.currentIndex = (mainStackLayout.count + mainStackLayout.currentIndex - 1) % mainStackLayout.count;
         }
 
@@ -256,14 +256,14 @@ ApplicationWindow {
              * Go to the previous page.
              */
             function previousPage() {
-                currentIndex -= 1
+                demographicQuestionsStackLayout.currentIndex -= 1
             }
 
             /**
              * Go to the next page.
              */
             function nextPage() {
-                currentIndex += 1
+                demographicQuestionsStackLayout.currentIndex += 1
             }
 
             Layout.fillWidth: true
@@ -336,7 +336,13 @@ ApplicationWindow {
                     // TODO
                     // if this is the entry kiosk, show the "enjoy your visit" page.
                     // if this is the center kiosk, go to the questions
-                    demographicQuestionsStackLayout.nextPage();
+                    if (kioskConfig.kiosk_mode == "entry") {
+                        demographicQuestionsStackLayout.nextPage();
+                        // TODO: after a short delay, go to screensaver.
+                    } else {
+                        // kiosk_mode should be central:
+                        mainStackLayout.nextPage();
+                    }
                 }
             }
 
@@ -372,6 +378,8 @@ ApplicationWindow {
              * List of buttons to access each question page.
              */
             ListView {
+                id: pageButtonsListView
+
                 Layout.margins: 0
                 Layout.fillWidth: false
                 Layout.fillHeight: true
@@ -379,18 +387,21 @@ ApplicationWindow {
                 width: currentItem.width
 
                 // There are 15 pages, and that should not change.
-                model: ["01", "02", "03", "04", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13", "14", "15"]
+                model: ModelPageButtons {
+                    id: pageButtonsModel
+                }
 
                 // Let's draw each button:
                 delegate: WidgetQuestionButton {
-                    // modelData retrieves the text in the current item from model
-                    buttonTitle: modelData
+                    buttonTitle: pageNumber // Property of the items in the list model this ListView uses.
                     // FIXME: Perhaps we should fine-tune the height of these buttons
                     height: parent.height / parent.count
                     spacing: 0
+                    highlighted: isHighlighted // Property of the items in the list model this ListView uses.
 
                     onButtonClicked: {
-                        questionsStackLayout.currentIndex = index;
+                        questionsStackLayout.currentIndex = index; // index of the item in the model
+                        pageButtonsModel.highlightButton(pageNumber);
                     }
                 }
             }
