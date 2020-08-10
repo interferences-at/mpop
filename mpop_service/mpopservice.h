@@ -87,6 +87,14 @@ public:
      */
     static bool toBoolean(const QString& value);
 
+    static QVariantMap stringIntMapToQVariantMap(const QMap<QString, int>& value) {
+        QVariantMap ret;
+        for (auto iter = value.constBegin(); iter != value.constEnd(); ++ iter) {
+            ret[iter.key()] = QVariant(iter.value());
+        }
+        return ret;
+    }
+
 private slots:
     void newConnectionCb();
     void textMessageReceivedCb(const QString &message);

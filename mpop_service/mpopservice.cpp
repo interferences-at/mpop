@@ -220,7 +220,8 @@ bool MPopService::handleFacadeMethod(const Request& request, Response& response)
         QTextStream(stdout) << "Method is: getUserAnswers" << endl;
         try {
             int userId = request.getParamByPosition(0).toInt();
-            response.result = QVariant(this->_facade.getUserAnswers(userId));
+            QMap<QString, int> answers = this->_facade.getUserAnswers(userId);
+            response.result = QVariant(MPopService::stringIntMapToQVariantMap(answers));
         } catch (MissingParameterError& e) {
             msg.append(e.what());
             response.error.message = msg;

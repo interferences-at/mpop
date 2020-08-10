@@ -47,7 +47,7 @@ public:
      * @return A number of each question identifier.
      * TODO: perhaps return a QVariant
      */
-    QMap<QString, QVariant> getUserAnswers(int userId);
+    QMap<QString, int> getUserAnswers(int userId);
 
     /**
      * @brief Creates or update the answer to a specific question for a given user.

@@ -102,7 +102,7 @@ void TestMpopService::test_21_getUserAnswers() {
     // Set an answer, and get it:
     int value = 99;
     this->facade->setUserAnswer(userId, TEST_QUESTION_ID, value);
-    QMap<QString, QVariant> answers = this->facade->getUserAnswers(userId);
+    QMap<QString, int> answers = this->facade->getUserAnswers(userId);
     QVariant actual = answers[TEST_QUESTION_ID];
     QCOMPARE(actual, value);
 }
@@ -265,7 +265,7 @@ void TestMpopService::test_20_setUserAnswer() {
     this->facade->setUserAnswer(userId, TEST_QUESTION_03_ID, TEST_QUESTION_03_VALUE);
     this->facade->setUserAnswer(userId, TEST_QUESTION_04_ID, TEST_QUESTION_04_VALUE);
 
-    QMap<QString, QVariant> answers = this->facade->getUserAnswers(userId);
+    QMap<QString, int> answers = this->facade->getUserAnswers(userId);
 
     QCOMPARE(answers[TEST_QUESTION_01_ID], TEST_QUESTION_01_VALUE);
     QCOMPARE(answers[TEST_QUESTION_02_ID], TEST_QUESTION_02_VALUE);
