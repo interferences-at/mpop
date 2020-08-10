@@ -2,12 +2,12 @@
 --
 -- They are in the same order the ListElement in the ListModel
 -- that is in a QML file in the mpop_kiosk project.
-INSERT INTO nation (`id`, `identifier`) VALUES (1, 'quebecer');
-INSERT INTO nation (`id`, `identifier`) VALUES (2, 'canadian');
-INSERT INTO nation (`id`, `identifier`) VALUES (3, 'american');
-INSERT INTO nation (`id`, `identifier`) VALUES (4, 'european');
-INSERT INTO nation (`id`, `identifier`) VALUES (5, 'native');
-INSERT INTO nation (`id`, `identifier`) VALUES (6, 'other');
+INSERT INTO `ethnicity` (`id`, `identifier`) VALUES (1, 'quebecer');
+INSERT INTO `ethnicity` (`id`, `identifier`) VALUES (2, 'canadian');
+INSERT INTO `ethnicity` (`id`, `identifier`) VALUES (3, 'american');
+INSERT INTO `ethnicity` (`id`, `identifier`) VALUES (4, 'european');
+INSERT INTO `ethnicity` (`id`, `identifier`) VALUES (5, 'native');
+INSERT INTO `ethnicity` (`id`, `identifier`) VALUES (6, 'other');
 
 
 -- Questions

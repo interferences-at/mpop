@@ -148,7 +148,7 @@ void TestMpopService::test_14_getUserEthnicity() {
         QSKIP("This test requires MySQL");
     }
     static const QString TEST_RFID_TAG = "test_RFID_tag_0004";
-    static const QString TEST_USER_NATION = "quebecer";
+    static const QString TEST_USER_ETHNICITY = "quebecer";
     static const QString KEY_ETHNICITY = "ethnicity";
     int userId = this->facade->getOrCreateUser(TEST_RFID_TAG);
 
@@ -156,10 +156,10 @@ void TestMpopService::test_14_getUserEthnicity() {
     QVariant userEthnicity1 = userInfo1[KEY_ETHNICITY];
     QCOMPARE(QVariant(), userEthnicity1);
 
-    this->facade->setUserNation(userId, TEST_USER_NATION);
+    this->facade->setUserEthnicity(userId, TEST_USER_ETHNICITY);
     QMap<QString, QVariant> userInfo2 = this->facade->getUserInfo(userId);
     QVariant userEthnicity2 = userInfo2[KEY_ETHNICITY];
-    QCOMPARE(TEST_USER_NATION, userEthnicity2);
+    QCOMPARE(TEST_USER_ETHNICITY, userEthnicity2);
 }
 
 void TestMpopService::test_02_requestParams() {

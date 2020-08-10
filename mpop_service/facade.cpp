@@ -262,9 +262,9 @@ QMap<QString, QVariant> Facade::getUserInfo(int userId) {
                   "`visitor`.`rfid` AS `rfid`, "
                   "`visitor`.`gender` AS `gender`, "
                   "`visitor`.`language` AS `language`, "
-                  "`nation`.`identifier` AS `ethnicity` "
+                  "`ethnicity`.`identifier` AS `ethnicity` "
                   "FROM `visitor` "
-                  "JOIN `nation` ON `visitor`.`nation` = `nation`.`id` "
+                  "JOIN `ethnicity` ON `visitor`.`ethnicity` = `ethnicity`.`id` "
                   "WHERE visitor.id = ?";
 
     QSqlQuery query;
@@ -389,16 +389,16 @@ bool Facade::setUserGender(int userId, const QString& gender) {\
 }
 
 
-bool Facade::setUserNation(int userId, const QString& nation){
+bool Facade::setUserEthnicity(int userId, const QString& ethnicity){
 
-    QString sql = "UPDATE `visitor` SET `nation` = "
-                  "(SELECT `nation`.`id` FROM `nation` WHERE `nation`.`identifier` = ?) "
+    QString sql = "UPDATE `visitor` SET `ethnicity` = "
+                  "(SELECT `ethnicity`.`id` FROM `ethnicity` WHERE `ethnicity`.`identifier` = ?) "
                   "WHERE `visitor`.`id` = ?";
     QSqlQuery query;
     query.prepare(sql);
 
     // Value(s) that replace the question mark(s) (?):
-    query.addBindValue(QVariant(nation));
+    query.addBindValue(QVariant(ethnicity));
     query.addBindValue(QVariant(userId));
 
     bool ok = query.exec();

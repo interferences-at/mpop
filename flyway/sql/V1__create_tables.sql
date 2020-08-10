@@ -12,13 +12,13 @@ CREATE TABLE IF NOT EXISTS tag
 
 
 -- A visitor in the exhibition
-CREATE TABLE IF NOT EXISTS visitor
+CREATE TABLE IF NOT EXISTS `visitor`
 (
   `id` SERIAL,
   `gender` ENUM('male', 'female', 'other') DEFAULT NULL,
   `rfid` VARCHAR(256) DEFAULT NULL,
   `language` ENUM('fr', 'en') DEFAULT NULL,
-  `nation` BIGINT UNSIGNED DEFAULT NULL, -- Relation with the nation table
+  `ethnicity` BIGINT UNSIGNED DEFAULT NULL, -- Relation with the ethnicity table
   `age` TINYINT DEFAULT -1, -- number within the range [-1,127]
   `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 ) CHARACTER SET utf8 COLLATE utf8_general_ci;
@@ -27,7 +27,7 @@ CREATE TABLE IF NOT EXISTS visitor
 -- An answer to a question from a visitor
 --
 -- NOTE: We don't need to remember which RFID tag a visited used.
-CREATE TABLE IF NOT EXISTS answer
+CREATE TABLE IF NOT EXISTS `answer`
 (
   `id` SERIAL,
   `visitor_id` BIGINT UNSIGNED NOT NULL,
@@ -43,17 +43,17 @@ CREATE TABLE IF NOT EXISTS answer
 -- These are stored in the database, so that we can do optimized JOIN queries,
 -- but most of the information associated with each question - their text to display, etc.
 -- is in QML models.
-CREATE TABLE IF NOT EXISTS question
+CREATE TABLE IF NOT EXISTS `question`
 (
   `id` SERIAL,
   `identifier` VARCHAR(100) NOT NULL
 ) CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 
--- Users have a nation/culture.
+-- Users have a ethnicity
 --
 -- These are also stored in both the database and some QML models.
-CREATE TABLE IF NOT EXISTS nation
+CREATE TABLE IF NOT EXISTS `ethnicity`
 (
   `id` SERIAL,
   `identifier` VARCHAR(100) NOT NULL

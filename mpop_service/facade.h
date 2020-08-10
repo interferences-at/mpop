@@ -31,6 +31,7 @@ public:
      * @brief Retrieves the favourite language for a given user.
      * @param userId
      * @return The favourite language of the user. ("en" or "fr")
+     * @deprecated. Use getUserInfo instead
      */
     QString getUserLanguage(int userId);
 
@@ -76,9 +77,13 @@ public:
      * FIXME: Define what is the timeout?
      */
     void freeUnusedTags();
-    bool setUserNation(int userId, const QString& nation);
+    bool setUserEthnicity(int userId, const QString& ethnicity);
     bool setUserLanguage(int userId, const QString& language);
     bool setUserGender(int userId, const QString& gender);
+
+    /**
+     * @deprecated. Use getUserInfo instead.
+     */
     QString getUserGender(int userId);
 
     QMap<QString, QVariant> getUserInfo(int userId);
@@ -86,6 +91,7 @@ public:
     /**
      * @brief Delete all the entries in the database. (the user/answer ones)
      * @return true if some rows were affected.
+     * @deprecated Use deleteTagsVisitorsAndTheirAnswers instead
      */
     bool deleteAllFromDatabase();
 
