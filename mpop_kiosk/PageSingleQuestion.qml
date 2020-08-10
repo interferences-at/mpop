@@ -71,7 +71,7 @@ ColumnLayout {
                    ageVisualization = false
                }
             }
-        }
+            }
             Label {
                 Layout.alignment: Qt.AlignCenter
                 text: qsTr(titleText)
@@ -101,6 +101,9 @@ ColumnLayout {
             }
 
             RowLayout{
+
+                    id : myRowLayout
+
                 Layout.fillWidth: true
                 Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
                 spacing: 24
