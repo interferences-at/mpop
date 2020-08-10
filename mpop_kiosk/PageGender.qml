@@ -12,6 +12,10 @@ RowLayout {
     signal previousButtonClicked()
     signal genderChosen(string value)
 
+    property alias index_MALE: modelGenders.index_MALE
+    property int index_FEMALE: modelGenders.index_FEMALE
+    property int index_OTHER: modelGenders.index_OTHER
+
     Rectangle {
         Layout.minimumWidth: 400
         Layout.minimumHeight: 500

@@ -6,6 +6,10 @@ import QtQuick 2.0
 ListModel {
     id: thisModel
 
+    readonly property int index_MALE: 0
+    readonly property int index_FEMALE: 1
+    readonly property int index_OTHER: 2
+
     function _find(model, criteria) {
         for (var i = 0; i < model.count; ++i) {
             if (criteria(model.get(i))) {

@@ -291,6 +291,17 @@ bool MPopService::handleFacadeMethod(const Request& request, Response& response)
             response.error.message = msg;
         }
     }
+    else if (method == "setUserAge") {
+        QTextStream(stdout) << "Method is: setUserAge" << endl;
+        try {
+            int userId = request.getParamByPosition(0).toInt();
+            int age = request.getParamByPosition(1).toInt();
+            response.result = QVariant(this->_facade.setUserAge(userId, age));
+        } catch (MissingParameterError &e) {
+            msg.append(e.what());
+            response.error.message = msg;
+        }
+    }
     else {
         QTextStream(stdout) << "Method " << method << " is unknown" << endl;
         response.error.message = QString("No such method: %1").arg(method);
