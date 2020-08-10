@@ -43,4 +43,34 @@ ListModel {
         name_fr: "Autre"
         name_en: "Other"
     }
+    ListElement {
+        identifier: ""
+        name_fr: ""
+        name_en: ""
+    }
+    ListElement {
+        identifier: ""
+        name_fr: ""
+        name_en: ""
+    }
+    ListElement {
+        identifier: ""
+        name_fr: ""
+        name_en: ""
+    }
+    ListElement {
+        identifier: ""
+        name_fr: ""
+        name_en: ""
+    }
+    ListElement {
+        identifier: ""
+        name_fr: ""
+        name_en: ""
+    }
+    ListElement {
+        identifier: ""
+        name_fr: ""
+        name_en: ""
+    }
 }
