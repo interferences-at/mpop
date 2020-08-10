@@ -8,13 +8,19 @@
 // called before the first test function is executed
 void TestMpopService::init_TestCase()
 {
+    // Load the configuration options from the env vars
     Config config;
     MPopService::load_config_from_env_vars(config);
-    // FIXME: Will attempt to connect to a MySQL database
-    // Relies on it.
+
+    // Setup the facade
     this->facade = QSharedPointer<Facade>(new Facade(config));
 
+    // Check if MySQL is supported
     this->is_mysql_supported = this->facade->isDatabaseReady();
+}
+
+void TestMpopService::removeDatabaseTestEntries() {
+    // Removes the test entries in the database, if they exist
 
     if (this->is_mysql_supported) {
         // Call deleteTagsVisitorsAndTheirAnswers instead of deleteAllFromDatabase, so that we can run these tests in prod.
@@ -158,10 +164,12 @@ void TestMpopService::test_14_getUserEthnicity() {
 
 void TestMpopService::test_02_requestParams() {
     // Creates a request from a JSON string
-    // And check that its params are ok.
+    // And check that its positional params are ok.
+    // TODO: test named params
 
     static const QString EXPECTED_RFID_TAG = "test_RFID_tag_doesntexist";
     static const int EXPECTED_REQUEST_ID = 9999;
+    static const QString EXPECTED_METHOD_NAME = "getOrCreateUser";
     static const QString request_getOrCreateUser_01 =
         "{"
             "\"id\": 9999, "
@@ -174,11 +182,61 @@ void TestMpopService::test_02_requestParams() {
      QString requestToString = request.toString();
      qDebug() << "request_getOrCreateUser_01:" << request_getOrCreateUser_01;
      qDebug() << "requestToString:" << requestToString;
+
      QString method = request.method;
-     //QString param_1 = request.getParamByPosition(0).toString();
-     //QCOMPARE(EXPECTED_RFID_TAG, param_1);
+     QCOMPARE(EXPECTED_METHOD_NAME, method);
+
+     QString param_1 = request.getParamByPosition(0).toString();
+     QCOMPARE(EXPECTED_RFID_TAG, param_1);
+
      int request_id = request.intId;
      QCOMPARE(EXPECTED_REQUEST_ID, request_id);
+}
+
+
+void TestMpopService::test_03_response() {
+    // Checks that a response can copy the id from a request,
+    // so that clients can know which of their request to associate them to.
+    // We could test the other properties, but it's mostly
+    // TODO: test the id that can either be a string or an int.
+
+    static const int EXPECTED_RESPONSE_ID = 9999;
+    static const QString request_getOrCreateUser_01 =
+        "{"
+            "\"id\": 9999, "
+            "\"method\":\"getOrCreateUser\", "
+            "\"params\": ["
+                "\"test_RFID_tag_doesntexist\""
+            "]"
+        "}";
+    Request request = Request::fromString(request_getOrCreateUser_01);
+    Response response;
+    response.copyIdFromRequest(request);
+
+    int response_id = response.intId;
+    QCOMPARE(EXPECTED_RESPONSE_ID, response_id);
+}
+
+void TestMpopService::test_04_error_response() {
+    // Checks that a response that contains an error ends up in a JSON string
+    // that reflects that error, its error number and its message.
+    static const int EXPECTED_RESPONSE_ID = 9999;
+    static const QString EXPECTED_ERROR_STRING = "{\"error\":{\"code\":99,\"data\":null,\"message\":\"This is an error message.\"},\"id\":9999}";
+
+    Response response;
+    response.intId = EXPECTED_RESPONSE_ID;
+    response.error.message = "This is an error message.";
+    response.error.code = 99;
+    // we could also check the data member of the error, but we don't use it for now.
+
+    int response_id = response.intId;
+    QCOMPARE(EXPECTED_RESPONSE_ID, response_id);
+
+    QString errorResponseString = response.toString();
+    qDebug() << errorResponseString;
+
+    // make sure the string matches what it should be
+    QCOMPARE(errorResponseString, EXPECTED_ERROR_STRING);
 }
 
 

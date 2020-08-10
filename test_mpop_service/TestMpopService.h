@@ -14,13 +14,15 @@ private slots:
     // called before the first test function is executed
     void init_TestCase();
 
-    // test functions for the Facade class:
+    // test methods for the utility methods of the Facade class:
     void test_01_toBoolean();
 
-    // test functions for the Request class:
+    // test methods for the Request and Response classes:
     void test_02_requestParams();
+    void test_03_response();
+    void test_04_error_response();
 
-    // test functions for the demographic questions:
+    // test methods for the demographic questions:
     void test_10_getOrCreateUser();
     void test_12_getUserLanguage();
     void test_13_getUserGender();
@@ -41,4 +43,6 @@ private slots:
 private:
     QSharedPointer<Facade> facade;
     bool is_mysql_supported;
+
+    void removeDatabaseTestEntries();
 };
