@@ -132,22 +132,23 @@ Item {
                     if (err2) {
                         cb(err2);
                     } else {
+                        // Set the userId property, so that we can use it from anywhere
                         userId = user_id;
-                        _populateUserInfo(userId, function (err3, userInfo) {
+                        _populateUserInfo(userId, function (err3) {
                             if (err3) {
                                 console.log(err3); // let's no pass this error upstream
                                 cb(null); // done (even if an error occured)
                             } else {
-                                // Here, we populate the user info from the resul received from the service!
-                                thisUserProfile.gender = userInfo.gender;
-                                thisUserProfile.ethnicity = userInfo.ethnicity;
-                                age = userInfo.age;
-                                language = userInfo.language;
-                                userId = userInfo.user_id;
-
                                 // TODO: also populate their answers
-
-                                cb(null); // Success. Call the callback with no error.
+                                _populateUserAnswers(userId, function (err4) {
+                                    if (err4) {
+                                        console.log(err4); // let's no pass this error upstream
+                                        cb(null); // done (even if an error occured)
+                                    } else {
+                                        // TODO: also populate their answers
+                                        cb(null); // Success. Call the callback with no error.
+                                    }
+                                });
                             }
                         });
                     }
@@ -168,15 +169,45 @@ Item {
                 if (err1) {
                     cb(err1);
                 } else {
-                    // FIXME
                     if (userInfo.language) {
                         language = userInfo.language;
                     }
-                    gender = userInfo.gender;
-                    age = userInfo.age;
-                    ethnicity = userInfo.ethnicity;
+                    if (userInfo.gender) {
+                        gender = userInfo.gender;
+                    }
+                    if (userInfo.age) {
+                        age = userInfo.age;
+                    }
+                    if (userInfo.ethnicity) {
+                        ethnicity = userInfo.ethnicity;
+                    }
                     // TODO: store rfidTag for user
                     // TODO: store userId for user
+                    cb(null); // done
+                }
+            });
+        }
+    }
+
+    /**
+     * Retrieves all answers for a user - from the service -
+     * and populates the variables here.
+     *
+     * @param cb Callback to call with an nullable error, and not other arguments.
+     */
+    function _populateUserAnswers(userId, cb) {
+        if (userId === const_INVALID_NUMBER) {
+            cb(new Error("Currently no user id."));
+        } else {
+            websocket.callRemoteMethod("getUserAnswers", [userId], function (err1, userAnswers) {
+                if (err1) {
+                    cb(err1);
+                } else {
+                    // QMap<QString, int>
+                    for (var key in userAnswers) {
+                        console.log("TODO: store answer " + key + " = " + userAnswers[key]);
+                    }
+
                     cb(null); // done
                 }
             });

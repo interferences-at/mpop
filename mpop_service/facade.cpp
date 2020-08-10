@@ -218,8 +218,8 @@ QString Facade::getUserGender(int userId) {
     return userGender;
 }
 
-QMap<QString, QVariant> Facade::getUserAnswers(int userId) {
-    QMap<QString, QVariant> answers;
+QMap<QString, int> Facade::getUserAnswers(int userId) {
+    QMap<QString, int> answers;
 
     QString sql = "SELECT "
                   "question.identifier, "
