@@ -121,6 +121,24 @@ ApplicationWindow {
     UserProfile {
         id: userProfile
 
+        function goToDemographicQuestions() {
+            mainStackLayout.currentIndex = mainStackLayout.index_DEMOGRAPHIC_QUESTIONS;
+            demographicQuestionsStackLayout.currentIndex = demographicQuestionsStackLayout.index_FIRST_PAGE;
+
+            // Set the state for every model according to the answers of the visitor:
+            if (userProfile.gender === userProfile.const_INVALID_STRING) {
+                pageGender.setHightlighted(-1);
+            } else {
+                pageGender.setHightlighted(-1); // TODO
+            }
+        }
+
+        function goToSurveyQuestions() {
+            mainStackLayout.currentIndex = mainStackLayout.index_SURVEY_QUESTIONS;
+            questionsStackLayout.currentIndex = questionsStackLayout.index_FIRST_QUESTION;
+
+        }
+
         service_port_number: kioskConfig.service_port_number
         service_host: kioskConfig.service_host
         is_verbose: kioskConfig.is_verbose
@@ -133,15 +151,16 @@ ApplicationWindow {
             } else {
                 // Go to the demographic question if this is the entry kiosk
                 if (kioskConfig.kiosk_mode == window.const_KIOSK_MODE_ENTRY) {
-                    mainStackLayout.currentIndex = mainStackLayout.index_DEMOGRAPHIC_QUESTIONS;
+                    goToDemographicQuestions();
 
                 // Go to the survey questions if this is the central kiosk
                 // But: if the user hasn't answered the demographic questions, send them there.
                 } else if (kioskConfig.kiosk_mode == window.const_KIOSK_MODE_CENTRAL) {
                     if (userProfile.hasDemographicQuestionsAnswered()) {
-                        mainStackLayout.currentIndex = mainStackLayout.index_SURVEY_QUESTIONS;
+                        goToSurveyQuestions();
+
                     } else {
-                        mainStackLayout.currentIndex = mainStackLayout.index_DEMOGRAPHIC_QUESTIONS;
+                        goToDemographicQuestions();
                     }
 
                 // If this is the exit kiosk, send them to the final pages
@@ -302,6 +321,7 @@ ApplicationWindow {
             Layout.fillHeight: true
             Layout.margins: 0
 
+            readonly property int index_FIRST_PAGE: 0
             readonly property int index_MY_LANGUAGE: 0
             readonly property int index_MY_GENDER: 1
             readonly property int index_MY_ETHNICITY: 2
@@ -462,6 +482,8 @@ ApplicationWindow {
             // Contents
             StackLayout {
                 id: questionsStackLayout
+
+                readonly property int index_FIRST_QUESTION: 0
 
                 currentIndex: 0
                 Layout.fillWidth: true

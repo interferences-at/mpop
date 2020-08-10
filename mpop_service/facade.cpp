@@ -371,7 +371,7 @@ bool Facade::setUserLanguage(int userId, const QString& language) {
 }
 
 
-bool Facade::setUserGender(int userId, const QString& gender) {\
+bool Facade::setUserGender(int userId, const QString& gender) {
     qDebug() << "setUserGender";
     QString sql = "UPDATE `visitor` SET `gender` = ? WHERE `id` = ?";
     QSqlQuery query;
@@ -379,6 +379,23 @@ bool Facade::setUserGender(int userId, const QString& gender) {\
 
     // Value(s) that replace the question mark(s) (?):
     query.addBindValue(QVariant(gender));
+    query.addBindValue(QVariant(userId));
+
+    bool ok = query.exec();
+    if (! ok) {
+        qWarning() << "ERROR: " << query.lastError().text();
+    }
+    return query.numRowsAffected() == 1;
+}
+
+bool Facade::setUserAge(int userId, int age) {
+    qDebug() << "setUserAge";
+    QString sql = "UPDATE `visitor` SET `age` = ? WHERE `id` = ?";
+    QSqlQuery query;
+    query.prepare(sql);
+
+    // Value(s) that replace the question mark(s) (?):
+    query.addBindValue(QVariant(age));
     query.addBindValue(QVariant(userId));
 
     bool ok = query.exec();

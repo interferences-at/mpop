@@ -13,6 +13,7 @@ ColumnLayout {
     property string text: ""
     property string metaData: ""
     property int pageNumber: 0
+    property alias highlighted: control.highlighted
 
     Button {
         id: control

@@ -28,6 +28,21 @@ RowLayout {
     }
 
     ListView {
+        /**
+         * Sets one button to be highlighted.
+         * @param int indexButton Index to highlight - or -1 to make none highlighted.
+         */
+        function setHightlighted(indexButton) {
+            for (var i = 0; i < modelNations.count; i ++) {
+                var item = vendorsModel.get(i);
+                if (indexButton === i) {
+                    item.highlighted = true;
+                } else {
+                    item.highlighted = false;
+                }
+            }
+        }
+
         Layout.margins: 0
         Layout.topMargin: 10
         Layout.rightMargin: 50
@@ -35,6 +50,7 @@ RowLayout {
         Layout.fillHeight: true
         orientation: Qt.Vertical
         width: currentItem.width
+
         // create a model item instance
         model: ModelNations {
             id: modelNations
@@ -50,8 +66,10 @@ RowLayout {
                 text: text_en // Property of items in the model.
                 height: parent.height / parent.count
                 spacing: 0
+                highlighted: highlighted // The model has a propery with the same name
                 onClicked: {
                     thisPage.ethnicityChosen(identifier);
+                    setHightlighted(index);
                 }
             }
         }

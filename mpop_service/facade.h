@@ -58,6 +58,11 @@ public:
      */
     void setUserAnswer(int userId, const QString& questionId, int value);
 
+    /**
+     * @brief Set the age for a user.
+     */
+    bool setUserAge(int userId, int age);
+
     /*
      * TODO: perhaps return a QVariant
      * TODO: sort out the format of the result.
