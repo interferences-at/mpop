@@ -2,7 +2,7 @@ import QtQuick 2.0
 
 
 /**
- * Model for the nation selection.
+ * Model for the ethnicitiy selection.
  */
 ListModel {
     id: thisModel
@@ -19,9 +19,9 @@ ListModel {
     /**
      * Returns a ListElement given its identifier field.
      */
-    function findQuestion(nation_identifier) {
+    function findQuestion(ethnicity_identifier) {
         return _find(thisModel, function(item) {
-            return item.identifier === nation_identifier;
+            return item.identifier === ethnicity_identifier;
         });
     }
 

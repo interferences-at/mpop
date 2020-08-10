@@ -33,8 +33,8 @@ RowLayout {
          * @param int indexButton Index to highlight - or -1 to make none highlighted.
          */
         function setHightlighted(indexButton) {
-            for (var i = 0; i < modelNations.count; i ++) {
-                var item = vendorsModel.get(i);
+            for (var i = 0; i < modelEthnicities.count; i ++) {
+                var item = modelEthnicities.get(i);
                 if (indexButton === i) {
                     item.highlighted = true;
                 } else {
@@ -52,8 +52,8 @@ RowLayout {
         width: currentItem.width
 
         // create a model item instance
-        model: ModelNations {
-            id: modelNations
+        model: ModelEthnicities {
+            id: modelEthnicities
         }
         // provide delegate component.
         delegate: delegateComponent
