@@ -1,0 +1,70 @@
+msc {
+  Visitor, Kiosk, Service, Dataviz;
+
+  --- [label="The visitor scans their RFID tag"];
+  Visitor -> Kiosk [label="Scan RFID tag"];
+  Kiosk => Service [label="getOrCreateUser [rfidTag]"];
+  Kiosk << Service [label="userId"];
+  Kiosk => Service [label="getUserInfos [userId]"];
+  Kiosk << Service [label="{language:en, gender:other, ethnicity:american, age:21}"];
+  Kiosk => Service [label="getUserAnswers [userId]"];
+  Kiosk << Service [label="{incidence_drogue:10, equitable_riches:20, ...}"];
+  ...;
+
+  --- [label="The visitor answers the demographic questions"];
+  Visitor -> Kiosk [label="Choose their language"];
+  Kiosk => Service [label="setUserLanguage [userId language]"];
+  Kiosk << Service [label="true"];
+
+  Visitor -> Kiosk [label="Choose their gender"];
+  Kiosk => Service [label="setUserGender [userId gender]"];
+  Kiosk << Service [label="true"];
+
+  Visitor -> Kiosk [label="Choose their age"];
+  Kiosk => Service [label="setUserGender [userId age]"];
+  Kiosk << Service [label="true"];
+
+  Visitor -> Kiosk [label="Choose their ethnicity"];
+  Kiosk => Service [label="setUserGender [userId ethnicity]"];
+  Kiosk << Service [label="true"];
+  ...;
+
+  --- [label="The visitor answers a single-question survey page"];
+  Visitor -> Kiosk [label="Choose an answer for a question"];
+  Kiosk => Dataviz [label="/my_answer 50"];
+  Kiosk => Dataviz [label="/my_answer 51"];
+  Kiosk => Dataviz [label="/my_answer 52"];
+  ...;
+  Kiosk => Dataviz [label="/my_answer 80"];
+  Kiosk => Service [label="setUserAnswer [userId questionId answer]"];
+  Kiosk << Service [label="true"];
+  ...;
+
+  --- [label="The visitor views the answers for a single-question survey page - by age"];
+  Visitor -> Kiosk [label="On a single-question page, choose to view the results"];
+  Visitor -> Kiosk [label="Choose to view the results by age"];
+  Visitor -> Kiosk [label="Choose the filters"];
+  Kiosk => Service [label="getAnswerByAge [questionId, ethnicity, gender, timeAnswered]"];
+  Kiosk << Service [label="[answerForAgeGroup1, answerForAgeGroup2, ...]"];
+  Kiosk => Dataviz [label="/view_answer_by_age iiiiiiiiiiiiiiiiiiii"];
+  ...;
+  Visitor -> Kiosk [label="Choose the filters"];
+  Kiosk => Service [label="getAnswerByAge [questionId, ethnicity, gender, timeAnswered]"];
+  Kiosk << Service [label="[answerForAgeGroup1, answerForAgeGroup2, ...]"];
+  Kiosk => Dataviz [label="/view_answer_by_age iiiiiiiiiiiiiiiiiiii"];
+
+  --- [label="The visitor answers a multiple-question survey page"];
+  Visitor -> Kiosk [label="Choose an answer for a question"];
+  Kiosk => Dataviz [label="/my_answers iiiii"];
+  Kiosk => Dataviz [label="/my_answers iiiii"];
+  ...;
+  Kiosk => Service [label="setUserAnswer [userId questionId answer]"];
+  Kiosk << Service [label="true"];
+  Visitor -> Kiosk [label="Choose an answer for another question"];
+  Kiosk => Dataviz [label="/my_answers iiiii"];
+  Kiosk => Dataviz [label="/my_answers iiiii"];
+  ...;
+  Kiosk => Service [label="setUserAnswer [userId questionId answer]"];
+  Kiosk << Service [label="true"];
+  ...;
+}
