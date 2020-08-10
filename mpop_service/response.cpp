@@ -52,26 +52,31 @@ void Response::copyIdFromRequest(const Request& request) {
 }
 
 QString Response::toString() const {
-    QVariantMap map;
+    QVariantMap resultMap;
 
     // TODO: Create a base class for Response and Request, to avoid duplicate code arount the id type.
     if (this->idType == Response::ResponseIdType::NULL_ID) {
         // TODO: provide null id
     } else if (this->idType == Response::ResponseIdType::STRING_ID) {
-        map["id"] = QVariant::fromValue(this->stringId); // string
+        resultMap["id"] = QVariant::fromValue(this->stringId); // string
     } else if (this->idType == Response::ResponseIdType::NUMBER_ID) {
-        map["id"] = QVariant::fromValue(this->intId); // int
+        resultMap["id"] = QVariant::fromValue(this->intId); // int
     }
 
     if (this->error.message != "") {
-        map["error"] = QVariantMap();
-        map["error"].toMap()["message"] = QVariant::fromValue(QString(this->error.message));
-        map["error"].toMap()["code"] = QVariant::fromValue(this->error.code);
-        map["error"].toMap()["data"] = this->error.data;
+        QVariantMap errorMap;
+
+        errorMap["message"] = QVariant::fromValue(QString(this->error.message));
+        errorMap["code"] = QVariant::fromValue(this->error.code);
+        errorMap["data"] = this->error.data;
+
+        resultMap["error"] = errorMap;
+
     } else {
-        map["result"] = this->result;
+        resultMap["result"] = this->result;
     }
-    QJsonDocument doc = QJsonDocument::fromVariant(QVariant(map));
+    QJsonDocument doc = QJsonDocument::fromVariant(QVariant(resultMap));
+
     QByteArray byteArray = doc.toJson(QJsonDocument::Compact);
     QString ret = QString::fromStdString(byteArray.toStdString());
     return ret;
