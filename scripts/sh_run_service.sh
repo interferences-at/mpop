@@ -1,5 +1,7 @@
 #!/bin/bash
 
+cd $(dirname ${0})/..
+
 CONFIG_IS_VERBOSE=true \
     CONFIG_MYSQL_DATABASE=mpop_database \
     CONFIG_MYSQL_HOST=0.0.0.0 \

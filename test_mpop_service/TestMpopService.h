@@ -15,15 +15,25 @@ private slots:
     void init_TestCase();
 
     // test functions for the Facade class:
-    void test_toBoolean();
-    void test_getOrCreateUser();
-    void test_getUserAnswers();
-    void test_getUserLanguage();
-    void test_getUserGender();
-    void test_getUserNation();
+    void test_01_toBoolean();
 
     // test functions for the Request class:
-    void test_requestParams();
+    void test_02_requestParams();
+
+    // test functions for the demographic questions:
+    void test_10_getOrCreateUser();
+    void test_12_getUserLanguage();
+    void test_13_getUserGender();
+    void test_14_getUserEthnicity();
+
+    // test methods for the survey question for a single visitor:
+    void test_20_setUserAnswer();
+    void test_21_getUserAnswers();
+
+    // TODO: test to free a tag
+
+    // test methods for the survey questions, for multiple visitors: (for the dataviz)
+    // TODO
 
     // called after the last test function was executed
     void cleanupTestCase();

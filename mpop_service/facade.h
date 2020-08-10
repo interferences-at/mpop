@@ -89,6 +89,8 @@ public:
      */
     bool deleteAllFromDatabase();
 
+    bool deleteTagsVisitorsAndTheirAnswers(const QList<QString>& rfidTags);
+
     /**
      * @brief Checks if the database is ready.
      * @return True if the database is ready.
