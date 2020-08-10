@@ -58,59 +58,94 @@ Item {
         cb(null);
     }
 
-    // TODO
-    function getUserGender(cb) {
-        // TODO TODO
-        if (thisUserProfile.gender === const_INVALID_STRING) {
-            //
-        } else {
-            cb(null, thisUserProfile.gender);
-        }
+    /**
+     * Sends a request to the mpop_service to set a user's gender, and store its value in a property here.
+     * @param string value The gender to set.
+     */
+    function setUserGender(user_id, value, cb) {
+        // TODO: validate arguments
+        console.log("Calling setUserGender(" + user_id + "," + value + ")");
+        websocket.callRemoteMethod("setUserGender", [user_id, value], function (err, user_id) {
+            if (err) {
+                console.log("Error calling setUserGender(" + user_id + "," + value + "): " + err.message);
+                cb(err);
+            } else {
+                thisUserProfile.gender = value; // set the property
+                cb(null); // call callback with no error
+            }
+        });
     }
 
-    // TODO
-    function getUserLanguage(cb) {
-
+    /**
+     * Sends a request to the mpop_service to set a user's language, and store its value in a property here.
+     * @param string value The language to set.
+     */
+    function setUserLanguage(user_id, value, cb) {
+        // TODO: validate arguments
+        console.log("Calling setUserLanguage(" + user_id + "," + value + ")");
+        websocket.callRemoteMethod("setUserLanguage", [user_id, value], function (err, user_id) {
+            if (err) {
+                console.log("Error calling setUserLanguage(" + user_id + "," + value + "): " + err.message);
+                cb(err);
+            } else {
+                thisUserProfile.language = value; // set the property
+                cb(null); // call callback with no error
+            }
+        });
     }
 
-    // TODO
-    function setUserGender(value, cb) {
-
+    /**
+     * Sends a request to the mpop_service to set a user's ethnicity, and store its value in a property here.
+     * @param string value The ethnicity to set.
+     */
+    function setUserEthnicity(user_id, value, cb) {
+        // TODO: validate arguments
+        console.log("Calling setUserEthnicity(" + user_id + "," + value + ")");
+        websocket.callRemoteMethod("setUserEthnicity", [user_id, value], function (err, user_id) {
+            if (err) {
+                console.log("Error calling setUserEthnicity(" + user_id + "," + value + "): " + err.message);
+                cb(err);
+            } else {
+                thisUserProfile.ethnicity = value; // set the property
+                cb(null); // call callback with no error
+            }
+        });
     }
 
-    // TODO
-    function setUserLanguage(value, cb) {
-
+    /**
+     * Sends a request to the mpop_service to set a user's age, and store its value in a property here.
+     * @param int value The age to set.
+     */
+    function setUserAge(user_id, value, cb) {
+        // TODO: validate arguments
+        console.log("Calling setUserAge(" + user_id + "," + value + ")");
+        websocket.callRemoteMethod("setUserAge", [user_id, value], function (err, user_id) {
+            if (err) {
+                console.log("Error calling setUserAge(" + user_id + "," + value + "): " + err.message);
+                cb(err);
+            } else {
+                thisUserProfile.age = value; // set the property
+                cb(null); // call callback with no error
+            }
+        });
     }
 
-    // TODO
-    function getUserEthnicity(cb) {
-
-    }
-
-    // TODO
-    function setUserEthnicity(value, cb) {
-
-    }
-
-    // TODO
-    function setUserAge(value, cb) {
-
-    }
-
-    // TODO
-    function getUserAge(cb) {
-
-    }
-
-    // TODO
-    function setUserAnswer(question_identifier, value, cb) {
-
-    }
-
-    // TODO
-    function getUserAnswer(question_identifier, cb) {
-
+    /**
+     * Sends a request to the mpop_service to set a user's age, and store its value in a property here.
+     * @param int value The age to set.
+     */
+    function setUserAnswer(user_id, question_identifier, value, cb) {
+        // TODO: validate arguments
+        console.log("Calling setUserAnswer(" + user_id + "," + question_identifier + "," + value + ")");
+        websocket.callRemoteMethod("setUserAnswer", [user_id, question_identifier, value], function (err, user_id) {
+            if (err) {
+                console.log("Error calling setUserAnswer(" + user_id + "," + question_identifier + "," + value + "): " + err.message);
+                cb(err);
+            } else {
+                thisUserProfile.age = value; // set the property
+                cb(null); // call callback with no error
+            }
+        });
     }
 
     /**
@@ -155,6 +190,27 @@ Item {
                 });
             }
         });
+    }
+
+    /**
+     * Checks if the user has answered to the demographic questions.
+     * @return boolean
+     */
+    function hasDemographicQuestionsAnswered() {
+        var ret = true;
+        if (userProfile.age == userProfile.const_INVALID_NUMBER) {
+            ret = false;
+        }
+        else if (userProfile.gender == userProfile.const_INVALID_STRING) {
+            ret = false;
+        }
+        else if (userProfile.ethnicity == userProfile.const_INVALID_STRING) {
+            ret = false;
+        }
+        else if (userProfile.language == userProfile.const_INVALID_STRING) {
+            ret = false;
+        }
+        return ret;
     }
 
     /**
@@ -205,7 +261,8 @@ Item {
                 } else {
                     // QMap<QString, int>
                     for (var key in userAnswers) {
-                        console.log("TODO: store answer " + key + " = " + userAnswers[key]);
+                        var answerValue = userAnswers[key];
+                        console.log("TODO: store answer " + key + " = " + answerValue);
                     }
 
                     cb(null); // done

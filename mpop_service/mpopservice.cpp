@@ -280,12 +280,12 @@ bool MPopService::handleFacadeMethod(const Request& request, Response& response)
             response.error.message = msg;
         }
     }
-    else if (method == "setUserNation") {
-        QTextStream(stdout) << "Method is: setUserNation" << endl;
+    else if (method == "setUserEthnicity") {
+        QTextStream(stdout) << "Method is: setUserEthnicity" << endl;
         try {
             int userId = request.getParamByPosition(0).toInt();
-            QString nation = request.getParamByPosition(1).toString();
-            response.result = QVariant(this->_facade.setUserNation(userId, nation));
+            QString ethnicity = request.getParamByPosition(1).toString();
+            response.result = QVariant(this->_facade.setUserEthnicity(userId, ethnicity));
         } catch (MissingParameterError &e) {
             msg.append(e.what());
             response.error.message = msg;

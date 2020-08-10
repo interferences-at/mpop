@@ -14,6 +14,10 @@ ApplicationWindow {
     property string lastRfidRead: ""
     property string lastMessageReceived: ""
 
+    readonly property string const_KIOSK_MODE_ENTRY: "entry"
+    readonly property string const_KIOSK_MODE_CENTRAL: "central"
+    readonly property string const_KIOSK_MODE_EXIT: "exit"
+
     /**
      * Handles the incoming OSC messages.
      */
@@ -40,11 +44,12 @@ ApplicationWindow {
         Qt.quit();
     }
 
+    // Callback for when we send the RFID request.
     function setFakeRfidTagCb(err) {
         if (err) {
             console.log(err);
         } else {
-            console.log("setFakeRfidTagCb has been called.");
+            console.log("Got a successful response for setFakeRfidTag.");
         }
     }
 
@@ -119,6 +124,33 @@ ApplicationWindow {
         service_port_number: kioskConfig.service_port_number
         service_host: kioskConfig.service_host
         is_verbose: kioskConfig.is_verbose
+
+        onUserIdChanged: {
+            if (userId === const_INVALID_NUMBER) {
+                // go back to screensaver.
+                console.log("Error: invalid userId");
+                mainStackLayout.currentIndex = mainStackLayout.index_SCREENSAVER;
+            } else {
+                // Go to the demographic question if this is the entry kiosk
+                if (kioskConfig.kiosk_mode == window.const_KIOSK_MODE_ENTRY) {
+                    mainStackLayout.currentIndex = mainStackLayout.index_DEMOGRAPHIC_QUESTIONS;
+
+                // Go to the survey questions if this is the central kiosk
+                // But: if the user hasn't answered the demographic questions, send them there.
+                } else if (kioskConfig.kiosk_mode == window.const_KIOSK_MODE_CENTRAL) {
+                    if (userProfile.hasDemographicQuestionsAnswered()) {
+                        mainStackLayout.currentIndex = mainStackLayout.index_SURVEY_QUESTIONS;
+                    } else {
+                        mainStackLayout.currentIndex = mainStackLayout.index_DEMOGRAPHIC_QUESTIONS;
+                    }
+
+                // If this is the exit kiosk, send them to the final pages
+                } else if (kioskConfig.kiosk_mode == window.const_KIOSK_MODE_EXIT) {
+                    // TODO
+                    console.log("TODO: go to exit kiosk mode");
+                }
+            }
+        }
     }
 
     // Keyboard shortcuts:
@@ -281,7 +313,13 @@ ApplicationWindow {
 
                 onLanguageChosen: {
                     console.log("onLanguageChosen " + value);
-                    languageSwitcher.language = value;
+                    userProfile.setUserLanguage(userProfile.userId, value, function (err) {
+                        if (err) {
+                            console.log(err.message);
+                        } else {
+                            languageSwitcher.language = value;
+                        }
+                    });
                 }
                 onPreviousButtonClicked: {
                     // TODO
@@ -298,6 +336,11 @@ ApplicationWindow {
 
                 onGenderChosen: {
                     console.log("onGenderChosen " + value);
+                    userProfile.setUserGender(userProfile.userId, value, function (err) {
+                        if (err) {
+                            console.log(err.message);
+                        }
+                    });
                 }
                 onPreviousButtonClicked: {
                     demographicQuestionsStackLayout.previousPage();
@@ -313,6 +356,11 @@ ApplicationWindow {
 
                 onEthnicityChosen: {
                     console.log("onEthnicityChosen " + value);
+                    userProfile.setUserEthnicity(userProfile.userId, value, function (err) {
+                        if (err) {
+                            console.log(err.message);
+                        }
+                    });
                 }
                 onPreviousButtonClicked: {
                     demographicQuestionsStackLayout.previousPage();
@@ -328,6 +376,11 @@ ApplicationWindow {
 
                 onAgeChosen: {
                     console.log("onAgeChosen " + value);
+                    userProfile.setUserAge(userProfile.userId, value, function (err) {
+                        if (err) {
+                            console.log(err.message);
+                        }
+                    });
                 }
                 onPreviousButtonClicked: {
                     demographicQuestionsStackLayout.previousPage();
