@@ -19,6 +19,10 @@ ColumnLayout {
     property bool sliderWidgetVisibility: true
     property bool buttonsVisibility: false
     property bool ageVisualization: false
+    property bool ageHighlighted: false
+    property bool genreHighlighted: false
+    property bool cultureHighlighted: false
+    property bool languageHighlighted: false
 
     signal nextButtonClicked()
     signal previousButtonClicked()
@@ -71,7 +75,7 @@ ColumnLayout {
                    ageVisualization = false
                }
             }
-            }
+        }
             Label {
                 Layout.alignment: Qt.AlignCenter
                 text: qsTr(titleText)
@@ -101,77 +105,76 @@ ColumnLayout {
             }
 
             RowLayout{
-
-                    id : myRowLayout
-
+                id: root
                 Layout.fillWidth: true
                 Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
                 spacing: 24
                 visible: buttonsVisibility
                 Button {
+                    id: ageBtn
                     text: qsTr("Age")
+                    highlighted : ageHighlighted
                     background: Rectangle {
                        color: "#000"
                        implicitWidth: 140
                        implicitHeight: 55
-                       border.color: "#fff"
-                       border.width: 1
+                       border.color: ageHighlighted ? "#FF0000" : "#fff"
+                       border.width: ageHighlighted ? 2 : 1
                        radius: 2
                    }
                    onClicked: {
-                       buttonsVisibility = false
-                       sliderWidgetVisibility  = false
-                       ageVisualization = true
+                        highlighSelectedButton("ageBtn")
                    }
                 }
                 Button {
+                   id: genreBtn
                    text: qsTr("Genre")
+                   highlighted: genreHighlighted
                    background: Rectangle {
                       color: "#000"
                       implicitWidth: 140
                       implicitHeight: 55
-                      border.color: "#fff"
-                      border.width: 1
+                      border.color: genreHighlighted ? "#FF0000" : "#fff"
+                      border.width: genreHighlighted ? 2 : 1
                       radius: 2
                    }
                    onClicked: {
-                       buttonsVisibility = false
-                       sliderWidgetVisibility  = false
-                       ageVisualization = true
+                        highlighSelectedButton("genreBtn")
                    }
                 }
                 Button {
+                   id : cultureBtn
                    text: qsTr("Culture")
+                   highlighted: cultureHighlighted
                    background: Rectangle {
                       color: "#000"
                       implicitWidth: 140
                       implicitHeight: 55
-                      border.color: "#fff"
-                      border.width: 1
+                      border.color: cultureHighlighted ? "#FF0000" : "#fff"
+                      border.width: cultureHighlighted ? 2 : 1
                       radius: 2
                    }
                    onClicked: {
-                       buttonsVisibility = false
-                       sliderWidgetVisibility  = false
-                       ageVisualization = true
+                        highlighSelectedButton("cultureBtn")
                    }
                 }
                 Button {
+                   id: langBtn
                    text: qsTr("Language")
+                   highlighted: languageHighlighted
                    background: Rectangle {
                       color: "#000"
                       implicitWidth: 140
                       implicitHeight: 55
-                      border.color: "#fff"
-                      border.width: 1
+                      border.color: languageHighlighted ? "#FF0000" : "#fff"
+                      border.width: languageHighlighted ? 2 : 1
                       radius: 2
                    }
                    onClicked: {
-                       buttonsVisibility = false
-                       sliderWidgetVisibility  = false
-                       ageVisualization = true
+                       highlighSelectedButton("langBtn")
                    }
                 }
+
             }
 
             RowLayout{
@@ -238,9 +241,6 @@ ColumnLayout {
                        implicitWidth: 130
                        implicitHeight: 55
                    }
-                   onClicked: {
-
-                   }
                 }
                 Button {
                     text: qsTr("All")
@@ -253,7 +253,7 @@ ColumnLayout {
                        radius: 2
                    }
                    onClicked: {
-
+                        border.color = "red"
                    }
                 }
                 Button{
@@ -515,25 +515,35 @@ ColumnLayout {
                         ageVisualization = false
                     }
                 }
-                RoundButton {
-                    text: qsTr("Right")
-                    //icon.source: "rightarrow.svg"
-                    Layout.fillHeight: true
-                    Layout.fillWidth: true
-                    Layout.maximumWidth: 80
-                    Layout.maximumHeight: 80
-
-                    onClicked: {
-                        //sliderWidgetVisibility = false
-                        //buttonsVisibility = false
-                        //ageVisualization = true
-                    }
-                }
-
             }
 
 
         }
+
+    }
+
+    function highlighSelectedButton(btnid){
+        if(btnid === "ageBtn"){
+            ageHighlighted      = true
+            genreHighlighted    = false
+            cultureHighlighted  = false
+            languageHighlighted = false
+         }else if(btnid === "genreBtn"){
+            ageHighlighted      = false
+            genreHighlighted    = true
+            cultureHighlighted  = false
+            languageHighlighted = false
+         }else if(btnid === "cultureBtn"){
+            ageHighlighted      = false
+            genreHighlighted    = false
+            cultureHighlighted  = true
+            languageHighlighted = false
+         }else if(btnid === "langBtn"){
+            ageHighlighted      = false
+            genreHighlighted    = false
+            cultureHighlighted  = false
+            languageHighlighted = true
+         }
 
     }
 
