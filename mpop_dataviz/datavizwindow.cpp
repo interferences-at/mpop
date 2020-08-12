@@ -11,29 +11,9 @@ DatavizWindow::DatavizWindow() {
     qDebug() << "Create a Window";
     _elapsedTimer.start();
 
-    static const int NUM_LINES = 1000;
-    QVector<PrisonerLine::ptr> prisonerLines;
-    for (int i = 0; i < NUM_LINES; i ++) {
-        PrisonerLine::ptr line = PrisonerLine::ptr::create();
-        _sceneObjects.push_back(qSharedPointerDynamicCast<SceneObject>(line));
-        prisonerLines.push_back(line);
-    }
-
-//    _barChartLayout.addPrisonerLines(prisonerLines); // Only a subsets of all sceneobjects - only the lines
-
-//    _screensaverLayout.setBarsQuantity(200);
-
     // Allocate all the bars to screen saver
     _viewModeManager = viewManager();
     _viewModeManager->setViewBarsQuantity(200, ViewModeManager::ScreenSaverMode);
-
-
-    // The initial example values:
-    QList<int> bars;
-    bars.push_back(10);
-    bars.push_back(20);
-    bars.push_back(70);
-    showBarChartBars(bars);
 
     connect(&_updateIntervalTimer, SIGNAL(timeout()), this, SLOT(updateFramePerSecond()));
     _updateIntervalTimer.setInterval(200); // Set the update interval
@@ -73,14 +53,6 @@ void DatavizWindow::updateFramePerSecond()
     _framesCount = 0;
 }
 
-
-void DatavizWindow::showBarChartBars(const QList<int>& bars) {
-//    _barChartLayout.setBars(bars);
-//    _barChartLayout.moveObjectsToLayout(this->elapsed()); // Important: do it after you called setBars
-//    _screensaverLayout.setResponsesBars(bars);
-//    _screensaverLayout.moveObjectsToLayout(elapsed());
-}
-
 void DatavizWindow::addLayoutTitles(const QList<QString> &titles, bool topTitle)
 {
     if (topTitle) { // Set the top titles
@@ -98,11 +70,6 @@ void DatavizWindow::initializeGL() {
     _device = new  QOpenGLPaintDevice();
     // Create a text drawer
     _painter = new TextObjectPainter();
-
-    // Test of top titles
-    addLayoutTitles({"Title1", "Title2", "Title3"}, true);
-    // Test of bottom titles
-    addLayoutTitles({"Homme", "Femme", "Autres"});
 }
 
 
@@ -117,7 +84,7 @@ void DatavizWindow::resizeGL(int w, int h) {
     glViewport(0, 0,
                w * static_cast<GLsizei>(retinaScale),
                h * static_cast<GLsizei>(retinaScale));
-    glClear(GL_COLOR_BUFFER_BIT);
+//    glClear(GL_COLOR_BUFFER_BIT);
 
     glMatrixMode(GL_PROJECTION);
 
@@ -128,7 +95,7 @@ void DatavizWindow::resizeGL(int w, int h) {
     GLdouble top = 1.0;
     GLdouble bottom = -1.0;
 
-    glLoadIdentity();
+//    glLoadIdentity();
     glOrtho(left, right, bottom, top, -1, 1);
 
     // Instead, we could eventually use a pespective view, here:
