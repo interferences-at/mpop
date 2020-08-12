@@ -272,7 +272,7 @@ void ViewModeManager::showOneAnswer(int numRows, int myRow, int myAnswer, const 
 void ViewModeManager::goToScreensaver()
 {
     int totalBars = _viewBars[_viewActiveMode]->size();
-    for (int i = 0; i < totalBars; i++) {
+    for (int i = 0; i < 200; i++) {
         _viewBars[ScreenSaverMode]->push_back(_viewBars[_viewActiveMode]->at(i));
     }
     _viewBars[_viewActiveMode]->remove(0, totalBars);
