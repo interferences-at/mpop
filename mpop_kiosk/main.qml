@@ -13,6 +13,7 @@ ApplicationWindow {
 
     property string lastRfidRead: ""
     property string lastMessageReceived: ""
+    property alias lang: userProfile.language
 
     readonly property string const_KIOSK_MODE_ENTRY: "entry"
     readonly property string const_KIOSK_MODE_CENTRAL: "central"
@@ -64,7 +65,7 @@ ApplicationWindow {
     visible: true
     width: 1920
     height: 1080
-    title: qsTr("MPOP Kiosk")
+    title: textWindowTitle.text
 
     Component.onCompleted: {
         if (kioskConfig.is_fullscreen) {
@@ -74,6 +75,13 @@ ApplicationWindow {
 
         // TODO: Show/hide sections according the kiosk_mode we are in.
         console.log("Kiosk mode is " + kioskConfig.kiosk_mode);
+    }
+
+    BilingualText {
+        id: textWindowTitle
+        textEn: "MPOP Kiosk"
+        textFr: "Le kiosque MPOP"
+        language: lang
     }
 
     /**
@@ -142,6 +150,10 @@ ApplicationWindow {
         service_port_number: kioskConfig.service_port_number
         service_host: kioskConfig.service_host
         is_verbose: kioskConfig.is_verbose
+
+        onLanguageChanged: {
+            console.log("Language changed: " + language);
+        }
 
         onUserIdChanged: {
             if (userId === const_INVALID_NUMBER) {
@@ -423,15 +435,23 @@ ApplicationWindow {
             // Enjoy your visit (only shown in the entry kiosk)
             ColumnLayout {
                 Label {
-                    text: qsTr("Thank you so much")
+                    BilingualText {
+                        id: textThankYou
+                        language: lang
+                        textEn: "Thank you so much!"
+                        textFr: "Merci beaucoup!"
+                    }
+                    text: textThankYou.text
                     font.capitalization: Font.AllUppercase
                 }
                 Label {
-                    text: qsTr("You can now")
-                    font.capitalization: Font.AllUppercase
-                }
-                Label {
-                    text: qsTr("start your visit!")
+                    BilingualText {
+                        id: textStartYourVisit
+                        language: lang
+                        textEn: "You can now\nstart your visit!"
+                        textFr: "Vous pouvez maintenant\ncommencer votre visite."
+                    }
+                    text: textStartYourVisit.text
                     font.capitalization: Font.AllUppercase
                 }
             }
@@ -608,15 +628,23 @@ ApplicationWindow {
 
             ColumnLayout {
                 Label {
-                    text: qsTr("Thanks a lot.")
+                    BilingualText {
+                        id: textMerci
+                        language: lang
+                        textEn: "Thanks a lot."
+                        textFr: "Merci beaucoup."
+                    }
+                    text: textMerci.text
                     font.capitalization: Font.AllUppercase
                 }
                 Label {
-                    text: qsTr("Don't forget")
-                    font.capitalization: Font.AllUppercase
-                }
-                Label {
-                    text: qsTr("to give your key back.")
+                    BilingualText {
+                        id: textGiveYouKeyBack
+                        language: lang
+                        textEn: "Don't forget\nto give your key back."
+                        textFr: "N'oubliez pas\nde remettre votre clé."
+                    }
+                    text: textGiveYouKeyBack.text
                     font.capitalization: Font.AllUppercase
                 }
             }
