@@ -27,6 +27,10 @@ services:
 
   phpmyadmin:
     image: phpmyadmin/phpmyadmin
+    environment:
+      PMA_HOST: db
+      PMA_USER: 'admin'
+      PMA_PASSWORD: 'secret'
     depends_on:
       - db
     ports:
