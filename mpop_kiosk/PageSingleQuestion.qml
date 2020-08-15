@@ -305,48 +305,10 @@ ColumnLayout {
                     id: culturebtn
                     text: qsTr("Culture")
                     background: Rectangle {
-<<<<<<< HEAD
                        color: "#000"
                        implicitWidth: 130
                        implicitHeight: 55
                    }
-                }
-                Button {
-                    text: qsTr("All")
-                    background: Rectangle {
-                       color: "#000"
-                       implicitWidth: 130
-                       implicitHeight: 55
-                       border.color: "#fff"
-                       border.width: 1
-                       radius: 2
-                   }
-                   onClicked: {
-                        border.color = "red"
-                   }
-                }
-                Button{
-                   text: qsTr("Quebecois")
-                   background: Rectangle {
-                      color: "#000"
-                      implicitWidth: 130
-                      implicitHeight: 55
-                      border.color: "#fff"
-                      border.width: 1
-                      radius: 2
-                   }
-                   onClicked: {
-
-                   }
-=======
-                        color: "#000"
-                        implicitWidth: 130
-                        implicitHeight: 55
-                    }
-                    onClicked: {
-
-                    }
->>>>>>> 60a66dc... layout for the single question
                 }
 
                 GridLayout {
