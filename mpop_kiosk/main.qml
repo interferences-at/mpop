@@ -153,8 +153,8 @@ ApplicationWindow {
                 if (kioskConfig.kiosk_mode == window.const_KIOSK_MODE_ENTRY) {
                     goToDemographicQuestions();
 
-                // Go to the survey questions if this is the central kiosk
-                // But: if the user hasn't answered the demographic questions, send them there.
+                    // Go to the survey questions if this is the central kiosk
+                    // But: if the user hasn't answered the demographic questions, send them there.
                 } else if (kioskConfig.kiosk_mode == window.const_KIOSK_MODE_CENTRAL) {
                     if (userProfile.hasDemographicQuestionsAnswered()) {
                         goToSurveyQuestions();
@@ -163,7 +163,7 @@ ApplicationWindow {
                         goToDemographicQuestions();
                     }
 
-                // If this is the exit kiosk, send them to the final pages
+                    // If this is the exit kiosk, send them to the final pages
                 } else if (kioskConfig.kiosk_mode == window.const_KIOSK_MODE_EXIT) {
                     // TODO
                     console.log("TODO: go to exit kiosk mode");
@@ -474,10 +474,31 @@ ApplicationWindow {
 
                     onButtonClicked: {
                         questionsStackLayout.currentIndex = index; // index of the item in the model
+                        label1.text = pageNumber;
                         pageButtonsModel.highlightButton(pageNumber);
                     }
                 }
             }
+
+            RowLayout {
+                // display the text of button after click on button
+                Rectangle {
+                    Layout.minimumWidth: 80
+                    Layout.minimumHeight: 700
+                    Layout.leftMargin: 20
+                    Layout.rightMargin: 20
+                    color: "#000"
+
+                    Label {
+                        id: label1
+                        Layout.alignment: Qt.AlignCenter
+                        font.capitalization: Font.AllUppercase
+                        color: "#ffffff"
+                        font.bold : true
+                        font.pixelSize: 75
+                        visible: sliderWidgetVisibility
+                    }
+                }}
 
             // Contents
             StackLayout {
@@ -489,28 +510,45 @@ ApplicationWindow {
                 Layout.fillWidth: true
                 Layout.fillHeight: true
 
-                // The pages for single and multiple questions:
+                RowLayout {
+                        anchors.fill: parent
 
-                // Page 01
-                PageSingleQuestion {
-                    modelQuestions: modelQuestions
-                    questionIdentifier: "incidence_drogue"
-                    datavizSender: oscSender
-                    serviceClient: userProfile
+                    //this rectangle is for ouline of questions
+                    Rectangle{
+                        Layout.minimumWidth: 1000
+                        Layout.minimumHeight: 800
+                        color: "#000"
+                        border.color: "grey"
+                        border.width: 5
+                        // The pages for single and multiple questions:
+
+                        // Page 01
+                        PageSingleQuestion {
+                            modelQuestions: modelQuestions
+                            questionIdentifier: "incidence_drogue"
+                            datavizSender: oscSender
+                            serviceClient: userProfile
+                        }
+
+                        // TODO: page 02 single decriminalisation_crimes_non_violents
+
+
+                        // TODO page 03 single systeme_bureaucrate
+
+                        // page 03 (multiple)
+                        PageMultipleQuestion {
+                            // FIXME: the main question text should be common (most often) to all questions in a multiple-question page:
+                            questionIdentifiers: ["equitable_victimes", "equitable_vulnerables", "equitable_jeunes_contrevenants", "equitable_riches", "equitable_minorites_culturelles"]
+                        }
+
+                        // TODO: remaining questions
+                    }
+
+                    WidgetPreviousNext {
+                        onNextButtonClicked: thisPage.nextButtonClicked()
+                        onPreviousButtonClicked: thisPage.previousButtonClicked()
+                    }
                 }
-
-                // TODO: page 02 single decriminalisation_crimes_non_violents
-
-
-                // TODO page 03 single systeme_bureaucrate
-
-                // page 03 (multiple)
-                PageMultipleQuestion {
-                    // FIXME: the main question text should be common (most often) to all questions in a multiple-question page:
-                    questionIdentifiers: ["equitable_victimes", "equitable_vulnerables", "equitable_jeunes_contrevenants", "equitable_riches", "equitable_minorites_culturelles"]
-                }
-
-                // TODO: remaining questions
             }
         }
 

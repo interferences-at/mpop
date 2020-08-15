@@ -8,11 +8,9 @@ import QtQuick.Layouts 1.3
 ColumnLayout {
     id: thisPage
 
-
     property var modelQuestions: null
     property var serviceClient: null
     property var datavizSender: null
-
     property string minText: ""
     property string maxText: ""
     property string titleText: ""
@@ -48,10 +46,10 @@ ColumnLayout {
     }
 
     // FIXME: Should the WidgetPreviousNext be part of the main.qml instead?
-    WidgetPreviousNext {
+    /*WidgetPreviousNext {
         onNextButtonClicked: thisPage.nextButtonClicked()
         onPreviousButtonClicked: thisPage.previousButtonClicked()
-    }
+    }*/
 
     // TODO: Sub-page: Dataviz Multiple Questions
 }
