@@ -23,7 +23,7 @@ ColumnLayout {
         Layout.alignment: Qt.AlignCenter
         Layout.fillWidth: true
         Layout.leftMargin: leftAndRightMargin
-        Layout.rightMargin: leftAndRightMargin
+        Layout.rightMargin: 300
 
         value: sliderValue
         from: sliderFrom
@@ -64,6 +64,7 @@ ColumnLayout {
             text: textRight
             Layout.fillWidth: false
             Layout.alignment: Qt.AlignRight
+            Layout.rightMargin: 250
             font.pixelSize: 12
         }
     }

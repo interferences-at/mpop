@@ -33,7 +33,7 @@ ColumnLayout {
         color: "#ffffff"
         font.pixelSize: 12
         anchors.topMargin: 5
-        Layout.bottomMargin: 30
+        Layout.bottomMargin: 25
         leftPadding : 10
     }
 
