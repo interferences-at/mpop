@@ -8,9 +8,16 @@ import QtQuick.Layouts 1.3
 RowLayout {
     id: thisPage
 
-    signal nextButtonClicked()
-    signal previousButtonClicked()
     signal languageChosen(string value)
+
+    property string lang: ""
+
+    BilingualText {
+        id: textChooseALanguage
+        language: thisPage.lang
+        textFr: "Choisir une langue"
+        textEn: "Choose a language"
+    }
 
     Rectangle {
         Layout.minimumWidth: 400
@@ -18,8 +25,9 @@ RowLayout {
         color: "black"
 
         Label {
+            // FIXME: Shouldn't this text be in both languages?
             Layout.alignment: Qt.AlignCenter
-            text: qsTr("Choose a language")
+            text: textChooseALanguage.text
             font.capitalization: Font.AllUppercase
             font.pixelSize: 36
         }
@@ -38,11 +46,11 @@ RowLayout {
         model: ListModel {
             ListElement {
                 language_identifier: "fr"
-                language_text: qsTr("French");
+                language_text: "Français"
             }
             ListElement {
                 language_identifier: "en"
-                language_text: qsTr("English");
+                language_text: "English"
             }
         }
 
@@ -52,10 +60,5 @@ RowLayout {
             spacing: 0
             onClicked: thisPage.languageChosen(language_identifier)
         }
-    }
-
-    WidgetPreviousNext {
-        onNextButtonClicked: thisPage.nextButtonClicked()
-        onPreviousButtonClicked: thisPage.previoiusButtonClicked()
     }
 }

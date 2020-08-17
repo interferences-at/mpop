@@ -9,7 +9,6 @@ ColumnLayout {
 
     id: thisPage
 
-
     property var modelQuestions: null
     property var serviceClient: null
     property var datavizSender: null
@@ -26,6 +25,7 @@ ColumnLayout {
     property bool cultureHighlighted: false
     property bool languageHighlighted: false
     property bool buttonTextHighlight: true
+    property string lang: ""
 
     signal nextButtonClicked()
     signal previousButtonClicked()
@@ -46,7 +46,20 @@ ColumnLayout {
 
         // TODO: Retrieve value for user from service and populate the slider, if set.
     }
-    StackLayout{
+
+    BilingualText {
+        id: textDataVisualization
+        language: thisPage.lang
+        textFr: "Visualisation de données"
+        textEn: "Data visualization"
+    }
+
+    /**
+     * StackLayout to switch from answering the question to data viz.
+     */
+    StackLayout {
+        id: questionDatavizStackLayout
+
         currentIndex: 0
 
         ColumnLayout{
@@ -79,8 +92,9 @@ ColumnLayout {
                     }
                     Button{
                         id:datavisual
+
                         anchors.centerIn: parent
-                        text: qsTr("Data visualization")
+                        text: textDataVisualization.text
                         background: Rectangle {
                             color: "#000"
                             implicitWidth: 60
@@ -125,12 +139,12 @@ ColumnLayout {
             ColumnLayout{
                 Label {
                     Layout.alignment: Qt.AlignCenter
-                    text: qsTr(titleText)
+                    text: titleText
                     font.pixelSize: 36
                 }
                 Label {
                     Layout.alignment: Qt.AlignCenter
-                    text: qsTr(questionText)
+                    text: questionText
                     font.pixelSize: 30
                     bottomPadding: 30
                 }
@@ -312,9 +326,9 @@ ColumnLayout {
                 }
 
                 GridLayout {
-                    anchors.fill: parent
+
                     columns: 5
-                    anchors.leftMargin: 155
+
                     Button {
                         text: qsTr("All")
                         background: Rectangle {
@@ -329,7 +343,7 @@ ColumnLayout {
 
                         }
                     }
-                    Button{
+                    Button {
                         text: qsTr("Quebecois")
                         background: Rectangle {
                             color: "#000"
@@ -344,7 +358,7 @@ ColumnLayout {
                         }
                     }
 
-                    Button{
+                    Button {
                         text: qsTr("Canadian")
                         background: Rectangle {
                             color: "#000"
@@ -358,7 +372,7 @@ ColumnLayout {
 
                         }
                     }
-                    Button{
+                    Button {
                         text: qsTr("Native")
                         background: Rectangle {
                             color: "#000"
@@ -372,7 +386,7 @@ ColumnLayout {
 
                         }
                     }
-                    Button{
+                    Button {
                         text: qsTr("American")
                         background: Rectangle {
                             color: "#000"
@@ -386,7 +400,7 @@ ColumnLayout {
 
                         }
                     }
-                    Button{
+                    Button {
                         text: qsTr("European")
                         background: Rectangle {
                             color: "#000"
@@ -400,7 +414,7 @@ ColumnLayout {
 
                         }
                     }
-                    Button{
+                    Button {
                         text: qsTr("Other")
                         background: Rectangle {
                             color: "#000"
@@ -417,23 +431,15 @@ ColumnLayout {
                 }
             }
 
-            RowLayout{
-
+            RowLayout {
                 Layout.fillWidth: true
                 Layout.alignment: Qt.AlignLeft | Qt.AlignLeft
                 Layout.leftMargin: 30
                 spacing: 24
                 visible: ageVisualization
-                Button {
-                    text: qsTr("Genre")
-                    background: Rectangle {
-                        color: "#000"
-                        implicitWidth: 130
-                        implicitHeight: 55
-                    }
-                    onClicked: {
 
-                    }
+                Label {
+                    text: qsTr("Genre")
                 }
                 Button {
                     text: qsTr("All")
@@ -449,8 +455,10 @@ ColumnLayout {
 
                     }
                 }
-                Button{
-                    text: qsTr("Women")
+
+
+                Button {
+                    text: qsTr("Male")
                     background: Rectangle {
                         color: "#000"
                         implicitWidth: 130
@@ -464,8 +472,8 @@ ColumnLayout {
                     }
                 }
 
-                Button{
-                    text: qsTr("Men")
+                Button {
+                    text: qsTr("Female")
                     background: Rectangle {
                         color: "#000"
                         implicitWidth: 130
@@ -479,7 +487,7 @@ ColumnLayout {
                     }
                 }
 
-                Button{
+                Button {
                     text: qsTr("Other")
                     background: Rectangle {
                         color: "#000"
@@ -495,8 +503,7 @@ ColumnLayout {
                 }
             }
 
-            RowLayout{
-
+            RowLayout {
                 Layout.fillWidth: true
                 Layout.alignment: Qt.AlignLeft | Qt.AlignLeft
                 Layout.leftMargin: 30
@@ -527,7 +534,7 @@ ColumnLayout {
 
                     }
                 }
-                Button{
+                Button {
                     text: qsTr("Today")
                     background: Rectangle {
                         color: "#000"
@@ -542,7 +549,7 @@ ColumnLayout {
                     }
                 }
 
-                Button{
+                Button {
                     text: qsTr("This Year")
                     background: Rectangle {
                         color: "#000"
@@ -557,7 +564,7 @@ ColumnLayout {
                     }
                 }
 
-                Button{
+                Button {
                     text: qsTr("From the beginning")
                     background: Rectangle {
                         color: "#000"
@@ -573,7 +580,7 @@ ColumnLayout {
                 }
             }
 
-            RowLayout{
+            RowLayout {
                 Layout.fillWidth: true
                 Layout.alignment: Qt.AlignCenter | Qt.AlignCenter
                 Layout.topMargin: 30
@@ -594,42 +601,32 @@ ColumnLayout {
                     }
                 }
             }
-
-
         }
-
     }
 
     function highlighSelectedButton(btnid){
-        if(btnid === "ageBtn"){
-            ageHighlighted      = true
-            genreHighlighted    = false
-            cultureHighlighted  = false
-            languageHighlighted = false
-         }else if(btnid === "genreBtn"){
-            ageHighlighted      = false
-            genreHighlighted    = true
-            cultureHighlighted  = false
-            languageHighlighted = false
-         }else if(btnid === "cultureBtn"){
-            ageHighlighted      = false
-            genreHighlighted    = false
-            cultureHighlighted  = true
-            languageHighlighted = false
-         }else if(btnid === "langBtn"){
-            ageHighlighted      = false
-            genreHighlighted    = false
-            cultureHighlighted  = false
-            languageHighlighted = true
+        if (btnid === "ageBtn") {
+            ageHighlighted = true;
+            genreHighlighted = false;
+            cultureHighlighted = false;
+            languageHighlighted = false;
+         } else if(btnid === "genreBtn") {
+            ageHighlighted = false;
+            genreHighlighted = true;
+            cultureHighlighted = false;
+            languageHighlighted = false;
+         } else if(btnid === "cultureBtn") {
+            ageHighlighted = false;
+            genreHighlighted = false;
+            cultureHighlighted = true;
+            languageHighlighted = false;
+         } else if(btnid === "langBtn"){
+            ageHighlighted = false;
+            genreHighlighted = false;
+            cultureHighlighted = false;
+            languageHighlighted = true;
          }
-
     }
-
-    // FIXME: Should the WidgetPreviousNext be part of the main.qml instead?
-    /*WidgetPreviousNext {
-        onNextButtonClicked: thisPage.nextButtonClicked()
-        onPreviousButtonClicked: thisPage.previousButtonClicked()
-    }*/
 
     // TODO: Sub-page: Choose Single Question Mode
     // TODO: Sub-page: Dataviz Single Question By Age

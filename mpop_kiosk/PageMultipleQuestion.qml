@@ -17,6 +17,7 @@ ColumnLayout {
     // List for the questions in this page:
     property var questionIdentifiers: null
     property string mainQuestionText: null
+    property string lang: ""
 
     signal nextButtonClicked()
     signal previousButtonClicked()
@@ -44,12 +45,6 @@ ColumnLayout {
         textRight: maxText
         showNumber: false
     }
-
-    // FIXME: Should the WidgetPreviousNext be part of the main.qml instead?
-    /*WidgetPreviousNext {
-        onNextButtonClicked: thisPage.nextButtonClicked()
-        onPreviousButtonClicked: thisPage.previousButtonClicked()
-    }*/
 
     // TODO: Sub-page: Dataviz Multiple Questions
 }

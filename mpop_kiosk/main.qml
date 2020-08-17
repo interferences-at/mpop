@@ -13,7 +13,7 @@ ApplicationWindow {
 
     property string lastRfidRead: ""
     property string lastMessageReceived: ""
-    property alias lang: userProfile.language
+    property alias lang: userProfile.language // All the BilingualText items watch this value
 
     readonly property string const_KIOSK_MODE_ENTRY: "entry"
     readonly property string const_KIOSK_MODE_CENTRAL: "central"
@@ -81,7 +81,7 @@ ApplicationWindow {
         id: textWindowTitle
         textEn: "MPOP Kiosk"
         textFr: "Le kiosque MPOP"
-        language: lang
+        language: window.lang
     }
 
     /**
@@ -313,146 +313,171 @@ ApplicationWindow {
          *
          * This is our main two-column layout.
          */
-        StackLayout {
-            id: demographicQuestionsStackLayout
+        RowLayout {
 
-            /**
+            StackLayout {
+                id: demographicQuestionsStackLayout
+
+                /**
              * Go to the previous page.
              */
-            function previousPage() {
-                demographicQuestionsStackLayout.currentIndex -= 1
-            }
+                function previousPage() {
+                    demographicQuestionsStackLayout.currentIndex -= 1
+                }
 
-            /**
+                /**
              * Go to the next page.
              */
-            function nextPage() {
-                demographicQuestionsStackLayout.currentIndex += 1
+                function nextPage() {
+                    demographicQuestionsStackLayout.currentIndex += 1
+                }
+
+                Layout.fillWidth: true
+                Layout.fillHeight: true
+                Layout.margins: 0
+
+                readonly property int index_FIRST_PAGE: 0
+                readonly property int index_MY_LANGUAGE: 0
+                readonly property int index_MY_GENDER: 1
+                readonly property int index_MY_ETHNICITY: 2
+                readonly property int index_MY_AGE: 3
+                readonly property int index_ENJOY_YOUR_VISIT: 4
+
+                PageLanguage {
+                    id: pageLanguage
+
+                    lang: window.lang
+
+                    onLanguageChosen: {
+                        console.log("onLanguageChosen " + value);
+                        userProfile.setUserLanguage(userProfile.userId, value, function (err) {
+                            if (err) {
+                                console.log(err.message);
+                            } else {
+                                // Success. Nothing to do.
+                                // The userProfile.language property should be updated.
+                            }
+                        });
+                    }
+                }
+
+                // Select your gender
+                PageGender {
+                    id: pageGender
+
+                    lang: window.lang
+
+                    onGenderChosen: {
+                        console.log("onGenderChosen " + value);
+                        userProfile.setUserGender(userProfile.userId, value, function (err) {
+                            if (err) {
+                                console.log(err.message);
+                            }
+                        });
+                    }
+                }
+
+                // Select your ethnicity
+                PageEthnicity {
+                    id: pageEthnicity
+
+                    lang: window.lang
+
+                    onEthnicityChosen: {
+                        console.log("onEthnicityChosen " + value);
+                        userProfile.setUserEthnicity(userProfile.userId, value, function (err) {
+                            if (err) {
+                                console.log(err.message);
+                            }
+                        });
+                    }
+                }
+
+                // Select your age
+                PageAge {
+                    id: pageAge
+
+                    lang: window.lang
+
+                    onAgeChosen: {
+                        console.log("onAgeChosen " + value);
+                        userProfile.setUserAge(userProfile.userId, value, function (err) {
+                            if (err) {
+                                console.log(err.message);
+                            }
+                        });
+                    }
+                }
+
+                // Enjoy your visit (only shown in the entry kiosk)
+                ColumnLayout {
+                    Label {
+                        BilingualText {
+                            id: textThankYou
+                            language: window.lang
+                            textEn: "Thank you so much!"
+                            textFr: "Merci beaucoup!"
+                        }
+                        text: textThankYou.text
+                        font.capitalization: Font.AllUppercase
+                    }
+                    Label {
+                        BilingualText {
+                            id: textStartYourVisit
+                            language: window.lang
+                            textEn: "You can now\nstart your visit!"
+                            textFr: "Vous pouvez maintenant\ncommencer votre visite."
+                        }
+                        text: textStartYourVisit.text
+                        font.capitalization: Font.AllUppercase
+                    }
+                }
             }
 
-            Layout.fillWidth: true
-            Layout.fillHeight: true
-            Layout.margins: 0
-
-            readonly property int index_FIRST_PAGE: 0
-            readonly property int index_MY_LANGUAGE: 0
-            readonly property int index_MY_GENDER: 1
-            readonly property int index_MY_ETHNICITY: 2
-            readonly property int index_MY_AGE: 3
-            readonly property int index_ENJOY_YOUR_VISIT: 4
-
-            PageLanguage {
-                id: pageLanguage
-
-                onLanguageChosen: {
-                    console.log("onLanguageChosen " + value);
-                    userProfile.setUserLanguage(userProfile.userId, value, function (err) {
-                        if (err) {
-                            console.log(err.message);
-                        } else {
-                            languageSwitcher.language = value;
-                        }
-                    });
-                }
-                onPreviousButtonClicked: {
-                    // TODO
-                    // FIXME: there should be no previous button here.
-                }
+            // TODO: Move this out of this page:
+            WidgetPreviousNext {
                 onNextButtonClicked: {
-                    demographicQuestionsStackLayout.nextPage();
-                }
-            }
-
-            // Select your gender
-            PageGender {
-                id: pageGender
-
-                onGenderChosen: {
-                    console.log("onGenderChosen " + value);
-                    userProfile.setUserGender(userProfile.userId, value, function (err) {
-                        if (err) {
-                            console.log(err.message);
-                        }
-                    });
-                }
-                onPreviousButtonClicked: {
-                    demographicQuestionsStackLayout.previousPage();
-                }
-                onNextButtonClicked: {
-                    demographicQuestionsStackLayout.nextPage();
-                }
-            }
-
-            // Select your ethnicity
-            PageEthnicity {
-                id: pageEthnicity
-
-                onEthnicityChosen: {
-                    console.log("onEthnicityChosen " + value);
-                    userProfile.setUserEthnicity(userProfile.userId, value, function (err) {
-                        if (err) {
-                            console.log(err.message);
-                        }
-                    });
-                }
-                onPreviousButtonClicked: {
-                    demographicQuestionsStackLayout.previousPage();
-                }
-                onNextButtonClicked: {
-                    demographicQuestionsStackLayout.nextPage();
-                }
-            }
-
-            // Select your age
-            PageAge {
-                id: pageAge
-
-                onAgeChosen: {
-                    console.log("onAgeChosen " + value);
-                    userProfile.setUserAge(userProfile.userId, value, function (err) {
-                        if (err) {
-                            console.log(err.message);
-                        }
-                    });
-                }
-                onPreviousButtonClicked: {
-                    demographicQuestionsStackLayout.previousPage();
-                }
-                onNextButtonClicked: {
-                    // TODO
-                    // if this is the entry kiosk, show the "enjoy your visit" page.
-                    // if this is the center kiosk, go to the questions
-                    if (kioskConfig.kiosk_mode == "entry") {
+                    // TODO: disable the previous button if this is the first page.
+                    var i = demographicQuestionsStackLayout.currentIndex;
+                    console.log("Current page: " + i);
+                    switch (i) {
+                    case demographicQuestionsStackLayout.index_FIRST_PAGE:
+                    case demographicQuestionsStackLayout.index_MY_LANGUAGE:
+                    case demographicQuestionsStackLayout.index_MY_GENDER:
+                    case demographicQuestionsStackLayout.index_MY_ETHNICITY:
                         demographicQuestionsStackLayout.nextPage();
-                        // TODO: after a short delay, go to screensaver.
-                    } else {
-                        // kiosk_mode should be central:
-                        mainStackLayout.nextPage();
+                        // TODO: Disable or hide the next button if this is not the entry kiosk.
+                        break;
+                    case demographicQuestionsStackLayout.index_MY_AGE:
+                        // TODO
+                        // if this is the entry kiosk, show the "enjoy your visit" page.
+                        // if this is the center kiosk, go to the questions
+                        if (kioskConfig.kiosk_mode == "entry") {
+                            demographicQuestionsStackLayout.nextPage();
+                            // TODO: after a short delay, go to screensaver.
+                        } else {
+                            // kiosk_mode is central:
+                            mainStackLayout.nextPage();
+                        }
+                        break;
+                    case demographicQuestionsStackLayout.index_ENJOY_YOUR_VISIT:
+                        // We should not get there.
+                        break;
                     }
                 }
-            }
 
-            // Enjoy your visit (only shown in the entry kiosk)
-            ColumnLayout {
-                Label {
-                    BilingualText {
-                        id: textThankYou
-                        language: lang
-                        textEn: "Thank you so much!"
-                        textFr: "Merci beaucoup!"
+                onPreviousButtonClicked: {
+                    var i = demographicQuestionsStackLayout.currentIndex;
+                    switch (i) {
+                    case demographicQuestionsStackLayout.index_FIRST_PAGE:
+                        // nothing to do (we should no get here)
+                        break;
+                    case demographicQuestionsStackLayout.index_MY_LANGUAGE:
+                    case demographicQuestionsStackLayout.index_MY_GENDER:
+                    case demographicQuestionsStackLayout.index_MY_ETHNICITY:
+                        demographicQuestionsStackLayout.previousPage();
+                        break;
                     }
-                    text: textThankYou.text
-                    font.capitalization: Font.AllUppercase
-                }
-                Label {
-                    BilingualText {
-                        id: textStartYourVisit
-                        language: lang
-                        textEn: "You can now\nstart your visit!"
-                        textFr: "Vous pouvez maintenant\ncommencer votre visite."
-                    }
-                    text: textStartYourVisit.text
-                    font.capitalization: Font.AllUppercase
                 }
             }
         }
@@ -527,7 +552,7 @@ ApplicationWindow {
                         color: "#ffffff"
                         font.bold : true
                         font.pixelSize: 75
-                        visible: sliderWidgetVisibility
+                        //visible: sliderWidgetVisibility
                     }
                 }
             }

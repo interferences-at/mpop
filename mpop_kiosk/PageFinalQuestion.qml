@@ -8,10 +8,9 @@ import QtQuick.Layouts 1.3
 RowLayout {
     id: thisPage
 
-    signal nextButtonClicked()
-    signal previousButtonClicked()
     signal finalQuestionChosen(string value)
 
+    property string lang: ""
 
     Label {
         Layout.alignment: Qt.AlignCenter
@@ -21,9 +20,4 @@ RowLayout {
     }
 
     // TODO
-
-    WidgetPreviousNext {
-        onNextButtonClicked: thisPage.nextButtonClicked()
-        onPreviousButtonClicked: thisPage.previoiusButtonClicked()
-    }
 }

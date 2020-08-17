@@ -8,12 +8,11 @@ import QtQuick.Layouts 1.3
 RowLayout {
     id: thisPage
 
-    signal nextButtonClicked()
-    signal previousButtonClicked()
     signal ageChosen(int value)
 
     // There should be no age set if we show this page.
     property int selectedAge: -1
+    property string lang: ""
 
     ColumnLayout {
         Rectangle {
@@ -51,10 +50,5 @@ RowLayout {
                 thisPage.ageChosen(index);
             }
         }
-    }
-
-    WidgetPreviousNext {
-        onNextButtonClicked: thisPage.nextButtonClicked()
-        onPreviousButtonClicked: thisPage.previousButtonClicked()
     }
 }
