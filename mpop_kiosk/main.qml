@@ -57,7 +57,7 @@ ApplicationWindow {
      * Shows or hides the debug view.
      */
     function toggleDebugView() {
-        stackLayout0.currentIndex = (stackLayout0.currentIndex + 1) % 2;
+        mainStackLayout.currentIndex = mainStackLayout.index_OSC_DEBUG;;
     }
 
     // assigning properties
@@ -267,7 +267,8 @@ ApplicationWindow {
         readonly property int index_SCREENSAVER: 0
         readonly property int index_DEMOGRAPHIC_QUESTIONS: 1
         readonly property int index_SURVEY_QUESTIONS: 2
-        readonly property int index_EXIT_SECTION: 2
+        readonly property int index_EXIT_SECTION: 3
+        readonly property int index_OSC_DEBUG: 4
 
         function nextPage() {
             mainStackLayout.currentIndex = (mainStackLayout.currentIndex + 1) % mainStackLayout.count;
@@ -453,6 +454,16 @@ ApplicationWindow {
             ListView {
                 id: pageButtonsListView
 
+                function setCurrentPage(index, pageNumberText) {
+                    questionsStackLayout.currentIndex = index; // index of the item in the model
+                    currentPageNumberLabel.text = pageNumberText;
+                    pageButtonsModel.highlightButton(pageNumberText);
+                }
+
+                Component.onCompleted: {
+                    setCurrentPage(0, "01"); // Initial value
+                }
+
                 Layout.margins: 0
                 Layout.fillWidth: false
                 Layout.fillHeight: true
@@ -473,15 +484,14 @@ ApplicationWindow {
                     highlighted: isHighlighted // Property of the items in the list model this ListView uses.
 
                     onButtonClicked: {
-                        questionsStackLayout.currentIndex = index; // index of the item in the model
-                        label1.text = pageNumber;
-                        pageButtonsModel.highlightButton(pageNumber);
+                        pageButtonsListView.setCurrentPage(index, pageNumber);
                     }
                 }
             }
-
+            /**
+             * Displays the current page number.
+             */
             RowLayout {
-                // display the text of button after click on button
                 Rectangle {
                     Layout.minimumWidth: 80
                     Layout.minimumHeight: 700
@@ -490,7 +500,8 @@ ApplicationWindow {
                     color: "#000"
 
                     Label {
-                        id: label1
+                        id: currentPageNumberLabel
+                        text: "01" // Changed dynamically
                         Layout.alignment: Qt.AlignCenter
                         font.capitalization: Font.AllUppercase
                         color: "#ffffff"
@@ -498,28 +509,28 @@ ApplicationWindow {
                         font.pixelSize: 75
                         visible: sliderWidgetVisibility
                     }
-                }}
+                }
+            }
 
-            // Contents
-            StackLayout {
-                id: questionsStackLayout
+            RowLayout {
+                // Outline around the questions
+                Rectangle{
+                    Layout.minimumWidth: 1000
+                    Layout.minimumHeight: 800
+                    color: "#000"
+                    border.color: "grey"
+                    border.width: 5
 
-                readonly property int index_FIRST_QUESTION: 0
+                    // Contents
+                    StackLayout {
+                        id: questionsStackLayout
 
-                currentIndex: 0
-                Layout.fillWidth: true
-                Layout.fillHeight: true
+                        readonly property int index_FIRST_QUESTION: 0
 
-                RowLayout {
-                        anchors.fill: parent
+                        currentIndex: 0
+                        Layout.fillWidth: true
+                        Layout.fillHeight: true
 
-                    //this rectangle is for ouline of questions
-                    Rectangle{
-                        Layout.minimumWidth: 1000
-                        Layout.minimumHeight: 800
-                        color: "#000"
-                        border.color: "grey"
-                        border.width: 5
                         // The pages for single and multiple questions:
 
                         // Page 01
@@ -528,6 +539,8 @@ ApplicationWindow {
                             questionIdentifier: "incidence_drogue"
                             datavizSender: oscSender
                             serviceClient: userProfile
+                            Layout.fillWidth: true
+                            Layout.fillHeight: true
                         }
 
                         // TODO: page 02 single decriminalisation_crimes_non_violents
@@ -539,14 +552,41 @@ ApplicationWindow {
                         PageMultipleQuestion {
                             // FIXME: the main question text should be common (most often) to all questions in a multiple-question page:
                             questionIdentifiers: ["equitable_victimes", "equitable_vulnerables", "equitable_jeunes_contrevenants", "equitable_riches", "equitable_minorites_culturelles"]
+                            datavizSender: oscSender
+                            serviceClient: userProfile
+                            modelQuestions: modelQuestions
+                            Layout.fillWidth: true
+                            Layout.fillHeight: true
+                            mainQuestionText: modelQuestions.findQuestion('equitable_victimes').question_fr;
                         }
 
                         // TODO: remaining questions
                     }
 
-                    WidgetPreviousNext {
-                        onNextButtonClicked: thisPage.nextButtonClicked()
-                        onPreviousButtonClicked: thisPage.previousButtonClicked()
+
+                }
+
+                WidgetPreviousNext {
+                    readonly property int num_PAGES: 15
+
+                    onNextButtonClicked: {
+                        var i = questionsStackLayout.currentIndex;
+                        if (i === num_PAGES) {
+                            mainStackLayout.currentIndex = mainStackLayout.index_EXIT_SECTION;
+                        } else {
+                            i += 1;
+                            questionsStackLayout.currentIndex = i;
+                        }
+                    }
+                    onPreviousButtonClicked: {
+                        var i = questionsStackLayout.currentIndex;
+                        if (i === 0) {
+                            console.log("Cannot go further up");
+                            console.log("FIXME: hide the up button if page is 0");
+                        } else {
+                            i -= 1;
+                            questionsStackLayout.currentIndex = i;
+                        }
                     }
                 }
             }
