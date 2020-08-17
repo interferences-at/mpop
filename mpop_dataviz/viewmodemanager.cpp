@@ -374,9 +374,9 @@ void ViewModeManager::moveBarsToMultiAnswerLayout()
 void ViewModeManager::moveBarsToAnswerByAgeLayout()
 {
     qreal barHeight = fitToScreenHeight(35);
-    qreal startY = fitToScreenHeight(92) + (barHeight / 2);
-    qreal rowSpace = fitToScreenHeight(10.5);
-    qreal marginLeft = 93;
+    qreal startY = fitToScreenHeight(50) + (barHeight / 2);
+    qreal rowSpace = fitToScreenHeight(12.5);
+    qreal marginLeft = 100;
 
     ViewModeManager::viewBars otherAgeVect = ViewModeManager::viewBars::create();
     ViewModeManager::viewBars myAgeVect = ViewModeManager::viewBars::create();
@@ -388,16 +388,19 @@ void ViewModeManager::moveBarsToAnswerByAgeLayout()
     *myAgeVect = _viewBars[AnswerByAgeMode]->mid(otherAgeBarsCount, userAgeBarsCount);
 
     _agesAnswerBarChart.addBarObjects(otherAgeVect);
-    _agesAnswerBarChart.setBarsSize(sizeFromPixel(2.5, barHeight));
-    _agesAnswerBarChart.setBarsColor("#667554");
+    _agesAnswerBarChart.setBarsSize(sizeFromPixel(3.5, barHeight));
+    _agesAnswerBarChart.setBarsColor("#FFFFFF");
     _agesAnswerBarChart.setStartPosition(coordinateFromPixel(marginLeft, startY));
     _agesAnswerBarChart.setDistanceBetweenRows(heightFromPixel(rowSpace));
     _agesAnswerBarChart.moveObjectsToLayout(currentTime());
 
     _userAgeAnswer.addBarObjects(myAgeVect);
-    _userAgeAnswer.setBarsSize(sizeFromPixel(2.5, barHeight));
-    _userAgeAnswer.setBarsColor("#AB3D33");
-    _userAgeAnswer.setStartPosition(coordinateFromPixel(marginLeft + 2.5, startY + _myAgeReverseIndex * (barHeight + rowSpace)));
+    _userAgeAnswer.setBarsSize(sizeFromPixel(3.5, barHeight));
+    _userAgeAnswer.setBarsColor("#80E2A7");
+    _userAgeAnswer.setStartPosition(
+                coordinateFromPixel(
+                    marginLeft + 2,
+                    startY + 2 + _myAgeReverseIndex * (barHeight + rowSpace)));
     _userAgeAnswer.moveObjectsToLayout(currentTime());
 }
 

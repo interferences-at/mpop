@@ -1,5 +1,5 @@
 <RCC>
     <qresource prefix="/">
-        <file alias="base-font">resources/fonts/Myriad-Pro-Regular.OTF</file>
+        <file alias="base-font">resources/fonts/Trim-SemiBold.otf</file>
     </qresource>
 </RCC>

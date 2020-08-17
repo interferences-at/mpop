@@ -53,13 +53,12 @@ void DatavizWindow::updateFramePerSecond()
     _framesCount = 0;
 }
 
-void DatavizWindow::addLayoutTitles(const QList<QString> &titles, bool topTitle)
-{
-    if (topTitle) { // Set the top titles
-        _painter->setTopTitles(titles);
-    } else { // Set the bottom title
-        _painter->setBottomTitles(titles);
-    }
+
+void DatavizWindow::showBarChartBars(const QList<int>& bars) {
+//    _barChartLayout.setBars(bars);
+//    _barChartLayout.moveObjectsToLayout(this->elapsed()); // Important: do it after you called setBars
+//    _screensaverLayout.setResponsesBars(bars);
+//    _screensaverLayout.moveObjectsToLayout(elapsed());
 }
 
 
