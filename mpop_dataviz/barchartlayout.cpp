@@ -94,7 +94,7 @@ void BarChartLayout::moveObjectsToLayout(qint64 currentTime) {
 
             if (moduloFive == 4) {
                 x = ((barIndex - 2) * DISTANCE_BETWEEN_BARS) - (DISTANCE_BETWEEN_BARS / 2) + columnOffset;
-                rotation = -67;
+                rotation = -73;
                 // Increase the size of the fifth bar to fit to user story proportion
                 line->setSize(_barsWidth, _barsHeight * 1.25);
 

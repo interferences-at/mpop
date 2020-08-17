@@ -1,9 +1,7 @@
 ﻿#include "textobjectpainter.h"
 #include <QPaintEngine>
 
-TextObjectPainter::TextObjectPainter() :
-    _showBottomTitle(true), // TODO: Make it false by default
-    _showPercentage(true) // TODO: Make it false by default
+TextObjectPainter::TextObjectPainter()
 {
     _linePen = QPen(Qt::white, 2); // Line style
 
@@ -11,12 +9,9 @@ TextObjectPainter::TextObjectPainter() :
     int id = QFontDatabase::addApplicationFont(":/base-font");
     QString fontFamily = QFontDatabase::applicationFontFamilies(id).at(0);
 
-    _numbersFont = QFont(fontFamily, 11, QFont::DemiBold);
-    _bottomTitleFont = QFont(fontFamily, 24);
-    _topTitleFont = QFont(fontFamily, 22);
-    _percentageFont = QFont(fontFamily, 22);
     _fpsTextFont = QFont(fontFamily, 12, QFont::DemiBold);
     _answersTitlesFont = QFont(fontFamily, 14, QFont::DemiBold);
+    _smallFont = QFont(fontFamily, 11, QFont::DemiBold);
 }
 
 TextObjectPainter::~TextObjectPainter()
@@ -48,8 +43,8 @@ void TextObjectPainter::drawHorizontalNumbers()
     qreal numberRectWidth = fitToScreenHeight(35) / 3.6 * 11;
     QRect hNumbersRect(0, 0, numberRectWidth, rowHeight);
 
-    _painter.setFont(_numbersFont);
-    _painter.translate(Y_AXIS_WIDTH - numberRectWidth / 8, startY);
+    _painter.setFont(_smallFont);
+    _painter.translate((Y_AXIS_WIDTH + 7) - numberRectWidth / 8, startY);
     for (int hUnit = 10; hUnit <= 100; hUnit += 10) {
         _painter.drawText(hNumbersRect, Qt::AlignRight | Qt::AlignBottom, QString::number(hUnit));
         _painter.translate(numberRectWidth, 0);
@@ -60,12 +55,12 @@ void TextObjectPainter::drawHorizontalNumbers()
 void TextObjectPainter::drawVerticalNumbers()
 {
     _painter.save(); // Start of using painter
-    qreal columnHeight = fitToScreenHeight(45.5 * 20);
-    qreal startY = fitToScreenHeight(102);
+    qreal columnHeight = fitToScreenHeight(47.5 * 20);
+    qreal startY = fitToScreenHeight(58);
 
     QRect vNumbersRect(0, 0, Y_AXIS_WIDTH, columnHeight / 10);
     _painter.translate(0, startY);
-     _painter.setFont(_numbersFont);
+     _painter.setFont(_smallFont);
     for (int vUnit = 100; vUnit >= 10; vUnit -= 10) {
         _painter.drawText(vNumbersRect, Qt::AlignTop | Qt::AlignHCenter, QString::number(vUnit));
         _painter.translate(0, columnHeight / 10);
@@ -73,42 +68,28 @@ void TextObjectPainter::drawVerticalNumbers()
     _painter.restore(); // Finish using painter
 }
 
-void TextObjectPainter::drawTopTitles()
+void TextObjectPainter::drawTopRightInfos()
 {
-    _painter.save(); // Save painter state
-    int lineWidth = _width - (X_LINE_LEFT_MARGIN + X_LINE_RIGHT_MARGIN);
-    int titleCount = _topTitles.size();
-    QRect titleTextRect(0, 0, lineWidth / titleCount, TITLES_HEIGHT);
-    _painter.translate(X_LINE_LEFT_MARGIN, 0);
-    _painter.setFont(_topTitleFont);
-    for (int i = 0; i < titleCount; i++) {
-        _painter.drawText(titleTextRect, Qt::AlignBottom | Qt::AlignCenter, _topTitles.at(i));
-        _painter.translate(lineWidth / titleCount, 0);
-    }
-    _painter.restore(); // Restore painter state
-}
 
-void TextObjectPainter::drawButtonTitles()
-{
-    _painter.save(); // Start of using painter
-    int lineWidth = _width - (X_LINE_LEFT_MARGIN + X_LINE_RIGHT_MARGIN);
-    int titleCount = _bottomTitles.size();
-    QRect titleTextRect(0, 0, lineWidth / titleCount, TITLES_HEIGHT);
-    _painter.translate(X_LINE_LEFT_MARGIN, _height - TITLES_HEIGHT);
-    _painter.setFont(_bottomTitleFont);
-    for (int i = 0; i < titleCount; i++) {
-        _painter.drawText(titleTextRect, Qt::AlignCenter, _bottomTitles.at(i));
-        _painter.translate(lineWidth / titleCount, 0);
-    }
-    _painter.restore(); // Finish using painter
-}
+    QRect infoRect(_width - fitToScreenWidth(X_LINE_RIGHT_MARGIN),
+                   fitToScreenHeight(50),
+                   fitToScreenHeight(X_LINE_RIGHT_MARGIN),
+                   fitToScreenWidth(65));
 
-void TextObjectPainter::drawPercentage()
-{
+    QRect barStick(infoRect.x() + infoRect.width() / 2, infoRect.y(), 3, 35);
+    QRect textRect(infoRect.x(), (infoRect.y() + infoRect.height()) - 20, infoRect.width(), 20);
     _painter.save();
-    QRect percentageRect(0, 0, Y_AXIS_WIDTH, Y_AXIS_WIDTH);
-    _painter.setFont(_percentageFont);
-    _painter.drawText(percentageRect, Qt::AlignCenter, QString("%"));
+    _painter.setFont(_smallFont);
+    _painter.setPen(QPen(Qt::white, 3.5));
+    _painter.drawLine(barStick.x() + barStick.width() / 2, barStick.y(),
+                      barStick.x() + barStick.width() / 2, barStick.y() + 35);
+    _painter.drawText(textRect, Qt::AlignCenter | Qt::AlignBottom, "MOYENNES");
+
+    _painter.translate(0, 95);
+    _painter.setPen(QPen(QColor("#80E2A7"), 3.5));
+    _painter.drawLine(barStick.x() + barStick.width() / 2, barStick.y(),
+                      barStick.x() + barStick.width() / 2, barStick.y() + 35);
+    _painter.drawText(textRect, Qt::AlignCenter | Qt::AlignBottom, "MA RÉPONSE");
     _painter.restore();
 }
 
@@ -117,15 +98,7 @@ void TextObjectPainter::drawFramePerSecond(const int &framePerSecond)
     _painter.save();
     _painter.setFont(_fpsTextFont);
     _painter.drawText(10, 10, QString::number(framePerSecond) + " FPS");
-//    _painter.drawLine(0, 0, _width, _height);
-//    _painter.drawLine(_width, 0, 0, _height);
     _painter.setPen(QPen(Qt::red, 1));
-    //    for (int x = 0; x < _width; x++) {
-    //        for (int y = 0; y < _height; y++) {
-    //            _painter.drawLine(y * 10, 0, y * 10, _height);
-    //            _painter.drawLine(0, x * 10, _width, x * 10);
-    //        }
-    //    }
     _painter.restore();
 }
 
@@ -139,7 +112,7 @@ void TextObjectPainter::drawViewElements(ViewModeManager::ViewMode view, const Q
 
     _painter.setPen(_linePen);
     _painter.drawLine(vLineMrgLeft, vLineMrgTop, vLineMrgLeft, _height - hLineMrgBottom);
-    _painter.drawLine(vLineMrgLeft + 17, _height - hLineMrgBottom, _width - hLineMrgRight, _height - hLineMrgBottom);
+    _painter.drawLine(vLineMrgLeft + 24, _height - hLineMrgBottom, _width - hLineMrgRight, _height - hLineMrgBottom);
 
     auto drawRangeBottomText = [&]() {
         qreal bottomTitlePosY = _height - fitToScreenHeight(hLineMrgBottom - 32);
@@ -148,11 +121,13 @@ void TextObjectPainter::drawViewElements(ViewModeManager::ViewMode view, const Q
     };
 
     auto drawResponseBottomText = [&]() {
-        QRect responseTextRect(0, 0, _width, X_AXIS_HEIGHT);
-        _painter.setFont(_bottomTitleFont);
-        _painter.translate(0, _height - X_AXIS_HEIGHT);
-        _painter.drawText(responseTextRect, Qt::AlignBottom | Qt::AlignCenter, "Réponses (%)");
+        QRect responseTextRect(0, 0, hLineMrgRight, fitToScreenHeight(32));
+        _painter.setFont(_smallFont);
+        _painter.translate(_width - hLineMrgRight, _height - fitToScreenHeight(X_AXIS_HEIGHT));
+        _painter.drawText(responseTextRect, Qt::AlignHCenter | Qt::AlignBottom, "(%)");
     };
+
+    drawTopRightInfos();
 
     switch (view) {
     case ViewModeManager::MultiAnswersMode:
@@ -171,8 +146,8 @@ void TextObjectPainter::drawViewElements(ViewModeManager::ViewMode view, const Q
     case ViewModeManager::AnswerByAgeMode:
     {
         QRect ageTextRect(0, 0, Y_AXIS_WIDTH, Y_LINE_TOP_MARGIN);
-        _painter.setFont(_topTitleFont);
-        _painter.drawText(ageTextRect, Qt::AlignBottom | Qt::AlignCenter, "Âge");
+        _painter.setFont(_smallFont);
+        _painter.drawText(ageTextRect, Qt::AlignTop | Qt::AlignCenter, "Âge");
         drawVerticalNumbers();
         drawHorizontalNumbers();
         drawResponseBottomText();
