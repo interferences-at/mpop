@@ -11,7 +11,7 @@ ColumnLayout {
     property string textLeft: ""
     property string textRight: ""
     property bool showNumber: false
-    property real sliderValue: 0
+    property alias sliderValue: slider0.value
     property real sliderFrom: 0
     property real sliderTo: 120
     property real sliderStepSize: 1
@@ -25,7 +25,7 @@ ColumnLayout {
         Layout.leftMargin: leftAndRightMargin
         Layout.rightMargin: leftAndRightMargin
 
-        value: sliderValue
+        value: 50 // Changed from outside.
         from: sliderFrom
         to: sliderTo
         stepSize: sliderStepSize

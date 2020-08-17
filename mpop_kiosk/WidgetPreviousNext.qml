@@ -4,12 +4,27 @@ import QtQuick.Controls 2.4
 
 ColumnLayout {
     id: thisWidget
-    Layout.topMargin : 300
+
+    Layout.topMargin: 300 // FIXME: This hard-coded layout property doesn't belong here.
+
+    property string lang: ""
 
     signal previousButtonClicked()
     signal nextButtonClicked()
 
-    // TODO: Improve the look of these buttons
+    BilingualText {
+        id : textPrevious
+        language: thisWidget.lang
+        textEn: "Previous"
+        textFr: "Précédent"
+    }
+
+    BilingualText {
+        id : textNext
+        language: thisWidget.lang
+        textEn: "Next"
+        textFr: "Suivante"
+    }
 
     RoundButton {
         id: button
@@ -23,12 +38,11 @@ ColumnLayout {
         onClicked: {
             thisWidget.previousButtonClicked();
         }
-
     }
 
     Label {
         id: label1
-        text: qsTr("Previous")
+        text: textPrevious.text
         font.capitalization: Font.AllUppercase
         color: "#ffffff"
         font.pixelSize: 12
@@ -50,7 +64,7 @@ ColumnLayout {
         }
     }
     Label {
-        text: qsTr("next")
+        text: textNext.text
         font.capitalization: Font.AllUppercase
         color: "#ffffff"
         font.pixelSize: 12

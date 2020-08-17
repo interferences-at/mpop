@@ -8,13 +8,19 @@ import QtQuick.Layouts 1.3
 RowLayout {
     id: thisPage
 
-    signal nextButtonClicked()
-    signal previousButtonClicked()
     signal genderChosen(string value)
 
     property alias index_MALE: modelGenders.index_MALE
     property int index_FEMALE: modelGenders.index_FEMALE
     property int index_OTHER: modelGenders.index_OTHER
+    property string lang: ""
+
+    BilingualText {
+        id: textYouAre
+        textEn: "You are..."
+        textFr: "Vous êtes..."
+        language: thisPage.lang
+    }
 
     Rectangle {
         Layout.minimumWidth: 400
@@ -23,7 +29,7 @@ RowLayout {
 
         Label {
             Layout.alignment: Qt.AlignCenter
-            text: qsTr("You are...")
+            text: textYouAre.text
             font.capitalization: Font.AllUppercase
             color: "#ffffff"
             font.pixelSize: 40
@@ -50,15 +56,16 @@ RowLayout {
         id: delegateComponent
 
         WidgetChoiceButton {
-            text: name_en // TODO: if language is French, show it in French
+            BilingualText {
+                id: textThisButton
+                textEn: name_en // from the model
+                textFr: name_fr // from the model
+                language: lang
+            }
+            text: textThisButton.text
             onClicked: {
                 thisPage.genderChosen(identifier);
             }
         }
-    }
-
-    WidgetPreviousNext {
-        onNextButtonClicked: thisPage.nextButtonClicked()
-        onPreviousButtonClicked: thisPage.previousButtonClicked()
     }
 }

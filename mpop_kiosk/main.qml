@@ -13,6 +13,7 @@ ApplicationWindow {
 
     property string lastRfidRead: ""
     property string lastMessageReceived: ""
+    property alias lang: userProfile.language // All the BilingualText items watch this value
 
     readonly property string const_KIOSK_MODE_ENTRY: "entry"
     readonly property string const_KIOSK_MODE_CENTRAL: "central"
@@ -64,7 +65,7 @@ ApplicationWindow {
     visible: true
     width: 1920
     height: 1080
-    title: qsTr("MPOP Kiosk")
+    title: textWindowTitle.text
 
     Component.onCompleted: {
         if (kioskConfig.is_fullscreen) {
@@ -74,6 +75,13 @@ ApplicationWindow {
 
         // TODO: Show/hide sections according the kiosk_mode we are in.
         console.log("Kiosk mode is " + kioskConfig.kiosk_mode);
+    }
+
+    BilingualText {
+        id: textWindowTitle
+        textEn: "MPOP Kiosk"
+        textFr: "Le kiosque MPOP"
+        language: window.lang
     }
 
     /**
@@ -142,6 +150,10 @@ ApplicationWindow {
         service_port_number: kioskConfig.service_port_number
         service_host: kioskConfig.service_host
         is_verbose: kioskConfig.is_verbose
+
+        onLanguageChanged: {
+            console.log("Language changed: " + language);
+        }
 
         onUserIdChanged: {
             if (userId === const_INVALID_NUMBER) {
@@ -301,138 +313,171 @@ ApplicationWindow {
          *
          * This is our main two-column layout.
          */
-        StackLayout {
-            id: demographicQuestionsStackLayout
+        RowLayout {
 
-            /**
+            StackLayout {
+                id: demographicQuestionsStackLayout
+
+                /**
              * Go to the previous page.
              */
-            function previousPage() {
-                demographicQuestionsStackLayout.currentIndex -= 1
-            }
+                function previousPage() {
+                    demographicQuestionsStackLayout.currentIndex -= 1
+                }
 
-            /**
+                /**
              * Go to the next page.
              */
-            function nextPage() {
-                demographicQuestionsStackLayout.currentIndex += 1
-            }
+                function nextPage() {
+                    demographicQuestionsStackLayout.currentIndex += 1
+                }
 
-            Layout.fillWidth: true
-            Layout.fillHeight: true
-            Layout.margins: 0
+                Layout.fillWidth: true
+                Layout.fillHeight: true
+                Layout.margins: 0
 
-            readonly property int index_FIRST_PAGE: 0
-            readonly property int index_MY_LANGUAGE: 0
-            readonly property int index_MY_GENDER: 1
-            readonly property int index_MY_ETHNICITY: 2
-            readonly property int index_MY_AGE: 3
-            readonly property int index_ENJOY_YOUR_VISIT: 4
+                readonly property int index_FIRST_PAGE: 0
+                readonly property int index_MY_LANGUAGE: 0
+                readonly property int index_MY_GENDER: 1
+                readonly property int index_MY_ETHNICITY: 2
+                readonly property int index_MY_AGE: 3
+                readonly property int index_ENJOY_YOUR_VISIT: 4
 
-            PageLanguage {
-                id: pageLanguage
+                PageLanguage {
+                    id: pageLanguage
 
-                onLanguageChosen: {
-                    console.log("onLanguageChosen " + value);
-                    userProfile.setUserLanguage(userProfile.userId, value, function (err) {
-                        if (err) {
-                            console.log(err.message);
-                        } else {
-                            languageSwitcher.language = value;
+                    lang: window.lang
+
+                    onLanguageChosen: {
+                        console.log("onLanguageChosen " + value);
+                        userProfile.setUserLanguage(userProfile.userId, value, function (err) {
+                            if (err) {
+                                console.log(err.message);
+                            } else {
+                                // Success. Nothing to do.
+                                // The userProfile.language property should be updated.
+                            }
+                        });
+                    }
+                }
+
+                // Select your gender
+                PageGender {
+                    id: pageGender
+
+                    lang: window.lang
+
+                    onGenderChosen: {
+                        console.log("onGenderChosen " + value);
+                        userProfile.setUserGender(userProfile.userId, value, function (err) {
+                            if (err) {
+                                console.log(err.message);
+                            }
+                        });
+                    }
+                }
+
+                // Select your ethnicity
+                PageEthnicity {
+                    id: pageEthnicity
+
+                    lang: window.lang
+
+                    onEthnicityChosen: {
+                        console.log("onEthnicityChosen " + value);
+                        userProfile.setUserEthnicity(userProfile.userId, value, function (err) {
+                            if (err) {
+                                console.log(err.message);
+                            }
+                        });
+                    }
+                }
+
+                // Select your age
+                PageAge {
+                    id: pageAge
+
+                    lang: window.lang
+
+                    onAgeChosen: {
+                        console.log("onAgeChosen " + value);
+                        userProfile.setUserAge(userProfile.userId, value, function (err) {
+                            if (err) {
+                                console.log(err.message);
+                            }
+                        });
+                    }
+                }
+
+                // Enjoy your visit (only shown in the entry kiosk)
+                ColumnLayout {
+                    Label {
+                        BilingualText {
+                            id: textThankYou
+                            language: window.lang
+                            textEn: "Thank you so much!"
+                            textFr: "Merci beaucoup!"
                         }
-                    });
-                }
-                onPreviousButtonClicked: {
-                    // TODO
-                    // FIXME: there should be no previous button here.
-                }
-                onNextButtonClicked: {
-                    demographicQuestionsStackLayout.nextPage();
-                }
-            }
-
-            // Select your gender
-            PageGender {
-                id: pageGender
-
-                onGenderChosen: {
-                    console.log("onGenderChosen " + value);
-                    userProfile.setUserGender(userProfile.userId, value, function (err) {
-                        if (err) {
-                            console.log(err.message);
+                        text: textThankYou.text
+                        font.capitalization: Font.AllUppercase
+                    }
+                    Label {
+                        BilingualText {
+                            id: textStartYourVisit
+                            language: window.lang
+                            textEn: "You can now\nstart your visit!"
+                            textFr: "Vous pouvez maintenant\ncommencer votre visite."
                         }
-                    });
-                }
-                onPreviousButtonClicked: {
-                    demographicQuestionsStackLayout.previousPage();
-                }
-                onNextButtonClicked: {
-                    demographicQuestionsStackLayout.nextPage();
-                }
-            }
-
-            // Select your ethnicity
-            PageEthnicity {
-                id: pageEthnicity
-
-                onEthnicityChosen: {
-                    console.log("onEthnicityChosen " + value);
-                    userProfile.setUserEthnicity(userProfile.userId, value, function (err) {
-                        if (err) {
-                            console.log(err.message);
-                        }
-                    });
-                }
-                onPreviousButtonClicked: {
-                    demographicQuestionsStackLayout.previousPage();
-                }
-                onNextButtonClicked: {
-                    demographicQuestionsStackLayout.nextPage();
-                }
-            }
-
-            // Select your age
-            PageAge {
-                id: pageAge
-
-                onAgeChosen: {
-                    console.log("onAgeChosen " + value);
-                    userProfile.setUserAge(userProfile.userId, value, function (err) {
-                        if (err) {
-                            console.log(err.message);
-                        }
-                    });
-                }
-                onPreviousButtonClicked: {
-                    demographicQuestionsStackLayout.previousPage();
-                }
-                onNextButtonClicked: {
-                    // TODO
-                    // if this is the entry kiosk, show the "enjoy your visit" page.
-                    // if this is the center kiosk, go to the questions
-                    if (kioskConfig.kiosk_mode == "entry") {
-                        demographicQuestionsStackLayout.nextPage();
-                        // TODO: after a short delay, go to screensaver.
-                    } else {
-                        // kiosk_mode should be central:
-                        mainStackLayout.nextPage();
+                        text: textStartYourVisit.text
+                        font.capitalization: Font.AllUppercase
                     }
                 }
             }
 
-            // Enjoy your visit (only shown in the entry kiosk)
-            ColumnLayout {
-                Label {
-                    text: qsTr("Thank you so much")
-                    font.capitalization: Font.AllUppercase
+            // TODO: Move this out of this page:
+            WidgetPreviousNext {
+                onNextButtonClicked: {
+                    // TODO: disable the previous button if this is the first page.
+                    var i = demographicQuestionsStackLayout.currentIndex;
+                    console.log("Current page: " + i);
+                    switch (i) {
+                    case demographicQuestionsStackLayout.index_FIRST_PAGE:
+                    case demographicQuestionsStackLayout.index_MY_LANGUAGE:
+                    case demographicQuestionsStackLayout.index_MY_GENDER:
+                    case demographicQuestionsStackLayout.index_MY_ETHNICITY:
+                        demographicQuestionsStackLayout.nextPage();
+                        // TODO: Disable or hide the next button if this is not the entry kiosk.
+                        break;
+                    case demographicQuestionsStackLayout.index_MY_AGE:
+                        // TODO
+                        // if this is the entry kiosk, show the "enjoy your visit" page.
+                        // if this is the center kiosk, go to the questions
+                        if (kioskConfig.kiosk_mode == "entry") {
+                            demographicQuestionsStackLayout.nextPage();
+                            // TODO: after a short delay, go to screensaver.
+                        } else {
+                            // kiosk_mode is central:
+                            mainStackLayout.nextPage();
+                        }
+                        break;
+                    case demographicQuestionsStackLayout.index_ENJOY_YOUR_VISIT:
+                        // We should not get there.
+                        break;
+                    }
                 }
-                Label {
-                    text: qsTr("You can now")
-                    font.capitalization: Font.AllUppercase
-                }
-                Label {
-                    text: qsTr("start your visit!")
-                    font.capitalization: Font.AllUppercase
+
+                onPreviousButtonClicked: {
+                    var i = demographicQuestionsStackLayout.currentIndex;
+                    switch (i) {
+                    case demographicQuestionsStackLayout.index_FIRST_PAGE:
+                        // nothing to do (we should no get here)
+                        break;
+                    case demographicQuestionsStackLayout.index_MY_LANGUAGE:
+                    case demographicQuestionsStackLayout.index_MY_GENDER:
+                    case demographicQuestionsStackLayout.index_MY_ETHNICITY:
+                        demographicQuestionsStackLayout.previousPage();
+                        break;
+                    }
                 }
             }
         }
@@ -507,7 +552,7 @@ ApplicationWindow {
                         color: "#ffffff"
                         font.bold : true
                         font.pixelSize: 75
-                        visible: sliderWidgetVisibility
+                        //visible: sliderWidgetVisibility
                     }
                 }
             }
@@ -608,15 +653,23 @@ ApplicationWindow {
 
             ColumnLayout {
                 Label {
-                    text: qsTr("Thanks a lot.")
+                    BilingualText {
+                        id: textMerci
+                        language: lang
+                        textEn: "Thanks a lot."
+                        textFr: "Merci beaucoup."
+                    }
+                    text: textMerci.text
                     font.capitalization: Font.AllUppercase
                 }
                 Label {
-                    text: qsTr("Don't forget")
-                    font.capitalization: Font.AllUppercase
-                }
-                Label {
-                    text: qsTr("to give your key back.")
+                    BilingualText {
+                        id: textGiveYouKeyBack
+                        language: lang
+                        textEn: "Don't forget\nto give your key back."
+                        textFr: "N'oubliez pas\nde remettre votre clé."
+                    }
+                    text: textGiveYouKeyBack.text
                     font.capitalization: Font.AllUppercase
                 }
             }

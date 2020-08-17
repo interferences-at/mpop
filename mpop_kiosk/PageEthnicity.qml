@@ -8,9 +8,8 @@ import QtQuick.Layouts 1.3
 RowLayout {
     id: thisPage
 
-    signal nextButtonClicked()
-    signal previousButtonClicked()
     signal ethnicityChosen(string value)
+    property string lang: ""
 
     ColumnLayout {
         Rectangle {
@@ -69,14 +68,10 @@ RowLayout {
                 highlighted: highlighted // The model has a propery with the same name
                 onClicked: {
                     thisPage.ethnicityChosen(identifier);
+                    // FIXME: setHighlighted is not defined:
                     setHightlighted(index);
                 }
             }
         }
-    }
-
-    WidgetPreviousNext {
-        onNextButtonClicked: thisPage.nextButtonClicked()
-        onPreviousButtonClicked: thisPage.previousButtonClicked()
     }
 }
