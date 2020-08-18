@@ -36,11 +36,11 @@ public:
     int getOrCreateUser(const QString& rfidTag);
 
     /**
-      * @brief Retrieves all answers for a given user.
-      * @param userId The user ID of the user.
-      * @return A number of each question identifier.
-      * TODO: perhaps return a QVariant
-      */
+     * @brief Retrieves all answers for a given user.
+     * @param userId The user ID of the user.
+     * @return A number of each question identifier.
+     * TODO: perhaps return a QVariant
+     */
      QMap<QString, int> getUserAnswers(int userId);
 
     /**
