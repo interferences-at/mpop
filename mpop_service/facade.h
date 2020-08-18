@@ -36,6 +36,14 @@ public:
     int getOrCreateUser(const QString& rfidTag);
 
     /**
+      * @brief Retrieves all answers for a given user.
+      * @param userId The user ID of the user.
+      * @return A number of each question identifier.
+      * TODO: perhaps return a QVariant
+      */
+     QMap<QString, int> getUserAnswers(int userId);
+
+    /**
      * @brief Creates or update the answer to a specific question for a given user.
      * @param userId The user ID of the user.
      * @param questionId The question identifier.
@@ -88,18 +96,6 @@ public:
      */
     bool isDatabaseReady();
     
-
-    
-    
-    /**
-     * @brief Get user answers average by for .
-     * @param userId The user ID of the user.
-     * @param questionId The question identifier.
-     * @param value The value of the answer.
-     */
-    QMap<QString, int> getUserAnswers(int userId);
-
-
     /**
      * @brief Get user answers average by user age.
      * @param questionId The question identifier.
@@ -109,6 +105,7 @@ public:
      * @param value The average of the answers.
      */
     QList<int> getAnswerByAge(const QString& questionId,const QString& ethenicity,const QString& gender ,const QString& timeAnswered);
+
 
 
     /**
@@ -136,6 +133,11 @@ public:
    QMap<QString, int> getAnswerByEthnicity(const QString& questionId,int ageFrom, int ageTo , const QString& gender,const QString& timeAnswered);
 
 
+   /**
+    * @brief Get user's all answers average .
+    * @param value is average answer of each Question.
+    */
+   QMap<QString, int > getAllAnswers();
 
 signals:
 
