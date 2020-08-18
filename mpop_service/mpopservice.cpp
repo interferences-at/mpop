@@ -196,26 +196,7 @@ bool MPopService::handleFacadeMethod(const Request& request, Response& response)
         }
 
     }
-    else if (method== "getUserLanguage") {
-        QTextStream(stdout) << "Method is: getUserLanguage" << endl;
-        try {
-            int userId = request.getParamByPosition(0).toInt();
-            response.result = QVariant(this->_facade.getUserLanguage(userId));
-        } catch (MissingParameterError& e) {
-            msg.append(e.what());
-            response.error.message = msg;
-        }     
-    }
-    else if (method == "getUserGender") {
-        QTextStream(stdout) << "Method is: getUserGender" << endl;
-        try {
-            int userId = request.getParamByPosition(0).toInt();
-            response.result = QVariant(this->_facade.getUserGender(userId));
-        } catch (MissingParameterError& e) {
-            msg.append(e.what());
-            response.error.message = msg;
-        }
-    }
+
     else if (method == "getUserAnswers") {
         QTextStream(stdout) << "Method is: getUserAnswers" << endl;
         try {

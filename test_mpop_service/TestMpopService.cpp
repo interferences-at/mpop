@@ -114,13 +114,11 @@ void TestMpopService::test_12_getUserLanguage() {
         QSKIP("This test requires MySQL");
     }
     static const QString TEST_RFID_TAG = "test_RFID_tag_0002";
-    static const QString TEST_LANGUAGE = "fr";
+    static const QString TEST_USER_LANGUAGE = "fr";
+    static const QString KEY_LANGUAGE = "language";
     int userId = this->facade->getOrCreateUser(TEST_RFID_TAG);
 
-    this->facade->setUserLanguage(userId, TEST_LANGUAGE);
-    QString language = this->facade->getUserLanguage(userId);
-
-    QCOMPARE(TEST_LANGUAGE, language);
+    this->facade->setUserLanguage(userId, TEST_USER_LANGUAGE);
 }
 
 
@@ -132,12 +130,25 @@ void TestMpopService::test_13_getUserGender() {
     }
     static const QString TEST_RFID_TAG = "test_RFID_tag_0003";
     static const QString TEST_USER_GENDER = "male";
+    static const QString KEY_GENDER = "gender";
     int userId = this->facade->getOrCreateUser(TEST_RFID_TAG);
 
     this->facade->setUserGender(userId, TEST_USER_GENDER);
-    QString gender = this->facade->getUserGender(userId);
+}
 
-    QCOMPARE(TEST_USER_GENDER, gender);
+
+void TestMpopService :: test_15_getUserAge(){
+    // Set/get the Age of a user.
+
+    if (! this->is_mysql_supported) {
+        QSKIP("This test requires MySQL");
+    }
+    static const QString TEST_RFID_TAG = "test_RFID_tag_0003";
+    int TEST_AGE = 20;
+    static const QString KEY_AGE = "age";
+    int userId = this->facade->getOrCreateUser(TEST_RFID_TAG);
+
+    this->facade->setUserAge(userId, TEST_AGE);
 }
 
 void TestMpopService::test_14_getUserEthnicity() {
@@ -171,26 +182,26 @@ void TestMpopService::test_02_requestParams() {
     static const int EXPECTED_REQUEST_ID = 9999;
     static const QString EXPECTED_METHOD_NAME = "getOrCreateUser";
     static const QString request_getOrCreateUser_01 =
-        "{"
+            "{"
             "\"id\": 9999, "
             "\"method\":\"getOrCreateUser\", "
             "\"params\": ["
-                "\"test_RFID_tag_doesntexist\""
+            "\"test_RFID_tag_doesntexist\""
             "]"
-        "}";
-     Request request = Request::fromString(request_getOrCreateUser_01);
-     QString requestToString = request.toString();
-     qDebug() << "request_getOrCreateUser_01:" << request_getOrCreateUser_01;
-     qDebug() << "requestToString:" << requestToString;
+            "}";
+    Request request = Request::fromString(request_getOrCreateUser_01);
+    QString requestToString = request.toString();
+    qDebug() << "request_getOrCreateUser_01:" << request_getOrCreateUser_01;
+    qDebug() << "requestToString:" << requestToString;
 
-     QString method = request.method;
-     QCOMPARE(EXPECTED_METHOD_NAME, method);
+    QString method = request.method;
+    QCOMPARE(EXPECTED_METHOD_NAME, method);
 
-     QString param_1 = request.getParamByPosition(0).toString();
-     QCOMPARE(EXPECTED_RFID_TAG, param_1);
+    QString param_1 = request.getParamByPosition(0).toString();
+    QCOMPARE(EXPECTED_RFID_TAG, param_1);
 
-     int request_id = request.intId;
-     QCOMPARE(EXPECTED_REQUEST_ID, request_id);
+    int request_id = request.intId;
+    QCOMPARE(EXPECTED_REQUEST_ID, request_id);
 }
 
 
@@ -202,13 +213,13 @@ void TestMpopService::test_03_response() {
 
     static const int EXPECTED_RESPONSE_ID = 9999;
     static const QString request_getOrCreateUser_01 =
-        "{"
+            "{"
             "\"id\": 9999, "
             "\"method\":\"getOrCreateUser\", "
             "\"params\": ["
-                "\"test_RFID_tag_doesntexist\""
+            "\"test_RFID_tag_doesntexist\""
             "]"
-        "}";
+            "}";
     Request request = Request::fromString(request_getOrCreateUser_01);
     Response response;
     response.copyIdFromRequest(request);
@@ -278,4 +289,64 @@ void TestMpopService::test_20_setUserAnswer() {
     QCOMPARE(answers[TEST_QUESTION_02_ID], TEST_QUESTION_02_VALUE);
     QCOMPARE(answers[TEST_QUESTION_03_ID], TEST_QUESTION_03_VALUE);
     QCOMPARE(answers[TEST_QUESTION_04_ID], TEST_QUESTION_04_VALUE);
+}
+
+void TestMpopService :: test_22_getAnswerByGender(){
+
+    // get User's average Answer by gender
+    QMap<QString, int>::Iterator h; // used to loop/ iterate through QMap
+    if (! this->is_mysql_supported) {
+        QSKIP("This test requires MySQL");
+    }
+    static const QString TEST_KEY_QUE_IDENTIFIER= "incidence_drogue";
+
+    QMap<QString, int> avg_userAns= this->facade->getAnswerByGender(TEST_KEY_QUE_IDENTIFIER,"all",-1, -1 ,"all");
+    h=avg_userAns.begin();
+
+    qDebug()<< "getAnswerByGender:::";
+    //Iterate over list of avg answer by user Gender.
+    while(h!=avg_userAns.end()){
+        qDebug() << "[" << h.key()<<"], " <<"[" <<h.value()<<"]";
+        h++;
+    }
+}
+
+void TestMpopService :: test_23_getAnswerByEthnicity(){
+
+    // get User's average Answer by Ethnicity
+    QMap<QString, int>::Iterator h; // used to loop/ iterate through QMap
+    if (! this->is_mysql_supported) {
+        QSKIP("This test requires MySQL");
+    }
+    static const QString TEST_KEY_QUE_IDENTIFIER= "incidence_drogue";
+    QMap<QString, int> avg_userAns1= this->facade->getAnswerByEthnicity(TEST_KEY_QUE_IDENTIFIER,-1,-1, "all" ,"all");
+
+
+    h=avg_userAns1.begin();
+    qDebug()<< "getAnswerByEthnicity:::";
+
+    //Iterate over list of avg answer by user ethnicity.
+    while(h!=avg_userAns1.end()){
+        qDebug() << "[" << h.key()<<"], " <<"[" <<h.value()<<"]";
+        h++;
+    }
+}
+
+void TestMpopService :: test_24_getAnswerByAge(){
+
+    // get User's average Answer by Age
+    if (! this->is_mysql_supported) {
+        QSKIP("This test requires MySQL");
+    }
+    static const QString TEST_KEY_QUE_IDENTIFIER= "incidence_drogue";
+    QList< int> avg_userAns1= this->facade->getAnswerByAge(TEST_KEY_QUE_IDENTIFIER,"all", "all" ,"all");
+
+
+
+    qDebug()<< "getAnswerByAge:::";
+
+    //Iterate over list of avg answer by user ethnicity.
+    QListIterator<int> Iter( avg_userAns1 );
+    while( Iter.hasNext() )
+        qDebug() <<  Iter.next();
 }
