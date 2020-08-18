@@ -296,7 +296,7 @@ void Facade::freeUnusedTags() {
 
 bool Facade::setUserLanguage(int userId, const QString& language) {
     qDebug() << "setUserLanguage";
-    QString sql = "UPDATE `visitor` SET `language` = ? WHERE `id` = ?";
+    QString sql = "UPDATE `visitor` SET `language` = ?  WHERE `id` = ?";
     QSqlQuery query;
     query.prepare(sql);
 
@@ -308,13 +308,14 @@ bool Facade::setUserLanguage(int userId, const QString& language) {
     if (! ok) {
         qWarning() << "ERROR: " << query.lastError().text();
     }
+     qDebug() << query.numRowsAffected();
     return query.numRowsAffected() == 1;
 }
 
 
 bool Facade::setUserGender(int userId, const QString& gender) {
     qDebug() << "setUserGender";
-    QString sql = "UPDATE `visitor` SET `gender` = ? WHERE `id` = ?";
+    QString sql = "UPDATE `visitor` SET `gender` = ?  WHERE `id` = ?";
     QSqlQuery query;
     query.prepare(sql);
 
@@ -326,6 +327,7 @@ bool Facade::setUserGender(int userId, const QString& gender) {
     if (! ok) {
         qWarning() << "ERROR: " << query.lastError().text();
     }
+    qDebug() << query.numRowsAffected();
     return query.numRowsAffected() == 1;
 }
 
@@ -458,36 +460,36 @@ bool Facade::deleteTagsVisitorsAndTheirAnswers(const QList<QString>& rfidTags) {
  * @return an associative list's the values are ints.
  */
 
-QList<int> Facade::getAnswerByAge(const QString& questionId,const QString& ethenicity="all",const QString& gender="all" ,const QString& timeAnswered="all"){
+QList<int> Facade::getAnswerByAge(const QString& questionId,const QString& ethenicity="all",const QString& gender="all" ,const QString& timeAnswered="all") {
 
     qDebug() << "GetAnswerByAge";
     QList<int> avgAnsByAge;
 
-    QString sqlQuery= "select  IFNULL(round( avg(case when (v.age<=5 and v.age>0) then  a.answer_value else 0 end ),2),'-1') AS '[0-5]',"
-                      " IFNULL(round( avg (case when (v.age>5 and v.age <=10) then  a.answer_value else 0 end),2),'-1') AS '[6-10]'  ,"
-                      " IFNULL(round(avg (case when (v.age>10 and v.age<=15) then a.answer_value else 0 end),2),'-1') AS '[11-15]',"
-                      " IFNULL(round( avg (case when (v.age>15 and v.age <=20) then a.answer_value else 0 end),2),'-1') AS '[16-20]',"
-                      " IFNULL(round( avg (case when (v.age>20 and v.age<=25) then a.answer_value else 0 end),2),'-1') AS '[21-25]',"
-                      " IFNULL(round( avg (case when (v.age>25 and v.age<=30) then a.answer_value else 0 end),2),'-1') AS '[26-30]',"
-                      " IFNULL(round(avg (case when (v.age>30 and v.age<=35) then a.answer_value else 0 end),2),'-1') AS '[31-35]',"
-                      " IFNULL(round(avg (case when (v.age>35 and v.age<=40) then a.answer_value else 0 end),2),'-1') AS '[36-40]',"
-                      " IFNULL(round( avg (case when (v.age>40 and v.age<=45) then a.answer_value else 0 end),2),'-1') AS '[41-45]',"
-                      " IFNULL(round( avg (case when (v.age>45 and v.age<=50) then a.answer_value else 0 end),2),'-1') AS '[46-50]',"
-                      " IFNULL(round(avg (case when (v.age>50 and v.age<=55) then a.answer_value else 0 end),2),'-1') AS '[51-55]',"
-                      " IFNULL(round(avg (case when (v.age>55 and v.age<=60) then a.answer_value else 0 end),2),'-1') AS '[56-60]',"
-                      " IFNULL(round(avg (case when (v.age>60 and v.age<=65) then a.answer_value else 0 end),2),'-1') AS '[61-65]',"
-                      " IFNULL(round(avg (case when (v.age>65 and v.age<=70) then a.answer_value else 0 end),2),'-1') AS '[66-70]',"
-                      " IFNULL(round(avg (case when (v.age>70 and v.age<=75) then a.answer_value else 0 end),2),'-1') AS '[71-75]',"
-                      " IFNULL(round(avg (case when (v.age>75 and v.age<=80) then a.answer_value else 0 end),2),'-1') AS '[76-80]',"
-                      " IFNULL(round(avg (case when (v.age>80 and v.age<=85) then a.answer_value else 0 end),2),'-1') AS '[81-85]',"
-                      " IFNULL(round(avg (case when (v.age>85 and v.age<=90) then a.answer_value else 0 end),2),'-1') AS '[86-90]',"
-                      " IFNULL(round(avg (case when (v.age>90 and v.age<=95) then a.answer_value else 0 end),2),'-1') AS '[91-95]',"
-                      " IFNULL(round(avg (case when (v.age>95 and v.age<=100) then a.answer_value else 0 end),2),'-1') AS '[95-100]'"
-                      "from answer as a "
-                      "join  visitor as v on a.visitor_id=v.id join question as q on a.question_id = q.id join ethnicity as e"
-                      " on v.ethnicity= e.id  where q.identifier= ?";
+    QString sqlQuery= "select  IFNULL(ROUND( AVG(CASE WHEN (v.age<=5 and v.age>0) THEN  a.answer_value ELSE 0 END ),2),'-1') AS '[0-5]',"
+                      " IFNULL(ROUND( AVG (CASE WHEN (v.age>5 and v.age <=10) THEN  a.answer_value ELSE 0 END),2),'-1') AS '[6-10]',"
+                      " IFNULL(ROUND(AVG (CASE WHEN (v.age>10 and v.age<=15) THEN a.answer_value ELSE 0 END),2),'-1') AS '[11-15]',"
+                      " IFNULL(ROUND( AVG (CASE WHEN (v.age>15 and v.age <=20) THEN a.answer_value ELSE 0 END),2),'-1') AS '[16-20]',"
+                      " IFNULL(ROUND( AVG (CASE WHEN (v.age>20 and v.age<=25) THEN a.answer_value ELSE 0 END),2),'-1') AS '[21-25]',"
+                      " IFNULL(ROUND( AVG (CASE WHEN (v.age>25 and v.age<=30) THEN a.answer_value ELSE 0 END),2),'-1') AS '[26-30]',"
+                      " IFNULL(ROUND(AVG (CASE WHEN (v.age>30 and v.age<=35) THEN a.answer_value ELSE 0 END),2),'-1') AS '[31-35]',"
+                      " IFNULL(ROUND(AVG (CASE WHEN (v.age>35 and v.age<=40) THEN a.answer_value ELSE 0 END),2),'-1') AS '[36-40]',"
+                      " IFNULL(ROUND( AVG (CASE WHEN (v.age>40 and v.age<=45) THEN a.answer_value ELSE 0 END),2),'-1') AS '[41-45]',"
+                      " IFNULL(ROUND( AVG (CASE WHEN (v.age>45 and v.age<=50) THEN a.answer_value ELSE 0 END),2),'-1') AS '[46-50]',"
+                      " IFNULL(ROUND(AVG (CASE WHEN (v.age>50 and v.age<=55) THEN a.answer_value ELSE 0 END),2),'-1') AS '[51-55]',"
+                      " IFNULL(ROUND(AVG (CASE WHEN (v.age>55 and v.age<=60) THEN a.answer_value ELSE 0 END),2),'-1') AS '[56-60]',"
+                      " IFNULL(ROUND(AVG (CASE WHEN (v.age>60 and v.age<=65) THEN a.answer_value ELSE 0 END),2),'-1') AS '[61-65]',"
+                      " IFNULL(ROUND(AVG (CASE WHEN (v.age>65 and v.age<=70) THEN a.answer_value ELSE 0 END),2),'-1') AS '[66-70]',"
+                      " IFNULL(ROUND(AVG (CASE WHEN (v.age>70 and v.age<=75) THEN a.answer_value ELSE 0 END),2),'-1') AS '[71-75]',"
+                      " IFNULL(ROUND(AVG (CASE WHEN (v.age>75 and v.age<=80) THEN a.answer_value ELSE 0 END),2),'-1') AS '[76-80]',"
+                      " IFNULL(ROUND(AVG (CASE WHEN (v.age>80 and v.age<=85) THEN a.answer_value ELSE 0 END),2),'-1') AS '[81-85]',"
+                      " IFNULL(ROUND(AVG (CASE WHEN (v.age>85 and v.age<=90) THEN a.answer_value ELSE 0 END),2),'-1') AS '[86-90]',"
+                      " IFNULL(ROUND(AVG (CASE WHEN (v.age>90 and v.age<=95) THEN a.answer_value ELSE 0 END),2),'-1') AS '[91-95]',"
+                      " IFNULL(ROUND(AVG (CASE WHEN (v.age>95 and v.age<=100) THEN a.answer_value ELSE 0 END),2),'-1') AS '[96-100]'"
+                      "FROM answer AS a "
+                      "JOIN  visitor AS v ON a.visitor_id=v.id JOIN question AS q ON a.question_id = q.id JOIN ethnicity AS e"
+                      " ON v.ethnicity= e.id  WHERE q.identifier= ?";
 
-    if(ethenicity != "all"){
+    if(ethenicity != "all") {
 
         sqlQuery += " and e.`identifier`= ?";
     }
@@ -497,7 +499,7 @@ QList<int> Facade::getAnswerByAge(const QString& questionId,const QString& ethen
         }
 
     }
-    if(timeAnswered != "all"){
+    if(timeAnswered != "all") {
 
         if(timeAnswered == "this_year"){
             sqlQuery += " and YEAR(v.`created_at`)= ?";
@@ -512,7 +514,7 @@ QList<int> Facade::getAnswerByAge(const QString& questionId,const QString& ethen
     // ? replaces the perameter in query
     query.addBindValue(QVariant(questionId));
 
-    if(ethenicity!= "all"){
+    if(ethenicity!= "all") {
         query.addBindValue(QVariant(ethenicity));
     }
 
@@ -523,11 +525,11 @@ QList<int> Facade::getAnswerByAge(const QString& questionId,const QString& ethen
     if(timeAnswered != "all")
     {
         QString timeFilter;
-        if(timeAnswered =="this_year"){
+        if(timeAnswered =="this_year") {
 
             timeFilter = "YEAR(CURDATE())";
         }
-        else if (timeAnswered =="today"){
+        else if (timeAnswered =="today") {
 
             timeFilter = "date(CURRENT_TIMESTAMP())";
         }
@@ -536,13 +538,13 @@ QList<int> Facade::getAnswerByAge(const QString& questionId,const QString& ethen
     qDebug() << "getAnswerByAge ::: Query ::" <<sqlQuery;
     bool ok = query.exec();
 
-    if(!ok){
+    if(!ok) {
         qWarning()<<"ERROR :: "<< query.lastError().text();
     }
     while (query.next()) {
 
         //providers Question Identifier's List of avg answer_value by age range
-        avgAnsByAge.insert(1,query.value(0).toFloat()), //[0-5]
+        avgAnsByAge.insert(1,query.value(0).toInt()), //[0-5]
         avgAnsByAge.insert(2,query.value(1).toInt()); //[6-10]
         avgAnsByAge.insert(3,query.value(2).toInt()); //[11-15]
         avgAnsByAge.insert(4,query.value(3).toInt()); //[16-20]
@@ -583,36 +585,36 @@ QMap<QString,int> Facade::getAnswerByGender(const QString& questionId, const QSt
     qDebug() << "getAnswerByGender";
     QMap<QString,int> AvgAnsByGender;
     
-    QString sqlQuery= "SELECT  IFNULL( round(avg( case when v.gender='male' "
-                      "then a.answer_value else 0 end ),2),'-1') as 'Male', "
-                      "IFNULL(round(avg( case when v.gender='female' then "
-                      " a.answer_value else 0 end ),2),'-1') as 'Female',"
-                      "IFNULL(  round(avg( case when v.gender='other' then a.answer_value"
-                      " else 0 end ),2) ,'-1')as 'Other' "
-                      "from answer as a join visitor as v on a.visitor_id = v.id JOIN"
-                      " question as q on a.question_id = q.id "
-                      "join ethnicity as e on v.ethnicity= e.id where q.identifier=?";
+    QString sqlQuery= "SELECT  IFNULL( ROUND(AVG( CASE WHEN v.gender='male' "
+                      "THEN a.answer_value ELSE 0 END ),2),'-1') as 'Male', "
+                      "IFNULL(ROUND(AVG( CASE WHEN v.gender='female' THEN "
+                      " a.answer_value ELSE 0 END ),2),'-1') as 'Female',"
+                      "IFNULL(ROUND(AVG(CASE WHEN v.gender='other' THEN a.answer_value"
+                      " ELSE 0 END ),2) ,'-1')as 'Other' "
+                      "FROM answer AS a JOIN visitor AS v ON a.visitor_id = v.id JOIN"
+                      " question AS q ON a.question_id = q.id "
+                      "JOIN ethnicity AS e ON v.ethnicity= e.id WHERE q.identifier=?";
 
     
-    if(ethenicity != "all"){
+    if(ethenicity != "all") {
 
         sqlQuery += " and e.`identifier`= ?";
     }
 
-    if(ageTo != -1 && ageFrom != -1 ){
+    if(ageTo != -1 && ageFrom != -1 ) {
 
         sqlQuery += " and v.age BETWEEN ? and ? ";
     }
-    else if (ageTo != -1){
+    else if (ageTo != -1) {
 
         sqlQuery += " and v.age BETWEEN 0 and ? ";
     }
-    else if (ageFrom !=-1 ){
+    else if (ageFrom !=-1 ) {
 
         sqlQuery += " and v.age BETWEEN ? and  100 ";
     }
 
-    if(timeAnswered != "all"){
+    if(timeAnswered != "all") {
 
         if(timeAnswered == "this_year"){
             sqlQuery += " and YEAR(v.`created_at`)= ?";
@@ -628,19 +630,19 @@ QMap<QString,int> Facade::getAnswerByGender(const QString& questionId, const QSt
     // ? replaces the perameter in query
     query.addBindValue(QVariant(questionId));
 
-    if(ethenicity!= "all"){
+    if(ethenicity!= "all") {
         query.addBindValue(QVariant(ethenicity));
     }
 
-    if(ageTo != -1 and ageFrom != -1 ){
+    if(ageTo != -1 and ageFrom != -1 ) {
         query.addBindValue(QVariant(ageFrom));
         query.addBindValue(QVariant(ageTo));
     }
-    else if (ageTo != -1){
+    else if (ageTo != -1) {
 
         query.addBindValue(QVariant(ageTo));
     }
-    else if (ageFrom !=-1 ){
+    else if (ageFrom !=-1 ) {
 
         query.addBindValue(QVariant(ageFrom));
     }
@@ -661,15 +663,15 @@ QMap<QString,int> Facade::getAnswerByGender(const QString& questionId, const QSt
     qDebug() << "getAnswerByGender ::: Query ::" <<sqlQuery;
     bool ok = query.exec();
 
-    if(!ok){
+    if(!ok) {
         qWarning()<<"ERROR :: "<< query.lastError().text();
     }
-    while (query.next()) {
+    while (query.next()){
 
         //providers Question Identifier's  avg answer_value by Gender
-        AvgAnsByGender.insert("Male",query.value(0).toInt()); //male
-        AvgAnsByGender.insert("Famale",query.value(1).toInt()); //female
-        AvgAnsByGender.insert("Other",query.value(2).toInt());//other
+        AvgAnsByGender.insert("male",query.value(0).toInt()); //male
+        AvgAnsByGender.insert("female",query.value(1).toInt()); //female
+        AvgAnsByGender.insert("other",query.value(2).toInt());//other
 
     }
 
@@ -680,7 +682,6 @@ QMap<QString,int> Facade::getAnswerByGender(const QString& questionId, const QSt
 /**
  * @brief Facade::getAnswerByEthnicity
  * @param questionId
-
  * @param ageTo
  * @param ageFrom
  * @param gender
@@ -693,14 +694,14 @@ QMap<QString, int> Facade::getAnswerByEthnicity(const QString& questionId,int ag
     qDebug() << "GetAnswerByEthnicity";
     QMap<QString, int> AvgAnsByEthnicity;
 
-    QString sqlQuery="SELECT IFNULL(round(avg( case when e.identifier='quebecer' then a.answer_value else 0 end ),2),'-1') as 'Quebecer',"
-                        "IFNULL( round(avg( case when e.identifier='canadian' then a.answer_value else 0 end ),2),'-1') as 'Canadian',"
-                        "IFNULL( round(avg( case when e.identifier='american' then a.answer_value else 0 end ),2),'-1') as 'American', "
-                        "IFNULL( round(avg( case when e.identifier='european' then a.answer_value else 0 end ),2),'-1') as 'European' ,"
-                        "IFNULL( round(avg( case when e.identifier='native' then a.answer_value else 0 end ),2),'-1') as 'Native' ,"
-                        "IFNULL( round(avg( case when e.identifier='other' then a.answer_value else 0 end ),2),'-1') as 'other' "
-                        "from answer as a join visitor as v on a.visitor_id = v.id JOIN question as q on a.question_id = q.id"
-                        " join ethnicity as e on v.ethnicity= e.id where q.identifier=? ";
+    QString sqlQuery="SELECT IFNULL(ROUND(AVG( CASE WHEN e.identifier='quebecer' THEN a.answer_value ELSE 0 END ),2),'-1') as 'Quebecer',"
+                        "IFNULL( ROUND(AVG( CASE WHEN e.identifier='canadian' THEN a.answer_value ELSE 0 END ),2),'-1') as 'Canadian',"
+                        "IFNULL( ROUND(AVG( CASE WHEN e.identifier='american' THEN a.answer_value ELSE 0 END ),2),'-1') as 'American', "
+                        "IFNULL( ROUND(AVG( CASE WHEN e.identifier='european' THEN a.answer_value ELSE 0 END ),2),'-1') as 'European' ,"
+                        "IFNULL( ROUND(AVG( CASE WHEN e.identifier='native' THEN a.answer_value ELSE 0 END ),2),'-1') as 'Native' ,"
+                        "IFNULL( ROUND(AVG( CASE WHEN e.identifier='other' THEN a.answer_value ELSE 0 END ),2),'-1') as 'other' "
+                        "from answer AS a JOIN visitor AS v ON a.visitor_id = v.id JOIN question AS q ON a.question_id = q.id"
+                        " JOIN ethnicity AS e on v.ethnicity = e.id WHERE q.identifier = ? ";
 
     if(ageTo != -1 && ageFrom != -1 ){
 
@@ -710,7 +711,7 @@ QMap<QString, int> Facade::getAnswerByEthnicity(const QString& questionId,int ag
 
         sqlQuery += " and v.age BETWEEN 0 and ? ";
     }
-    else if (ageFrom !=-1 ){
+    else if (ageFrom != -1 ){
 
         sqlQuery += " and v.age BETWEEN ? and  100 ";
     }
@@ -723,10 +724,10 @@ QMap<QString, int> Facade::getAnswerByEthnicity(const QString& questionId,int ag
     if(timeAnswered != "all"){
 
         if(timeAnswered == "this_year"){
-            sqlQuery += " and YEAR(v.`created_at`)= ?";
+            sqlQuery += " and YEAR(v.`created_at`) = ?";
         }
         else if (timeAnswered == "today"){
-            sqlQuery += " and date(v.`created_at`)= ?";
+            sqlQuery += " and date(v.`created_at`) = ?";
         }
     }
 
@@ -747,7 +748,7 @@ QMap<QString, int> Facade::getAnswerByEthnicity(const QString& questionId,int ag
 
         query.addBindValue(QVariant(ageTo));
     }
-    else if (ageFrom !=-1 ){
+    else if (ageFrom != -1 ){
 
         query.addBindValue(QVariant(ageFrom));
     }
@@ -760,11 +761,11 @@ QMap<QString, int> Facade::getAnswerByEthnicity(const QString& questionId,int ag
     if(timeAnswered != "all")
     {
         QString timeFilter;
-        if(timeAnswered =="this_year"){
+        if(timeAnswered == "this_year"){
 
             timeFilter = "YEAR(CURDATE())";
         }
-        else if (timeAnswered =="today"){
+        else if (timeAnswered == "today"){
 
             timeFilter = "date(CURRENT_TIMESTAMP())";
         }
@@ -782,14 +783,36 @@ QMap<QString, int> Facade::getAnswerByEthnicity(const QString& questionId,int ag
     while (query.next()) {
 
         //providers Question Identifier's  avg answer_value by Ethnicity
-        AvgAnsByEthnicity.insert("Quebecer",query.value(0).toInt());
-        AvgAnsByEthnicity.insert("Canadian",query.value(1).toInt());
-        AvgAnsByEthnicity.insert("American",query.value(2).toInt());
-        AvgAnsByEthnicity.insert("European",query.value(3).toInt());
-        AvgAnsByEthnicity.insert("Native",query.value(4).toInt());
-        AvgAnsByEthnicity.insert("Other",query.value(5).toInt());
+        AvgAnsByEthnicity.insert("quebecer",query.value(0).toInt());
+        AvgAnsByEthnicity.insert("canadian",query.value(1).toInt());
+        AvgAnsByEthnicity.insert("american",query.value(2).toInt());
+        AvgAnsByEthnicity.insert("european",query.value(3).toInt());
+        AvgAnsByEthnicity.insert("native",query.value(4).toInt());
+        AvgAnsByEthnicity.insert("other",query.value(5).toInt());
     }
 
     return  AvgAnsByEthnicity;
 
+}
+
+QMap<QString, int > Facade:: getAllAnswers(){
+
+    QMap<QString,int> avgQueAns ;
+
+    QString sqlQuery="select q.identifier as 'Question', avg(a.answer_value) as 'Average' "
+                     "from answer as a join question as q on a.question_id = q.id group by q.id";
+
+    QSqlQuery query;
+
+    bool ok = query.exec(sqlQuery);
+    if (! ok) {
+        qWarning() << "ERROR: " << query.lastError().text();
+    }
+    while (query.next()) {
+        QString questionId = query.value(0).toString();
+        int answerValue = query.value(1).toInt();
+        avgQueAns.insert(questionId, answerValue);
+    }
+
+    return avgQueAns;
 }
