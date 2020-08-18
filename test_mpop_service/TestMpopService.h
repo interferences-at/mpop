@@ -37,6 +37,10 @@ private slots:
     // test methods for the survey questions, for multiple visitors: (for the dataviz)
     // TODO
 
+    void test_22_getAnswerByGender();
+    void test_15_getUserAge();
+    void test_23_getAnswerByEthnicity();
+    void test_24_getAnswerByAge();
     // called after the last test function was executed
     void cleanupTestCase();
 

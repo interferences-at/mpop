@@ -7,6 +7,9 @@
 #include <QDir>
 #include <QSqlRecord>
 #include <QSqlDriver>
+#include <exception>
+#include <QString>
+#include <QDateTime>
 
 
 Facade::Facade(const Config& config, QObject* parent) : QObject(parent), _config(config)
@@ -46,19 +49,10 @@ bool Facade::isDatabaseReady() {
 
 int Facade::getOrCreateUser(const QString& rfidTag) {
     qDebug() << "getOrCreateUser";
-    // TODO: make sure to call createNewUser() if no user is associated to this RFID tag.
-    // (it seems like getUserForTag takes care of that - but it should probably be moved here,
-    // so that it's simpler)
+
     // FIXME: it seems like this returns 0 when no connection to the database was possible.
     // It should probably throw an error, instead.
 
-    // TODO: remove the following duplicate:
-    return getUserForTag(rfidTag);
-}
-
-
-int Facade::getUserForTag(const QString& rfidTag) {
-    qDebug() << "getUserForTag";
     int visitorId = -1;
     bool tagExists = false;
 
@@ -78,16 +72,22 @@ int Facade::getUserForTag(const QString& rfidTag) {
         tagExists = true;
         bool tagExistsButHasNoUser = query.isNull(0);
         if (tagExistsButHasNoUser) {
-            visitorId = this->createNewUser();
-            bool ok = updateTagSetVisitorId(rfidTag, visitorId);
-            if (ok) {
-                ok = updateVisitorSetRfid(visitorId, rfidTag);
-            }
-        } else {
+            visitorId = this->createNewUser(rfidTag);
+            updateTagSetVisitorId(rfidTag, visitorId);
+        }
+        else {
             visitorId = query.value(0).toInt(); // value("visitor_id") would also work, but is less efficient
         }
-    } else {
-        visitorId = this->createTagAndUser(rfidTag);
+
+    }else {
+        try {
+            visitorId = this->createTagAndUser(rfidTag);
+        } catch (std::exception & e) {
+
+            qWarning()<<"Internal Server Error ::"<<e.what();
+
+        }
+
     }
     return visitorId;
 }
@@ -97,7 +97,7 @@ int Facade::createTagAndUser(const QString& rfidTag) {
     qDebug() << "createTagAndUser";
 
     // First, create the new user:
-    int  visitorId = createNewUser();
+    int  visitorId = createNewUser(rfidTag);
 
     QString createSql = "INSERT INTO tag (`rfid`, `visitor_id`) VALUES (?, ?)";
 
@@ -111,23 +111,25 @@ int Facade::createTagAndUser(const QString& rfidTag) {
     bool ok = query.exec();
     if (! ok) {
         qWarning() << "ERROR: " << query.lastError().text();
-    } else {
-        // TODO: raise an exception, and make sure that it's catched by whoever calls it.
+        throw(query.lastError().text());
     }
 
     return visitorId;
 }
 
 
-int Facade::createNewUser() {
-    // TODO: Add rfidTag argument and INSERT it at the same time
-    // instead of calling UPDATE to the same table, later.
+int Facade::createNewUser(const QString& rfidTag) {
+
     qDebug() << "createNewUser";
 
-    QString sql = "INSERT INTO `visitor` (`id`) VALUES (NULL)";
+    QString sql = "INSERT INTO `visitor` (`id`,`rfid`) VALUES (NULL, ?)";
 
     QSqlQuery query;
-    bool ok = query.exec(sql);
+    query.prepare(sql);
+
+    // Value(s) that replace the question mark(s) (?):
+    query.addBindValue(QVariant(rfidTag));
+    bool ok = query.exec();
     if (! ok) {
         qWarning() << "ERROR: " << query.lastError().text();
     }
@@ -145,7 +147,7 @@ bool Facade::updateTagSetVisitorId(const QString& rfidTag, int visitorId) {
     QSqlQuery query;
     query.prepare(sql);
 
-    // Value(s) that replace the question mark(s) (?):
+    // Value(s) that replace the question mark(s) (?)
     query.addBindValue(QVariant(visitorId));
     query.addBindValue(QVariant(rfidTag));
 
@@ -155,103 +157,6 @@ bool Facade::updateTagSetVisitorId(const QString& rfidTag, int visitorId) {
     }
     ok = query.numRowsAffected() == 1;
     return ok;
-}
-
-
-bool Facade::updateVisitorSetRfid(int visitorId, const QString& rfidTag) {
-    qDebug() << "updateVisitorSetRfid";
-
-    QString sql = "UPDATE `visitor` SET `rfid` = ? WHERE `visitor_id` = ?";
-
-    QSqlQuery query;
-    query.prepare(sql);
-
-    // Value(s) that replace the question mark(s) (?):
-    query.addBindValue(QVariant(rfidTag));
-    query.addBindValue(QVariant(visitorId));
-
-    bool ok = query.exec();
-    if (! ok) {
-        qWarning() << "ERROR: " << query.lastError().text();
-    }
-    ok = query.numRowsAffected() == 1;
-    return ok;
-}
-
-
-QString Facade::getUserLanguage(int userId) {
-    qDebug() << "getUserLanguage";
-    QString userLanguage;
-
-    QString sql = "SELECT `language` FROM `visitor` WHERE `id` = ?";
-
-    QSqlQuery query;
-    query.prepare(sql);
-
-    // Value(s) that replace the question mark(s) (?):
-    query.addBindValue(QVariant(userId));
-    bool ok = query.exec();
-    if (! ok) {
-        qWarning() << "ERROR: " << query.lastError().text();
-    }
-    while (query.next()) {
-        userLanguage = query.value(0).toString();
-    }
-    return userLanguage;
-}
-
-
-QString Facade::getUserGender(int userId) {
-    qDebug() << "getUserGender";
-    QString userGender;
-
-    QString sql = "SELECT `gender` FROM `visitor` WHERE `id` = ?";
-
-    QSqlQuery query;
-    query.prepare(sql);
-
-    // Value(s) that replace the question mark(s) (?):
-    query.addBindValue(QVariant(userId));
-    bool ok = query.exec();
-    if (! ok) {
-        qWarning() << "ERROR: " << query.lastError().text();
-    }
-    while (query.next()) {
-        userGender = query.value(0).toString();
-    }
-    return userGender;
-}
-
-
-QMap<QString, int> Facade::getUserAnswers(int userId) {
-    QMap<QString, int> answers;
-
-    QString sql = "SELECT "
-                  "question.identifier, "
-                  "answer.answer_value "
-                  "FROM `answer` "
-                  "JOIN `question` ON answer.question_id = question.id "
-                  "WHERE answer.visitor_id = ?";
-
-    QSqlQuery query;
-    query.prepare(sql);
-
-    // Value(s) that replace the question mark(s) (?):
-    query.addBindValue(QVariant(userId));
-
-    bool ok = query.exec();
-    if (! ok) {
-        qWarning() << "ERROR: " << query.lastError().text();
-    }
-    while (query.next()) {
-        QString questionId = query.value(0).toString();
-        int answerValue = query.value(1).toInt();
-        answers.insert(questionId, answerValue);
-    }
-
-    // TODO: Perhaps, for each answer that is not set,
-    // we could create the key in the answers QMap, and set its value to -1. (?)
-    return answers;
 }
 
 
@@ -300,7 +205,7 @@ QMap<QString, QVariant> Facade::getUserInfo(int userId) {
 }
 
 
-void Facade::setUserAnswer(int userId, const QString& questionId, int value) {
+void Facade::setUserAnswer(int userId, const QString& questionId, int value=50) {
     qDebug() << "setUserAnswer";
     QString sql= "INSERT INTO `answer` "
                  "(`visitor_id`, `question_id`, `answer_value`) "
@@ -319,6 +224,35 @@ void Facade::setUserAnswer(int userId, const QString& questionId, int value) {
     if (! ok) {
         qWarning() << "ERROR: " << query.lastError().text();
     }
+}
+
+QMap<QString, int> Facade::getUserAnswers(int userId) {
+    QMap<QString, int> answers;
+
+    QString sql = "SELECT "
+                  "question.identifier, "
+                  "answer.answer_value "
+                  "FROM `answer` "
+                  "JOIN `question` ON answer.question_id = question.id "
+                  "WHERE answer.visitor_id = ?";
+
+    QSqlQuery query;
+    query.prepare(sql);
+
+    // Value(s) that replace the question mark(s) (?):
+    query.addBindValue(QVariant(userId));
+
+    bool ok = query.exec();
+    if (! ok) {
+        qWarning() << "ERROR: " << query.lastError().text();
+    }
+    while (query.next()) {
+        QString questionId = query.value(0).toString();
+        int answerValue = query.value(1).toInt();
+        answers.insert(questionId, answerValue);
+    }
+
+    return answers;
 }
 
 
@@ -363,7 +297,8 @@ void Facade::freeUnusedTags() {
 bool Facade::setUserLanguage(int userId, const QString& language) {
     qDebug() << "setUserLanguage";
     QString sql = "UPDATE `visitor` SET `language` = ? WHERE `id` = ?";
-    QSqlQuery query(sql, _database);
+    QSqlQuery query;
+    query.prepare(sql);
 
     // Value(s) that replace the question mark(s) (?):
     query.addBindValue(QVariant(language));
@@ -512,4 +447,349 @@ bool Facade::deleteTagsVisitorsAndTheirAnswers(const QList<QString>& rfidTags) {
     }
 
     return ret;
+}
+
+/**
+ * @brief Facade::getAnswerByAge
+ * @param questionId
+ * @param ethenicity
+ * @param gender
+ * @param timeAnswered
+ * @return an associative list's the values are ints.
+ */
+
+QList<int> Facade::getAnswerByAge(const QString& questionId,const QString& ethenicity="all",const QString& gender="all" ,const QString& timeAnswered="all"){
+
+    qDebug() << "GetAnswerByAge";
+    QList<int> avgAnsByAge;
+
+    QString sqlQuery= "select  IFNULL(round( avg(case when (v.age<=5 and v.age>0) then  a.answer_value else 0 end ),2),'-1') AS '[0-5]',"
+                      " IFNULL(round( avg (case when (v.age>5 and v.age <=10) then  a.answer_value else 0 end),2),'-1') AS '[6-10]'  ,"
+                      " IFNULL(round(avg (case when (v.age>10 and v.age<=15) then a.answer_value else 0 end),2),'-1') AS '[11-15]',"
+                      " IFNULL(round( avg (case when (v.age>15 and v.age <=20) then a.answer_value else 0 end),2),'-1') AS '[16-20]',"
+                      " IFNULL(round( avg (case when (v.age>20 and v.age<=25) then a.answer_value else 0 end),2),'-1') AS '[21-25]',"
+                      " IFNULL(round( avg (case when (v.age>25 and v.age<=30) then a.answer_value else 0 end),2),'-1') AS '[26-30]',"
+                      " IFNULL(round(avg (case when (v.age>30 and v.age<=35) then a.answer_value else 0 end),2),'-1') AS '[31-35]',"
+                      " IFNULL(round(avg (case when (v.age>35 and v.age<=40) then a.answer_value else 0 end),2),'-1') AS '[36-40]',"
+                      " IFNULL(round( avg (case when (v.age>40 and v.age<=45) then a.answer_value else 0 end),2),'-1') AS '[41-45]',"
+                      " IFNULL(round( avg (case when (v.age>45 and v.age<=50) then a.answer_value else 0 end),2),'-1') AS '[46-50]',"
+                      " IFNULL(round(avg (case when (v.age>50 and v.age<=55) then a.answer_value else 0 end),2),'-1') AS '[51-55]',"
+                      " IFNULL(round(avg (case when (v.age>55 and v.age<=60) then a.answer_value else 0 end),2),'-1') AS '[56-60]',"
+                      " IFNULL(round(avg (case when (v.age>60 and v.age<=65) then a.answer_value else 0 end),2),'-1') AS '[61-65]',"
+                      " IFNULL(round(avg (case when (v.age>65 and v.age<=70) then a.answer_value else 0 end),2),'-1') AS '[66-70]',"
+                      " IFNULL(round(avg (case when (v.age>70 and v.age<=75) then a.answer_value else 0 end),2),'-1') AS '[71-75]',"
+                      " IFNULL(round(avg (case when (v.age>75 and v.age<=80) then a.answer_value else 0 end),2),'-1') AS '[76-80]',"
+                      " IFNULL(round(avg (case when (v.age>80 and v.age<=85) then a.answer_value else 0 end),2),'-1') AS '[81-85]',"
+                      " IFNULL(round(avg (case when (v.age>85 and v.age<=90) then a.answer_value else 0 end),2),'-1') AS '[86-90]',"
+                      " IFNULL(round(avg (case when (v.age>90 and v.age<=95) then a.answer_value else 0 end),2),'-1') AS '[91-95]',"
+                      " IFNULL(round(avg (case when (v.age>95 and v.age<=100) then a.answer_value else 0 end),2),'-1') AS '[95-100]'"
+                      "from answer as a "
+                      "join  visitor as v on a.visitor_id=v.id join question as q on a.question_id = q.id join ethnicity as e"
+                      " on v.ethnicity= e.id  where q.identifier= ?";
+
+    if(ethenicity != "all"){
+
+        sqlQuery += " and e.`identifier`= ?";
+    }
+    if (gender != "all"){
+        if(gender == "male"|| gender =="female" || gender == "other"){
+            sqlQuery += " and v.`gender`= ?";
+        }
+
+    }
+    if(timeAnswered != "all"){
+
+        if(timeAnswered == "this_year"){
+            sqlQuery += " and YEAR(v.`created_at`)= ?";
+        }
+        else if (timeAnswered == "today"){
+            sqlQuery += " and date(v.`created_at`)= ?";
+        }
+    }
+    QSqlQuery query;
+    query.prepare(sqlQuery);
+
+    // ? replaces the perameter in query
+    query.addBindValue(QVariant(questionId));
+
+    if(ethenicity!= "all"){
+        query.addBindValue(QVariant(ethenicity));
+    }
+
+    if(gender != "all"){
+        query.addBindValue(QVariant(gender));
+    }
+
+    if(timeAnswered != "all")
+    {
+        QString timeFilter;
+        if(timeAnswered =="this_year"){
+
+            timeFilter = "YEAR(CURDATE())";
+        }
+        else if (timeAnswered =="today"){
+
+            timeFilter = "date(CURRENT_TIMESTAMP())";
+        }
+        query.addBindValue(QVariant(timeFilter));
+    }
+    qDebug() << "getAnswerByAge ::: Query ::" <<sqlQuery;
+    bool ok = query.exec();
+
+    if(!ok){
+        qWarning()<<"ERROR :: "<< query.lastError().text();
+    }
+    while (query.next()) {
+
+        //providers Question Identifier's List of avg answer_value by age range
+        avgAnsByAge.insert(1,query.value(0).toFloat()), //[0-5]
+        avgAnsByAge.insert(2,query.value(1).toInt()); //[6-10]
+        avgAnsByAge.insert(3,query.value(2).toInt()); //[11-15]
+        avgAnsByAge.insert(4,query.value(3).toInt()); //[16-20]
+        avgAnsByAge.insert(5,query.value(4).toInt()); //[21-25]
+        avgAnsByAge.insert(6,query.value(5).toInt()); //[26-30]
+        avgAnsByAge.insert(7,query.value(6).toInt()); //[31-35]
+        avgAnsByAge.insert(8,query.value(7).toInt()); //[36-40]
+        avgAnsByAge.insert(9,query.value(8).toInt());// [41-45]
+        avgAnsByAge.insert(10,query.value(9).toInt());//[46-50]
+        avgAnsByAge.insert(11,query.value(10).toInt()); // [51-55]
+        avgAnsByAge.insert(12,query.value(11).toInt()); //[56-60]
+        avgAnsByAge.insert(13,query.value(12).toInt()); //[61-65]
+        avgAnsByAge.insert(14,query.value(13).toInt()); //[66-70]
+        avgAnsByAge.insert(15,query.value(14).toInt()); //[71-75]
+        avgAnsByAge.insert(16,query.value(15).toInt()), //[76-80]
+        avgAnsByAge.insert(17,query.value(16).toInt()); //[81-85]
+        avgAnsByAge.insert(18,query.value(17).toInt()); //[86-90]
+        avgAnsByAge.insert(19,query.value(18).toInt()); //[91-95]
+        avgAnsByAge.insert(20,query.value(19).toInt()); // [96-100]
+    }
+
+    return  avgAnsByAge;
+}
+
+/**
+ * @brief Facade::getAnswerByGender
+ * @param questionId
+ * @param ethenicity
+ * @param ageTo
+ * @param ageFrom
+ * @param gender
+ * @param timeAnswered
+ * @return an associative array where key is user gender, and the values are ints.
+ */
+QMap<QString,int> Facade::getAnswerByGender(const QString& questionId, const QString& ethenicity="all", int ageTo=-1, int ageFrom =-1  ,const QString& timeAnswered="all")
+{
+
+    qDebug() << "getAnswerByGender";
+    QMap<QString,int> AvgAnsByGender;
+    
+    QString sqlQuery= "SELECT  IFNULL( round(avg( case when v.gender='male' "
+                      "then a.answer_value else 0 end ),2),'-1') as 'Male', "
+                      "IFNULL(round(avg( case when v.gender='female' then "
+                      " a.answer_value else 0 end ),2),'-1') as 'Female',"
+                      "IFNULL(  round(avg( case when v.gender='other' then a.answer_value"
+                      " else 0 end ),2) ,'-1')as 'Other' "
+                      "from answer as a join visitor as v on a.visitor_id = v.id JOIN"
+                      " question as q on a.question_id = q.id "
+                      "join ethnicity as e on v.ethnicity= e.id where q.identifier=?";
+
+    
+    if(ethenicity != "all"){
+
+        sqlQuery += " and e.`identifier`= ?";
+    }
+
+    if(ageTo != -1 && ageFrom != -1 ){
+
+        sqlQuery += " and v.age BETWEEN ? and ? ";
+    }
+    else if (ageTo != -1){
+
+        sqlQuery += " and v.age BETWEEN 0 and ? ";
+    }
+    else if (ageFrom !=-1 ){
+
+        sqlQuery += " and v.age BETWEEN ? and  100 ";
+    }
+
+    if(timeAnswered != "all"){
+
+        if(timeAnswered == "this_year"){
+            sqlQuery += " and YEAR(v.`created_at`)= ?";
+        }
+        else if (timeAnswered == "today"){
+            sqlQuery += " and date(v.`created_at`)= ?";
+        }
+    }
+
+    QSqlQuery query;
+    query.prepare(sqlQuery);
+
+    // ? replaces the perameter in query
+    query.addBindValue(QVariant(questionId));
+
+    if(ethenicity!= "all"){
+        query.addBindValue(QVariant(ethenicity));
+    }
+
+    if(ageTo != -1 and ageFrom != -1 ){
+        query.addBindValue(QVariant(ageFrom));
+        query.addBindValue(QVariant(ageTo));
+    }
+    else if (ageTo != -1){
+
+        query.addBindValue(QVariant(ageTo));
+    }
+    else if (ageFrom !=-1 ){
+
+        query.addBindValue(QVariant(ageFrom));
+    }
+
+    if(timeAnswered != "all")
+    {
+        QString timeFilter;
+        if(timeAnswered =="this_year"){
+
+            timeFilter = "YEAR(CURDATE())";
+        }
+        else if (timeAnswered =="today"){
+
+            timeFilter = "date(CURRENT_TIMESTAMP())";
+        }
+        query.addBindValue(QVariant(timeFilter));
+    }
+    qDebug() << "getAnswerByGender ::: Query ::" <<sqlQuery;
+    bool ok = query.exec();
+
+    if(!ok){
+        qWarning()<<"ERROR :: "<< query.lastError().text();
+    }
+    while (query.next()) {
+
+        //providers Question Identifier's  avg answer_value by Gender
+        AvgAnsByGender.insert("Male",query.value(0).toInt()); //male
+        AvgAnsByGender.insert("Famale",query.value(1).toInt()); //female
+        AvgAnsByGender.insert("Other",query.value(2).toInt());//other
+
+    }
+
+    return  AvgAnsByGender;
+}
+
+
+/**
+ * @brief Facade::getAnswerByEthnicity
+ * @param questionId
+
+ * @param ageTo
+ * @param ageFrom
+ * @param gender
+ * @param timeAnswered
+ * @return an associative array where key is user Ethnicity, and the values are ints.
+ */
+
+QMap<QString, int> Facade::getAnswerByEthnicity(const QString& questionId,int ageFrom=-1, int ageTo =-1, const QString& gender="all",const QString& timeAnswered="all"){
+
+    qDebug() << "GetAnswerByEthnicity";
+    QMap<QString, int> AvgAnsByEthnicity;
+
+    QString sqlQuery="SELECT IFNULL(round(avg( case when e.identifier='quebecer' then a.answer_value else 0 end ),2),'-1') as 'Quebecer',"
+                        "IFNULL( round(avg( case when e.identifier='canadian' then a.answer_value else 0 end ),2),'-1') as 'Canadian',"
+                        "IFNULL( round(avg( case when e.identifier='american' then a.answer_value else 0 end ),2),'-1') as 'American', "
+                        "IFNULL( round(avg( case when e.identifier='european' then a.answer_value else 0 end ),2),'-1') as 'European' ,"
+                        "IFNULL( round(avg( case when e.identifier='native' then a.answer_value else 0 end ),2),'-1') as 'Native' ,"
+                        "IFNULL( round(avg( case when e.identifier='other' then a.answer_value else 0 end ),2),'-1') as 'other' "
+                        "from answer as a join visitor as v on a.visitor_id = v.id JOIN question as q on a.question_id = q.id"
+                        " join ethnicity as e on v.ethnicity= e.id where q.identifier=? ";
+
+    if(ageTo != -1 && ageFrom != -1 ){
+
+        sqlQuery += " and v.age BETWEEN ? and ? ";
+    }
+    else if (ageTo != -1){
+
+        sqlQuery += " and v.age BETWEEN 0 and ? ";
+    }
+    else if (ageFrom !=-1 ){
+
+        sqlQuery += " and v.age BETWEEN ? and  100 ";
+    }
+
+    if(gender != "all"){
+
+        sqlQuery += " and v.gender = ? ";
+    }
+
+    if(timeAnswered != "all"){
+
+        if(timeAnswered == "this_year"){
+            sqlQuery += " and YEAR(v.`created_at`)= ?";
+        }
+        else if (timeAnswered == "today"){
+            sqlQuery += " and date(v.`created_at`)= ?";
+        }
+    }
+
+    QSqlQuery query;
+
+    query.prepare(sqlQuery);
+
+    // ? replaces the perameter in query
+    query.addBindValue(QVariant(questionId));
+
+
+
+    if(ageTo != -1 and ageFrom != -1 ){
+        query.addBindValue(QVariant(ageFrom));
+        query.addBindValue(QVariant(ageTo));
+    }
+    else if (ageTo != -1){
+
+        query.addBindValue(QVariant(ageTo));
+    }
+    else if (ageFrom !=-1 ){
+
+        query.addBindValue(QVariant(ageFrom));
+    }
+
+    if(gender!="all"){
+
+        query.addBindValue(QVariant(gender));
+    }
+
+    if(timeAnswered != "all")
+    {
+        QString timeFilter;
+        if(timeAnswered =="this_year"){
+
+            timeFilter = "YEAR(CURDATE())";
+        }
+        else if (timeAnswered =="today"){
+
+            timeFilter = "date(CURRENT_TIMESTAMP())";
+        }
+        query.addBindValue(QVariant(timeFilter));
+    }
+
+    qDebug() << "getAnswerByEthnicity ::: Query ::" <<sqlQuery;
+
+    bool ok = query.exec();
+
+    if(!ok){
+        qWarning()<<"ERROR :: "<< query.lastError().text();
+    }
+
+    while (query.next()) {
+
+        //providers Question Identifier's  avg answer_value by Ethnicity
+        AvgAnsByEthnicity.insert("Quebecer",query.value(0).toInt());
+        AvgAnsByEthnicity.insert("Canadian",query.value(1).toInt());
+        AvgAnsByEthnicity.insert("American",query.value(2).toInt());
+        AvgAnsByEthnicity.insert("European",query.value(3).toInt());
+        AvgAnsByEthnicity.insert("Native",query.value(4).toInt());
+        AvgAnsByEthnicity.insert("Other",query.value(5).toInt());
+    }
+
+    return  AvgAnsByEthnicity;
+
 }

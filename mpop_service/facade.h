@@ -27,13 +27,6 @@ public:
     explicit Facade(
             const Config& config,
             QObject* parent=nullptr);
-    /**
-     * @brief Retrieves the favourite language for a given user.
-     * @param userId
-     * @return The favourite language of the user. ("en" or "fr")
-     * @deprecated. Use getUserInfo instead
-     */
-    QString getUserLanguage(int userId);
 
     /**
      * @brief Returns an active user for a RFID tag
@@ -41,14 +34,6 @@ public:
      * @return The user ID of the user.
      */
     int getOrCreateUser(const QString& rfidTag);
-
-    /**
-     * @brief Retrieves all answers for a given user.
-     * @param userId The user ID of the user.
-     * @return A number of each question identifier.
-     * TODO: perhaps return a QVariant
-     */
-    QMap<QString, int> getUserAnswers(int userId);
 
     /**
      * @brief Creates or update the answer to a specific question for a given user.
@@ -69,8 +54,6 @@ public:
      */
     QList<int> getStatsForQuestion(const QString& questionId);
 
-    bool updateVisitorSetRfid(int visitorId, const QString& rfidTag);
-
     /**
      * @brief Frees a RFID tag that is no longer owned by a user.
      * @param rfidTag The RFID tag.
@@ -86,10 +69,7 @@ public:
     bool setUserLanguage(int userId, const QString& language);
     bool setUserGender(int userId, const QString& gender);
 
-    /**
-     * @deprecated. Use getUserInfo instead.
-     */
-    QString getUserGender(int userId);
+
 
     QMap<QString, QVariant> getUserInfo(int userId);
 
@@ -107,6 +87,55 @@ public:
      * @return True if the database is ready.
      */
     bool isDatabaseReady();
+    
+
+    
+    
+    /**
+     * @brief Get user answers average by for .
+     * @param userId The user ID of the user.
+     * @param questionId The question identifier.
+     * @param value The value of the answer.
+     */
+    QMap<QString, int> getUserAnswers(int userId);
+
+
+    /**
+     * @brief Get user answers average by user age.
+     * @param questionId The question identifier.
+     * @param ethenicity The ethenicity identifier.
+     * @param gender identifier
+     * @param timeAnswered identifier.
+     * @param value The average of the answers.
+     */
+    QList<int> getAnswerByAge(const QString& questionId,const QString& ethenicity,const QString& gender ,const QString& timeAnswered);
+
+
+    /**
+     * @brief Get user answers average by user gender.
+     * @param questionId The question identifier.
+     * @param ethenicity The ethenicity identifier.
+     * @param ageTo The ageTo identifier
+     * @param ageFrom The ageFrom identifier.
+     * @param timeAnswered identifier.
+     * @param value is average of answers.
+     */
+   QMap<QString,int> getAnswerByGender(const QString& questionId, const QString& ethenicity, int ageTo, int ageFrom  ,const QString& timeAnswered);
+
+
+
+   /**
+    * @brief Get user answers average by user Ethnicity.
+    * @param questionId The question identifier.
+    * @param ageTo The ageTo identifier
+    * @param ageFrom The ageFrom identifier.
+    * @param gender identifier
+    * @param timeAnswered identifier.
+    * @param value is average of answers.
+    */
+   QMap<QString, int> getAnswerByEthnicity(const QString& questionId,int ageFrom, int ageTo , const QString& gender,const QString& timeAnswered);
+
+
 
 signals:
 
@@ -117,9 +146,8 @@ private: // data members:
 
 private: // methods:
 
-    int getUserForTag(const QString& rfidTag);
     int createTagAndUser(const QString& rfidTag);
-    int createNewUser();
+    int createNewUser(const QString& rfidTag);
     bool updateTagSetVisitorId(const QString& rfidTag, int visitorId);
 };
 
