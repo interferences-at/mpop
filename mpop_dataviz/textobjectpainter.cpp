@@ -115,9 +115,10 @@ void TextObjectPainter::drawViewElements(ViewModeManager::ViewMode view, const Q
     _painter.drawLine(vLineMrgLeft + 24, _height - hLineMrgBottom, _width - hLineMrgRight, _height - hLineMrgBottom);
 
     auto drawRangeBottomText = [&]() {
+        _painter.setFont(_smallFont);
         qreal bottomTitlePosY = _height - fitToScreenHeight(hLineMrgBottom - 32);
-        _painter.drawText(64, bottomTitlePosY, "Pas du tout");
-        _painter.drawText(_width - 170, bottomTitlePosY, "Tout à fait");
+        _painter.drawText(97, bottomTitlePosY, QString("Pas du tout").toUpper());
+        _painter.drawText(_width - (hLineMrgRight + 75), bottomTitlePosY, QString("Tout à fait").toUpper());
     };
 
     auto drawResponseBottomText = [&]() {
@@ -132,13 +133,13 @@ void TextObjectPainter::drawViewElements(ViewModeManager::ViewMode view, const Q
     switch (view) {
     case ViewModeManager::MultiAnswersMode:
     {
-        int y = fitToScreenHeight(114);
-        int interval = fitToScreenHeight(148 + 35);
-        int marginLeft = 93;
+        int y = fitToScreenHeight(122);
+        int interval = fitToScreenHeight(154 + 35);
+        int marginLeft = 97;
 
         _painter.setFont(_answersTitlesFont);
         for (int i = 0; i < title.size(); i++) {
-            _painter.drawText(marginLeft, y + i * interval, title.at(i));
+            _painter.drawText(marginLeft, y + i * interval, title.at(i).toUpper());
         }
         drawRangeBottomText();
     }
@@ -157,7 +158,7 @@ void TextObjectPainter::drawViewElements(ViewModeManager::ViewMode view, const Q
     {
         int y = fitToScreenHeight(213.5);
         int interval = fitToScreenHeight(213 + 35);
-        int marginLeft = 93;
+        int marginLeft = 97;
 
         _painter.setFont(_answersTitlesFont);
         for (int i = 0; i < title.size(); i++) {
@@ -170,7 +171,7 @@ void TextObjectPainter::drawViewElements(ViewModeManager::ViewMode view, const Q
     {
         int y = fitToScreenHeight(115);
         int interval = fitToScreenHeight(115 + 35);
-        int marginLeft = 93;
+        int marginLeft = 97;
 
         _painter.setFont(_answersTitlesFont);
         for (int i = 0; i < title.size(); i++) {
