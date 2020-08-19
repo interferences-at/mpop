@@ -8,10 +8,11 @@
 #include <QSqlRecord>
 #include <QSqlDriver>
 
-Facade::Facade(
-        const Config& config, QObject* parent) : QObject(parent), _config(config)
+
+Facade::Facade(const Config& config, QObject* parent) : QObject(parent), _config(config)
 {
     _database = QSqlDatabase::addDatabase("QMYSQL");
+
     if (_database.isValid()) {
         qDebug() << "Database is valid";
         qDebug() << "QSqlDriver hasFeature NamedPlaceholders:" << _database.driver()->hasFeature(QSqlDriver::NamedPlaceholders);
@@ -22,11 +23,13 @@ Facade::Facade(
         _database.setPort(_config.mysql_port);
 
         _is_db_open = _database.open();
-
         if (_is_db_open) {
             qInfo() << "Success connecting to the database.";
         } else {
+            qDebug() << _is_db_open;
+            //_is_db_open.removeDatabase ();
             qWarning() << "ERROR: Could not open database";
+
         }
     } else {
         qDebug() << "Database is not valid. The QMYSQL driver for Qt is probably not installed.";
@@ -39,6 +42,8 @@ Facade::Facade(
 bool Facade::isDatabaseReady() {
     return _database.open();
 }
+
+
 
 
 int Facade::getOrCreateUser(const QString& rfidTag) {
@@ -486,7 +491,25 @@ bool Facade::deleteTagsVisitorsAndTheirAnswers(const QList<QString>& rfidTags) {
 
     for (auto iter = rfidTags.begin(); iter != rfidTags.end(); ++ iter) {
         auto rfidTag = (*iter);
-        if (deleteVisitors) {
+
+        if(deleteVisitors && deleteAnswers && deleteTags){
+            QString sql = "DELETE `visitor`, `tag`, `answer`"
+                          "FROM `visitor`"
+                          "LEFT join `tag` on `visitor`.`id`=`tag`.`visitor_id`"
+                          "LEFT join `answer` on `visitor`.`id`=`answer`.`visitor_id`"
+                          "WHERE `tag`.`rfid` = ?";
+            QSqlQuery query;
+            query.prepare(sql);
+            query.addBindValue(QVariant(rfidTag));
+
+            bool ok = query.exec();
+            if (! ok) {
+                qWarning() << "ERROR: " << query.lastError().text();
+            }
+            ret = ret || query.numRowsAffected() > 0;
+
+        }
+        /*if (deleteVisitors) {
             QString sql = "DELETE FROM `visitor` "
                           "WHERE `visitor`.`rfidTag` = ?";
             QSqlQuery query;
@@ -501,7 +524,7 @@ bool Facade::deleteTagsVisitorsAndTheirAnswers(const QList<QString>& rfidTags) {
             }
             ret = ret || query.numRowsAffected() > 0;
         }
-        /*
+
          * TODO:
          *
         if (deleteAnswers) {
