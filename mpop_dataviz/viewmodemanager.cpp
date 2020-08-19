@@ -340,10 +340,10 @@ void ViewModeManager::setupScreensaverLayout(ViewModeManager::ViewMode activeVie
 void ViewModeManager::moveBarsToMultiAnswerLayout()
 {
     qreal barHeight = fitToScreenHeight(35);
-    qreal y = fitToScreenHeight(129) + (barHeight / 2);
-    qreal blockSpace = fitToScreenHeight(148);
-    qreal rowSpace = fitToScreenHeight(5);
-    qreal marginLeft = 93;
+    qreal startY = fitToScreenHeight(143) + (barHeight / 2);
+    qreal blockSpace = fitToScreenHeight(154);
+    qreal rowSpace = fitToScreenHeight(12);
+    qreal marginLeft = 100;
 
 
     ViewModeManager::viewBars averageVect = ViewModeManager::viewBars::create();
@@ -358,15 +358,15 @@ void ViewModeManager::moveBarsToMultiAnswerLayout()
     _multiAverageAnswer.addBarObjects(averageVect);
     _multiUserAnswer.addBarObjects(userVect);
 
-    _multiAverageAnswer.setBarsSize(sizeFromPixel(2, barHeight));
+    _multiAverageAnswer.setBarsSize(sizeFromPixel(3.5, barHeight));
     _multiAverageAnswer.setBarsColor("#FFFFFF");
-    _multiAverageAnswer.setStartPosition(coordinateFromPixel(marginLeft, y));
+    _multiAverageAnswer.setStartPosition(coordinateFromPixel(marginLeft, startY));
     _multiAverageAnswer.setDistanceBetweenRows(heightFromPixel(blockSpace));
     _multiAverageAnswer.moveObjectsToLayout(currentTime());
 
-    _multiUserAnswer.setBarsSize(sizeFromPixel(2.5, barHeight));
-    _multiUserAnswer.setBarsColor("#AB3D33");
-    _multiUserAnswer.setStartPosition(coordinateFromPixel(marginLeft, y + barHeight + rowSpace));
+    _multiUserAnswer.setBarsSize(sizeFromPixel(3.5, barHeight));
+    _multiUserAnswer.setBarsColor("#80E2A7");
+    _multiUserAnswer.setStartPosition(coordinateFromPixel(marginLeft, startY + barHeight + rowSpace));
     _multiUserAnswer.setDistanceBetweenRows(heightFromPixel(blockSpace));
     _multiUserAnswer.moveObjectsToLayout(currentTime());
 }
