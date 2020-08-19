@@ -13,7 +13,7 @@ DatavizWindow::DatavizWindow() {
 
     // Allocate all the bars to screen saver
     _viewModeManager = viewManager();
-    _viewModeManager->setViewBarsQuantity(200, ViewModeManager::ScreenSaverMode);
+    _viewModeManager->setViewBarsQuantity(100, ViewModeManager::ScreenSaverMode);
 
     connect(&_updateIntervalTimer, SIGNAL(timeout()), this, SLOT(updateFramePerSecond()));
     _updateIntervalTimer.setInterval(200); // Set the update interval

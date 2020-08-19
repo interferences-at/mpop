@@ -4,8 +4,8 @@ ScreensaverLayout::ScreensaverLayout()
 {
     _groupTweenAnimator.reset(new GroupTweenAnimator());
 
-    randomX = std::uniform_real_distribution<qreal>(_left * 2, _right * 2);
-    randomY = std::uniform_real_distribution<qreal>(_bottom * 2, _top * 2);
+    randomX = std::uniform_real_distribution<qreal>(_left * 1.2, _right * 1.2);
+    randomY = std::uniform_real_distribution<qreal>(_bottom * 1.2, _top * 1.2);
     randomRadius = std::uniform_real_distribution<qreal>(-1, 1);
     randomFrequency = std::uniform_real_distribution<qreal>(0.01, 0.1);
     randomRatioRotation = std::uniform_real_distribution<qreal>(-0.1, 0.1);

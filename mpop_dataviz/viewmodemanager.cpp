@@ -243,7 +243,7 @@ void ViewModeManager::showOneAnswer(int numRows, int myRow, int myAnswer, const 
         int genderBarsCount = _genderOtherAnswer.getBarsCount();
         _myGenderIndex = myRow;
 
-        setPointToPickFrom(QPointF(0, 0));
+        setPointToPickFrom(coordinateFromPixel(_width / 2, _height / 2));
         setViewBarsQuantity(genderBarsCount + myAnswer, AnswerByGenderMode);
         setViewTitles(genderTitles, AnswerByGenderMode);
         setViewActiveMode(AnswerByGenderMode);
@@ -271,13 +271,15 @@ void ViewModeManager::showOneAnswer(int numRows, int myRow, int myAnswer, const 
 
 void ViewModeManager::goToScreensaver()
 {
-    int totalBars = _viewBars[_viewActiveMode]->size();
-    for (int i = 0; i < 200; i++) {
-        _viewBars[ScreenSaverMode]->push_back(_viewBars[_viewActiveMode]->at(i));
+    if (_viewActiveMode != ScreenSaverMode) {
+        int totalBars = _viewBars[_viewActiveMode]->size();
+        _viewBars[ScreenSaverMode]->append(*_viewBars[_viewActiveMode]);
+        *_viewBars[ScreenSaverMode] = _viewBars[_viewActiveMode]->mid(totalBars - 101, 100);
+        _viewBars[_viewActiveMode]->clear();
+
+        moveBarsToLayouts(ScreenSaverMode);
+        setViewActiveMode(ScreenSaverMode);
     }
-    _viewBars[_viewActiveMode]->remove(0, totalBars);
-    moveBarsToLayouts(ScreenSaverMode);
-    setViewActiveMode(ScreenSaverMode);
 }
 
 void ViewModeManager::setViewTitles(const QList<QString> &titles, ViewModeManager::ViewMode viewIndex)
@@ -321,15 +323,15 @@ void ViewModeManager::setupScreensaverLayout(ViewModeManager::ViewMode activeVie
     
     switch (activeView) {
     case ScreenSaverMode:
-        _screensaver.setBarsSize(sizeFromPixel(3, 60));
+        _screensaver.setBarsSize(sizeFromPixel(3.5, 35));
         _screensaver.setBarsColor("#CCCCCC");
         break;
     case UserAnswersMode:
-        _screensaver.setBarsSize(sizeFromPixel(3, 40));
+        _screensaver.setBarsSize(sizeFromPixel(3.5, 35));
         _screensaver.setBarsColor("#CCCCCC");
         break;
     default:
-        _screensaver.setBarsSize(sizeFromPixel(2, 35));
+        _screensaver.setBarsSize(sizeFromPixel(3.5, 35));
         _screensaver.setBarsColor("#3D3D3D");
         break;
     }
