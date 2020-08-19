@@ -156,13 +156,13 @@ void TextObjectPainter::drawViewElements(ViewModeManager::ViewMode view, const Q
     }
     case ViewModeManager::AnswerByGenderMode:
     {
-        int y = fitToScreenHeight(213.5);
-        int interval = fitToScreenHeight(213 + 35);
+        int y = fitToScreenHeight(310);
+        int interval = fitToScreenHeight(153 + 35);
         int marginLeft = 97;
 
         _painter.setFont(_answersTitlesFont);
         for (int i = 0; i < title.size(); i++) {
-            _painter.drawText(marginLeft, y + i * interval, title.at(i));
+            _painter.drawText(marginLeft, y + i * interval, title.at(i).toUpper());
         }
         drawRangeBottomText();
     }

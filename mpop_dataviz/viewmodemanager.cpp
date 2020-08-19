@@ -207,7 +207,7 @@ void ViewModeManager::setMultiAnswersBars(AnswerDataPtr answers)
     int averageBarsCount = _multiAverageAnswer.getBarsCount();
     int userBarsCount = _multiUserAnswer.getBarsCount();
 
-    setPointToPickFrom(coordinateFromPixel(_width, _height));
+    setPointToPickFrom(coordinateFromPixel(_width, _height / 2));
     setViewBarsQuantity(averageBarsCount + userBarsCount, MultiAnswersMode);
     setViewTitles(answers->text, MultiAnswersMode);
     setViewActiveMode(MultiAnswersMode);
@@ -223,7 +223,7 @@ void ViewModeManager::showOneAnswerByAge(int myAge, int myAnswer, const QList<in
     int barSum = _agesAnswerBarChart.getBarsCount() + myAnswer;
     _myAgeReverseIndex = values.size() - floor(std::max(myAge, 5) / 5);
 
-    setPointToPickFrom(coordinateFromPixel(_width, _height));
+    setPointToPickFrom(coordinateFromPixel(_width, _height / 2));
     setViewBarsQuantity(barSum, AnswerByAgeMode);
     setViewActiveMode(AnswerByAgeMode);
 }
@@ -407,9 +407,10 @@ void ViewModeManager::moveBarsToAnswerByAgeLayout()
 void ViewModeManager::moveBarsToAnswerByGenderLayout()
 {
     qreal barHeight = fitToScreenHeight(35);
-    qreal startY = fitToScreenHeight(228.5) + (barHeight / 2);
-    qreal rowSpace = fitToScreenHeight(213);
-    qreal marginLeft = 93;
+    qreal startY = fitToScreenHeight(332) + (barHeight / 2);
+    qreal rowSpace = fitToScreenHeight(153);
+    qreal marginLeft = 100;
+    qreal answerStartY = startY + barHeight + 12;
 
     ViewModeManager::viewBars otherGenderBars = ViewModeManager::viewBars::create();
     ViewModeManager::viewBars userGenderBars = ViewModeManager::viewBars::create();
@@ -421,16 +422,16 @@ void ViewModeManager::moveBarsToAnswerByGenderLayout()
     *userGenderBars = _viewBars[AnswerByGenderMode]->mid(otherGenderBarsCount, userGenderBarsCount);
 
     _genderOtherAnswer.addBarObjects(otherGenderBars);
-    _genderOtherAnswer.setBarsSize(sizeFromPixel(2.5, barHeight));
-    _genderOtherAnswer.setBarsColor("#667554");
+    _genderOtherAnswer.setBarsSize(sizeFromPixel(3.5, barHeight));
+    _genderOtherAnswer.setBarsColor("#FFFFFF");
     _genderOtherAnswer.setStartPosition(coordinateFromPixel(marginLeft, startY));
     _genderOtherAnswer.setDistanceBetweenRows(heightFromPixel(rowSpace));
     _genderOtherAnswer.moveObjectsToLayout(currentTime());
 
     _genderUserAnswer.addBarObjects(userGenderBars);
-    _genderUserAnswer.setBarsSize(sizeFromPixel(2.5, barHeight));
-    _genderUserAnswer.setBarsColor("#AB3D33");
-    _genderUserAnswer.setStartPosition(coordinateFromPixel(marginLeft + 2.5, startY + _myGenderIndex * (barHeight + rowSpace)));
+    _genderUserAnswer.setBarsSize(sizeFromPixel(3.5, barHeight));
+    _genderUserAnswer.setBarsColor("#80E2A7");
+    _genderUserAnswer.setStartPosition(coordinateFromPixel(marginLeft, answerStartY + _myGenderIndex * (barHeight + rowSpace)));
     _genderUserAnswer.moveObjectsToLayout(currentTime());
 }
 
