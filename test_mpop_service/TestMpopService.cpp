@@ -24,7 +24,7 @@ void TestMpopService::removeDatabaseTestEntries() {
 
     if (this->is_mysql_supported) {
         // Call deleteTagsVisitorsAndTheirAnswers instead of deleteAllFromDatabase, so that we can run these tests in prod.
-        this->facade->deleteAllFromDatabase();
+        //this->facade->deleteAllFromDatabase();
 
         QList<QString> rfidTagsToDelete;
         rfidTagsToDelete.push_back("test_RFID_tag_0000");
@@ -44,7 +44,17 @@ void TestMpopService::removeDatabaseTestEntries() {
 void TestMpopService::cleanupTestCase()
 {
     if (this->is_mysql_supported) {
-        this->facade->deleteAllFromDatabase();
+        // Call deleteTagsVisitorsAndTheirAnswers instead of deleteAllFromDatabase, so that we can run these tests in prod.
+        QList<QString> rfidTagsToDelete;
+        rfidTagsToDelete.push_back("test_RFID_tag_0000");
+        rfidTagsToDelete.push_back("test_RFID_tag_0001");
+        rfidTagsToDelete.push_back("test_RFID_tag_0002");
+        rfidTagsToDelete.push_back("test_RFID_tag_0003");
+        rfidTagsToDelete.push_back("test_RFID_tag_0004");
+        rfidTagsToDelete.push_back("test_RFID_tag_0005");
+
+        // TODO: Use this method, once implemented, instead of the call to deleteAllFromDatabase above.
+        this->facade->deleteTagsVisitorsAndTheirAnswers(rfidTagsToDelete);
     }
     // No need to delete the MPopService
     // Though, once the destructor is called, the MySQL connection will close.
