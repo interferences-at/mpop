@@ -17,16 +17,18 @@ void TestMpopService::init_TestCase()
 
     // Check if MySQL is supported
     this->is_mysql_supported = this->facade->isDatabaseReady();
+
+    this->removeDatabaseTestEntries();
 }
 
 void TestMpopService::removeDatabaseTestEntries() {
     // Removes the test entries in the database, if they exist
 
     if (this->is_mysql_supported) {
-        // Call deleteTagsVisitorsAndTheirAnswers instead of deleteAllFromDatabase, so that we can run these tests in prod.
-        //this->facade->deleteAllFromDatabase();
-
         QList<QString> rfidTagsToDelete;
+
+        // Developers who create more mock RFID tags within unit tests should
+        // add them to this list:
         rfidTagsToDelete.push_back("test_RFID_tag_0000");
         rfidTagsToDelete.push_back("test_RFID_tag_0001");
         rfidTagsToDelete.push_back("test_RFID_tag_0002");
@@ -34,7 +36,6 @@ void TestMpopService::removeDatabaseTestEntries() {
         rfidTagsToDelete.push_back("test_RFID_tag_0004");
         rfidTagsToDelete.push_back("test_RFID_tag_0005");
 
-        // TODO: Use this method, once implemented, instead of the call to deleteAllFromDatabase above.
         this->facade->deleteTagsVisitorsAndTheirAnswers(rfidTagsToDelete);
     }
 }
@@ -43,19 +44,8 @@ void TestMpopService::removeDatabaseTestEntries() {
 // called after the last test function was executed
 void TestMpopService::cleanupTestCase()
 {
-    if (this->is_mysql_supported) {
-        // Call deleteTagsVisitorsAndTheirAnswers instead of deleteAllFromDatabase, so that we can run these tests in prod.
-        QList<QString> rfidTagsToDelete;
-        rfidTagsToDelete.push_back("test_RFID_tag_0000");
-        rfidTagsToDelete.push_back("test_RFID_tag_0001");
-        rfidTagsToDelete.push_back("test_RFID_tag_0002");
-        rfidTagsToDelete.push_back("test_RFID_tag_0003");
-        rfidTagsToDelete.push_back("test_RFID_tag_0004");
-        rfidTagsToDelete.push_back("test_RFID_tag_0005");
+    this->removeDatabaseTestEntries();
 
-        // TODO: Use this method, once implemented, instead of the call to deleteAllFromDatabase above.
-        this->facade->deleteTagsVisitorsAndTheirAnswers(rfidTagsToDelete);
-    }
     // No need to delete the MPopService
     // Though, once the destructor is called, the MySQL connection will close.
 }
@@ -231,19 +221,26 @@ void TestMpopService::test_04_error_response() {
     // Checks that a response that contains an error ends up in a JSON string
     // that reflects that error, its error number and its message.
     static const int EXPECTED_RESPONSE_ID = 9999;
+    static const int ERROR_CODE = 99;
     static const QString EXPECTED_ERROR_STRING = "{\"error\":{\"code\":99,\"data\":null,\"message\":\"This is an error message.\"},\"id\":9999}";
 
     Response response;
+    response.idType = Response::NUMBER_ID;
     response.intId = EXPECTED_RESPONSE_ID;
     response.error.message = "This is an error message.";
-    response.error.code = 99;
+    response.error.code = ERROR_CODE;
     // we could also check the data member of the error, but we don't use it for now.
+
+    QCOMPARE(response.NUMBER_ID, response.idType);
 
     int response_id = response.intId;
     QCOMPARE(EXPECTED_RESPONSE_ID, response_id);
 
+    // We test the toString method:
     QString errorResponseString = response.toString();
     qDebug() << errorResponseString;
+
+    // TODO: Also test the fromString method
 
     // make sure the string matches what it should be
     QCOMPARE(errorResponseString, EXPECTED_ERROR_STRING);

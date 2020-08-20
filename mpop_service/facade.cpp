@@ -44,8 +44,6 @@ bool Facade::isDatabaseReady() {
 }
 
 
-
-
 int Facade::getOrCreateUser(const QString& rfidTag) {
     qDebug() << "getOrCreateUser";
     // TODO: make sure to call createNewUser() if no user is associated to this RFID tag.
@@ -202,6 +200,7 @@ QString Facade::getUserLanguage(int userId) {
     return userLanguage;
 }
 
+
 QString Facade::getUserGender(int userId) {
     qDebug() << "getUserGender";
     QString userGender;
@@ -222,6 +221,7 @@ QString Facade::getUserGender(int userId) {
     }
     return userGender;
 }
+
 
 QMap<QString, int> Facade::getUserAnswers(int userId) {
     QMap<QString, int> answers;
@@ -253,6 +253,7 @@ QMap<QString, int> Facade::getUserAnswers(int userId) {
     // we could create the key in the answers QMap, and set its value to -1. (?)
     return answers;
 }
+
 
 /**
  * @brief Facade::getUserInfo
@@ -478,8 +479,7 @@ bool Facade::deleteAllFromDatabase() {
 
 
 bool Facade::deleteTagsVisitorsAndTheirAnswers(const QList<QString>& rfidTags) {
-
-    // TODO: complete this method, and make sure it works with a unit test.
+    // TODO: make sure it works with a unit test.
 
     qDebug() << "deleteTagsUsersAndTheirAnswers";
 
@@ -509,46 +509,6 @@ bool Facade::deleteTagsVisitorsAndTheirAnswers(const QList<QString>& rfidTags) {
             ret = ret || query.numRowsAffected() > 0;
 
         }
-        /*if (deleteVisitors) {
-            QString sql = "DELETE FROM `visitor` "
-                          "WHERE `visitor`.`rfidTag` = ?";
-            QSqlQuery query;
-            query.prepare(sql);
-
-            // Value(s) that replace the question mark(s) (?):
-            query.addBindValue(QVariant(rfidTag));
-
-            bool ok = query.exec();
-            if (! ok) {
-                qWarning() << "ERROR: " << query.lastError().text();
-            }
-            ret = ret || query.numRowsAffected() > 0;
-        }
-
-         * TODO:
-         *
-        if (deleteAnswers) {
-            QString sql = "DELETE FROM `answer`";
-            QSqlQuery query;
-            query.prepare(sql);
-            bool ok = query.exec();
-            if (! ok) {
-                qWarning() << "ERROR: " << query.lastError().text();
-            }
-            ret = ret || query.numRowsAffected() > 0;
-        }
-
-        if (deleteTags) {
-            QString sql = "DELETE FROM `tag`";
-            QSqlQuery query;
-            query.prepare(sql);
-            bool ok = query.exec();
-            if (! ok) {
-                qWarning() << "ERROR: " << query.lastError().text();
-            }
-            ret = ret || query.numRowsAffected() > 0;
-        }
-        */
     }
 
     return ret;

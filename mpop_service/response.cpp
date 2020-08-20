@@ -2,6 +2,7 @@
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <string>
+#include <QDebug>
 
 Response Response::fromString(const QString& str) {
     // Unused
@@ -57,9 +58,12 @@ QString Response::toString() const {
     // TODO: Create a base class for Response and Request, to avoid duplicate code arount the id type.
     if (this->idType == Response::ResponseIdType::NULL_ID) {
         // TODO: provide null id
+        // qDebug() << "NULL_ID";
     } else if (this->idType == Response::ResponseIdType::STRING_ID) {
         resultMap["id"] = QVariant::fromValue(this->stringId); // string
+        // qDebug() << "STRING_ID";
     } else if (this->idType == Response::ResponseIdType::NUMBER_ID) {
+        // qDebug() << "NUMBER_ID";
         resultMap["id"] = QVariant::fromValue(this->intId); // int
     }
 
