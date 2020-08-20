@@ -37,7 +37,7 @@ private slots:
     // test methods for the survey questions, for multiple visitors: (for the dataviz)
     // TODO
 
-    // called after the last test function was executed || testentries function to delete all the test entries
+    // called after the last test function was executed
     void cleanupTestCase();
 
 private:
