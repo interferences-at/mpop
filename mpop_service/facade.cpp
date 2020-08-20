@@ -54,7 +54,6 @@ int Facade::getOrCreateUser(const QString& rfidTag) {
     // It should probably throw an error, instead.
 
     int visitorId = -1;
-    bool tagExists = false;
 
     QString sql = "SELECT `visitor_id` FROM `tag` WHERE `rfid` = ?";
 
@@ -69,7 +68,6 @@ int Facade::getOrCreateUser(const QString& rfidTag) {
     }
     bool foundSomeVisitorWhoseTagMatches = query.next();
     if (foundSomeVisitorWhoseTagMatches) {
-        tagExists = true;
         bool tagExistsButHasNoUser = query.isNull(0);
         if (tagExistsButHasNoUser) {
             visitorId = this->createNewUser(rfidTag);
@@ -78,16 +76,13 @@ int Facade::getOrCreateUser(const QString& rfidTag) {
         else {
             visitorId = query.value(0).toInt(); // value("visitor_id") would also work, but is less efficient
         }
-
-    }else {
+    } else {
         try {
             visitorId = this->createTagAndUser(rfidTag);
         } catch (std::exception & e) {
-
-            qWarning()<<"Internal Server Error ::"<<e.what();
-
+            // TODO: Answer with an error response
+            qWarning() << "Internal Server Error ::" << e.what();
         }
-
     }
     return visitorId;
 }

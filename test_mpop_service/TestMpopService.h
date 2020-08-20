@@ -24,9 +24,9 @@ private slots:
 
     // test methods for the demographic questions:
     void test_10_getOrCreateUser();
-    void test_12_getUserLanguage();
-    void test_13_getUserGender();
-    void test_14_getUserEthnicity();
+    void test_12_setUserLanguage();
+    void test_13_setUserGender();
+    void test_14_setUserEthnicity();
 
     // test methods for the survey question for a single visitor:
     void test_20_setUserAnswer();

@@ -107,7 +107,7 @@ void TestMpopService::test_21_getUserAnswers() {
     QCOMPARE(actual, value);
 }
 
-void TestMpopService::test_12_getUserLanguage() {
+void TestMpopService::test_12_setUserLanguage() {
     // Set/get the language of a user.
 
     if (! this->is_mysql_supported) {
@@ -118,18 +118,24 @@ void TestMpopService::test_12_getUserLanguage() {
     static const QString KEY_LANGUAGE = "language";
     int userId = this->facade->getOrCreateUser(TEST_RFID_TAG);
 
+    // Should be initially null:
+    qDebug() << "Check its initial state";
     QMap<QString, QVariant> userInfo1 = this->facade->getUserInfo(userId);
     QVariant userLanguage1 = userInfo1[KEY_LANGUAGE];
-    QCOMPARE(QVariant(), userLanguage1);
+    QCOMPARE(userLanguage1, QVariant());
 
-    this->facade->setUserLanguage(userId, TEST_USER_LANGUAGE);
+    // Should match what we set it to:
+    qDebug() << "Check its new set state";
+    bool okSetLanguage = this->facade->setUserLanguage(userId, TEST_USER_LANGUAGE);
+    QCOMPARE(okSetLanguage, true);
     QMap<QString, QVariant> userInfo2 = this->facade->getUserInfo(userId);
     QVariant userLanguage = userInfo2[KEY_LANGUAGE];
-    QCOMPARE(TEST_USER_LANGUAGE, userLanguage);
+    // FIXME: The following check doesn't work:
+    QCOMPARE(userLanguage, TEST_USER_LANGUAGE);
 }
 
 
-void TestMpopService::test_13_getUserGender() {
+void TestMpopService::test_13_setUserGender() {
     // Set/get the gender of a user.
 
     if (! this->is_mysql_supported) {
@@ -140,20 +146,23 @@ void TestMpopService::test_13_getUserGender() {
     static const QString KEY_GENDER = "gender";
     int userId = this->facade->getOrCreateUser(TEST_RFID_TAG);
 
+    // Should be initially null:
+    qDebug() << "Check its initial state";
     QMap<QString, QVariant> userInfo1 = this->facade->getUserInfo(userId);
     QVariant userGender1 = userInfo1[KEY_GENDER];
     QCOMPARE(QVariant(), userGender1);
 
+    // Should match what we set it to:
+    qDebug() << "Check its new set state";
     this->facade->setUserGender(userId, TEST_USER_GENDER);
     QMap<QString, QVariant> userInfo2 = this->facade->getUserInfo(userId);
     QVariant userGender = userInfo2[KEY_GENDER];
+    // FIXME: The following check doesn't work:
     QCOMPARE(TEST_USER_GENDER, userGender);
-
-
 }
 
 
-void TestMpopService::test_14_getUserEthnicity() {
+void TestMpopService::test_14_setUserEthnicity() {
     // Set/get the ethnicity of a user.
     // First check it's unset. (or null)
 
@@ -165,10 +174,14 @@ void TestMpopService::test_14_getUserEthnicity() {
     static const QString KEY_ETHNICITY = "ethnicity";
     int userId = this->facade->getOrCreateUser(TEST_RFID_TAG);
 
+    // Should be initially null:
+    qDebug() << "Check its initial state";
     QMap<QString, QVariant> userInfo1 = this->facade->getUserInfo(userId);
     QVariant userEthnicity1 = userInfo1[KEY_ETHNICITY];
     QCOMPARE(QVariant(), userEthnicity1);
 
+    // Should match what we set it to:
+    qDebug() << "Check its new set state";
     this->facade->setUserEthnicity(userId, TEST_USER_ETHNICITY);
     QMap<QString, QVariant> userInfo2 = this->facade->getUserInfo(userId);
     QVariant userEthnicity2 = userInfo2[KEY_ETHNICITY];
@@ -292,4 +305,3 @@ void TestMpopService::test_20_setUserAnswer() {
     QCOMPARE(answers[TEST_QUESTION_03_ID], TEST_QUESTION_03_VALUE);
     QCOMPARE(answers[TEST_QUESTION_04_ID], TEST_QUESTION_04_VALUE);
 }
-
