@@ -69,10 +69,10 @@ ColumnLayout {
                 Layout.alignment: Qt.AlignCenter | Qt.AlignCenter
 
                 Rectangle {
-                    color: 'black'
+                    color: '#000'
                     Layout.fillWidth: true
                     Layout.preferredHeight: 60
-                    Layout.preferredWidth: 300
+                    Layout.preferredWidth: 600
 
                     Button {
                         id: button
@@ -92,7 +92,6 @@ ColumnLayout {
                     }
                     Button{
                         id:datavisual
-
                         anchors.centerIn: parent
                         text: textDataVisualization.text
                         background: Rectangle {
@@ -147,6 +146,7 @@ ColumnLayout {
                     text: questionText
                     font.pixelSize: 30
                     bottomPadding: 30
+                    leftPadding: 60
                 }
 
                 WidgetAnswerSlider {
@@ -158,6 +158,7 @@ ColumnLayout {
                     showNumber: false
                     visible: sliderWidgetVisibility
                 }
+
 
                 Rectangle {
                     width: 600
@@ -189,64 +190,64 @@ ColumnLayout {
                     text: qsTr("Age")
                     highlighted : ageHighlighted
                     background: Rectangle {
-                       color: "#000"
-                       implicitWidth: 140
-                       implicitHeight: 55
-                       border.color: ageHighlighted ? "#FF0000" : "#fff"
-                       border.width: ageHighlighted ? 2 : 1
-                       radius: 2
-                   }
-                   onClicked: {
+                        color: "#000"
+                        implicitWidth: 140
+                        implicitHeight: 55
+                        border.color: ageHighlighted ? "#FF0000" : "#fff"
+                        border.width: ageHighlighted ? 2 : 1
+                        radius: 2
+                    }
+                    onClicked: {
                         highlighSelectedButton("ageBtn")
-                   }
+                    }
                 }
                 Button {
-                   id: genreBtn
-                   text: qsTr("Genre")
-                   highlighted: genreHighlighted
-                   background: Rectangle {
-                      color: "#000"
-                      implicitWidth: 140
-                      implicitHeight: 55
-                      border.color: genreHighlighted ? "#FF0000" : "#fff"
-                      border.width: genreHighlighted ? 2 : 1
-                      radius: 2
-                   }
-                   onClicked: {
+                    id: genreBtn
+                    text: qsTr("Genre")
+                    highlighted: genreHighlighted
+                    background: Rectangle {
+                        color: "#000"
+                        implicitWidth: 140
+                        implicitHeight: 55
+                        border.color: genreHighlighted ? "#FF0000" : "#fff"
+                        border.width: genreHighlighted ? 2 : 1
+                        radius: 2
+                    }
+                    onClicked: {
                         highlighSelectedButton("genreBtn")
-                   }
+                    }
                 }
                 Button {
-                   id : cultureBtn
-                   text: qsTr("Culture")
-                   highlighted: cultureHighlighted
-                   background: Rectangle {
-                      color: "#000"
-                      implicitWidth: 140
-                      implicitHeight: 55
-                      border.color: cultureHighlighted ? "#FF0000" : "#fff"
-                      border.width: cultureHighlighted ? 2 : 1
-                      radius: 2
-                   }
-                   onClicked: {
+                    id : cultureBtn
+                    text: qsTr("Culture")
+                    highlighted: cultureHighlighted
+                    background: Rectangle {
+                        color: "#000"
+                        implicitWidth: 140
+                        implicitHeight: 55
+                        border.color: cultureHighlighted ? "#FF0000" : "#fff"
+                        border.width: cultureHighlighted ? 2 : 1
+                        radius: 2
+                    }
+                    onClicked: {
                         highlighSelectedButton("cultureBtn")
-                   }
+                    }
                 }
                 Button {
-                   id: langBtn
-                   text: qsTr("Language")
-                   highlighted: languageHighlighted
-                   background: Rectangle {
-                      color: "#000"
-                      implicitWidth: 140
-                      implicitHeight: 55
-                      border.color: languageHighlighted ? "#FF0000" : "#fff"
-                      border.width: languageHighlighted ? 2 : 1
-                      radius: 2
-                   }
-                   onClicked: {
-                       highlighSelectedButton("langBtn")
-                   }
+                    id: langBtn
+                    text: qsTr("Language")
+                    highlighted: languageHighlighted
+                    background: Rectangle {
+                        color: "#000"
+                        implicitWidth: 140
+                        implicitHeight: 55
+                        border.color: languageHighlighted ? "#FF0000" : "#fff"
+                        border.width: languageHighlighted ? 2 : 1
+                        radius: 2
+                    }
+                    onClicked: {
+                        highlighSelectedButton("langBtn")
+                    }
                 }
 
             }
@@ -255,7 +256,7 @@ ColumnLayout {
                 Layout.fillWidth: true
                 Layout.alignment: Qt.AlignCenter | Qt.AlignCenter
                 Layout.topMargin: 50
-                Layout.leftMargin: 550
+                Layout.leftMargin: 400
                 visible: buttonsVisibility
                 RoundButton {
                     text: qsTr("Left")
@@ -319,14 +320,13 @@ ColumnLayout {
                     id: culturebtn
                     text: qsTr("Culture")
                     background: Rectangle {
-                       color: "#000"
-                       implicitWidth: 130
-                       implicitHeight: 55
-                   }
+                        color: "#000"
+                        implicitWidth: 130
+                        implicitHeight: 55
+                    }
                 }
 
                 GridLayout {
-
                     columns: 5
 
                     Button {
@@ -357,7 +357,6 @@ ColumnLayout {
 
                         }
                     }
-
                     Button {
                         text: qsTr("Canadian")
                         background: Rectangle {
@@ -438,67 +437,76 @@ ColumnLayout {
                 spacing: 24
                 visible: ageVisualization
 
-                Label {
+                Button {
                     text: qsTr("Genre")
-                }
-                Button {
-                    text: qsTr("All")
                     background: Rectangle {
                         color: "#000"
                         implicitWidth: 130
                         implicitHeight: 55
-                        border.color: "#fff"
-                        border.width: 1
-                        radius: 2
-                    }
-                    onClicked: {
-
                     }
                 }
+                GridLayout {
+                    columns: 5
 
+                    Button {
+                        text: qsTr("All")
+                        background: Rectangle {
+                            color: "#000"
+                            implicitWidth: 130
+                            implicitHeight: 55
+                            border.color: "#fff"
+                            border.width: 1
+                            radius: 2
+                        }
+                        onClicked: {
 
-                Button {
-                    text: qsTr("Male")
-                    background: Rectangle {
-                        color: "#000"
-                        implicitWidth: 130
-                        implicitHeight: 55
-                        border.color: "#fff"
-                        border.width: 1
-                        radius: 2
+                        }
                     }
-                    onClicked: {
 
+
+                    Button {
+                        text: qsTr("Male")
+                        background: Rectangle {
+                            color: "#000"
+                            implicitWidth: 130
+                            implicitHeight: 55
+                            border.color: "#fff"
+                            border.width: 1
+                            radius: 2
+                        }
+                        onClicked: {
+
+                        }
                     }
-                }
 
-                Button {
-                    text: qsTr("Female")
-                    background: Rectangle {
-                        color: "#000"
-                        implicitWidth: 130
-                        implicitHeight: 55
-                        border.color: "#fff"
-                        border.width: 1
-                        radius: 2
+                    Button {
+                        text: qsTr("Female")
+                        background: Rectangle {
+                            color: "#000"
+                            implicitWidth: 130
+                            implicitHeight: 55
+                            border.color: "#fff"
+                            border.width: 1
+                            radius: 2
+                        }
+                        onClicked: {
+
+                        }
                     }
-                    onClicked: {
 
-                    }
-                }
+                    Button {
+                        text: qsTr("Other")
+                        background: Rectangle {
+                            color: "#000"
+                            implicitWidth: 130
+                            implicitHeight: 55
+                            border.color: "#fff"
+                            border.width: 1
+                            radius: 2
+                        }
+                        onClicked: {
 
-                Button {
-                    text: qsTr("Other")
-                    background: Rectangle {
-                        color: "#000"
-                        implicitWidth: 130
-                        implicitHeight: 55
-                        border.color: "#fff"
-                        border.width: 1
-                        radius: 2
-                    }
-                    onClicked: {
-
+                        }
                     }
                 }
             }
@@ -520,62 +528,66 @@ ColumnLayout {
 
                     }
                 }
-                Button {
-                    text: qsTr("All")
-                    background: Rectangle {
-                        color: "#000"
-                        implicitWidth: 130
-                        implicitHeight: 55
-                        border.color: "#fff"
-                        border.width: 1
-                        radius: 2
-                    }
-                    onClicked: {
+                GridLayout {
+                    columns: 5
 
-                    }
-                }
-                Button {
-                    text: qsTr("Today")
-                    background: Rectangle {
-                        color: "#000"
-                        implicitWidth: 130
-                        implicitHeight: 55
-                        border.color: "#fff"
-                        border.width: 1
-                        radius: 2
-                    }
-                    onClicked: {
+                    Button {
+                        text: qsTr("All")
+                        background: Rectangle {
+                            color: "#000"
+                            implicitWidth: 130
+                            implicitHeight: 55
+                            border.color: "#fff"
+                            border.width: 1
+                            radius: 2
+                        }
+                        onClicked: {
 
+                        }
                     }
-                }
+                    Button {
+                        text: qsTr("Today")
+                        background: Rectangle {
+                            color: "#000"
+                            implicitWidth: 130
+                            implicitHeight: 55
+                            border.color: "#fff"
+                            border.width: 1
+                            radius: 2
+                        }
+                        onClicked: {
 
-                Button {
-                    text: qsTr("This Year")
-                    background: Rectangle {
-                        color: "#000"
-                        implicitWidth: 130
-                        implicitHeight: 55
-                        border.color: "#fff"
-                        border.width: 1
-                        radius: 2
+                        }
                     }
-                    onClicked: {
 
+                    Button {
+                        text: qsTr("This Year")
+                        background: Rectangle {
+                            color: "#000"
+                            implicitWidth: 130
+                            implicitHeight: 55
+                            border.color: "#fff"
+                            border.width: 1
+                            radius: 2
+                        }
+                        onClicked: {
+
+                        }
                     }
-                }
 
-                Button {
-                    text: qsTr("From the beginning")
-                    background: Rectangle {
-                        color: "#000"
-                        implicitWidth: 140
-                        implicitHeight: 55
-                        border.color: "#fff"
-                        border.width: 1
-                        radius: 2
-                    }
-                    onClicked: {
+                    Button {
+                        text: qsTr("From the beginning")
+                        background: Rectangle {
+                            color: "#000"
+                            implicitWidth: 140
+                            implicitHeight: 55
+                            border.color: "#fff"
+                            border.width: 1
+                            radius: 2
+                        }
+                        onClicked: {
 
+                        }
                     }
                 }
             }
@@ -610,22 +622,22 @@ ColumnLayout {
             genreHighlighted = false;
             cultureHighlighted = false;
             languageHighlighted = false;
-         } else if(btnid === "genreBtn") {
+        } else if(btnid === "genreBtn") {
             ageHighlighted = false;
             genreHighlighted = true;
             cultureHighlighted = false;
             languageHighlighted = false;
-         } else if(btnid === "cultureBtn") {
+        } else if(btnid === "cultureBtn") {
             ageHighlighted = false;
             genreHighlighted = false;
             cultureHighlighted = true;
             languageHighlighted = false;
-         } else if(btnid === "langBtn"){
+        } else if(btnid === "langBtn"){
             ageHighlighted = false;
             genreHighlighted = false;
             cultureHighlighted = false;
             languageHighlighted = true;
-         }
+        }
     }
 
     // TODO: Sub-page: Choose Single Question Mode

@@ -40,7 +40,7 @@ ListModel {
      */
     ListElement {
         identifier: "incidence_drogue"
-        question_fr: "D’après vous, quelle est l’incidence du marché de la drogue sur les infractions criminelles?"
+        question_fr: "D’après vous, quelle est l’incidence du marché de la drogue sur \nles infractions criminelles?"
         question_en: "TODO"
         min_fr: "Forte"
         max_fr: "Faible"
@@ -50,7 +50,7 @@ ListModel {
     }
     ListElement {
         identifier: "decriminalisation_crimes_non_violents"
-        question_fr: "Êtes-vous favorable à une plus grande décriminalisation de certains méfaits comme les crimes non violents, la consommation de drogues et les infractions liées à la prostitution afin de diminuer la population carcérale?"
+        question_fr: "Êtes-vous favorable à une plus grande décriminalisation de certains méfaits comme \nles crimes non violents, la consommation de drogues et les infractions \nliées à la prostitution afin de diminuer la population carcérale?"
         question_en: "TODO"
         min_fr: "TODO"
         max_fr: "TODO"
@@ -70,8 +70,8 @@ ListModel {
     }
     ListElement {
         identifier: "equitable_victimes"
-        question_fr: "Trouvez-vous que le système judiciaire et carcéral sont équitables envers les victimes?"
-        question_en: "TODO"
+        question_fr: "Trouvez-vous que le système judiciaire et carcéral sont \néquitables envers les victimes?"
+        question_en: "Do you think its fait blah blah todo."
         min_fr: "Inéquitable"
         max_fr: "Équitable"
         min_en: "Unfair"
@@ -80,7 +80,7 @@ ListModel {
     }
     ListElement {
         identifier: "equitable_vulnerables"
-        question_fr: "Trouvez-vous que le système judiciaire et carcéral sont équitables envers les personnes vulnérables ou marginalisées?"
+        question_fr: "Trouvez-vous que le système judiciaire et carcéral sont équitables\n envers les personnes vulnérables ou marginalisées?"
         question_en: "TODO"
         min_fr: "Inéquitable"
         max_fr: "Équitable"
@@ -130,7 +130,7 @@ ListModel {
     }
     ListElement {
         identifier: "interner"
-        question_fr: "Croyez-vous qu’il est juste d’interner plutôt que d’emprisonner des individus déclarés non criminellement responsables pour cause de troubles mentaux?"
+        question_fr: "Croyez-vous qu’il est juste d’interner plutôt que d’emprisonner des individus\n déclarés non criminellement responsables pour cause de troubles mentaux?"
         question_en: "TODO"
         min_fr: "Injuste"
         max_fr: "Juste"
@@ -230,7 +230,7 @@ ListModel {
     }
     ListElement {
         identifier: "investir_education"
-        question_fr: "Croyez-vous que de meilleurs investissements dans les institutions suivantes sont importantes dans la réduction du taux de criminalité? - L’éducation"
+        question_fr: "Croyez-vous que de meilleurs investissements dans les institutions suivantes sont\n importantes dans la réduction du taux de criminalité? - L’éducation"
         question_en: "TODO"
         min_fr: "TODO"
         max_fr: "L’éducation"
