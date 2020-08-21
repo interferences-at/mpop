@@ -482,6 +482,7 @@ ApplicationWindow {
             }
         }
 
+
         /**
          * Section with the questions.
          *
@@ -533,15 +534,16 @@ ApplicationWindow {
                     }
                 }
             }
+
             /**
              * Displays the current page number.
              */
-            RowLayout {
+            ColumnLayout {
                 Rectangle {
-                    Layout.minimumWidth: 80
+                    Layout.minimumWidth: 100
                     Layout.minimumHeight: 700
-                    Layout.leftMargin: 20
-                    Layout.rightMargin: 20
+                    Layout.leftMargin: 30
+                    Layout.rightMargin: 30
                     color: "#000"
 
                     Label {
@@ -565,6 +567,7 @@ ApplicationWindow {
                     color: "#000"
                     border.color: "grey"
                     border.width: 5
+
 
                     // Contents
                     StackLayout {
@@ -599,10 +602,9 @@ ApplicationWindow {
                             questionIdentifiers: ["equitable_victimes", "equitable_vulnerables", "equitable_jeunes_contrevenants", "equitable_riches", "equitable_minorites_culturelles"]
                             datavizSender: oscSender
                             serviceClient: userProfile
-                            modelQuestions: modelQuestions
+                            modelQuestions: modelQuestions // The whole model with all questions.
                             Layout.fillWidth: true
                             Layout.fillHeight: true
-                            mainQuestionText: modelQuestions.findQuestion('equitable_victimes').question_fr;
                         }
 
                         // TODO: remaining questions

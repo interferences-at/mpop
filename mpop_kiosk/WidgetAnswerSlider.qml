@@ -15,16 +15,14 @@ ColumnLayout {
     property real sliderFrom: 0
     property real sliderTo: 100
     property real sliderStepSize: 1
-    property real leftAndRightMargin: 100
+    property real leftAndRightMargin: 80
 
     Slider {
         id: slider0
-
         Layout.alignment: Qt.AlignCenter
         Layout.fillWidth: true
         Layout.leftMargin: leftAndRightMargin
-        Layout.rightMargin: 300
-
+        Layout.rightMargin: 75
         value: sliderValue
         from: sliderFrom
         to: sliderTo
@@ -64,7 +62,7 @@ ColumnLayout {
             text: textRight
             Layout.fillWidth: false
             Layout.alignment: Qt.AlignRight
-            Layout.rightMargin: 250
+            //Layout.rightMargin: 100
             font.pixelSize: 12
         }
     }
