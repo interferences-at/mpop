@@ -180,6 +180,8 @@ bool MPopService::handleFacadeMethod(const Request& request, Response& response)
             QTextStream(stdout) << "getOrCreateUser: parsed rfidTag: " << rfidTag << endl;
             QTextStream(stdout) << "getOrCreateUser: calling the Facade method with arg " << rfidTag << endl;
             response.result = QVariant(this->_facade.getOrCreateUser(rfidTag));
+            // If the result is -1, it didn't work!
+            // FIXME: Properly respond with a JSON-RPC error response
         } catch(MissingParameterError& e) {
             msg.append(e.what());
             response.error.message = msg;

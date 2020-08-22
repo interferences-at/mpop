@@ -91,24 +91,28 @@ int Facade::getOrCreateUser(const QString& rfidTag) {
     query.addBindValue(QVariant(rfidTag));
     bool ok = query.exec();
     if (! ok) {
+        // FIXME: Check the exact error type and close the DB connection only if this is due to the connection being lost.
+        // Then retry to connect when the reconnect timer triggers.
         qWarning() << "ERROR: " << query.lastError().text();
-    }
-    bool foundSomeVisitorWhoseTagMatches = query.next();
-    if (foundSomeVisitorWhoseTagMatches) {
-        bool tagExistsButHasNoUser = query.isNull(0);
-        if (tagExistsButHasNoUser) {
-            visitorId = this->createNewUser(rfidTag);
-            updateTagSetVisitorId(rfidTag, visitorId);
-        }
-        else {
-            visitorId = query.value(0).toInt(); // value("visitor_id") would also work, but is less efficient
-        }
+        _database.close();
     } else {
-        try {
-            visitorId = this->createTagAndUser(rfidTag);
-        } catch (std::exception & e) {
-            // TODO: Answer with an error response
-            qWarning() << "Internal Server Error ::" << e.what();
+        bool foundSomeVisitorWhoseTagMatches = query.next();
+        if (foundSomeVisitorWhoseTagMatches) {
+            bool tagExistsButHasNoUser = query.isNull(0);
+            if (tagExistsButHasNoUser) {
+                visitorId = this->createNewUser(rfidTag);
+                updateTagSetVisitorId(rfidTag, visitorId);
+            }
+            else {
+                visitorId = query.value(0).toInt(); // value("visitor_id") would also work, but is less efficient
+            }
+        } else {
+            try {
+                visitorId = this->createTagAndUser(rfidTag);
+            } catch (std::exception & e) {
+                // TODO: Answer with an error response
+                qWarning() << "Internal Server Error ::" << e.what();
+            }
         }
     }
     return visitorId;
@@ -152,11 +156,12 @@ int Facade::createNewUser(const QString& rfidTag) {
     // Value(s) that replace the question mark(s) (?):
     query.addBindValue(QVariant(rfidTag));
     bool ok = query.exec();
+    int visitorId = -1;
     if (! ok) {
         qWarning() << "ERROR: " << query.lastError().text();
+    } else {
+        visitorId = query.lastInsertId().toInt();
     }
-    int visitorId = query.lastInsertId().toInt();
-
     return visitorId;
 }
 
@@ -176,8 +181,9 @@ bool Facade::updateTagSetVisitorId(const QString& rfidTag, int visitorId) {
     bool ok = query.exec();
     if (! ok) {
         qWarning() << "ERROR: " << query.lastError().text();
+    } else {
+        ok = query.numRowsAffected() == 1;
     }
-    ok = query.numRowsAffected() == 1;
     return ok;
 }
 
