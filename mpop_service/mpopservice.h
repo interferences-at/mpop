@@ -57,9 +57,11 @@
 #include "response.h"
 #include "config.h"
 
+
 QT_FORWARD_DECLARE_CLASS(QWebSocketServer)
 QT_FORWARD_DECLARE_CLASS(QWebSocket)
 QT_FORWARD_DECLARE_CLASS(QString)
+
 
 class MPopService : public QObject
 {

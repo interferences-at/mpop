@@ -4,6 +4,7 @@
 #include <QObject>
 #include <QSqlDatabase>
 #include <QMap>
+#include <QTimer>
 #include "config.h"
 
 
@@ -139,15 +140,21 @@ public:
     */
    QMap<QString, int > getAllAnswers();
 
+public slots:
+   void reconnectTimerTriggered();
+
 signals:
+   // No signals
 
 private: // data members:
     QSqlDatabase _database;
     bool _is_db_open = false;
     const Config& _config;
+    QTimer _databaseReconnectTimer;
 
 private: // methods:
 
+    void openDatabaseIfNeeded();
     int createTagAndUser(const QString& rfidTag);
     int createNewUser(const QString& rfidTag);
     bool updateTagSetVisitorId(const QString& rfidTag, int visitorId);

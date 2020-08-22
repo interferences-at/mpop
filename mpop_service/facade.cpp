@@ -12,38 +12,65 @@
 #include <QDateTime>
 
 
-Facade::Facade(const Config& config, QObject* parent) : QObject(parent), _config(config)
+Facade::Facade(const Config& config, QObject* parent) : QObject(parent), _config(config), _databaseReconnectTimer()
 {
     _database = QSqlDatabase::addDatabase("QMYSQL");
 
     if (_database.isValid()) {
         qDebug() << "Database is valid";
         qDebug() << "QSqlDriver hasFeature NamedPlaceholders:" << _database.driver()->hasFeature(QSqlDriver::NamedPlaceholders);
+        // We don't allow to change the configuration options at runtime. Restart the service to change them.
         _database.setHostName(_config.mysql_host);
         _database.setDatabaseName(_config.mysql_database);
         _database.setUserName(_config.mysql_user);
         _database.setPassword(_config.mysql_password);
         _database.setPort(_config.mysql_port);
 
-        _is_db_open = _database.open();
-        if (_is_db_open) {
-            qInfo() << "Success connecting to the database.";
-        } else {
-            qDebug() << _is_db_open;
-            //_is_db_open.removeDatabase ();
-            qWarning() << "ERROR: Could not open database";
+        this->openDatabaseIfNeeded();
 
-        }
     } else {
         qDebug() << "Database is not valid. The QMYSQL driver for Qt is probably not installed.";
+        // TODO: Exit with an error.
     }
-    // TODO: Periodically make sure that our connection with the database is active.
+
+    // Periodically make sure that our connection with the database is active.
     // Attempt to re-open it if not.
+    connect(&_databaseReconnectTimer, &QTimer::timeout, this, &Facade::reconnectTimerTriggered);
+    static const int RECONNECT_INTERVAL_SECONDS = 5;
+    static const int MS_PER_SECOND = 1000;
+    _databaseReconnectTimer.setInterval(RECONNECT_INTERVAL_SECONDS * MS_PER_SECOND);
+    _databaseReconnectTimer.start();
 }
 
 
 bool Facade::isDatabaseReady() {
-    return _database.open();
+    return _database.isOpen();
+}
+
+
+void Facade::reconnectTimerTriggered() {
+    // Called every time the _databaseReconnectTimer's signal is triggered.
+    this->openDatabaseIfNeeded();
+}
+
+
+void Facade::openDatabaseIfNeeded() {
+    if (_database.isValid()) {
+        if (_database.isOpen()) {
+            qDebug() << "Database is already open. Good. Nothing to do.";
+        } else {
+            bool _is_db_open = _database.open();
+            if (_is_db_open) {
+                qInfo() << "Success connecting to the database.";
+            } else {
+                qWarning() << "ERROR: Could not open database";
+                if (_database.isOpenError()) {
+                    auto lastDbError = _database.lastError();
+                    qInfo() << lastDbError;
+                }
+            }
+        }
+    }
 }
 
 
