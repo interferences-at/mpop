@@ -47,6 +47,19 @@ private:
     std::uniform_real_distribution<qreal> randomFrequency, randomRatioRotation;
 
     QElapsedTimer _timer;
+
+    qreal _pixelRatio = 1;
+    qreal _width = 1260;
+    qreal _height = 1080;
+
+    qreal _left, _right, _top, _bottom = 0;
+
+    QPointF sizeFromPixel(qreal width, qreal height);
+
+    qreal mapValue(qreal value, qreal istart, qreal istop, qreal ostart, qreal ostop)
+    {
+        return ostart + (ostop - ostart) * ((value - istart) / (istop - istart));
+    }
 };
 
 #endif // SCREENSAVER_H
