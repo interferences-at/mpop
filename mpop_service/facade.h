@@ -135,6 +135,18 @@ public:
 
 
    /**
+    * @brief Get user answers average for multiple Question Ids.
+    * @param questionIds The List of question identifier.
+    * @param ageFrom The ageFrom identifier
+    * @param ageTo The ageTo identifier
+    * @param gender identifier
+    * @param timeAnswered identifier.
+    * @param value is average of answers.
+    */
+   QMap<QString, int> getAnswers(const QList<QString>& questionIds, int ageFrom, int ageTo, const QString& ethnicity, const QString& gender, const QString& timeAnswered);
+
+
+   /**
     * @brief Get user's all answers average .
     * @param value is average answer of each Question.
     */

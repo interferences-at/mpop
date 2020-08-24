@@ -17,6 +17,10 @@ private slots:
     // test methods for the utility methods of the Facade class:
     void test_01_toBoolean();
 
+
+    // test method for Get Average of Answers  for Multiple Question Ids:
+    void test_15_getAnswers();
+
     // test methods for the Request and Response classes:
     void test_02_requestParams();
     void test_03_response();

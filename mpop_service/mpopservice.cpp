@@ -285,6 +285,23 @@ bool MPopService::handleFacadeMethod(const Request& request, Response& response)
             response.error.message = msg;
         }
     }
+    else if (method == "getAnswers"){
+        QTextStream(stdout) << "Method is: getAnswers" << endl;
+        try {
+
+            const QList<QString>& questionIds = request.getParamByPosition(0).toStringList();
+            int ageFrom =  request.getParamByPosition(1).toInt();
+            int ageTo = request.getParamByPosition(2).toInt() ;
+            const QString& ethnicity = request.getParamByPosition(3).toString().trimmed().length()==0 ? "all" :  request.getParamByPosition(3).toString();
+            const QString& gender = request.getParamByPosition(4).toString().trimmed().length()==0 ? "all" : request.getParamByPosition(4).toString();
+            const QString& timeAnswered =request.getParamByPosition(5).toString().trimmed().length()==0 ? "all" : request.getParamByPosition(4).toString();
+            QMap<QString,int> avgOfAns = this->_facade.getAnswers(questionIds, ageFrom, ageTo, ethnicity, gender, timeAnswered);
+            response.result = QVariant(MPopService::stringIntMapToQVariantMap(avgOfAns));
+        } catch (MissingParameterError &e) {
+            msg.append(e.what());
+            response.error.message = msg;
+        }
+    }
     else {
         QTextStream(stdout) << "Method " << method << " is unknown" << endl;
         response.error.message = QString("No such method: %1").arg(method);
