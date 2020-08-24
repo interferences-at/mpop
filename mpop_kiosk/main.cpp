@@ -67,7 +67,7 @@ int main(int argc, char *argv[])
     load_kiosk_config_from_env_vars(kioskConfig);
 
     // Load fonts
-    QDir fontDir("resources/fonts");
+    QDir fontDir("static/fonts");
 
     // Check if folder exists
     if (!fontDir.exists())
@@ -75,7 +75,7 @@ int main(int argc, char *argv[])
 
     // Add fonts to application database
     for (auto file : fontDir.entryList(QDir::Files)) {
-        if (QFontDatabase::addApplicationFont("resources/fonts/" + file) == -1)
+        if (QFontDatabase::addApplicationFont("static/fonts/" + file) == -1)
             qDebug() << "Failed to load font:" << file;
     }
 
