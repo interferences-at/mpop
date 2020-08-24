@@ -229,6 +229,39 @@ QMap<QString, QVariant> Facade::getUserInfo(int userId) {
             ret.insert(keyName, value);
         }
     }
+    else {
+       // Retriving the visitor info in case of Ethnicity isn't set
+        QString sql1 = "SELECT "
+                      "`visitor`.`age` AS `age`, "
+                      "`visitor`.`rfid` AS `rfid`, "
+                      "`visitor`.`gender` AS `gender`, "
+                      "`visitor`.`language` AS `language`, "
+                      "`visitor`.`ethnicity` AS `ethnicity` "
+                      "FROM `visitor` "
+                      "WHERE visitor.id = ?";
+
+        QSqlQuery query1;
+        query1.prepare(sql1);
+
+        // Value(s) that replace the question mark(s) (?):
+        query1.addBindValue(QVariant(userId));
+
+        bool ok1 = query1.exec();
+        if (! ok1) {
+            qWarning() << "ERROR: " << query1.lastError().text();
+        }
+        bool retrieved1 = query1.next();
+        if (retrieved1) {
+            QSqlRecord rec1 = query1.record();
+            for (int j = 0; j < rec1.count(); ++ j) {
+                QString keyName1 = rec1.fieldName(j);
+                QVariant value1 = rec1.value(j);
+                ret.insert(keyName1, value1);
+            }
+        }
+
+
+    }
     return ret;
 }
 
@@ -843,4 +876,137 @@ QMap<QString, int > Facade:: getAllAnswers(){
     }
 
     return avgQueAns;
+}
+
+
+
+/**
+ * @brief Facade::getAnswers
+ * @param questionIds The List of question identifier.
+ * @param ageFrom The ageFrom identifier
+ * @param ageTo The ageTo identifier
+ * @param gender identifier
+ * @param timeAnswered identifier.
+ * @return an associative array where key is questionIds, and their average values are ints.
+ */
+QMap<QString, int> Facade:: getAnswers(const QList<QString>& questionIds, int ageFrom=-1, int ageTo=-1, const QString& ethnicity="all", const QString& gender="all", const QString& timeAnswered="all") {
+
+    qDebug() << "getAnswers";
+    QMap<QString,int> avgAnsQueList;
+
+
+    for (auto iter = questionIds.begin(); iter != questionIds.end(); ++ iter) {
+
+        //retrive each Question Id from the List to calculate the avg ans.
+        auto questionId = (*iter);
+
+        QString sqlQuery=" SELECT q.identifier AS 'Question', AVG(a.answer_value) AS 'Average' "
+                         " FROM answer AS a JOIN question AS q ON a.question_id = q.id"
+                         " WHERE q.identifier= ?";
+
+
+        // filter age group
+        if(ageTo != -1 && ageFrom != -1 ){
+
+            sqlQuery += " AND v.age BETWEEN ? AND ? ";
+        }
+
+        else if (ageTo != -1){
+
+            sqlQuery += " AND v.age BETWEEN 0 AND ? ";
+        }
+        else if (ageFrom != -1 ){
+
+            sqlQuery += " and v.age BETWEEN ? AND  100 ";
+        }
+
+        //filter by ethnicity
+        if(ethnicity != "all") {
+
+            sqlQuery += " AND e.`identifier`= ?";
+        }
+
+        //filter by gender
+        if(gender != "all"){
+
+            sqlQuery += " AND v.gender = ? ";
+        }
+
+        //filter by time answered
+        if(timeAnswered != "all"){
+
+            if(timeAnswered == "this_year"){
+                sqlQuery += " AND YEAR(v.`created_at`) = ?";
+            }
+            else if (timeAnswered == "today"){
+                sqlQuery += " AND date(v.`created_at`) = ?";
+            }
+        }
+
+        sqlQuery += " GROUP BY q.id";
+
+
+        QSqlQuery query;
+
+        query.prepare(sqlQuery);
+
+        // ? replaces the perameter in query
+        query.addBindValue(QVariant(questionId));
+
+
+
+        if(ageTo != -1 and ageFrom != -1 ){
+            query.addBindValue(QVariant(ageFrom));
+            query.addBindValue(QVariant(ageTo));
+        }
+        else if (ageTo != -1){
+
+            query.addBindValue(QVariant(ageTo));
+        }
+        else if (ageFrom != -1 ){
+
+            query.addBindValue(QVariant(ageFrom));
+        }
+
+
+        if(ethnicity!= "all") {
+            query.addBindValue(QVariant(ethnicity));
+        }
+
+
+        if(gender!="all"){
+
+            query.addBindValue(QVariant(gender));
+        }
+
+        if(timeAnswered != "all")
+        {
+            QString timeFilter;
+            if(timeAnswered == "this_year"){
+
+                timeFilter = "YEAR(CURDATE())";
+            }
+            else if (timeAnswered == "today"){
+
+                timeFilter = "date(CURRENT_TIMESTAMP())";
+            }
+            query.addBindValue(QVariant(timeFilter));
+        }
+
+        bool ok = query.exec();
+
+        if(!ok){
+            qWarning() <<"ERROR :: "<< query.lastError().text();
+        }
+
+        while (query.next()) {
+
+            //providers Question Identifier's  avg answer_value with optional filters.
+            QString questionId = query.value(0).toString();
+            int answerValue = query.value(1).toInt();
+            avgAnsQueList.insert(questionId, answerValue);
+        }
+
+    }
+    return avgAnsQueList;
 }
