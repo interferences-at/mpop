@@ -285,7 +285,7 @@ bool MPopService::handleFacadeMethod(const Request& request, Response& response)
             response.error.message = msg;
         }
     }
-    else if (method == "getAnswers"){
+    else if (method == "getAnswers") {
         QTextStream(stdout) << "Method is: getAnswers" << endl;
         try {
 
@@ -294,9 +294,66 @@ bool MPopService::handleFacadeMethod(const Request& request, Response& response)
             int ageTo = request.getParamByPosition(2).toInt() ;
             const QString& ethnicity = request.getParamByPosition(3).toString().trimmed().length()==0 ? "all" :  request.getParamByPosition(3).toString();
             const QString& gender = request.getParamByPosition(4).toString().trimmed().length()==0 ? "all" : request.getParamByPosition(4).toString();
-            const QString& timeAnswered =request.getParamByPosition(5).toString().trimmed().length()==0 ? "all" : request.getParamByPosition(4).toString();
+            const QString& timeAnswered =request.getParamByPosition(5).toString().trimmed().length()==0 ? "all" : request.getParamByPosition(5).toString();
             QMap<QString,int> avgOfAns = this->_facade.getAnswers(questionIds, ageFrom, ageTo, ethnicity, gender, timeAnswered);
             response.result = QVariant(MPopService::stringIntMapToQVariantMap(avgOfAns));
+        } catch (MissingParameterError &e) {
+            msg.append(e.what());
+            response.error.message = msg;
+        }
+    }
+    else if (method == "getAnswerByAge") {
+        QTextStream(stdout) << "Method is: getAnswerByAge" << endl;
+        try {
+            const QString& questionId = request.getParamByPosition(0).toString();
+            const QString& ethnicity = request.getParamByPosition(1).toString().trimmed().length()==0 ? "all" :  request.getParamByPosition(1).toString();
+            const QString& gender = request.getParamByPosition(2).toString().trimmed().length()==0 ? "all" : request.getParamByPosition(2).toString();
+            const QString& timeAnswered = request.getParamByPosition(3).toString().trimmed().length()==0 ? "all" : request.getParamByPosition(3).toString();
+            QList<int> ansByAge = this->_facade.getAnswerByAge(questionId, ethnicity, gender, timeAnswered);
+            QVariant varLst = QVariant::fromValue(ansByAge);
+            response.result = varLst;
+        } catch (MissingParameterError &e) {
+            msg.append(e.what());
+            response.error.message = msg;
+        }
+    }
+    else if (method == "getAnswerByGender") {
+        QTextStream(stdout) << "Method is: getAnswerByGender" << endl;
+        try {
+            const QString& questionId = request.getParamByPosition(0).toString();
+            const QString& ethnicity = request.getParamByPosition(1).toString().trimmed().length()==0 ? "all" :  request.getParamByPosition(1).toString();
+            int ageTo = request.getParamByPosition(2).toInt() ;
+            int ageFrom =  request.getParamByPosition(3).toInt();
+            const QString& timeAnswered = request.getParamByPosition(4).toString().trimmed().length()==0 ? "all" : request.getParamByPosition(4).toString();
+            QMap<QString,int> ansByGender = this->_facade.getAnswerByGender(questionId, ethnicity, ageTo, ageFrom, timeAnswered);
+            response.result = QVariant(MPopService::stringIntMapToQVariantMap(ansByGender));
+        } catch (MissingParameterError &e) {
+            msg.append(e.what());
+            response.error.message = msg;
+        }
+    }
+    else if (method == "getAnswerByEthnicity") {
+
+        QTextStream(stdout) << "Method is: getAnswerByEthnicity" << endl;
+        try {
+            const QString& questionId = request.getParamByPosition(0).toString();
+            int ageFrom =  request.getParamByPosition(1).toInt();
+            int ageTo = request.getParamByPosition(2).toInt() ;
+            const QString& gender = request.getParamByPosition(3).toString().trimmed().length()==0 ? "all" : request.getParamByPosition(3).toString();
+            const QString& timeAnswered = request.getParamByPosition(4).toString().trimmed().length()==0 ? "all" : request.getParamByPosition(4).toString();
+            QMap<QString,int> ansByEthnicity = this->_facade.getAnswerByEthnicity(questionId, ageFrom, ageTo, gender, timeAnswered);
+            response.result = QVariant(MPopService::stringIntMapToQVariantMap(ansByEthnicity));
+        } catch (MissingParameterError &e) {
+            msg.append(e.what());
+            response.error.message = msg;
+        }
+    }
+    else if (method == "getAllAnswers") {
+
+        QTextStream(stdout) << "Method is: getAllAnswers" << endl;
+        try {
+            QMap<QString,int> ansByEthnicity = this->_facade.getAllAnswers();
+            response.result = QVariant(MPopService::stringIntMapToQVariantMap(ansByEthnicity));
         } catch (MissingParameterError &e) {
             msg.append(e.what());
             response.error.message = msg;
