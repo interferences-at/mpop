@@ -69,7 +69,7 @@ INCLUDEPATH += $$PWD/../qosc/contrib/packosc
 CONFIG(release, debug|release): DEFINES += NDEBUG
 
 # copy static files to build folder
-copydata.commands = $(COPY_DIR) \"$$shell_path($$PWD\\resources)\" \"$$shell_path($$OUT_PWD)\\resources\"
+copydata.commands = $(COPY_DIR) \"$$shell_path($$PWD\\resources)\" \"$$shell_path($$OUT_PWD)\\static\"
 first.depends = $(first) copydata
 export(first.depends)
 export(copydata.commands)
