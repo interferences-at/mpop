@@ -10,6 +10,9 @@ Makefile
 *.o
 =*.tmp
 
+# licensed font files
+Trim-SemiBold.otf
+
 # Executables:
 mpop_dataviz/mpop_dataviz
 mpop_kiosk/mpop_kiosk

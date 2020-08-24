@@ -68,6 +68,13 @@ INCLUDEPATH += $$PWD/../qosc/contrib/packosc
 # Should disable assertions # FIXME: It doesn't
 CONFIG(release, debug|release): DEFINES += NDEBUG
 
+# copy static files to build folder
+copydata.commands = $(COPY_DIR) \"$$shell_path($$PWD\\resources)\" \"$$shell_path($$OUT_PWD)\\resources\"
+first.depends = $(first) copydata
+export(first.depends)
+export(copydata.commands)
+QMAKE_EXTRA_TARGETS += first copydata
+
 # # Add the qosc library:
 # win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../qosc/release/ -lqosc_release_binary
 # else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../qosc/ -lqosc_debug_binary  # FIXME there was a /debug/ directory in the path, but it's gone.

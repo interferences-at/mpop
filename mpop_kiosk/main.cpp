@@ -1,6 +1,7 @@
 #include <QGuiApplication>
 #include <QQmlContext>
 #include <QQmlApplicationEngine>
+#include <QFontDatabase>
 #include "rfidreader.h"
 #include "oscreceiver.h"
 #include "oscsender.h"
@@ -64,6 +65,19 @@ int main(int argc, char *argv[])
     // Load the configuration option from environment variables:
     KioskConfig kioskConfig;
     load_kiosk_config_from_env_vars(kioskConfig);
+
+    // Load fonts
+    QDir fontDir("resources/fonts");
+
+    // Check if folder exists
+    if (!fontDir.exists())
+        qDebug() << "----------\nERROR :: Fonts folder doesn't exist.\nMake sure you've included them appropriately in the deployment folder.\n----------";
+
+    // Add fonts to application database
+    for (auto file : fontDir.entryList(QDir::Files)) {
+        if (QFontDatabase::addApplicationFont("resources/fonts/" + file) == -1)
+            qDebug() << "Failed to load font:" << file;
+    }
 
     // Allow to override some configuration options with command line arguments:
     int argumentCount = QCoreApplication::arguments().size();
