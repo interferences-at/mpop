@@ -100,9 +100,9 @@ public:
     /**
      * @brief Get user answers average by user age.
      * @param questionId The question identifier.
-     * @param ethenicity The ethenicity identifier.
-     * @param gender identifier
-     * @param timeAnswered identifier.
+     * @param ethenicity The ethenicity identifier default value 'all'
+     * @param gender identifier default value 'all'
+     * @param timeAnswered identifier default value 'all'
      * @param value The average of the answers.
      */
     QList<int> getAnswerByAge(const QString& questionId,const QString& ethenicity,const QString& gender ,const QString& timeAnswered);
@@ -111,11 +111,11 @@ public:
 
     /**
      * @brief Get user answers average by user gender.
-     * @param questionId The question identifier.
-     * @param ethenicity The ethenicity identifier.
-     * @param ageTo The ageTo identifier
-     * @param ageFrom The ageFrom identifier.
-     * @param timeAnswered identifier.
+     * @param questionId The question identifier
+     * @param ethenicity The ethenicity identifier default value 'all'
+     * @param ageTo The ageTo identifier default value -1 and upto 100
+     * @param ageFrom The ageFrom identifier default value -1 and start from 0
+     * @param timeAnswered identifier default value 'all'
      * @param value is average of answers.
      */
    QMap<QString,int> getAnswerByGender(const QString& questionId, const QString& ethenicity, int ageTo, int ageFrom  ,const QString& timeAnswered);
@@ -125,22 +125,22 @@ public:
    /**
     * @brief Get user answers average by user Ethnicity.
     * @param questionId The question identifier.
-    * @param ageTo The ageTo identifier
-    * @param ageFrom The ageFrom identifier.
-    * @param gender identifier
-    * @param timeAnswered identifier.
+    * @param ageTo identifier  default value -1 and upto 100
+    * @param ageFrom identifier default value -1 and start from 0
+    * @param gender identifier default value 'all'
+    * @param timeAnswered identifier default value 'all'
     * @param value is average of answers.
     */
    QMap<QString, int> getAnswerByEthnicity(const QString& questionId,int ageFrom, int ageTo , const QString& gender,const QString& timeAnswered);
 
 
    /**
-    * @brief Get user answers average for multiple Question Ids.
-    * @param questionIds The List of question identifier.
-    * @param ageFrom The ageFrom identifier
-    * @param ageTo The ageTo identifier
-    * @param gender identifier
-    * @param timeAnswered identifier.
+    * @brief Get user answers average for multiple Question Ids
+    * @param questionIds The List of question identifier of 2, 3 or 5
+    * @param ageFrom identifier default value -1 and start from 0
+    * @param ageTo identifier default value -1 and upto 100
+    * @param gender identifier default value 'all'
+    * @param timeAnswered identifier default value 'all'
     * @param value is average of answers.
     */
    QMap<QString, int> getAnswers(const QList<QString>& questionIds, int ageFrom, int ageTo, const QString& ethnicity, const QString& gender, const QString& timeAnswered);

@@ -893,7 +893,8 @@ QMap<QString, int> Facade:: getAnswers(const QList<QString>& questionIds, int ag
 
     qDebug() << "getAnswers";
     QMap<QString,int> avgAnsQueList;
-
+    const int DEFAULT_AGE =-1;
+    const QString DEFAULT_FILTER="all";
 
     for (auto iter = questionIds.begin(); iter != questionIds.end(); ++ iter) {
 
@@ -906,34 +907,34 @@ QMap<QString, int> Facade:: getAnswers(const QList<QString>& questionIds, int ag
 
 
         // filter age group
-        if(ageTo != -1 && ageFrom != -1 ){
+        if(ageTo != DEFAULT_AGE && ageFrom != DEFAULT_AGE){
 
             sqlQuery += " AND v.age BETWEEN ? AND ? ";
         }
 
-        else if (ageTo != -1){
+        else if (ageTo != DEFAULT_AGE){
 
             sqlQuery += " AND v.age BETWEEN 0 AND ? ";
         }
-        else if (ageFrom != -1 ){
+        else if (ageFrom != DEFAULT_AGE){
 
             sqlQuery += " and v.age BETWEEN ? AND  100 ";
         }
 
         //filter by ethnicity
-        if(ethnicity != "all") {
+        if(ethnicity != DEFAULT_FILTER) {
 
             sqlQuery += " AND e.`identifier`= ?";
         }
 
         //filter by gender
-        if(gender != "all"){
+        if(gender != DEFAULT_FILTER){
 
             sqlQuery += " AND v.gender = ? ";
         }
 
         //filter by time answered
-        if(timeAnswered != "all"){
+        if(timeAnswered != DEFAULT_FILTER){
 
             if(timeAnswered == "this_year"){
                 sqlQuery += " AND YEAR(v.`created_at`) = ?";
@@ -955,31 +956,31 @@ QMap<QString, int> Facade:: getAnswers(const QList<QString>& questionIds, int ag
 
 
 
-        if(ageTo != -1 and ageFrom != -1 ){
+        if(ageTo != DEFAULT_AGE and ageFrom != DEFAULT_AGE){
             query.addBindValue(QVariant(ageFrom));
             query.addBindValue(QVariant(ageTo));
         }
-        else if (ageTo != -1){
+        else if (ageTo != DEFAULT_AGE){
 
             query.addBindValue(QVariant(ageTo));
         }
-        else if (ageFrom != -1 ){
+        else if (ageFrom != DEFAULT_AGE){
 
             query.addBindValue(QVariant(ageFrom));
         }
 
 
-        if(ethnicity!= "all") {
+        if(ethnicity != DEFAULT_FILTER) {
             query.addBindValue(QVariant(ethnicity));
         }
 
 
-        if(gender!="all"){
+        if(gender != DEFAULT_FILTER){
 
             query.addBindValue(QVariant(gender));
         }
 
-        if(timeAnswered != "all")
+        if(timeAnswered != DEFAULT_FILTER)
         {
             QString timeFilter;
             if(timeAnswered == "this_year"){
