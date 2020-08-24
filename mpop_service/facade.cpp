@@ -893,8 +893,8 @@ QMap<QString, int> Facade:: getAnswers(const QList<QString>& questionIds, int ag
 
     qDebug() << "getAnswers";
     QMap<QString,int> avgAnsQueList;
-    const int DEFAULT_AGE =-1;
-    const QString DEFAULT_FILTER="all";
+    const int DEFAULT_AGE = -1;
+    const QString DEFAULT_FILTER = "all";
 
     for (auto iter = questionIds.begin(); iter != questionIds.end(); ++ iter) {
 
