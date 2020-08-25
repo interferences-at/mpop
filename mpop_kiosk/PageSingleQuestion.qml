@@ -315,6 +315,7 @@ ColumnLayout {
                         spacing: 15
                         visible: ageVisualization
 
+                        // section title
                         Text {
                             text: sectionTitle
                             color: "#fff"
@@ -332,8 +333,16 @@ ColumnLayout {
                             columnSpacing: 10
 
                             Repeater {
+                                id: filterRepeater
                                 model: filters
-                                WidgetFilterButton { text: label; checked: index === 0 }
+                                property int currentIndex: 0
+
+                                // filter button
+                                WidgetFilterButton {
+                                    text: label;
+                                    checked: index === filterRepeater.currentIndex;
+                                    onClicked: filterRepeater.currentIndex = index
+                                }
                             }
                         }
                     }
