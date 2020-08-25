@@ -2,8 +2,10 @@ import QtQuick 2.12
 import QtQuick.Controls 2.12
 
 Button {
+    property BilingualText label
+
     id: widgetFilterButton
-    text: "Filter button"
+    text: label.text
     checkable: true
 
     font {

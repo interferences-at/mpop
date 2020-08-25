@@ -184,25 +184,25 @@ ColumnLayout {
 
                 // TODO: wrap in Repeater
                 WidgetFilterButton {
-                    text: qsTr("Age")
+                    label: BilingualText { textEn: "Age"; textFr: "Âge"; language: window.lang }
                     checked: filterHighlighted === "ageBtn"
                     onClicked: filterHighlighted = "ageBtn"
                 }
 
                 WidgetFilterButton {
-                    text: qsTr("Genre")
+                    label: BilingualText { textEn: "Gender"; textFr: "Genre"; language: window.lang }
                     checked: filterHighlighted === "genreBtn"
                     onClicked: filterHighlighted = "genreBtn"
                 }
 
                 WidgetFilterButton {
-                    text: qsTr("Culture")
+                    label: BilingualText { textEn: "Culture"; textFr: "Culture"; language: window.lang }
                     checked: filterHighlighted === "cultureBtn"
                     onClicked: filterHighlighted = "cultureBtn"
                 }
 
                 WidgetFilterButton {
-                    text: qsTr("Language")
+                    label: BilingualText { textEn: "Language"; textFr: "Langue"; language: window.lang }
                     checked: filterHighlighted === "langBtn"
                     onClicked: filterHighlighted = "langBtn"
                 }
@@ -274,35 +274,38 @@ ColumnLayout {
                     // model
                     model: ListModel {
                         ListElement {
-                            sectionTitle: qsTr("Culture")
+                            sectionTitleEn: "Culture"
+                            sectionTitleFr: "Culture"
                             filters: [
-                                ListElement { label: qsTr("All") },
-                                ListElement { label: qsTr("Quebecois") },
-                                ListElement { label: qsTr("Canadian") },
-                                ListElement { label: qsTr("Native") },
-                                ListElement { label: qsTr("American") },
-                                ListElement { label: qsTr("European") },
-                                ListElement { label: qsTr("Other") }
+                                ListElement { textEn: "All"; textFr: "Tous" },
+                                ListElement { textEn: "Quebecois"; textFr: "Québécoise" },
+                                ListElement { textEn: "Canadian"; textFr: "Canadienne" },
+                                ListElement { textEn: "Native"; textFr: "Autochtone" },
+                                ListElement { textEn: "American"; textFr: "Américaine" },
+                                ListElement { textEn: "European"; textFr: "Européenne" },
+                                ListElement { textEn: "Other"; textFr: "Autre" }
                             ]
                         }
 
                         ListElement {
-                            sectionTitle: qsTr("Genre")
+                            sectionTitleEn: "Gender"
+                            sectionTitleFr: "Genre"
                             filters: [
-                                ListElement { label: qsTr("All") },
-                                ListElement { label: qsTr("Male") },
-                                ListElement { label: qsTr("Female") },
-                                ListElement { label: qsTr("Other") }
+                                ListElement { textEn: "All"; textFr: "Tous" },
+                                ListElement { textEn: "Male"; textFr: "Homme" },
+                                ListElement { textEn: "Female"; textFr: "Femme" },
+                                ListElement { textEn: "Other"; textFr: "Autre" }
                             ]
                         }
 
                         ListElement {
-                            sectionTitle: qsTr("Time")
+                            sectionTitleEn: "Time"
+                            sectionTitleFr: "Temps"
                             filters: [
-                                ListElement { label: qsTr("All") },
-                                ListElement { label: qsTr("Today") },
-                                ListElement { label: qsTr("This Year") },
-                                ListElement { label: qsTr("From the beginning") }
+                                ListElement { textEn: "All"; textFr: "Tous" },
+                                ListElement { textEn: "Today"; textFr: "Aujourd'hui" },
+                                ListElement { textEn: "This year"; textFr: "Cette année" },
+                                ListElement { textEn: "From the beginning"; textFr: "Depuis le début" }
                             ]
                         }
                     }
@@ -317,7 +320,7 @@ ColumnLayout {
 
                         // section title
                         Text {
-                            text: sectionTitle
+                            text: sectionTitle.text
                             color: "#fff"
                             font {
                                 family: "Trim SemiBold"
@@ -325,6 +328,13 @@ ColumnLayout {
                                 pixelSize: 11
                                 letterSpacing: 11 * 25 / 1000
                                 capitalization: Font.AllUppercase
+                            }
+
+                            BilingualText {
+                                id: sectionTitle
+                                textEn: sectionTitleEn
+                                textFr: sectionTitleFr
+                                language: window.lang
                             }
                         }
 
@@ -339,7 +349,8 @@ ColumnLayout {
 
                                 // filter button
                                 WidgetFilterButton {
-                                    text: label;
+                                    label: BilingualText { textEn: model.textEn; textFr: model.textFr; language: window.lang }
+
                                     checked: index === filterRepeater.currentIndex;
                                     onClicked: filterRepeater.currentIndex = index
                                 }
