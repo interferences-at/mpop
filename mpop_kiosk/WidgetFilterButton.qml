@@ -8,6 +8,9 @@ Button {
     text: label.text
     checkable: true
 
+    leftPadding: 20
+    rightPadding: 20
+
     font {
         family: "Trim SemiBold"
         pixelSize: 20
@@ -21,9 +24,6 @@ Button {
         color: checked ? "#000" : "#fff"
         font: widgetFilterButton.font
     }
-
-    leftPadding: 20
-    rightPadding: 20
 
     background: Rectangle {
         color: checked ? "#fff" : "transparent"

@@ -182,7 +182,11 @@ ColumnLayout {
                 spacing: 24
                 visible: buttonsVisibility
 
-                // TODO: wrap in Repeater
+                // reset on RFID tag change
+                property variant resetter: window.rfidTag
+                onResetterChanged: filterHighlighted = ""
+
+                // TODO: wrap in Repeater and simplify identifier declarations
                 WidgetFilterButton {
                     label: BilingualText { textEn: "Age"; textFr: "Âge"; language: window.lang }
                     checked: filterHighlighted === "ageBtn"
@@ -313,6 +317,13 @@ ColumnLayout {
 
                     // display
                     ColumnLayout {
+                        id: subfilter
+
+                        property int currentIndex: 0
+                        // reset index when RFID tag changes
+                        property variant resetter: window.rfidTag
+                        onResetterChanged: currentIndex = 0
+
                         Layout.fillWidth: true
                         Layout.alignment: Qt.AlignLeft
 
@@ -335,7 +346,6 @@ ColumnLayout {
                                 id: sectionTitle
                                 textEn: sectionTitleEn
                                 textFr: sectionTitleFr
-                                language: window.lang
                             }
                         }
 
@@ -345,24 +355,20 @@ ColumnLayout {
                             spacing: 10
 
                             Repeater {
-                                id: filterRepeater
                                 model: filters
-                                property int currentIndex: 0
 
                                 // filter button
                                 WidgetFilterButton {
-                                    label: BilingualText { textEn: model.textEn; textFr: model.textFr; language: window.lang }
+                                    label: BilingualText { textEn: model.textEn; textFr: model.textFr }
 
-                                    checked: index === filterRepeater.currentIndex;
-                                    onClicked: filterRepeater.currentIndex = index
+                                    checked: index === subfilter.currentIndex
+                                    onClicked: subfilter.currentIndex = index
                                 }
                             }
                         }
                     }
                 }
             }
-
-
 
             RowLayout {
                 Layout.fillWidth: true
