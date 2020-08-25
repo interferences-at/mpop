@@ -94,7 +94,7 @@ void DatavizWindow::resizeGL(int w, int h) {
     GLdouble top = 1.0;
     GLdouble bottom = -1.0;
 
-//    glLoadIdentity();
+    glLoadIdentity();
     glOrtho(left, right, bottom, top, -1, 1);
 
     // Instead, we could eventually use a pespective view, here:
