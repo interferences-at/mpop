@@ -10,27 +10,27 @@ StickRenderer::StickRenderer()
 {
 
     _barSticks = QVector<Stick*>();
-
+    // Reserve 150 bar sticks
     for (int i = 0; i < 150; i++) {
         Stick *stick = new Stick;
-        stick->setSize(0.00585366, 0.117073);
         stick->setColor("#FFFFFF");
         _barSticks.push_back(stick);
     }
-
+    // Start timer
     _timer.start();
 
     randomRadius = std::uniform_real_distribution<qreal>(-1, 1);
     randomFrequency = std::uniform_real_distribution<qreal>(0.01, 0.1);
     randomRatioRotation = std::uniform_real_distribution<qreal>(-0.1, 0.1);
-
+    // Init OpenGL
     initializeGLCanvas();
 }
 
 void StickRenderer::initializeGLCanvas()
 {
+    // Init OpenGL function
     initializeOpenGLFunctions();
-
+    // Setup background color and transparency
     glEnable(GL_ALPHA_TEST);
     glEnable(GL_DEPTH_TEST);
 
@@ -42,6 +42,7 @@ void StickRenderer::initializeGLCanvas()
 
 void StickRenderer::resizeGLCanvas(int width, int height)
 {
+    // Setup OpenGL viewport
     glViewport(0, 0,width, height);
 
     _right = qreal(width) / qreal(height);
@@ -62,21 +63,22 @@ void StickRenderer::resizeGLCanvas(int width, int height)
 
     // Update bar size
     QPointF stickSize = sizeFromPixel(3.5, 35);
-    for (auto stick : _barSticks) {
+    for (auto &stick : _barSticks) {
         stick->setSize(stickSize.x(), stickSize.y());
     }
 }
 
 void StickRenderer::paintGLCanvas()
 {
+    // Clear background
     glClearColor(0, 0, 0, 0);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
+    // Reset drawer program
     glUseProgram(0);
 
     QRandomGenerator generator;
 
-    for (auto stick : _barSticks) {
+    for (auto &stick : _barSticks) {
         qreal centerX = randomX(generator);
         qreal centerY = randomY(generator);
         qreal radius = randomRadius(generator);
@@ -95,23 +97,36 @@ void StickRenderer::paintGLCanvas()
 
         stick->draw();
     }
-
+    // Update to draw again
     update();
 }
 
 QPointF StickRenderer::sizeFromPixel(qreal width, qreal height)
 {
+    /*
+     * Translate a given value in pixel to the OpenGL coordinate
+     * mapValue(
+     *      width = stick width in pixel
+     *      0 = from 0px
+     *      _width / _pixelRatio = viewport width in pixel / pixel ratio for DPI adaptation
+     *      Here we divide the width by the pixel ratio for DPI scale
+     *      _right * 2 = (0 - -1) + 1 = 2 || 1 * 2. left -1 to right 1 = 2 || 1 * 2
+     * )
+    */
     return QPointF(mapValue(width, 0, _width / _pixelRatio, 0, _right * 2),
                    mapValue(height, 0, _height / _pixelRatio, 0, _top * 2));
 }
 
 void StickRenderer::render()
 {
+    // call painter function
     paintGLCanvas();
 }
 
 QOpenGLFramebufferObject *StickRenderer::createFramebufferObject(const QSize &size)
 {
+    // Make the width take account the pixel ratio
+    // if pixel ratio is 2 width & height become 2 time bigger
     _width = size.width() * _pixelRatio;
     _height = size.height() * _pixelRatio;
 
@@ -128,7 +143,7 @@ QOpenGLFramebufferObject *StickRenderer::createFramebufferObject(const QSize &si
 void StickRenderer::synchronize(QQuickFramebufferObject *item)
 {
     Screensaver *screensaver = qobject_cast<Screensaver *>(item);
-
+    // Reset OpenGL
     screensaver->window()->resetOpenGLState();
     // Update pixel ratio
     _pixelRatio = screensaver->window()->devicePixelRatio();
