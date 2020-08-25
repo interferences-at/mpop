@@ -267,6 +267,7 @@ ColumnLayout {
 
             // 2nd-level filters
             ColumnLayout {
+                Layout.fillWidth: true
                 Layout.leftMargin: 30
                 spacing: 30
 
@@ -338,9 +339,10 @@ ColumnLayout {
                             }
                         }
 
-                        GridLayout {
+                        Flow {
+                            Layout.fillWidth: true
                             Layout.leftMargin: -10
-                            columnSpacing: 10
+                            spacing: 10
 
                             Repeater {
                                 id: filterRepeater
