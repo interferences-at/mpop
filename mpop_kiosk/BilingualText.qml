@@ -10,11 +10,11 @@ import QtQuick 2.0
 Item {
     property string textFr: ""
     property string textEn: ""
-    property string language: "fr"
-    property string text: ""
+    property string language: "fr"      // why not directly bind to window.lang here?
+    property string text: ""            // why not directly bind to textFr/textEn according to language instead of adding signals?
 
     Component.onCompleted: {
-        text = language == "fr" ? textFr : textEn;
+        text = language == "fr" ? textFr : textEn;  // or here?
     }
 
     onLanguageChanged: {
