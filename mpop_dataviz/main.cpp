@@ -4,6 +4,9 @@
 #include "applicationoptions.h"
 #include <QtGui/QGuiApplication>
 #include <QSharedPointer>
+#include <QWidget>
+#include <QApplication>
+#include <QHBoxLayout>
 
 
 // Constants:
@@ -26,10 +29,10 @@ static const QString APPLICATION_NAME = "mpop_dataviz";
  * @return 0 if there is no error, 1 if there is one.
  */
 int main(int argc, char* argv[]) {
-    QGuiApplication app(argc, argv);
+    QApplication app(argc, argv);
 
-    QCoreApplication::setApplicationName(APPLICATION_NAME);
-    QCoreApplication::setApplicationVersion(APPLICATION_VERSION);
+    QApplication::setApplicationName(APPLICATION_NAME);
+    QApplication::setApplicationVersion(APPLICATION_VERSION);
 
     // Parse command-line arguments.
     QCommandLineParser parser;
@@ -71,7 +74,7 @@ int main(int argc, char* argv[]) {
 
     // parser.process(app); // parse for --help and --version options.
     // Parse our custom options:
-    if (! parser.parse(QCoreApplication::arguments())) {
+    if (! parser.parse(QApplication::arguments())) {
         QString errorMessage = parser.errorText();
         qDebug() << errorMessage;
         parser.showHelp(1);
@@ -126,6 +129,23 @@ int main(int argc, char* argv[]) {
             y = (i / 2) * options.window_height;
         }
         QSharedPointer<DatavizWindow> window(new DatavizWindow());
+        // Create a window container to embed window into a QWidget
+        QWidget *windowContainer = QWidget::createWindowContainer(window.data());
+        windowContainer->setFixedSize(options.window_width, options.window_height);
+        // Create a layout and set margin
+        QHBoxLayout *windowLayout = new QHBoxLayout;
+        windowLayout->setContentsMargins(0, 0, 0, 0);
+        // Add dataviz widget to layout
+        windowLayout->addWidget(windowContainer);
+        // Create mainWindow and keep everything inside
+        QWidget *mainWindow = new QWidget;
+        mainWindow->setLayout(windowLayout);
+        mainWindow->setGeometry(x, y, 1920, 1080);
+        // Set background color palette
+        QPalette palette;
+        palette.setColor(QPalette::Background, Qt::black);
+        mainWindow->setAutoFillBackground(true);
+        mainWindow->setPalette(palette);
 
         windows.append(window);
         if (options.hide_cursor) {
@@ -134,9 +154,6 @@ int main(int argc, char* argv[]) {
         QSurfaceFormat format;
         format.setSamples(16);
         window->setFormat(format);
-        window->resize(options.window_width, options.window_height);
-        QPoint windowPosition(x, y);
-        window->setPosition(windowPosition);
         window->setWindowId(i); // The index use to be the ID
         window->setOffsetId(options.window_offset_id); // Set window ID offset
         qDebug() << "Window" << i << "of size:" <<
@@ -144,11 +161,12 @@ int main(int argc, char* argv[]) {
             "at position" << x << "," << y;
         qDebug() << "Window ID: " << window->getWindowId();
         if (options.show_window_frame) {
-            window->setFlags(Qt::Window);
+            mainWindow->setWindowFlags(mainWindow->windowFlags() | Qt::Window);
         } else {
-            window->setFlags(Qt::Window | Qt::FramelessWindowHint);
+            mainWindow->setWindowState(mainWindow->windowState() | Qt::WindowFullScreen);
         }
-        window->show();
+
+        mainWindow->show();
     }
 
     // Connect the window(s) to the OSC receiver, via a controller
