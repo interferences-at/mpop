@@ -25,5 +25,6 @@
         <file>rightarrow.svg</file>
         <file>ModelPageButtons.qml</file>
         <file>BilingualText.qml</file>
+        <file>WidgetFilterButton.qml</file>
     </qresource>
 </RCC>
