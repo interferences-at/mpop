@@ -14,6 +14,7 @@ ApplicationWindow {
     property string lastRfidRead: ""
     property string lastMessageReceived: ""
     property alias lang: userProfile.language // All the BilingualText items watch this value
+    property alias rfidTag: userProfile.rfidTag
 
     readonly property string const_KIOSK_MODE_ENTRY: "entry"
     readonly property string const_KIOSK_MODE_CENTRAL: "central"
@@ -261,7 +262,6 @@ ApplicationWindow {
         sequence: "9"
         onActivated: userProfile.setFakeRfidTag(9, setFakeRfidTagCb)
     }
-
 
     /**
      * The main model that contains all the questions.
