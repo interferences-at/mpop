@@ -40,7 +40,7 @@ void TextObjectPainter::drawHorizontalNumbers()
     _painter.save(); // Start of using painter
     qreal rowHeight = fitToScreenHeight(32);
     qreal startY = _height - fitToScreenHeight(X_AXIS_HEIGHT);
-    qreal numberRectWidth = fitToScreenHeight(35) / 3.6 * 11;
+    qreal numberRectWidth = fitToScreenHeight(35) / 3.7 * 11;
     QRect hNumbersRect(0, 0, numberRectWidth, rowHeight);
 
     _painter.setFont(_smallFont);
@@ -169,7 +169,7 @@ void TextObjectPainter::drawViewElements(ViewModeManager::ViewMode view, const Q
         break;
     case ViewModeManager::AnswerByCultureMode:
     {
-        int y = fitToScreenHeight(115);
+        int y = fitToScreenHeight(110);
         int interval = fitToScreenHeight(115 + 35);
         int marginLeft = 97;
 

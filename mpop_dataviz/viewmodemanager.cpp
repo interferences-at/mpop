@@ -438,9 +438,10 @@ void ViewModeManager::moveBarsToAnswerByGenderLayout()
 void ViewModeManager::moveBarsToAnswerByCultureLayout()
 {
     qreal barHeight = fitToScreenHeight(35);
-    qreal startY = fitToScreenHeight(128) + (barHeight / 2);
+    qreal startY = fitToScreenHeight(130) + (barHeight / 2);
     qreal rowSpace = fitToScreenHeight(115);
-    qreal marginLeft = 93;
+    qreal marginLeft = 100;
+    qreal answerStartY = startY + barHeight + 12;
 
     ViewModeManager::viewBars otherCultureBars = ViewModeManager::viewBars::create();
     ViewModeManager::viewBars userCultureBars = ViewModeManager::viewBars::create();
@@ -452,16 +453,16 @@ void ViewModeManager::moveBarsToAnswerByCultureLayout()
     *userCultureBars = _viewBars[AnswerByCultureMode]->mid(otherCultureBarsCount, userCultureBarsCount);
 
     _cultureOtherAnswer.addBarObjects(otherCultureBars);
-    _cultureOtherAnswer.setBarsSize(sizeFromPixel(2.5, barHeight));
-    _cultureOtherAnswer.setBarsColor("#667554");
+    _cultureOtherAnswer.setBarsSize(sizeFromPixel(3.5, barHeight));
+    _cultureOtherAnswer.setBarsColor("#FFFFFF");
     _cultureOtherAnswer.setStartPosition(coordinateFromPixel(marginLeft, startY));
     _cultureOtherAnswer.setDistanceBetweenRows(heightFromPixel(rowSpace));
     _cultureOtherAnswer.moveObjectsToLayout(currentTime());
 
     _cultureUserAnswer.addBarObjects(userCultureBars);
-    _cultureUserAnswer.setBarsSize(sizeFromPixel(2.5, barHeight));
-    _cultureUserAnswer.setBarsColor("#AB3D33");
-    _cultureUserAnswer.setStartPosition(coordinateFromPixel(marginLeft + 2.5, startY + _myCultureIndex * (barHeight + rowSpace)));
+    _cultureUserAnswer.setBarsSize(sizeFromPixel(3.5, barHeight));
+    _cultureUserAnswer.setBarsColor("#80E2A7");
+    _cultureUserAnswer.setStartPosition(coordinateFromPixel(marginLeft, answerStartY + _myCultureIndex * (barHeight + rowSpace)));
     _cultureUserAnswer.moveObjectsToLayout(currentTime());
 }
 
