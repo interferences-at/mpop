@@ -31,7 +31,8 @@ void DatavizWindow::keyPressEvent(QKeyEvent *event)
     if (event->modifiers() & Qt::ControlModifier) {
         switch (event->key()) {
         case Qt::Key_Q:
-            close(); // Close the window with CTRL+Q
+            // Emit signal to close the parent window with CTRL+Q
+            emit closed();
             break;
         }
     } else {
