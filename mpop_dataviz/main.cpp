@@ -132,6 +132,7 @@ int main(int argc, char* argv[]) {
         // Create a window container to embed window into a QWidget
         QWidget *windowContainer = QWidget::createWindowContainer(window.data());
         windowContainer->setFixedSize(options.window_width, options.window_height);
+        windowContainer->setFocusPolicy(Qt::StrongFocus);
         // Create a layout and set margin
         QHBoxLayout *windowLayout = new QHBoxLayout;
         windowLayout->setContentsMargins(0, 0, 0, 0);
@@ -163,9 +164,10 @@ int main(int argc, char* argv[]) {
         if (options.show_window_frame) {
             mainWindow->setWindowFlags(mainWindow->windowFlags() | Qt::Window);
         } else {
-            mainWindow->setWindowState(mainWindow->windowState() | Qt::WindowFullScreen);
+            mainWindow->setWindowFlags(mainWindow->windowFlags() | Qt::FramelessWindowHint);
+            mainWindow->setWindowState(mainWindow->windowState() ^ Qt::WindowFullScreen);
         }
-
+        QObject::connect(window.data(), &DatavizWindow::closed, mainWindow, &QWidget::close);
         mainWindow->show();
     }
 

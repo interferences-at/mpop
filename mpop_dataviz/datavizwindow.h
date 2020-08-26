@@ -44,6 +44,9 @@ public:
 
     ScreensaverLayout* getScreensaver() { return &(this->_screensaverLayout); }
 
+signals:
+    bool closed();
+
 protected:
     void keyPressEvent(QKeyEvent *event) override;
 
