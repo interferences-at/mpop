@@ -29,5 +29,6 @@
         <file>Palette.qml</file>
         <file>qmldir</file>
         <file>PageEntrance.qml</file>
+        <file>arrow.svg</file>
     </qresource>
 </RCC>

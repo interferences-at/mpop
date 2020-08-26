@@ -6,69 +6,99 @@ ColumnLayout {
     id: thisWidget
 
     Layout.topMargin: 300 // FIXME: This hard-coded layout property doesn't belong here.
-
-    property string lang: ""
+    spacing: 25
 
     signal previousButtonClicked()
     signal nextButtonClicked()
 
     BilingualText {
         id : textPrevious
-        language: thisWidget.lang
         textEn: "Previous"
         textFr: "Précédent"
     }
 
     BilingualText {
         id : textNext
-        language: thisWidget.lang
         textEn: "Next"
         textFr: "Suivante"
     }
 
-    RoundButton {
-        id: button
-        //text: "\u2191"
-        icon.source: "uparrow.svg"
-        Layout.fillHeight: true
-        Layout.fillWidth: true
-        Layout.maximumWidth: 80
-        Layout.maximumHeight: 80
+    ColumnLayout {
+        spacing: 5
 
-        onClicked: {
-            thisWidget.previousButtonClicked();
+        RoundButton {
+            id: button
+            Layout.preferredWidth: 80
+            Layout.preferredHeight: 80
+
+            Image {
+                anchors.centerIn: parent
+                source: "qrc:/arrow.svg"
+            }
+
+            background: Rectangle {
+                radius: 40
+                color: "#fff"
+            }
+
+            onClicked: {
+                thisWidget.previousButtonClicked();
+            }
+        }
+
+        Label {
+            id: label1
+            text: textPrevious.text
+            color: "#ffffff"
+            font {
+                family: "Trim SemiBold"
+                pixelSize: 11
+                letterSpacing: 11 * 25 / 1000
+                capitalization: Font.AllUppercase
+            }
+            Layout.alignment: Qt.AlignHCenter
         }
     }
 
-    Label {
-        id: label1
-        text: textPrevious.text
-        font.capitalization: Font.AllUppercase
-        color: "#ffffff"
-        font.pixelSize: 12
-        anchors.topMargin: 5
-        Layout.bottomMargin: 25
-        leftPadding : 10
-    }
+    ColumnLayout {
+        spacing: 5
 
+        RoundButton {
+            id: downbutton
+            Layout.preferredWidth: 80
+            Layout.preferredHeight: 80
 
-    RoundButton {
-        id: downbutton
-        icon.source: "downarrow.svg"
-        Layout.fillHeight: true
-        Layout.fillWidth: true
-        Layout.maximumWidth: 80
-        Layout.maximumHeight: 80
-        onClicked: {
-            thisWidget.nextButtonClicked();
+            background: Rectangle {
+                radius: 40
+                color: "#fff"
+            }
+
+            Image {
+                anchors.centerIn: parent
+                source: "qrc:/arrow.svg"
+            }
+
+            transform: Rotation {
+                angle: 180
+                origin.x: downbutton.width / 2
+                origin.y: downbutton.height / 2
+            }
+
+            onClicked: {
+                thisWidget.nextButtonClicked();
+            }
         }
-    }
-    Label {
-        text: textNext.text
-        font.capitalization: Font.AllUppercase
-        color: "#ffffff"
-        font.pixelSize: 12
-        anchors.topMargin: 5
-        leftPadding : 22
+
+        Label {
+            text: textNext.text
+            color: "#ffffff"
+            font {
+                family: "Trim SemiBold"
+                pixelSize: 11
+                letterSpacing: 11 * 25 / 1000
+                capitalization: Font.AllUppercase
+            }
+            Layout.alignment: Qt.AlignHCenter
+        }
     }
 }
