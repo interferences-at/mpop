@@ -3,7 +3,13 @@ import QtQuick.Controls 2.12
 import QtQuick.Layouts 1.12
 
 RowLayout {
+    id: pageEntrance
+
     property int currentSelected: -1
+    property variant model
+    property BilingualText sideLabel
+
+    signal choiceClicked(int index)
 
     spacing: 0
 
@@ -14,7 +20,7 @@ RowLayout {
         Layout.leftMargin: 40
         Layout.topMargin: 100
 
-        text: "Vous êtes..."
+        text: sideLabel.text
         font {
             pixelSize: 28
             family: "Trim SemiBold"
@@ -36,15 +42,25 @@ RowLayout {
         ListView {
             id: choiceList
             anchors.fill: parent
+            snapMode: ListView.SnapToItem
 
-            model: ModelEthnicities {}
+            model: pageEntrance.model
             delegate: WidgetChoiceButton {
-                text: text_en
+                BilingualText {
+                    id: choiceButtonLabel
+                    textFr: model.text_fr ? model.text_fr : (model.text ? model.text : modelData + ((index > 1) ? " ans" : " ans"))
+                    textEn: model.text_en ? model.text_en : (model.text ? model.text : modelData + ((index > 1) ? " years" : " year"))
+                }
+
+                text: choiceButtonLabel.text
                 width: choiceList.width
                 height: choiceList.height / 6
 
                 active: currentSelected < 0 || currentSelected === index
-                onClicked: currentSelected = index
+                onClicked: {
+                    currentSelected = index;
+                    choiceClicked(index);
+                }
             }
         }
         ColumnLayout {

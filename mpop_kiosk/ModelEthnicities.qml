@@ -33,41 +33,35 @@ ListModel {
         text_fr: "Québécoise"
         text_en: "Quebecer"
         db_row_id: 1
-        highlighted: false
     }
     ListElement {
         identifier: "canadian"
-        text_fr: "canadian"
-        text_en: "canadian"
+        text_fr: "Canadienne"
+        text_en: "Canadian"
         db_row_id: 2
-        highlighted: false
     }
     ListElement {
         identifier: "american"
         text_fr: "Américaine"
         text_en: "American"
         db_row_id: 3
-        highlighted: false
     }
     ListElement {
         identifier: "european"
         text_fr: "Européenne"
         text_en: "European"
         db_row_id: 4
-        highlighted: false
     }
     ListElement {
         identifier: "native"
         text_fr: "Autochtone"
         text_en: "Native"
         db_row_id: 5
-        highlighted: false
     }
     ListElement {
         identifier: "other"
         text_fr: "Autre"
         text_en: "Other"
         db_row_id: 6
-        highlighted: false
     }
 }

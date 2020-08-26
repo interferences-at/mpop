@@ -132,7 +132,7 @@ ApplicationWindow {
 
         function goToDemographicQuestions() {
             mainStackLayout.currentIndex = mainStackLayout.index_DEMOGRAPHIC_QUESTIONS;
-            demographicQuestionsStackLayout.currentIndex = demographicQuestionsStackLayout.index_FIRST_PAGE;
+            demographicQuestionsStackLayout.currentIndex = demographicQuestionsStackLayout.index_MY_LANGUAGE;
 
             // Set the state for every model according to the answers of the visitor:
             if (userProfile.gender === userProfile.const_INVALID_STRING) {
@@ -336,21 +336,32 @@ ApplicationWindow {
                 Layout.fillHeight: true
                 Layout.margins: 0
 
-                readonly property int index_FIRST_PAGE: 0
                 readonly property int index_MY_LANGUAGE: 0
                 readonly property int index_MY_GENDER: 1
                 readonly property int index_MY_ETHNICITY: 2
                 readonly property int index_MY_AGE: 3
                 readonly property int index_ENJOY_YOUR_VISIT: 4
 
-                PageLanguage {
+                PageEntrance {
                     id: pageLanguage
+                    sideLabel: BilingualText {
+                        textFr: "Choisir une langue"
+                        textEn: "Choose a language"
+                    }
+                    model: ListModel {
+                        ListElement {
+                            language_identifier: "fr"
+                            text: "Français"
+                        }
+                        ListElement {
+                            language_identifier: "en"
+                            text: "English"
+                        }
+                    }
 
-                    lang: window.lang
-
-                    onLanguageChosen: {
-                        console.log("onLanguageChosen " + value);
-                        userProfile.setUserLanguage(userProfile.userId, value, function (err) {
+                    onChoiceClicked: {
+                        console.log("onLanguageChosen " + index)
+                        userProfile.setUserLanguage(userProfile.userId, model.get(index).language_identifier, function(err) {
                             if (err) {
                                 console.log(err.message);
                             } else {
@@ -362,30 +373,35 @@ ApplicationWindow {
                 }
 
                 // Select your gender
-                PageGender {
+                PageEntrance {
                     id: pageGender
+                    sideLabel: BilingualText {
+                        textEn: "You are..."
+                        textFr: "Vous êtes..."
+                    }
+                    model: ModelGenders {}
 
-                    lang: window.lang
-
-                    onGenderChosen: {
-                        console.log("onGenderChosen " + value);
-                        userProfile.setUserGender(userProfile.userId, value, function (err) {
-                            if (err) {
+                    onChoiceClicked: {
+                        console.log("onGenderChosen " + index)
+                        userProfile.setUserGender(userProfile.userId, model.get(index).identifier, function (err) {
+                            if (err)
                                 console.log(err.message);
-                            }
                         });
                     }
                 }
 
                 // Select your ethnicity
-                PageEthnicity {
+                PageEntrance {
                     id: pageEthnicity
+                    sideLabel: BilingualText {
+                        textEn: "To which nation do you identify the most?"
+                        textFr: "À quelle nationvous identifiez-vousle plus ?"
+                    }
+                    model: ModelEthnicities {}
 
-                    lang: window.lang
-
-                    onEthnicityChosen: {
-                        console.log("onEthnicityChosen " + value);
-                        userProfile.setUserEthnicity(userProfile.userId, value, function (err) {
+                    onChoiceClicked: {
+                        console.log("onEthnicityChosen " + index)
+                        userProfile.setUserEthnicity(userProfile.userId, model.get(index).identifier, function (err) {
                             if (err) {
                                 console.log(err.message);
                             }
@@ -394,14 +410,17 @@ ApplicationWindow {
                 }
 
                 // Select your age
-                PageAge {
+                PageEntrance {
                     id: pageAge
+                    sideLabel: BilingualText {
+                        textEn: "How old are you?"
+                        textFr: "Quel âge avez-vous?"
+                    }
+                    model: 120
 
-                    lang: window.lang
-
-                    onAgeChosen: {
-                        console.log("onAgeChosen " + value);
-                        userProfile.setUserAge(userProfile.userId, value, function (err) {
+                    onChoiceClicked: {
+                        console.log("onAgeChosen " + index);
+                        userProfile.setUserAge(userProfile.userId, index, function (err) {
                             if (err) {
                                 console.log(err.message);
                             }
@@ -475,6 +494,7 @@ ApplicationWindow {
                     case demographicQuestionsStackLayout.index_MY_LANGUAGE:
                     case demographicQuestionsStackLayout.index_MY_GENDER:
                     case demographicQuestionsStackLayout.index_MY_ETHNICITY:
+                    case demographicQuestionsStackLayout.index_MY_AGE:
                         demographicQuestionsStackLayout.previousPage();
                         break;
                     }
