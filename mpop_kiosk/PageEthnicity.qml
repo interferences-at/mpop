@@ -27,6 +27,9 @@ RowLayout {
     }
 
     ListView {
+
+        id: ethnicityListView
+
         /**
          * Sets one button to be highlighted.
          * @param int indexButton Index to highlight - or -1 to make none highlighted.
@@ -68,8 +71,7 @@ RowLayout {
                 highlighted: highlighted // The model has a propery with the same name
                 onClicked: {
                     thisPage.ethnicityChosen(identifier);
-                    // FIXME: setHighlighted is not defined:
-                    setHightlighted(index);
+                    ethnicityListView.setHightlighted(index);
                 }
             }
         }

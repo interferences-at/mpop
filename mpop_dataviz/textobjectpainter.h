@@ -57,7 +57,7 @@ private:
     // Ordinate Y Axis
     const int Y_AXIS_WIDTH = X_LINE_LEFT_MARGIN; // From the left side to the vertical line
     const int Y_LINE_TOP_MARGIN = 50;
-    const int Y_LINE_BOTTOM_MARGIN = X_AXIS_HEIGHT;
+    // const int Y_LINE_BOTTOM_MARGIN = X_AXIS_HEIGHT;
 
     qreal fitToScreenWidth(qreal size) {
         return _width * (size / 1260);

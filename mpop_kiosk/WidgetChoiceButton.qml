@@ -8,6 +8,10 @@ import QtQuick.Layouts 1.3
 ColumnLayout {
     id: thisWidget
 
+    function setHighlighted(indexToHighlight) {
+        console.log("TODO: set which radio button is highlighted " + indexToHighlight);
+    }
+
     signal clicked()
 
     property string text: ""
