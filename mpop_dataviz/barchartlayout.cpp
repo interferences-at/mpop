@@ -49,7 +49,7 @@ void BarChartLayout::setStartPosition(const QPointF &pos)
 
 void BarChartLayout::moveObjectsToLayout(qint64 currentTime) {
     // TODO: never ever iterate over size of line vector
-    const qreal DISTANCE_BETWEEN_BARS = _barsHeight / 3.6;
+    const qreal DISTANCE_BETWEEN_BARS = _barsHeight / 3.7;
     const qreal WIDTH_OF_EACH_COLUMN = DISTANCE_BETWEEN_BARS * 3;
     const qreal DISTANCE_BETWEEN_COLUMN = DISTANCE_BETWEEN_BARS / 2;
     const qreal DISTANCE_BETWEEN_ROW = _spaceBetweenRows;
