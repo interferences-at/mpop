@@ -56,6 +56,7 @@ void DatavizWindow::updateFramePerSecond()
 
 
 void DatavizWindow::showBarChartBars(const QList<int>& bars) {
+    Q_UNUSED(bars);
 //    _barChartLayout.setBars(bars);
 //    _barChartLayout.moveObjectsToLayout(this->elapsed()); // Important: do it after you called setBars
 //    _screensaverLayout.setResponsesBars(bars);

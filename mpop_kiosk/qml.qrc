@@ -6,7 +6,6 @@
         <file>ModelQuestions.qml</file>
         <file>WidgetAnswerSlider.qml</file>
         <file>UserProfile.qml</file>
-        <file>PageMultipleQuestion.qml</file>
         <file>ModelGenders.qml</file>
         <file>PageEthnicity.qml</file>
         <file>ModelEthnicities.qml</file>
@@ -15,7 +14,7 @@
         <file>WidgetPreviousNext.qml</file>
         <file>WidgetChoiceButton.qml</file>
         <file>PageAge.qml</file>
-        <file>PageSingleQuestion.qml</file>
+        <file>PageQuestion.qml</file>
         <file>WidgetAgeSlider.qml</file>
         <file>PageFinalQuestion.qml</file>
         <file>PageLanguage.qml</file>
@@ -28,5 +27,6 @@
         <file>WidgetFilterButton.qml</file>
         <file>Palette.qml</file>
         <file>qmldir</file>
+        <file>WidgetGoToDataviz.qml</file>
     </qresource>
 </RCC>

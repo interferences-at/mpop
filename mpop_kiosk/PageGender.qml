@@ -13,13 +13,11 @@ RowLayout {
     property alias index_MALE: modelGenders.index_MALE
     property int index_FEMALE: modelGenders.index_FEMALE
     property int index_OTHER: modelGenders.index_OTHER
-    property string lang: ""
 
     BilingualText {
         id: textYouAre
         textEn: "You are..."
         textFr: "Vous êtes..."
-        language: thisPage.lang
     }
 
     Rectangle {
@@ -60,7 +58,6 @@ RowLayout {
                 id: textThisButton
                 textEn: name_en // from the model
                 textFr: name_fr // from the model
-                language: lang
             }
             text: textThisButton.text
             onClicked: {

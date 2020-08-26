@@ -10,11 +10,8 @@ RowLayout {
 
     signal languageChosen(string value)
 
-    property string lang: ""
-
     BilingualText {
         id: textChooseALanguage
-        language: thisPage.lang
         textFr: "Choisir une langue"
         textEn: "Choose a language"
     }
