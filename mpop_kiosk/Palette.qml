@@ -3,9 +3,9 @@ pragma Singleton
 import QtQuick 2.12
 
 QtObject {
-    readonly property color WHITE: "#ffffff"
-    readonly property color LIGHTBLACK: "#252525"
-    readonly property color ACCENT: "#bbedc9"
-    readonly property color LIGHTGREY: "#e6e6e6"
-    readonly property color MEDIUMGREY: "#696969"
+    readonly property color white: "#ffffff"
+    readonly property color lightBlack: "#252525"
+    readonly property color accent: "#bbedc9"
+    readonly property color lightGrey: "#e6e6e6"
+    readonly property color mediumGrey: "#696969"
 }
