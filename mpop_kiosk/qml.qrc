@@ -28,5 +28,6 @@
         <file>WidgetFilterButton.qml</file>
         <file>Palette.qml</file>
         <file>qmldir</file>
+        <file>PageEntrance.qml</file>
     </qresource>
 </RCC>
