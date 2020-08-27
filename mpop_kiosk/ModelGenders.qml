@@ -30,17 +30,17 @@ ListModel {
 
     ListElement {
         identifier: "male"
-        name_fr: "Homme"
-        name_en: "Male"
+        text_fr: "Homme"
+        text_en: "Male"
     }
     ListElement {
         identifier: "female"
-        name_fr: "Femme"
-        name_en: "Female"
+        text_fr: "Femme"
+        text_en: "Female"
     }
     ListElement {
         identifier: "other"
-        name_fr: "Autre"
-        name_en: "Other"
+        text_fr: "Autre"
+        text_en: "Other"
     }
 }

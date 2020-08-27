@@ -5,55 +5,34 @@ import QtQuick.Layouts 1.3
 /**
  * Button for choosing a question.
  */
-ColumnLayout {
-    id: thisWidget
+Button {
+    id: control
 
-    function setHighlighted(indexToHighlight) {
-        console.log("TODO: set which radio button is highlighted " + indexToHighlight);
-    }
-
-    signal clicked()
-
-    property string text: ""
     property string metaData: ""
     property int pageNumber: 0
-    property alias highlighted: control.highlighted
+    property bool active: true
 
-    Button {
-        id: control
+    checkable: true
+    padding: 0
+    font {
+        pixelSize: 71
+        capitalization: Font.AllUppercase
+    }
 
-        text: thisWidget.text
-        font.pixelSize: 72
-        Layout.fillWidth: true
-        topPadding: 0
-        bottomPadding: 0
-        // To disable AllUppercase: font.capitalization: Font.MixedCase
-        font.capitalization: Font.AllUppercase
-        font.weight: Font.ExtraBold
+    contentItem: Text {
+        font: control.font
+        text: control.text
+        color: active ? Palette.white : Palette.mediumGrey
+        lineHeight: 1
+        horizontalAlignment: Text.AlignLeft
+        verticalAlignment: Text.AlignBottom
+        leftPadding: 25
+        bottomPadding: 5
+        elide: Text.ElideRight
+    }
 
-        onClicked: {
-            thisWidget.clicked();
-        }
-
-        contentItem: Text {
-            text: control.text
-            font: control.font
-            opacity: enabled ? 1.0 : 0.3
-            color: control.down ? "#999999" : "#ffffff"
-            horizontalAlignment: Text.AlignHCenter
-            verticalAlignment: Text.AlignVCenter
-            elide: Text.ElideRight
-        }
-
-        background: Rectangle {
-            implicitWidth: 420
-            implicitHeight: 100
-            height: 100
-            opacity: enabled ? 1.0 : 0.3
-            border.color: control.down ? "#999999" : "#ffffff"
-            color: control.down ? "#333333" : "#000000"
-            border.width: 2
-            radius: 2
-        }
+    background: Rectangle {
+        anchors.fill: parent
+        color: "transparent"
     }
 }

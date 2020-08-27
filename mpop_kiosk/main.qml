@@ -16,7 +16,7 @@ ApplicationWindow {
     property alias lang: userProfile.language // All the BilingualText items watch this value
     property alias rfidTag: userProfile.rfidTag
 
-    readonly property string const_KIOSK_MODE_ENTRY: "entry"
+    readonly property string const_KIOSK_MODE_ENTRY: "entrance"
     readonly property string const_KIOSK_MODE_CENTRAL: "central"
     readonly property string const_KIOSK_MODE_EXIT: "exit"
 
@@ -82,7 +82,6 @@ ApplicationWindow {
         id: textWindowTitle
         textEn: "MPOP Kiosk"
         textFr: "Le kiosque MPOP"
-        language: window.lang
     }
 
     /**
@@ -132,7 +131,7 @@ ApplicationWindow {
 
         function goToDemographicQuestions() {
             mainStackLayout.currentIndex = mainStackLayout.index_DEMOGRAPHIC_QUESTIONS;
-            demographicQuestionsStackLayout.currentIndex = demographicQuestionsStackLayout.index_FIRST_PAGE;
+            demographicQuestionsStackLayout.currentIndex = demographicQuestionsStackLayout.index_MY_LANGUAGE;
 
             // Set the state for every model according to the answers of the visitor:
             if (userProfile.gender === userProfile.const_INVALID_STRING) {
@@ -336,19 +335,32 @@ ApplicationWindow {
                 Layout.fillHeight: true
                 Layout.margins: 0
 
-                readonly property int index_FIRST_PAGE: 0
                 readonly property int index_MY_LANGUAGE: 0
                 readonly property int index_MY_GENDER: 1
                 readonly property int index_MY_ETHNICITY: 2
                 readonly property int index_MY_AGE: 3
                 readonly property int index_ENJOY_YOUR_VISIT: 4
 
-                PageLanguage {
+                PageEntrance {
                     id: pageLanguage
+                    sideLabel: BilingualText {
+                        textFr: "Choisir une langue"
+                        textEn: "Choose a language"
+                    }
+                    model: ListModel {
+                        ListElement {
+                            language_identifier: "fr"
+                            text: "Français"
+                        }
+                        ListElement {
+                            language_identifier: "en"
+                            text: "English"
+                        }
+                    }
 
-                    onLanguageChosen: {
-                        console.log("onLanguageChosen " + value);
-                        userProfile.setUserLanguage(userProfile.userId, value, function (err) {
+                    onChoiceClicked: {
+                        console.log("onLanguageChosen " + index)
+                        userProfile.setUserLanguage(userProfile.userId, model.get(index).language_identifier, function(err) {
                             if (err) {
                                 console.log(err.message);
                             } else {
@@ -360,28 +372,35 @@ ApplicationWindow {
                 }
 
                 // Select your gender
-                PageGender {
+                PageEntrance {
                     id: pageGender
+                    sideLabel: BilingualText {
+                        textEn: "You are..."
+                        textFr: "Vous êtes..."
+                    }
+                    model: ModelGenders {}
 
-                    onGenderChosen: {
-                        console.log("onGenderChosen " + value);
-                        userProfile.setUserGender(userProfile.userId, value, function (err) {
-                            if (err) {
+                    onChoiceClicked: {
+                        console.log("onGenderChosen " + index)
+                        userProfile.setUserGender(userProfile.userId, model.get(index).identifier, function (err) {
+                            if (err)
                                 console.log(err.message);
-                            }
                         });
                     }
                 }
 
                 // Select your ethnicity
-                PageEthnicity {
+                PageEntrance {
                     id: pageEthnicity
+                    sideLabel: BilingualText {
+                        textEn: "To which nation do you identify the most?"
+                        textFr: "À quelle nationvous identifiez-vousle plus ?"
+                    }
+                    model: ModelEthnicities {}
 
-                    lang: window.lang
-
-                    onEthnicityChosen: {
-                        console.log("onEthnicityChosen " + value);
-                        userProfile.setUserEthnicity(userProfile.userId, value, function (err) {
+                    onChoiceClicked: {
+                        console.log("onEthnicityChosen " + index)
+                        userProfile.setUserEthnicity(userProfile.userId, model.get(index).identifier, function (err) {
                             if (err) {
                                 console.log(err.message);
                             }
@@ -390,14 +409,17 @@ ApplicationWindow {
                 }
 
                 // Select your age
-                PageAge {
+                PageEntrance {
                     id: pageAge
+                    sideLabel: BilingualText {
+                        textEn: "How old are you?"
+                        textFr: "Quel âge avez-vous?"
+                    }
+                    model: 120
 
-                    lang: window.lang
-
-                    onAgeChosen: {
-                        console.log("onAgeChosen " + value);
-                        userProfile.setUserAge(userProfile.userId, value, function (err) {
+                    onChoiceClicked: {
+                        console.log("onAgeChosen " + index);
+                        userProfile.setUserAge(userProfile.userId, index, function (err) {
                             if (err) {
                                 console.log(err.message);
                             }
@@ -408,72 +430,47 @@ ApplicationWindow {
                 // Enjoy your visit (only shown in the entry kiosk)
                 ColumnLayout {
                     Label {
+                        Layout.leftMargin: 40
+                        Layout.topMargin: 100
+
                         BilingualText {
                             id: textThankYou
-                            language: window.lang
-                            textEn: "Thank you so much!"
-                            textFr: "Merci beaucoup!"
+                            textEn: "Thank you so much!\nYou can now\nstart your visit."
+                            textFr: "Merci beaucoup!\nVous pouvez maintenant\ncommencer votre visite."
                         }
                         text: textThankYou.text
-                        font.capitalization: Font.AllUppercase
-                    }
-                    Label {
-                        BilingualText {
-                            id: textStartYourVisit
-                            language: window.lang
-                            textEn: "You can now\nstart your visit!"
-                            textFr: "Vous pouvez maintenant\ncommencer votre visite."
+                        font {
+                            pixelSize: 57
+                            capitalization: Font.AllUppercase
                         }
-                        text: textStartYourVisit.text
-                        font.capitalization: Font.AllUppercase
                     }
                 }
             }
 
             // TODO: Move this out of this page:
             WidgetPreviousNext {
+                visible: demographicQuestionsStackLayout.currentIndex !== demographicQuestionsStackLayout.count - 1
+                showPrevButton: demographicQuestionsStackLayout.currentIndex > 0
+
                 onNextButtonClicked: {
-                    // TODO: disable the previous button if this is the first page.
-                    var i = demographicQuestionsStackLayout.currentIndex;
-                    console.log("Current page: " + i);
-                    switch (i) {
-                    case demographicQuestionsStackLayout.index_FIRST_PAGE:
-                    case demographicQuestionsStackLayout.index_MY_LANGUAGE:
-                    case demographicQuestionsStackLayout.index_MY_GENDER:
-                    case demographicQuestionsStackLayout.index_MY_ETHNICITY:
-                        demographicQuestionsStackLayout.nextPage();
-                        // TODO: Disable or hide the next button if this is not the entry kiosk.
-                        break;
-                    case demographicQuestionsStackLayout.index_MY_AGE:
-                        // TODO
+                    if (demographicQuestionsStackLayout.currentIndex === demographicQuestionsStackLayout.count - 2) {
+                        console.log(kioskConfig.kiosk_mode);
                         // if this is the entry kiosk, show the "enjoy your visit" page.
                         // if this is the center kiosk, go to the questions
-                        if (kioskConfig.kiosk_mode == "entry") {
-                            demographicQuestionsStackLayout.nextPage();
-                            // TODO: after a short delay, go to screensaver.
-                        } else {
+                        if (kioskConfig.kiosk_mode !== window.const_KIOSK_MODE_ENTRY) {
                             // kiosk_mode is central:
                             mainStackLayout.nextPage();
+                            // prevent changing page
+                            return;
                         }
-                        break;
-                    case demographicQuestionsStackLayout.index_ENJOY_YOUR_VISIT:
-                        // We should not get there.
-                        break;
                     }
+
+                    // change demographic question page
+                    demographicQuestionsStackLayout.nextPage();
                 }
 
                 onPreviousButtonClicked: {
-                    var i = demographicQuestionsStackLayout.currentIndex;
-                    switch (i) {
-                    case demographicQuestionsStackLayout.index_FIRST_PAGE:
-                        // nothing to do (we should no get here)
-                        break;
-                    case demographicQuestionsStackLayout.index_MY_LANGUAGE:
-                    case demographicQuestionsStackLayout.index_MY_GENDER:
-                    case demographicQuestionsStackLayout.index_MY_ETHNICITY:
-                        demographicQuestionsStackLayout.previousPage();
-                        break;
-                    }
+                    demographicQuestionsStackLayout.previousPage();
                 }
             }
         }
@@ -610,6 +607,8 @@ ApplicationWindow {
                 WidgetPreviousNext {
                     readonly property int num_PAGES: 15
 
+                    showPrevButton: questionsStackLayout.currentIndex > 0
+
                     onNextButtonClicked: {
                         var i = questionsStackLayout.currentIndex;
                         if (i === num_PAGES) {
@@ -621,13 +620,8 @@ ApplicationWindow {
                     }
                     onPreviousButtonClicked: {
                         var i = questionsStackLayout.currentIndex;
-                        if (i === 0) {
-                            console.log("Cannot go further up");
-                            console.log("FIXME: hide the up button if page is 0");
-                        } else {
-                            i -= 1;
-                            questionsStackLayout.currentIndex = i;
-                        }
+                        i -= 1;
+                        questionsStackLayout.currentIndex = i;
                     }
                 }
             }

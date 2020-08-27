@@ -5,70 +5,74 @@ import QtQuick.Controls 2.4
 ColumnLayout {
     id: thisWidget
 
-    Layout.topMargin: 300 // FIXME: This hard-coded layout property doesn't belong here.
+    Layout.alignment: Qt.AlignBottom | Qt.AlignRight
+    Layout.bottomMargin: 35
+    Layout.rightMargin: 25
+    spacing: 25
 
-    property string lang: ""
+    property bool showPrevButton: true
+    property bool showNextButton: true
+    // property int pageNumber?
+    // property int pageCount?
 
     signal previousButtonClicked()
     signal nextButtonClicked()
 
     BilingualText {
         id : textPrevious
-        language: thisWidget.lang
         textEn: "Previous"
         textFr: "Précédent"
     }
 
     BilingualText {
         id : textNext
-        language: thisWidget.lang
         textEn: "Next"
         textFr: "Suivante"
     }
 
-    RoundButton {
-        id: button
-        //text: "\u2191"
-        icon.source: "uparrow.svg"
-        Layout.fillHeight: true
-        Layout.fillWidth: true
-        Layout.maximumWidth: 80
-        Layout.maximumHeight: 80
+    Repeater {
+        model: 2
 
-        onClicked: {
-            thisWidget.previousButtonClicked();
+        ColumnLayout {
+            enabled: model.index ? showNextButton : showPrevButton
+            opacity: model.index ? showNextButton : showPrevButton
+            spacing: 5
+
+            RoundButton {
+                id: button
+
+                Layout.preferredWidth: 80
+                Layout.preferredHeight: 80
+
+                background: Rectangle {
+                    radius: 40
+                    color: button.down ? Palette.accent : Palette.white
+                }
+
+                Image {
+                    anchors.centerIn: parent
+                    source: "qrc:/arrow.svg"
+                }
+
+                transform: Rotation {
+                    angle: model.index * 180
+                    origin.x: button.width / 2
+                    origin.y: button.height / 2
+                }
+
+                onClicked: thisWidget[model.index ? "nextButtonClicked" : "previousButtonClicked"]();
+            }
+
+            Label {
+                text: (model.index ? textNext : textPrevious).text
+                color: "#ffffff"
+                font {
+                    pixelSize: 11
+                    letterSpacing: 11 * 25 / 1000
+                    capitalization: Font.AllUppercase
+                }
+                Layout.alignment: Qt.AlignHCenter
+            }
         }
-    }
-
-    Label {
-        id: label1
-        text: textPrevious.text
-        font.capitalization: Font.AllUppercase
-        color: "#ffffff"
-        font.pixelSize: 12
-        anchors.topMargin: 5
-        Layout.bottomMargin: 25
-        leftPadding : 10
-    }
-
-
-    RoundButton {
-        id: downbutton
-        icon.source: "downarrow.svg"
-        Layout.fillHeight: true
-        Layout.fillWidth: true
-        Layout.maximumWidth: 80
-        Layout.maximumHeight: 80
-        onClicked: {
-            thisWidget.nextButtonClicked();
-        }
-    }
-    Label {
-        text: textNext.text
-        font.capitalization: Font.AllUppercase
-        color: "#ffffff"
-        font.pixelSize: 12
-        anchors.topMargin: 5
-        leftPadding : 22
     }
 }

@@ -12,7 +12,6 @@ Button {
     rightPadding: 20
 
     font {
-        family: "Trim SemiBold"
         pixelSize: 20
         letterSpacing: 20 * 25 / 1000
     }
