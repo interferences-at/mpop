@@ -331,7 +331,7 @@ ColumnLayout {
                         visible: ageVisualization
 
                         // section title
-                        Text {
+                        Label {
                             text: sectionTitle.text
                             color: "#fff"
                             font {
