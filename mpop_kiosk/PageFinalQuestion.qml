@@ -10,11 +10,15 @@ RowLayout {
 
     signal finalQuestionChosen(string value)
 
-    property string lang: ""
+    BilingualText {
+        id: textFinalQuestion
+        textFr: "Question finale"
+        textEn: "Final question"
+    }
 
     Label {
         Layout.alignment: Qt.AlignCenter
-        text: qsTr("Final question")
+        text: textFinalQuestion.text
         font.capitalization: Font.AllUppercase
         font.pixelSize: 36
     }

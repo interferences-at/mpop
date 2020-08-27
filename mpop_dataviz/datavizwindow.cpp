@@ -56,6 +56,7 @@ void DatavizWindow::updateFramePerSecond()
 
 
 void DatavizWindow::showBarChartBars(const QList<int>& bars) {
+    Q_UNUSED(bars);
 //    _barChartLayout.setBars(bars);
 //    _barChartLayout.moveObjectsToLayout(this->elapsed()); // Important: do it after you called setBars
 //    _screensaverLayout.setResponsesBars(bars);
@@ -125,8 +126,8 @@ void DatavizWindow::paintGL() {
 
     _painter->endOpenGLPainting(); // Finish OpenGL painting
 
-    if (viewActiveMode > ViewModeManager::UserAnswersMode &&
-        viewActiveMode < ViewModeManager::AnswerByCultureMode + 1) {
+    if (viewActiveMode >= ViewModeManager::MultiAnswersMode &&
+        viewActiveMode <= ViewModeManager::AnswerByCultureMode) {
         _painter->drawViewElements(viewActiveMode,
                                    _viewModeManager->getViewTitles(viewActiveMode));
     }

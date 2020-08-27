@@ -46,6 +46,8 @@ ListModel {
         max_fr: "Faible"
         min_en: "TODO"
         max_en: "TODO"
+        subtitle_fr: "TODO"
+        subtitle_en: "TODO"
         db_row_id: 1
     }
     ListElement {
@@ -56,6 +58,8 @@ ListModel {
         max_fr: "TODO"
         min_en: "TODO"
         max_en: "TODO"
+        subtitle_fr: "TODO"
+        subtitle_en: "TODO"
         db_row_id: 2
     }
     ListElement {
@@ -66,6 +70,8 @@ ListModel {
         max_fr: "TODO"
         min_en: "TODO"
         max_en: "TODO"
+        subtitle_fr: "TODO"
+        subtitle_en: "TODO"
         db_row_id: 3
     }
     ListElement {
@@ -76,6 +82,8 @@ ListModel {
         max_fr: "Équitable"
         min_en: "Unfair"
         max_en: "Fair"
+        subtitle_fr: "TODO"
+        subtitle_en: "TODO"
         db_row_id: 4
     }
     ListElement {
@@ -86,6 +94,8 @@ ListModel {
         max_fr: "Équitable"
         min_en: "Unfair"
         max_en: "Fair"
+        subtitle_fr: "TODO"
+        subtitle_en: "TODO"
         db_row_id: 5
     }
     ListElement {
@@ -96,6 +106,8 @@ ListModel {
         max_fr: "Équitable"
         min_en: "Unfair"
         max_en: "Fair"
+        subtitle_fr: "TODO"
+        subtitle_en: "TODO"
         db_row_id: 6
     }
     ListElement {
@@ -106,6 +118,8 @@ ListModel {
         max_fr: "Équitable"
         min_en: "Unfair"
         max_en: "Fair"
+        subtitle_fr: "TODO"
+        subtitle_en: "TODO"
         db_row_id: 7
     }
     ListElement {
@@ -116,6 +130,8 @@ ListModel {
         max_fr: "Équitable"
         min_en: "Unfair"
         max_en: "Fair"
+        subtitle_fr: "TODO"
+        subtitle_en: "TODO"
         db_row_id: 8
     }
     ListElement {
@@ -126,6 +142,8 @@ ListModel {
         max_fr: "Confiance"
         min_en: "TODO"
         max_en: "TODO"
+        subtitle_fr: "TODO"
+        subtitle_en: "TODO"
         db_row_id: 9
     }
     ListElement {
@@ -136,6 +154,8 @@ ListModel {
         max_fr: "Juste"
         min_en: "TODO"
         max_en: "TODO"
+        subtitle_fr: "TODO"
+        subtitle_en: "TODO"
         db_row_id: 10
     }
     ListElement {
@@ -146,6 +166,8 @@ ListModel {
         max_fr: "Oui"
         min_en: "TODO"
         max_en: "TODO"
+        subtitle_fr: "TODO"
+        subtitle_en: "TODO"
         db_row_id: 11
     }
     ListElement {
@@ -156,6 +178,8 @@ ListModel {
         max_fr: "Élevé"
         min_en: "TODO"
         max_en: "TODO"
+        subtitle_fr: "TODO"
+        subtitle_en: "TODO"
         db_row_id: 12
     }
     ListElement {
@@ -166,6 +190,8 @@ ListModel {
         max_fr: "Bien traités"
         min_en: "TODO"
         max_en: "TODO"
+        subtitle_fr: "TODO"
+        subtitle_en: "TODO"
         db_row_id: 13
     }
     ListElement {
@@ -176,6 +202,8 @@ ListModel {
         max_fr: "Oui"
         min_en: "TODO"
         max_en: "TODO"
+        subtitle_fr: "TODO"
+        subtitle_en: "TODO"
         db_row_id: 14
     }
     ListElement {
@@ -186,6 +214,8 @@ ListModel {
         max_fr: "TODO"
         min_en: "TODO"
         max_en: "TODO"
+        subtitle_fr: "TODO"
+        subtitle_en: "TODO"
         db_row_id: 15
     }
     ListElement {
@@ -196,6 +226,8 @@ ListModel {
         max_fr: "TODO"
         min_en: "TODO"
         max_en: "TODO"
+        subtitle_fr: "TODO"
+        subtitle_en: "TODO"
         db_row_id: 16
     }
     ListElement {
@@ -206,6 +238,8 @@ ListModel {
         max_fr: "TODO"
         min_en: "TODO"
         max_en: "TODO"
+        subtitle_fr: "TODO"
+        subtitle_en: "TODO"
         db_row_id: 17
     }
     ListElement {
@@ -216,6 +250,8 @@ ListModel {
         max_fr: "la guérison des victimes"
         min_en: "TODO"
         max_en: "TODO"
+        subtitle_fr: "TODO"
+        subtitle_en: "TODO"
         db_row_id: 18
     }
     ListElement {
@@ -226,6 +262,8 @@ ListModel {
         max_fr: "TODO"
         min_en: "TODO"
         max_en: "TODO"
+        subtitle_fr: "TODO"
+        subtitle_en: "TODO"
         db_row_id: 19
     }
     ListElement {
@@ -236,6 +274,8 @@ ListModel {
         max_fr: "L’éducation"
         min_en: "TODO"
         max_en: "TODO"
+        subtitle_fr: "TODO"
+        subtitle_en: "TODO"
         db_row_id: 20
     }
     ListElement {
@@ -246,6 +286,8 @@ ListModel {
         max_fr: "La santé et de services sociaux"
         min_en: "TODO"
         max_en: "TODO"
+        subtitle_fr: "TODO"
+        subtitle_en: "TODO"
         db_row_id: 21
     }
     ListElement {
@@ -256,6 +298,8 @@ ListModel {
         max_fr: "Différents programmes liés à l’emploi"
         min_en: "TODO"
         max_en: "TODO"
+        subtitle_fr: "TODO"
+        subtitle_en: "TODO"
         db_row_id: 22
     }
     ListElement {
@@ -266,6 +310,8 @@ ListModel {
         max_fr: "Assurer la sécurité et la protection de la population"
         min_en: "TODO"
         max_en: "TODO"
+        subtitle_fr: "TODO"
+        subtitle_en: "TODO"
         db_row_id: 23
     }
     ListElement {
@@ -276,6 +322,8 @@ ListModel {
         max_fr: "Veiller à ce que les délinquants répondent de leurs actes"
         min_en: "TODO"
         max_en: "TODO"
+        subtitle_fr: "TODO"
+        subtitle_en: "TODO"
         db_row_id: 24
     }
     ListElement {
@@ -286,7 +334,8 @@ ListModel {
         max_fr: "Offrir le soutien nécessaire pour assurer la réhabilitation réussie des délinquants"
         min_en: "TODO"
         max_en: "TODO"
+        subtitle_fr: "TODO"
+        subtitle_en: "TODO"
         db_row_id: 25
     }
 }
-

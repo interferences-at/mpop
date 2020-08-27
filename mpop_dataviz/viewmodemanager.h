@@ -7,6 +7,7 @@
 
 #include "barchartlayout.h"
 #include "screensaverlayout.h"
+#include "allanswerslayout.h"
 
 class ViewModeManager
 {
@@ -18,7 +19,8 @@ public:
         MultiAnswersMode, // Multiple answer
         AnswerByAgeMode,
         AnswerByGenderMode,
-        AnswerByCultureMode
+        AnswerByCultureMode,
+        AllAnswersMode
     };
 
     typedef  QSharedPointer<QVector<PrisonerLine::ptr>> viewBars;
@@ -61,6 +63,7 @@ public:
     void showOneAnswer(int numRows, int myRow, int myAnswer, const QList<TitleAndValuePtr>& titlesAndValues);
     void showOneAnswerByAge(int myRowIndex, int myAnswer, const QList<int>& values);
     void goToScreensaver();
+    void setAllAnswersBars(const QList<int> &bars);
 
     void setViewTitles(const QList<QString> &titles, ViewMode viewIndex);
     QList<QString> getViewTitles(ViewMode view) const { return _viewTitles[view]; }
@@ -71,7 +74,7 @@ public:
 
     void setPointToPickFrom(const QPointF &point);
 
-    qreal mapValue(qreal value, qreal istart, qreal istop, qreal ostart, qreal ostop);
+    qreal mapValue(qreal value, qreal istart, qreal istop, qreal ostart, qreal ostop) const;
 
     qint64 currentTime() { return _timer.elapsed(); }
 
@@ -114,6 +117,8 @@ private:
     BarChartLayout _cultureOtherAnswer;
     BarChartLayout _cultureUserAnswer;
     int _myCultureIndex;
+
+    AllAnswersLayout _allAnswers;
 
     QVector<QList<QString>> _viewTitles;
 

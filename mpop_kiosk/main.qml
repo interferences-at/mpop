@@ -575,9 +575,9 @@ ApplicationWindow {
                         // The pages for single and multiple questions:
 
                         // Page 01
-                        PageSingleQuestion {
+                        PageQuestion {
                             modelQuestions: modelQuestions
-                            questionIdentifier: "incidence_drogue"
+                            questionIdentifiers: ["incidence_drogue"]
                             datavizSender: oscSender
                             serviceClient: userProfile
                             Layout.fillWidth: true
@@ -590,7 +590,7 @@ ApplicationWindow {
                         // TODO page 03 single systeme_bureaucrate
 
                         // page 03 (multiple)
-                        PageMultipleQuestion {
+                        PageQuestion {
                             // FIXME: the main question text should be common (most often) to all questions in a multiple-question page:
                             questionIdentifiers: ["equitable_victimes", "equitable_vulnerables", "equitable_jeunes_contrevenants", "equitable_riches", "equitable_minorites_culturelles"]
                             datavizSender: oscSender
@@ -602,8 +602,6 @@ ApplicationWindow {
 
                         // TODO: remaining questions
                     }
-
-
                 }
 
                 WidgetPreviousNext {
