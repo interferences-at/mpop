@@ -15,7 +15,6 @@ Button {
     checkable: true
     padding: 0
     font {
-        family: "Trim SemiBold"
         pixelSize: 71
         capitalization: Font.AllUppercase
     }

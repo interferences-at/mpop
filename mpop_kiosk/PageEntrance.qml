@@ -23,7 +23,6 @@ RowLayout {
         text: sideLabel.text
         font {
             pixelSize: 28
-            family: "Trim SemiBold"
             capitalization: Font.AllUppercase
         }
         wrapMode: Text.WordWrap

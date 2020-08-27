@@ -440,7 +440,6 @@ ApplicationWindow {
                         }
                         text: textThankYou.text
                         font {
-                            family: "Trim SemiBold"
                             pixelSize: 57
                             capitalization: Font.AllUppercase
                         }

@@ -57,7 +57,6 @@ ColumnLayout {
             text: textPrevious.text
             color: "#ffffff"
             font {
-                family: "Trim SemiBold"
                 pixelSize: 11
                 letterSpacing: 11 * 25 / 1000
                 capitalization: Font.AllUppercase
@@ -100,7 +99,6 @@ ColumnLayout {
             text: textNext.text
             color: "#ffffff"
             font {
-                family: "Trim SemiBold"
                 pixelSize: 11
                 letterSpacing: 11 * 25 / 1000
                 capitalization: Font.AllUppercase

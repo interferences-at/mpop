@@ -335,8 +335,6 @@ ColumnLayout {
                             text: sectionTitle.text
                             color: "#fff"
                             font {
-                                family: "Trim SemiBold"
-                                weight: Font.DemiBold
                                 pixelSize: 11
                                 letterSpacing: 11 * 25 / 1000
                                 capitalization: Font.AllUppercase
