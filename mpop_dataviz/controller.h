@@ -25,6 +25,7 @@ public:
     void setScreenSaverParam(int windowIndex, const QString& paramName, float paramValue);
     void showSingleAnswer(int windowIndex, int myRow, int myAnswer, const QList<ViewModeManager::TitleAndValuePtr>& titlesAndValues);
     void showSingleAnswerByAge(int windowIndex, int myAnswer, int myRowIndex, const QList<int>& values);
+    void showAllAnswers(int windowIndex, const QList<int> &values);
 private:
     // data members
     OscReceiver* _oscReceiver;
