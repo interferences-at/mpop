@@ -5,8 +5,13 @@ import QtQuick.Controls 2.4
 ColumnLayout {
     id: thisWidget
 
-    Layout.topMargin: 300 // FIXME: This hard-coded layout property doesn't belong here.
+    Layout.alignment: Qt.AlignBottom | Qt.AlignRight
+    Layout.bottomMargin: 35
+    Layout.rightMargin: 25
     spacing: 25
+
+    property bool showPrevButton: true
+    property bool showNextButton: true
 
     signal previousButtonClicked()
     signal nextButtonClicked()
@@ -24,6 +29,7 @@ ColumnLayout {
     }
 
     ColumnLayout {
+        visible: showPrevButton
         spacing: 5
 
         RoundButton {
@@ -61,6 +67,7 @@ ColumnLayout {
     }
 
     ColumnLayout {
+        visible: showNextButton
         spacing: 5
 
         RoundButton {

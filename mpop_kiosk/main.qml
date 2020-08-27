@@ -455,49 +455,28 @@ ApplicationWindow {
 
             // TODO: Move this out of this page:
             WidgetPreviousNext {
+                visible: demographicQuestionsStackLayout.currentIndex !== demographicQuestionsStackLayout.count - 1
+                showPrevButton: demographicQuestionsStackLayout.currentIndex > 0
+
                 onNextButtonClicked: {
-                    // TODO: disable the previous button if this is the first page.
-                    var i = demographicQuestionsStackLayout.currentIndex;
-                    console.log("Current page: " + i);
-                    switch (i) {
-                    case demographicQuestionsStackLayout.index_FIRST_PAGE:
-                    case demographicQuestionsStackLayout.index_MY_LANGUAGE:
-                    case demographicQuestionsStackLayout.index_MY_GENDER:
-                    case demographicQuestionsStackLayout.index_MY_ETHNICITY:
-                        demographicQuestionsStackLayout.nextPage();
-                        // TODO: Disable or hide the next button if this is not the entry kiosk.
-                        break;
-                    case demographicQuestionsStackLayout.index_MY_AGE:
-                        // TODO
+                    if (demographicQuestionsStackLayout.currentIndex === demographicQuestionsStackLayout.count - 2) {
+                        console.log(kioskConfig.kiosk_mode);
                         // if this is the entry kiosk, show the "enjoy your visit" page.
                         // if this is the center kiosk, go to the questions
-                        if (kioskConfig.kiosk_mode == "entry") {
-                            demographicQuestionsStackLayout.nextPage();
-                            // TODO: after a short delay, go to screensaver.
-                        } else {
+                        if (kioskConfig.kiosk_mode !== window.const_KIOSK_MODE_ENTRY) {
                             // kiosk_mode is central:
                             mainStackLayout.nextPage();
+                            // prevent changing page
+                            return;
                         }
-                        break;
-                    case demographicQuestionsStackLayout.index_ENJOY_YOUR_VISIT:
-                        // We should not get there.
-                        break;
                     }
+
+                    // change demographic question page
+                    demographicQuestionsStackLayout.nextPage();
                 }
 
                 onPreviousButtonClicked: {
-                    var i = demographicQuestionsStackLayout.currentIndex;
-                    switch (i) {
-                    case demographicQuestionsStackLayout.index_FIRST_PAGE:
-                        // nothing to do (we should no get here)
-                        break;
-                    case demographicQuestionsStackLayout.index_MY_LANGUAGE:
-                    case demographicQuestionsStackLayout.index_MY_GENDER:
-                    case demographicQuestionsStackLayout.index_MY_ETHNICITY:
-                    case demographicQuestionsStackLayout.index_MY_AGE:
                         demographicQuestionsStackLayout.previousPage();
-                        break;
-                    }
                 }
             }
         }
