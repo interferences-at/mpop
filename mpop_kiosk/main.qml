@@ -609,6 +609,8 @@ ApplicationWindow {
                 WidgetPreviousNext {
                     readonly property int num_PAGES: 15
 
+                    showPrevButton: questionsStackLayout.currentIndex > 0
+
                     onNextButtonClicked: {
                         var i = questionsStackLayout.currentIndex;
                         if (i === num_PAGES) {
@@ -620,13 +622,8 @@ ApplicationWindow {
                     }
                     onPreviousButtonClicked: {
                         var i = questionsStackLayout.currentIndex;
-                        if (i === 0) {
-                            console.log("Cannot go further up");
-                            console.log("FIXME: hide the up button if page is 0");
-                        } else {
-                            i -= 1;
-                            questionsStackLayout.currentIndex = i;
-                        }
+                        i -= 1;
+                        questionsStackLayout.currentIndex = i;
                     }
                 }
             }
