@@ -12,6 +12,8 @@ ColumnLayout {
 
     property bool showPrevButton: true
     property bool showNextButton: true
+    // property int pageNumber?
+    // property int pageCount?
 
     signal previousButtonClicked()
     signal nextButtonClicked()
@@ -28,82 +30,49 @@ ColumnLayout {
         textFr: "Suivante"
     }
 
-    ColumnLayout {
-        visible: showPrevButton
-        spacing: 5
+    Repeater {
+        model: 2
 
-        RoundButton {
-            id: button
-            Layout.preferredWidth: 80
-            Layout.preferredHeight: 80
+        ColumnLayout {
+            enabled: model.index ? showNextButton : showPrevButton
+            opacity: model.index ? showNextButton : showPrevButton
+            spacing: 5
 
-            Image {
-                anchors.centerIn: parent
-                source: "qrc:/arrow.svg"
+            RoundButton {
+                id: button
+
+                Layout.preferredWidth: 80
+                Layout.preferredHeight: 80
+
+                background: Rectangle {
+                    radius: 40
+                    color: button.down ? Palette.accent : Palette.white
+                }
+
+                Image {
+                    anchors.centerIn: parent
+                    source: "qrc:/arrow.svg"
+                }
+
+                transform: Rotation {
+                    angle: model.index * 180
+                    origin.x: button.width / 2
+                    origin.y: button.height / 2
+                }
+
+                onClicked: thisWidget[model.index ? "nextButtonClicked" : "previousButtonClicked"]();
             }
 
-            background: Rectangle {
-                radius: 40
-                color: "#fff"
+            Label {
+                text: (model.index ? textNext : textPrevious).text
+                color: "#ffffff"
+                font {
+                    pixelSize: 11
+                    letterSpacing: 11 * 25 / 1000
+                    capitalization: Font.AllUppercase
+                }
+                Layout.alignment: Qt.AlignHCenter
             }
-
-            onClicked: {
-                thisWidget.previousButtonClicked();
-            }
-        }
-
-        Label {
-            id: label1
-            text: textPrevious.text
-            color: "#ffffff"
-            font {
-                pixelSize: 11
-                letterSpacing: 11 * 25 / 1000
-                capitalization: Font.AllUppercase
-            }
-            Layout.alignment: Qt.AlignHCenter
-        }
-    }
-
-    ColumnLayout {
-        visible: showNextButton
-        spacing: 5
-
-        RoundButton {
-            id: downbutton
-            Layout.preferredWidth: 80
-            Layout.preferredHeight: 80
-
-            background: Rectangle {
-                radius: 40
-                color: "#fff"
-            }
-
-            Image {
-                anchors.centerIn: parent
-                source: "qrc:/arrow.svg"
-            }
-
-            transform: Rotation {
-                angle: 180
-                origin.x: downbutton.width / 2
-                origin.y: downbutton.height / 2
-            }
-
-            onClicked: {
-                thisWidget.nextButtonClicked();
-            }
-        }
-
-        Label {
-            text: textNext.text
-            color: "#ffffff"
-            font {
-                pixelSize: 11
-                letterSpacing: 11 * 25 / 1000
-                capitalization: Font.AllUppercase
-            }
-            Layout.alignment: Qt.AlignHCenter
         }
     }
 }
