@@ -13,6 +13,7 @@ static const QString SCREENSAVER_SET_PARAM_METHOD = "screensaver_set_param";
 static const QString VIEW_ANSWER_BY_CULTURE_METHOD = "view_answer_by_culture";
 static const QString VIEW_ANSWER_BY_GENDER_METHOD = "view_answer_by_gender";
 static const QString VIEW_ANSWER_BY_AGE_METHOD = "view_answer_by_age";
+static const QString VIEW_ALL_ANSWERS_METHOD = "all_results";
 static const int INDEX_NAMESPACE_PREFIX = 0;
 static const int INDEX_WINDOW_NUMBER = 1;
 static const int INDEX_METHOD = 2;
@@ -256,6 +257,17 @@ void Controller::messageReceivedCb(const QString& oscAddress, const QVariantList
             if (ok) {
                 this->showSingleAnswerByAge(windowIndex, myAnswer, myRowIndex, values);
             }
+        } else if (methodName == VIEW_ALL_ANSWERS_METHOD) {
+            /* /all_results iiiiiiiiiiiiiiiiiiiiiiiii
+             * 21 12 1 52 15 57 41 24 89 72 98 40 66 20 7 36 7 44 65 9 93 46 56 25 5
+            */
+            QList<int> answersValues = toInts(arguments);
+
+            if (numArgs != 25){
+                qDebug() << "Uncorrect number of arguments";
+            } else {
+                showAllAnswers(windowIndex, answersValues);
+            }
         } else {
             qDebug() << "Unhandled OSC method" << methodName;
         }
@@ -294,6 +306,14 @@ void Controller::showSingleAnswerByAge(int windowIndex, int myAnswer, int myRowI
     DatavizWindow::ptr window = getWindowById(windowIndex);
     if (window) {
         window->viewManager()->showOneAnswerByAge(myRowIndex, myAnswer, values);
+    }
+}
+
+void Controller::showAllAnswers(int windowIndex, const QList<int> &values)
+{
+    DatavizWindow::ptr window = getWindowById(windowIndex);
+    if (window) {
+        window->viewManager()->setAllAnswersBars(values);
     }
 }
 
