@@ -131,8 +131,7 @@ void ViewModeManager::moveBarsToLayouts(ViewMode viewIndex)
         break;
     case AllAnswersMode:
         _allAnswers.addBarObjects(_viewBars[viewIndex]);
-        _allAnswers.setBarsSize(sizeFromPixel(3, 60));
-        _allAnswers.setBarsColor("#CCCCCC");
+        _allAnswers.setBarsSize(sizeFromPixel(3.5, 35));
         _allAnswers.moveObjectsToLayout(currentTime());
     default:
         break;
@@ -291,6 +290,14 @@ void ViewModeManager::goToScreensaver()
         moveBarsToLayouts(ScreenSaverMode);
         setViewActiveMode(ScreenSaverMode);
     }
+}
+
+void ViewModeManager::setAllAnswersBars(const QList<int> &bars)
+{
+    _allAnswers.setRows(bars);
+    setPointToPickFrom(QPointF(0, 0));
+    setViewBarsQuantity(_allAnswers.getBarsCount(), AllAnswersMode);
+    setViewActiveMode(AllAnswersMode);
 }
 
 void ViewModeManager::setViewTitles(const QList<QString> &titles, ViewModeManager::ViewMode viewIndex)
