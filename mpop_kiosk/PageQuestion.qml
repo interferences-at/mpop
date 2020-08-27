@@ -20,7 +20,10 @@ ColumnLayout {
         // Set the text of the main question:
         mainQuestionText.textFr = firstQuestion.question_fr;
         mainQuestionText.textEn = firstQuestion.question_en;
-
+        leftText1.textFr = firstQuestion.min_fr;
+        leftText1.textEn = firstQuestion.min_en;
+        rightText1.textFr = firstQuestion.max_fr;
+        rightText1.textEn = firstQuestion.max_en;
 
 
         if (hasMultipleQuestions) {
