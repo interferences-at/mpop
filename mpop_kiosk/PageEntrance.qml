@@ -26,6 +26,7 @@ RowLayout {
             family: "Trim SemiBold"
             capitalization: Font.AllUppercase
         }
+        wrapMode: Text.WordWrap
     }
 
     Rectangle {

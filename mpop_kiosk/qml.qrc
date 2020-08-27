@@ -8,17 +8,13 @@
         <file>UserProfile.qml</file>
         <file>PageMultipleQuestion.qml</file>
         <file>ModelGenders.qml</file>
-        <file>PageEthnicity.qml</file>
         <file>ModelEthnicities.qml</file>
         <file>DatavizManager.qml</file>
-        <file>PageGender.qml</file>
         <file>WidgetPreviousNext.qml</file>
         <file>WidgetChoiceButton.qml</file>
-        <file>PageAge.qml</file>
         <file>PageSingleQuestion.qml</file>
         <file>WidgetAgeSlider.qml</file>
         <file>PageFinalQuestion.qml</file>
-        <file>PageLanguage.qml</file>
         <file>uparrow.svg</file>
         <file>downarrow.svg</file>
         <file>leftarrow.svg</file>
