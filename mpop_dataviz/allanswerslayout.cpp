@@ -5,12 +5,6 @@ bool AllAnswersLayout::_doneMoving = false;
 AllAnswersLayout::AllAnswersLayout()
 {
     _groupTweenAnimator.reset(new GroupTweenAnimator());
-
-//    for (int i = 0; i < 25; i++) {
-//       int random100 = (rand() % 100) + 1;
-//       _rowsValues.append(random100);
-//    }
-//    qDebug() << _rowsValues;
 }
 
 void AllAnswersLayout::moveObjectsToLayout(qint64 currentTime)
@@ -21,19 +15,20 @@ void AllAnswersLayout::moveObjectsToLayout(qint64 currentTime)
 
     int iterator = 0;
     for (int rowIndex = 0; rowIndex < _rowsValues.size(); rowIndex++) {
-        // #64994E => #467554 || #64994E => #546059 || #65bF40 => #395030
-        QString color = getColorFromRange("#65bF40", "#395030", _rowsValues.at(rowIndex));
+        // #FFFFFF => #80E2A7
+        QString color = getColorFromRange("#FFFFFF", "#80E2A7", _rowsValues.at(rowIndex));
 
         for (int lineIndex = 0; lineIndex < _rowsValues.at(rowIndex); lineIndex++) {
 
             qreal width = _right - _left;
             qreal height = _top - _bottom;
 
-            qreal spaceX = width / _rowsValues.at(rowIndex);
+//            qreal spaceX = (width - _barsWidth) / (_rowsValues.at(rowIndex) - 1);
+            qreal spaceX = (width - _barsWidth) / 100;
             qreal spaceY = height / _rowsValues.size();
 
-            qreal x = _left + (lineIndex * spaceX);
-            qreal y = _bottom - (-rowIndex * spaceY);
+            qreal x = (_left + (lineIndex * spaceX)) + _barsWidth / 2;
+            qreal y = (_bottom - (-rowIndex * spaceY)) + _barsHeight / 2;
             qreal rotation = 0.0;
 
             PrisonerLine::ptr line = _barObjects->at(iterator);
