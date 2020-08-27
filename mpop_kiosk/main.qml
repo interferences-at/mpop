@@ -82,7 +82,6 @@ ApplicationWindow {
         id: textWindowTitle
         textEn: "MPOP Kiosk"
         textFr: "Le kiosque MPOP"
-        language: window.lang
     }
 
     /**
@@ -431,24 +430,20 @@ ApplicationWindow {
                 // Enjoy your visit (only shown in the entry kiosk)
                 ColumnLayout {
                     Label {
+                        Layout.leftMargin: 40
+                        Layout.topMargin: 100
+
                         BilingualText {
                             id: textThankYou
-                            language: window.lang
-                            textEn: "Thank you so much!"
-                            textFr: "Merci beaucoup!"
+                            textEn: "Thank you so much!\nYou can now\nstart your visit."
+                            textFr: "Merci beaucoup!\nVous pouvez maintenant\ncommencer votre visite."
                         }
                         text: textThankYou.text
-                        font.capitalization: Font.AllUppercase
-                    }
-                    Label {
-                        BilingualText {
-                            id: textStartYourVisit
-                            language: window.lang
-                            textEn: "You can now\nstart your visit!"
-                            textFr: "Vous pouvez maintenant\ncommencer votre visite."
+                        font {
+                            family: "Trim SemiBold"
+                            pixelSize: 57
+                            capitalization: Font.AllUppercase
                         }
-                        text: textStartYourVisit.text
-                        font.capitalization: Font.AllUppercase
                     }
                 }
             }
@@ -476,7 +471,7 @@ ApplicationWindow {
                 }
 
                 onPreviousButtonClicked: {
-                        demographicQuestionsStackLayout.previousPage();
+                    demographicQuestionsStackLayout.previousPage();
                 }
             }
         }
