@@ -189,10 +189,6 @@ ColumnLayout {
         // Index 0: answering the questions
         ColumnLayout {
 
-            WidgetGoToDataviz {
-                // FIXME: make this work
-            }
-
             // To answer the question(s) with the sliders:
             ColumnLayout {
 
@@ -345,13 +341,13 @@ ColumnLayout {
 //    }
 
 //    WidgetFilterButton {
-//        label: BilingualText { textEn: "Gender"; textFr: "Genre"; language: window.lang }
+//        label: BilingualText { textEn: "Gender"; textFr: "Genre" }
 //        checked: filterHighlighted === "genreBtn"
 //        onClicked: filterHighlighted = "genreBtn"
 //    }
 
 //    WidgetFilterButton {
-//        label: BilingualText { textEn: "Culture"; textFr: "Culture"; language: window.lang }
+//        label: BilingualText { textEn: "Culture"; textFr: "Culture" }
 //        checked: filterHighlighted === "cultureBtn"
 //        onClicked: filterHighlighted = "cultureBtn"
 //    }

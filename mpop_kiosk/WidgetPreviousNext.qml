@@ -5,9 +5,6 @@ import QtQuick.Controls 2.4
 ColumnLayout {
     id: thisWidget
 
-    Layout.alignment: Qt.AlignBottom | Qt.AlignRight
-    Layout.bottomMargin: 35
-    Layout.rightMargin: 25
     spacing: 25
 
     property bool showPrevButton: true
