@@ -14,10 +14,6 @@
         <file>PageQuestion.qml</file>
         <file>WidgetAgeSlider.qml</file>
         <file>PageFinalQuestion.qml</file>
-        <file>uparrow.svg</file>
-        <file>downarrow.svg</file>
-        <file>leftarrow.svg</file>
-        <file>rightarrow.svg</file>
         <file>ModelPageButtons.qml</file>
         <file>BilingualText.qml</file>
         <file>WidgetFilterButton.qml</file>
@@ -26,5 +22,6 @@
         <file>PageEntrance.qml</file>
         <file>arrow.svg</file>
         <file>WidgetGoToDataviz.qml</file>
+        <file>cross.svg</file>
     </qresource>
 </RCC>

@@ -494,7 +494,7 @@ ApplicationWindow {
             Layout.fillWidth: true
             Layout.fillHeight: true
             Layout.margins: 0
-            spacing: 6
+            spacing: 0
 
             /**
              * List of buttons to access each question page.
@@ -512,11 +512,9 @@ ApplicationWindow {
                     setCurrentPage(0, "01"); // Initial value
                 }
 
-                Layout.margins: 0
-                Layout.fillWidth: false
+                Layout.preferredWidth: 80
                 Layout.fillHeight: true
                 orientation: Qt.Vertical
-                width: currentItem.width
 
                 // There are 15 pages, and that should not change.
                 model: ModelPageButtons {
@@ -540,37 +538,34 @@ ApplicationWindow {
             /**
              * Displays the current page number.
              */
-            ColumnLayout {
-                Rectangle {
-                    Layout.minimumWidth: 100
-                    Layout.minimumHeight: 700
-                    Layout.leftMargin: 30
-                    Layout.rightMargin: 30
-                    color: "#000"
+            Item {
+                Layout.fillWidth: true
+                Layout.fillHeight: true
+
+                WidgetGoToDataviz {
+                    anchors.top: parent.top
+                }
+
+                RowLayout {
+                    anchors.fill: parent
+                    anchors.topMargin: 80
+                    spacing: 0
 
                     Label {
+                        Layout.alignment: Qt.AlignTop
+
                         id: currentPageNumberLabel
                         text: "01" // Changed dynamically
-                        Layout.alignment: Qt.AlignCenter
                         font.capitalization: Font.AllUppercase
                         color: "#ffffff"
                         font.bold : true
                         font.pixelSize: 75
                         //visible: sliderWidgetVisibility
+
+                        background: Item {}
                     }
-                }
-            }
 
-            RowLayout {
-                // Outline around the questions
-                Rectangle{
-                    Layout.minimumWidth: 1000
-                    Layout.minimumHeight: 800
-                    color: "#000"
-                    border.color: "grey"
-                    border.width: 5
-
-
+                    // Outline around the questions
                     // Contents
                     StackLayout {
                         id: questionsStackLayout
@@ -582,6 +577,7 @@ ApplicationWindow {
                         Layout.fillHeight: true
 
                         // The pages for single and multiple questions:
+                        // TODO: wrap in Repeater and feed with model data
 
                         // Page 01
                         PageQuestion {
@@ -611,26 +607,78 @@ ApplicationWindow {
 
                         // TODO: remaining questions
                     }
-                }
 
-                WidgetPreviousNext {
-                    readonly property int num_PAGES: 15
+                    Item {
+                        Layout.fillHeight: true
+                        Layout.preferredWidth: 130
+                        z: 10
+                        Layout.topMargin: -80 + 25
+                        Layout.bottomMargin: 25
 
-                    showPrevButton: questionsStackLayout.currentIndex > 0
+                        ColumnLayout {
+                            width: parent.width
+                            height: parent.height
+                            spacing: 0
 
-                    onNextButtonClicked: {
-                        var i = questionsStackLayout.currentIndex;
-                        if (i === num_PAGES) {
-                            mainStackLayout.currentIndex = mainStackLayout.index_EXIT_SECTION;
-                        } else {
-                            i += 1;
-                            questionsStackLayout.currentIndex = i;
+                            ColumnLayout {
+                                Layout.alignment: Qt.AlignTop | Qt.AlignHCenter
+                                spacing: 5
+
+                                RoundButton {
+                                    id: button
+
+                                    Layout.preferredWidth: 80
+                                    Layout.preferredHeight: 80
+
+                                    background: Rectangle {
+                                        radius: 40
+                                        color: button.down ? Palette.accent : Palette.white
+                                    }
+
+                                    Image {
+                                        anchors.centerIn: parent
+                                        source: "qrc:/cross.svg"
+                                    }
+                                }
+
+                                Label {
+                                    Layout.maximumWidth: 80
+                                    text: "Quitter le questionnaire"
+                                    wrapMode: Text.WordWrap
+                                    horizontalAlignment: Text.AlignHCenter
+                                    color: "#ffffff"
+                                    font {
+                                        pixelSize: 11
+                                        letterSpacing: 11 * 25 / 1000
+                                        capitalization: Font.AllUppercase
+                                    }
+                                    Layout.alignment: Qt.AlignHCenter
+                                }
+                            }
+
+                            WidgetPreviousNext {
+                                Layout.alignment: Qt.AlignBottom | Qt.AlignHCenter
+
+                                readonly property int num_PAGES: 15
+
+                                showPrevButton: questionsStackLayout.currentIndex > 0
+
+                                onNextButtonClicked: {
+                                    var i = questionsStackLayout.currentIndex;
+                                    if (i === num_PAGES) {
+                                        mainStackLayout.currentIndex = mainStackLayout.index_EXIT_SECTION;
+                                    } else {
+                                        i += 1;
+                                        questionsStackLayout.currentIndex = i;
+                                    }
+                                }
+                                onPreviousButtonClicked: {
+                                    var i = questionsStackLayout.currentIndex;
+                                    i -= 1;
+                                    questionsStackLayout.currentIndex = i;
+                                }
+                            }
                         }
-                    }
-                    onPreviousButtonClicked: {
-                        var i = questionsStackLayout.currentIndex;
-                        i -= 1;
-                        questionsStackLayout.currentIndex = i;
                     }
                 }
             }
