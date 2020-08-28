@@ -308,6 +308,15 @@ ApplicationWindow {
         }
 
         /**
+         * This is where we implement all OSC message sending.
+         */
+        DatavizManager {
+            id: datavizManager
+
+            oscMessageSender: oscSender
+        }
+
+        /**
          * Section with the demographic question of the entry kiosk.
          *
          * This is our main two-column layout.
@@ -578,7 +587,7 @@ ApplicationWindow {
                         PageQuestion {
                             modelQuestions: modelQuestions
                             questionIdentifiers: ["incidence_drogue"]
-                            datavizSender: oscSender
+                            datavizSender: datavizManager
                             serviceClient: userProfile
                             Layout.fillWidth: true
                             Layout.fillHeight: true
@@ -593,7 +602,7 @@ ApplicationWindow {
                         PageQuestion {
                             // FIXME: the main question text should be common (most often) to all questions in a multiple-question page:
                             questionIdentifiers: ["equitable_victimes", "equitable_vulnerables", "equitable_jeunes_contrevenants", "equitable_riches", "equitable_minorites_culturelles"]
-                            datavizSender: oscSender
+                            datavizSender: datavizManager
                             serviceClient: userProfile
                             modelQuestions: modelQuestions // The whole model with all questions.
                             Layout.fillWidth: true
