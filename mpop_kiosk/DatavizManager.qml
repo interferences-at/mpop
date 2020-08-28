@@ -25,14 +25,71 @@ Item {
         oscMessageSender.send(_makePath("my_answer"), [value]);
     }
 
-    function show_one_answer_by_gender() {
-        // TODO
+    /**
+     * Creates an object to pass in an Array to some other method.
+     */
+    function makeTitleTheirs(titleText, theirAnswer) {
+        var ret = {
+            title: titleText,
+            theirs: theirAnswer
+        };
+        return ret;
     }
 
-    function show_one_answer_by_ethnicity() {
-        var args = [];
-        // TODO
+
+    /**
+     * View an answer to a single question by gender.
+     *
+     * @param myRow int My row index.
+     * @param myAnswer int Value for my answer.
+     * @param titleTheirs Array List of objects created using makeTitleTheirs.
+     * @see makeTitleTheirs
+     */
+    function show_one_answer_by_gender(myRow, myAnswer, titleTheirs) {
+        var rowCount = titleTheirs.length;
+        var args = [rowCount, myRow, myAnswer];
+        for (var i = 0; i < rowCount; i ++) {
+            var answer = titleTheirs[i];
+            args.push(answer.title);
+            args.push(answer.theirs);
+        }
+        oscMessageSender.send(_makePath("view_answer_by_gender"), args);
     }
+
+
+    /**
+     * View an answer to a single question by ethnicity.
+     *
+     * @param myRow int My row index.
+     * @param myAnswer int Value for my answer.
+     * @param titleTheirs Array List of objects created using makeTitleTheirs.
+     * @see makeTitleTheirs
+     */
+    function show_one_answer_by_ethnicity(myRow, myAnswer, titleTheirs) {
+        var rowCount = titleTheirs.length;
+        var args = [rowCount, myRow, myAnswer];
+        for (var i = 0; i < rowCount; i ++) {
+            var answer = titleTheirs[i];
+            args.push(answer.title);
+            args.push(answer.theirs);
+        }
+        oscMessageSender.send(_makePath("view_answer_by_culture"), args);
+    }
+
+
+    /**
+     * Sets a screensaver parameter.
+     *
+     * /screensaver_set_param
+     *
+     * @param name string Name of the parameter to set.
+     * @param value float Value for that parameter. (can be an int or float)
+     */
+    function screensaver_set_param(name, value) {
+        var args = [name, value];
+        oscMessageSender.send(_makePath("screensaver_set_param"), args);
+    }
+
 
     /**
      * View one answer by age.
@@ -72,9 +129,9 @@ Item {
     /**
      * Creates an object to pass in an Array to view_answers.
      */
-    function makeAnswer(text, myAnswer, theirAnswer) {
+    function makeTitleMineTheirs(titleText, myAnswer, theirAnswer) {
         var ret = {
-            text: "",
+            title: titleText,
             mine: myAnswer,
             theirs: theirAnswer
         };
@@ -85,14 +142,14 @@ Item {
     /**
      * View the answers for a multiple-question page.
      *
-     * @param values Array List of answers, created with makeAnswer.
+     * @param values Array List of answers, created with makeTitleMineTheirs.
      */
     function view_answers(values) {
         var numAnswers = values.length;
         var args = [numAnswers];
         for (var i = 0; i < numAnswers; i ++) {
             var answer = values[i];
-            args.push(answer.text);
+            args.push(answer.title);
             args.push(answer.mine);
             args.push(answer.theirs);
         }
