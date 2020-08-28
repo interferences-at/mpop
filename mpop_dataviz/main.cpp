@@ -7,6 +7,8 @@
 #include <QWidget>
 #include <QApplication>
 #include <QHBoxLayout>
+#include <QUdpSocket>
+#include <QMessageBox>
 
 
 // Constants:
@@ -168,7 +170,27 @@ int main(int argc, char* argv[]) {
             mainWindow->setWindowState(mainWindow->windowState() ^ Qt::WindowFullScreen);
         }
         QObject::connect(window.data(), &DatavizWindow::closed, mainWindow, &QWidget::close);
+        // Show main window
         mainWindow->show();
+        // Take a little time to check port availability
+        QUdpSocket *socket = new QUdpSocket(window.data());
+        if (!socket->bind(options.osc_receive_port)) {
+            qDebug() << "The OSC port" << options.osc_receive_port << "is already in use!";
+            qDebug() << "Please make sure no other instance is running";
+
+            QMessageBox::critical(mainWindow, QObject::tr("OSC Server Error"),
+                        QObject::tr("The OSC port %1 is already in use!\n"
+                                    "Please make sure no other instance is running").arg(options.osc_receive_port),
+                        QMessageBox::Close);
+
+            // Brutal way of leave program
+            // Maybe mainWindow.close()
+            return 0;
+        } else {
+            // Get out
+            socket->disconnectFromHost();
+            delete socket;
+        }
     }
 
     // Connect the window(s) to the OSC receiver, via a controller
