@@ -10,10 +10,6 @@ ColumnLayout {
     id: thisPage
 
     function loadQuestions() {
-        numberOfQuestions = questionIdentifiers.length;
-
-        hasMultipleQuestions = numberOfQuestions > 1;
-
         // Retrieve the first question model item:
         var firstQuestion = modelQuestions.findQuestion(questionIdentifiers[0]);
 
@@ -91,8 +87,8 @@ ColumnLayout {
     property var serviceClient: null
     property var datavizSender: null
     property string titleText: ""
-    property int numberOfQuestions: 0 // [1,5]
-    property bool hasMultipleQuestions: false
+    property int numberOfQuestions: questionIdentifiers.length // [1,5]
+    property bool hasMultipleQuestions: numberOfQuestions > 1
     property var questionIdentifiers: []
     property string filterHighlighted: ""
     property bool buttonTextHighlight: true
@@ -220,14 +216,14 @@ ColumnLayout {
 
             // To answer the question(s) with the sliders:
             ColumnLayout {
-
                 Layout.preferredWidth: 920
                 Layout.leftMargin: 40
+                Layout.rightMargin: 40
                 spacing: 40
 
                 // first slider
                 ColumnLayout {
-                    spacing: 0
+                    spacing: 15
 
                     Label {
                         Layout.alignment: Qt.AlignLeft
@@ -251,7 +247,7 @@ ColumnLayout {
 
                 // second slider
                 ColumnLayout {
-                    spacing: 0
+                    spacing: 15
 
                     Label {
                         Layout.alignment: Qt.AlignLeft
@@ -276,7 +272,7 @@ ColumnLayout {
 
                 // third slider
                 ColumnLayout {
-                    spacing: 0
+                    spacing: 15
 
                     Label {
                         Layout.alignment: Qt.AlignLeft
@@ -302,7 +298,7 @@ ColumnLayout {
 
                 // fourth slider
                 ColumnLayout {
-                    spacing: 0
+                    spacing: 15
 
                     Label {
                         Layout.alignment: Qt.AlignLeft
@@ -328,7 +324,7 @@ ColumnLayout {
 
                 // fifth slider
                 ColumnLayout {
-                    spacing: 0
+                    spacing: 15
 
                     Label {
                         Layout.alignment: Qt.AlignLeft
@@ -363,6 +359,7 @@ ColumnLayout {
             ColumnLayout {
                 Layout.fillWidth: true
                 Layout.leftMargin: 40
+                Layout.rightMargin: 40
                 spacing: 0
 
                 Label {
@@ -442,6 +439,7 @@ ColumnLayout {
             ColumnLayout {
                 Layout.fillWidth: true
                 Layout.leftMargin: 40
+                Layout.rightMargin: 40
                 spacing: 30
 
                 ColumnLayout {
