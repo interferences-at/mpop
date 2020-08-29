@@ -40,6 +40,7 @@ ApplicationWindow {
     function toggleFullscreen() {
         if (visibility === Window.FullScreen) {
             visibility = Window.AutomaticVisibility;
+
         } else {
             visibility = Window.FullScreen;
         }
@@ -93,6 +94,8 @@ ApplicationWindow {
         textEn: "MPOP Kiosk"
         textFr: "Le kiosque MPOP"
     }
+
+
 
     /**
      * Handles the signals from the RFID serial reader.
@@ -329,14 +332,52 @@ ApplicationWindow {
          * The Screensaver shows floating bars.
          */
         Rectangle {
+            id: screensaverrectangle
+
             Layout.fillWidth: true
             Layout.fillHeight: true
             Layout.margins: 0
             color: "black"
 
+            Timer {
+                id: hideTextTimer
+
+                interval: 3 * 1000
+                repeat: false
+                running: false
+                triggeredOnStart: false
+                onTriggered: {
+                    console.log("hideTextTimer triggered");
+                    clickedMessage.visible = false;
+                }
+            }
+
             Screensaver {
                 id: screensaver
                 anchors.fill: parent
+            }
+
+            Label {
+                id: clickedMessage
+
+                text: "Scannez votre puce pour commencer.\nScan your tag to start."
+                color: "#fff"
+                font.weight: Font.Bold
+                visible: false
+                font.pointSize: 30
+                anchors.horizontalCenter: parent.horizontalCenter
+                topPadding: 300
+                leftPadding: 150
+            }
+
+            // touch area of your root component
+            MouseArea {
+                anchors.fill: parent
+                onClicked: {
+                    console.log("Screensaver touched");
+                    clickedMessage.visible = true;
+                    hideTextTimer.start();
+                }
             }
         }
 
@@ -472,6 +513,7 @@ ApplicationWindow {
                             textFr: "Merci beaucoup!\nVous pouvez maintenant\ncommencer votre visite."
                         }
                         text: textThankYou.text
+
                         font {
                             pixelSize: 57
                             capitalization: Font.AllUppercase
@@ -480,7 +522,6 @@ ApplicationWindow {
                 }
             }
 
-            // TODO: Move this out of this page:
             WidgetPreviousNext {
                 Layout.alignment: Qt.AlignBottom
                 Layout.rightMargin: 25
@@ -936,24 +977,24 @@ ApplicationWindow {
 
             ColumnLayout {
                 Label {
+                    text: textMerci.text
+                    font.capitalization: Font.AllUppercase
+
                     BilingualText {
                         id: textMerci
-                        language: lang
                         textEn: "Thanks a lot."
                         textFr: "Merci beaucoup."
                     }
-                    text: textMerci.text
-                    font.capitalization: Font.AllUppercase
                 }
                 Label {
+                    text: textGiveYouKeyBack.text
+                    font.capitalization: Font.AllUppercase
+
                     BilingualText {
                         id: textGiveYouKeyBack
-                        language: lang
                         textEn: "Don't forget\nto give your key back."
                         textFr: "N'oubliez pas\nde remettre votre clé."
                     }
-                    text: textGiveYouKeyBack.text
-                    font.capitalization: Font.AllUppercase
                 }
             }
         }
