@@ -7,7 +7,7 @@ import QtQuick 2.0
  * You can then create aliases to its "text" property,
  * so that your UI is updated automatically.
  */
-Item {
+QtObject {
     property string textFr: ""
     property string textEn: ""
     property string language: window.lang
