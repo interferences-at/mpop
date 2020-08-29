@@ -193,7 +193,7 @@ int main(int argc, char* argv[]) {
 
             // Brutal way of leave program
             // Maybe mainWindow.close()
-            return 0;
+            return 1;
         } else {
             // Get out
             socket->disconnectFromHost();
