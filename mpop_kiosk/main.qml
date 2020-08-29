@@ -465,6 +465,7 @@ ApplicationWindow {
             WidgetPreviousNext {
                 Layout.alignment: Qt.AlignBottom
                 Layout.rightMargin: 25
+                Layout.bottomMargin: 30
                 visible: demographicQuestionsStackLayout.currentIndex !== demographicQuestionsStackLayout.count - 1
                 showPrevButton: demographicQuestionsStackLayout.currentIndex > 0
 
@@ -498,10 +499,21 @@ ApplicationWindow {
          * This is our main two-column layout.
          */
         RowLayout {
+            id: questionsContainer
             Layout.fillWidth: true
             Layout.fillHeight: true
             Layout.margins: 0
             spacing: 0
+
+            function setCurrentPage(index) {
+                // format pageNumberText from index
+                var pageNumberText = ('00' + (index + 1)).slice(-2);
+
+                // propagate to subcomponents
+                questionsStackLayout.currentIndex = index;
+                currentPageNumberLabel.text = pageNumberText;
+                pageButtonsModel.highlightButton(pageNumberText);
+            }
 
             /**
              * List of buttons to access each question page.
@@ -509,21 +521,18 @@ ApplicationWindow {
             ListView {
                 id: pageButtonsListView
 
-                function setCurrentPage(index, pageNumberText) {
-                    questionsStackLayout.currentIndex = index; // index of the item in the model
-                    currentPageNumberLabel.text = pageNumberText;
-                    pageButtonsModel.highlightButton(pageNumberText);
-                }
-
-                Component.onCompleted: {
-                    setCurrentPage(0, "01"); // Initial value
-                }
+//                Component.onCompleted: {
+//                    questionsContainer.setCurrentPage(0); // Initial value
+//                }
 
                 Layout.preferredWidth: 80
                 Layout.fillHeight: true
                 orientation: Qt.Vertical
 
                 // There are 15 pages, and that should not change.
+                // oops!
+                // should instead directly feed from the total amount of questions
+                // this model is convoluted and unnecessary!
                 model: ModelPageButtons {
                     id: pageButtonsModel
                 }
@@ -537,7 +546,7 @@ ApplicationWindow {
                     highlighted: isHighlighted // Property of the items in the list model this ListView uses.
 
                     onButtonClicked: {
-                        pageButtonsListView.setCurrentPage(index, pageNumber);
+                        questionsContainer.setCurrentPage(index);
                     }
                 }
             }
@@ -704,13 +713,10 @@ ApplicationWindow {
                                     if (i === num_PAGES) {
                                         mainStackLayout.currentIndex = mainStackLayout.index_EXIT_SECTION;
                                     } else {
-                                        questionsStackLayout.currentIndex = i;
+                                        questionsContainer.setCurrentPage(i);
                                     }
                                 }
-                                onPreviousButtonClicked: {
-                                    var i = questionsStackLayout.currentIndex - 1;
-                                    questionsStackLayout.currentIndex = i;
-                                }
+                                onPreviousButtonClicked: questionsContainer.setCurrentPage(questionsStackLayout.currentIndex - 1)
                             }
                         }
                     }
