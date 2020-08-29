@@ -194,6 +194,7 @@ ColumnLayout {
         wrapMode: Text.WordWrap
 
         leftPadding: 40
+        rightPadding: 40
         topPadding: 90
         bottomPadding: 70
     }
