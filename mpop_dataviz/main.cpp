@@ -9,6 +9,7 @@
 #include <QHBoxLayout>
 #include <QUdpSocket>
 #include <QMessageBox>
+#include <QScreen>
 
 
 // Constants:
@@ -143,7 +144,14 @@ int main(int argc, char* argv[]) {
         // Create mainWindow and keep everything inside
         QWidget *mainWindow = new QWidget;
         mainWindow->setLayout(windowLayout);
-        mainWindow->setGeometry(x, y, 1920, 1080);
+        // Set the screen width from the main screen width
+        int screenWidth = QApplication::primaryScreen()->geometry().width();
+        // If any case we have multiple screen with different width
+        if (i < QApplication::screens().size()) {
+            // We set different screen width from each screen
+            screenWidth = QApplication::screens().at(i)->geometry().width();
+        }
+        mainWindow->setGeometry(x, y, screenWidth, options.window_height);
         // Set background color palette
         QPalette palette;
         palette.setColor(QPalette::Background, Qt::black);
