@@ -270,6 +270,15 @@ ApplicationWindow {
     }
 
     /**
+     * This is where we implement all OSC message sending.
+     */
+    DatavizManager {
+        id: datavizManager
+
+        oscMessageSender: oscSender
+    }
+
+    /**
      * Main StackLayout
      */
     StackLayout {
@@ -305,15 +314,6 @@ ApplicationWindow {
                 id: screensaver
                 anchors.fill: parent
             }
-        }
-
-        /**
-         * This is where we implement all OSC message sending.
-         */
-        DatavizManager {
-            id: datavizManager
-
-            oscMessageSender: oscSender
         }
 
         /**
