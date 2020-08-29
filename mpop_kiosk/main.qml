@@ -511,42 +511,74 @@ ApplicationWindow {
 
                 // propagate to subcomponents
                 questionsStackLayout.currentIndex = index;
+                pageButtonsListView.currentIndex = index;
                 currentPageNumberLabel.text = pageNumberText;
-                pageButtonsModel.highlightButton(pageNumberText);
             }
 
             /**
              * List of buttons to access each question page.
              */
-            ListView {
-                id: pageButtonsListView
-
-//                Component.onCompleted: {
-//                    questionsContainer.setCurrentPage(0); // Initial value
-//                }
-
+            Rectangle {
                 Layout.preferredWidth: 80
                 Layout.fillHeight: true
-                orientation: Qt.Vertical
+                color: Palette.white
+                border.color: Palette.lightBlack
+                Layout.topMargin: -1
+                Layout.bottomMargin: -1
+                Layout.leftMargin: -1
 
-                // There are 15 pages, and that should not change.
-                // oops!
-                // should instead directly feed from the total amount of questions
-                // this model is convoluted and unnecessary!
-                model: ModelPageButtons {
-                    id: pageButtonsModel
-                }
+                ColumnLayout {
+                    anchors.fill: parent
 
-                // Let's draw each button:
-                delegate: WidgetQuestionButton {
-                    buttonTitle: pageNumber // Property of the items in the list model this ListView uses.
-                    // FIXME: Perhaps we should fine-tune the height of these buttons
-                    height: parent.height / parent.count
-                    spacing: 0
-                    highlighted: isHighlighted // Property of the items in the list model this ListView uses.
+                    // "Questions" label
+                    Label {
+                        Layout.fillWidth: true
+                        Layout.preferredHeight: 170
+                        horizontalAlignment: Text.AlignHCenter
+                        verticalAlignment: Text.AlignVCenter
+                        text: "Questions"
+                        font {
+                            pixelSize: 20
+                            capitalization: Font.AllUppercase
+                        }
+                        color: Palette.lightBlack
+                        rotation: -90
+                        transformOrigin: Item.Center
+                    }
 
-                    onButtonClicked: {
-                        questionsContainer.setCurrentPage(index);
+                    ListView {
+                        id: pageButtonsListView
+
+                        Layout.fillWidth: true
+                        Layout.fillHeight: true
+                        orientation: Qt.Vertical
+
+                        // There are 15 pages, and that should not change.
+                        // oops!
+                        // should instead directly feed from the total amount of questions
+                        // to prevent having to change this every time the question count changes
+                        // this model is convoluted and unnecessary!
+                        model: ModelPageButtons {
+                            id: pageButtonsModel
+                        }
+
+                        // Let's draw each button:
+                        delegate: WidgetQuestionButton {
+                            text: ("00" + (index + 1)).slice(-2) // Property of the items in the list model this ListView uses.
+                            highlighted: index === pageButtonsListView.currentIndex // Property of the items in the list model this ListView uses.
+                            afterCurrent: index > pageButtonsListView.currentIndex
+
+                            onClicked: {
+                                questionsContainer.setCurrentPage(index);
+                            }
+                        }
+                    }
+
+                    WidgetQuestionButton {
+                        text: "Toutes"
+                        font.pixelSize: 11
+                        font.letterSpacing: 11 * 25 / 1000
+                        Layout.fillWidth: true
                     }
                 }
             }
