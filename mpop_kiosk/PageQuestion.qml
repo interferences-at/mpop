@@ -78,8 +78,8 @@ ColumnLayout {
         if (datavizIndex !== index_QUESTIONS) datavizIndex = index_QUESTIONS;
         else {
             // change index depending on quantity of questions
-            if (hasMultipleQuestions) datavizIndex = index_DATAVIZ_MULTIPLE;
-            else datavizIndex = index_CHOOSE_MAIN_AXIS
+            if (hasMultipleQuestions) datavizIndex = index_CHOOSE_MULTIPLE;
+            else datavizIndex = index_CHOOSE_SINGLE
         }
     }
 
@@ -95,9 +95,8 @@ ColumnLayout {
 
     property alias datavizIndex: questionDatavizStackLayout.currentIndex
     readonly property int index_QUESTIONS: 0
-    readonly property int index_CHOOSE_MAIN_AXIS: 1
-    readonly property int index_CHOOSE_SECOND_AXIS: 2
-    readonly property int index_DATAVIZ_MULTIPLE: 3
+    readonly property int index_CHOOSE_SINGLE: 1
+    readonly property int index_CHOOSE_MULTIPLE: 2
 
     signal nextButtonClicked()
     signal previousButtonClicked()
@@ -202,335 +201,234 @@ ColumnLayout {
     /**
      * StackLayout to switch from answering the question to data viz.
      */
-    StackLayout {
-        id: questionDatavizStackLayout
-
+    ColumnLayout {
         Layout.fillWidth: true
-        Layout.fillHeight: true
-        currentIndex: 0
 
-        // Index 0: answering the questions
-        ColumnLayout {
+        StackLayout {
+            id: questionDatavizStackLayout
+
             Layout.fillWidth: true
-            Layout.fillHeight: true
-            spacing: 0
+            currentIndex: 0
 
-            // To answer the question(s) with the sliders:
-            ColumnLayout {
-                Layout.preferredWidth: 920
-                Layout.leftMargin: 40
-                Layout.rightMargin: 40
-                spacing: 40
-
-                // first slider
-                ColumnLayout {
-                    spacing: 15
-
-                    Label {
-                        Layout.alignment: Qt.AlignLeft
-                        text: questionText1.text
-                        font {
-                            family: "Red Hat Display"
-                            weight: Font.Medium
-                            pixelSize: 24
-                            letterSpacing: 24 * 10 / 1000
-                        }
-
-                        visible: hasMultipleQuestions
-                    }
-                    WidgetAnswerSlider {
-                        sliderValue: 35
-                        textLeft: leftText1.text
-                        textRight: rightText1.text
-                        showNumber: false
-                    }
-                }
-
-                // second slider
-                ColumnLayout {
-                    spacing: 15
-
-                    Label {
-                        Layout.alignment: Qt.AlignLeft
-                        text: questionText2.text
-                        font {
-                            family: "Red Hat Display"
-                            weight: Font.Medium
-                            pixelSize: 24
-                            letterSpacing: 24 * 10 / 1000
-                        }
-
-                        visible: hasMultipleQuestions && (numberOfQuestions >= 2)
-                    }
-                    WidgetAnswerSlider {
-                        sliderValue: 35
-                        textLeft: leftText2.text
-                        textRight: rightText2.text
-                        showNumber: false
-                        visible: hasMultipleQuestions && (numberOfQuestions >= 2)
-                    }
-                }
-
-                // third slider
-                ColumnLayout {
-                    spacing: 15
-
-                    Label {
-                        Layout.alignment: Qt.AlignLeft
-                        text: questionText3.text
-                        font {
-                            family: "Red Hat Display"
-                            weight: Font.Medium
-                            pixelSize: 24
-                            letterSpacing: 24 * 10 / 1000
-                        }
-
-                        visible: hasMultipleQuestions && (numberOfQuestions >= 3)
-                    }
-
-                    WidgetAnswerSlider {
-                        sliderValue: 35
-                        textLeft: leftText3.text
-                        textRight: rightText3.text
-                        showNumber: false
-                        visible: hasMultipleQuestions && (numberOfQuestions >= 3)
-                    }
-                }
-
-                // fourth slider
-                ColumnLayout {
-                    spacing: 15
-
-                    Label {
-                        Layout.alignment: Qt.AlignLeft
-                        text: questionText4.text
-                        font {
-                            family: "Red Hat Display"
-                            weight: Font.Medium
-                            pixelSize: 24
-                            letterSpacing: 24 * 10 / 1000
-                        }
-
-                        visible: hasMultipleQuestions && (numberOfQuestions >= 4)
-                    }
-
-                    WidgetAnswerSlider {
-                        sliderValue: 35
-                        textLeft: leftText4.text
-                        textRight: rightText4.text
-                        showNumber: false
-                        visible: hasMultipleQuestions && (numberOfQuestions >= 4)
-                    }
-                }
-
-                // fifth slider
-                ColumnLayout {
-                    spacing: 15
-
-                    Label {
-                        Layout.alignment: Qt.AlignLeft
-                        text: questionText5.text
-                        font {
-                            family: "Red Hat Display"
-                            weight: Font.Medium
-                            pixelSize: 24
-                            letterSpacing: 24 * 10 / 1000
-                        }
-
-                        visible: hasMultipleQuestions && (numberOfQuestions >= 5)
-                    }
-
-                    WidgetAnswerSlider {
-                        sliderValue: 35
-                        textLeft: leftText5.text
-                        textRight: rightText5.text
-                        showNumber: false
-                        visible: hasMultipleQuestions && (numberOfQuestions >= 5)
-                    }
-                }
-            }
-        }
-
-        // Index 1: single question first axis
-        ColumnLayout {
-            Layout.fillWidth: true
-            Layout.fillHeight: true
-            spacing: 0
-
+            // Index 0: answering the questions
             ColumnLayout {
                 Layout.fillWidth: true
-                Layout.leftMargin: 40
-                Layout.rightMargin: 40
                 spacing: 0
 
-                Label {
-                    Layout.alignment: Qt.AlignCenter
-                    text: qsTr("Please select a basic viewing setting")
-                    color: "#fff"
-                    font.pixelSize: 30
-                }
-                // 1st-level filters
-                RowLayout {
-                    Layout.fillWidth: true
-                    Layout.fillHeight: true
-                    Layout.alignment: Qt.AlignHCenter
-                    spacing: 24
+                // To answer the question(s) with the sliders:
+                ColumnLayout {
+                    Layout.preferredWidth: 920
+                    Layout.leftMargin: 40
+                    Layout.rightMargin: 40
+                    spacing: 40
 
-                    // reset on RFID tag change
-                    property variant resetter: window.rfidTag
-                    onResetterChanged: filterHighlighted = ""
+                    // first slider
+                    ColumnLayout {
+                        spacing: 15
 
-                    // TODO: wrap in Repeater and simplify identifier declarations
-                    WidgetFilterButton {
-                        label: BilingualText { textEn: "Age"; textFr: "Âge" }
-                        checked: filterHighlighted === "ageBtn"
-                        onClicked: filterHighlighted = "ageBtn"
-                    }
+                        Label {
+                            Layout.alignment: Qt.AlignLeft
+                            text: questionText1.text
+                            font {
+                                family: "Red Hat Display"
+                                weight: Font.Medium
+                                pixelSize: 24
+                                letterSpacing: 24 * 10 / 1000
+                            }
 
-                    WidgetFilterButton {
-                        label: BilingualText { textEn: "Gender"; textFr: "Genre" }
-                        checked: filterHighlighted === "genreBtn"
-                        onClicked: filterHighlighted = "genreBtn"
-                    }
-
-                    WidgetFilterButton {
-                        label: BilingualText { textEn: "Culture"; textFr: "Culture" }
-                        checked: filterHighlighted === "cultureBtn"
-                        onClicked: filterHighlighted = "cultureBtn"
-                    }
-
-                    WidgetFilterButton {
-                        label: BilingualText { textEn: "Language"; textFr: "Langue" }
-                        checked: filterHighlighted === "langBtn"
-                        onClicked: filterHighlighted = "langBtn"
-                    }
-                }
-
-                // filter navigation
-                RowLayout {
-                    Layout.fillWidth: true
-                    Layout.alignment: Qt.AlignRight
-                    Layout.topMargin: 50
-                    Layout.rightMargin: 100
-
-                    RoundButton {
-                        text: qsTr("Left")
-
-                        onClicked: {
-                            questionDatavizStackLayout.currentIndex = index_QUESTIONS;
+                            visible: hasMultipleQuestions
+                        }
+                        WidgetAnswerSlider {
+                            sliderValue: 35
+                            textLeft: leftText1.text
+                            textRight: rightText1.text
+                            showNumber: false
                         }
                     }
-                    RoundButton {
-                        text: qsTr("Right")
 
-                        onClicked: {
-                            questionDatavizStackLayout.currentIndex = index_CHOOSE_SECOND_AXIS;
+                    // second slider
+                    ColumnLayout {
+                        spacing: 15
+
+                        Label {
+                            Layout.alignment: Qt.AlignLeft
+                            text: questionText2.text
+                            font {
+                                family: "Red Hat Display"
+                                weight: Font.Medium
+                                pixelSize: 24
+                                letterSpacing: 24 * 10 / 1000
+                            }
+
+                            visible: hasMultipleQuestions && (numberOfQuestions >= 2)
+                        }
+                        WidgetAnswerSlider {
+                            sliderValue: 35
+                            textLeft: leftText2.text
+                            textRight: rightText2.text
+                            showNumber: false
+                            visible: hasMultipleQuestions && (numberOfQuestions >= 2)
+                        }
+                    }
+
+                    // third slider
+                    ColumnLayout {
+                        spacing: 15
+
+                        Label {
+                            Layout.alignment: Qt.AlignLeft
+                            text: questionText3.text
+                            font {
+                                family: "Red Hat Display"
+                                weight: Font.Medium
+                                pixelSize: 24
+                                letterSpacing: 24 * 10 / 1000
+                            }
+
+                            visible: hasMultipleQuestions && (numberOfQuestions >= 3)
+                        }
+
+                        WidgetAnswerSlider {
+                            sliderValue: 35
+                            textLeft: leftText3.text
+                            textRight: rightText3.text
+                            showNumber: false
+                            visible: hasMultipleQuestions && (numberOfQuestions >= 3)
+                        }
+                    }
+
+                    // fourth slider
+                    ColumnLayout {
+                        spacing: 15
+
+                        Label {
+                            Layout.alignment: Qt.AlignLeft
+                            text: questionText4.text
+                            font {
+                                family: "Red Hat Display"
+                                weight: Font.Medium
+                                pixelSize: 24
+                                letterSpacing: 24 * 10 / 1000
+                            }
+
+                            visible: hasMultipleQuestions && (numberOfQuestions >= 4)
+                        }
+
+                        WidgetAnswerSlider {
+                            sliderValue: 35
+                            textLeft: leftText4.text
+                            textRight: rightText4.text
+                            showNumber: false
+                            visible: hasMultipleQuestions && (numberOfQuestions >= 4)
+                        }
+                    }
+
+                    // fifth slider
+                    ColumnLayout {
+                        spacing: 15
+
+                        Label {
+                            Layout.alignment: Qt.AlignLeft
+                            text: questionText5.text
+                            font {
+                                family: "Red Hat Display"
+                                weight: Font.Medium
+                                pixelSize: 24
+                                letterSpacing: 24 * 10 / 1000
+                            }
+
+                            visible: hasMultipleQuestions && (numberOfQuestions >= 5)
+                        }
+
+                        WidgetAnswerSlider {
+                            sliderValue: 35
+                            textLeft: leftText5.text
+                            textRight: rightText5.text
+                            showNumber: false
+                            visible: hasMultipleQuestions && (numberOfQuestions >= 5)
                         }
                     }
                 }
             }
-        }
 
-        // Index 2: single question second axis
-        ColumnLayout {
-            Layout.fillWidth: true
-            Layout.fillHeight: true
-            spacing: 0
-
+            // Index 1: single question first axis
+            // this screen is automatically skipped if hasMultipleQuestions === true
             ColumnLayout {
                 Layout.fillWidth: true
-                Layout.leftMargin: 40
-                Layout.rightMargin: 40
-                spacing: 30
+                spacing: 0
 
                 ColumnLayout {
                     Layout.fillWidth: true
+                    Layout.leftMargin: 40
+                    Layout.rightMargin: 40
                     spacing: 0
 
                     Label {
-                        text: ageLabel.text
+                        Layout.alignment: Qt.AlignCenter
+                        text: qsTr("Please select a basic viewing setting")
                         color: "#fff"
-                        font {
-                            pixelSize: 11
-                            letterSpacing: 11 * 25 / 1000
-                            capitalization: Font.AllUppercase
-                        }
-                        background: Item {}
-
-                        BilingualText {
-                            id: ageLabel
-                            textEn: "Age"
-                            textFr: "Âge"
-                        }
+                        font.pixelSize: 30
                     }
-
-                    WidgetAnswerSlider {
-                        textLeft: "0"
-                        textRight: "120"
-                        showNumber: true
-                        sliderFrom: 0
-                        sliderTo: 100
-                        sliderValue: 18
-                        fullWidth: true
-                    }
-                }
-
-                Repeater {
-                    // model
-                    model: ListModel {
-                        ListElement {
-                            sectionTitleEn: "Culture"
-                            sectionTitleFr: "Culture"
-                            filters: [
-                                ListElement { textEn: "All"; textFr: "Tous" },
-                                ListElement { textEn: "Quebecois"; textFr: "Québécoise" },
-                                ListElement { textEn: "Canadian"; textFr: "Canadienne" },
-                                ListElement { textEn: "Native"; textFr: "Autochtone" },
-                                ListElement { textEn: "American"; textFr: "Américaine" },
-                                ListElement { textEn: "European"; textFr: "Européenne" },
-                                ListElement { textEn: "Other"; textFr: "Autre" }
-                            ]
-                        }
-
-                        ListElement {
-                            sectionTitleEn: "Gender"
-                            sectionTitleFr: "Genre"
-                            filters: [
-                                ListElement { textEn: "All"; textFr: "Tous" },
-                                ListElement { textEn: "Male"; textFr: "Homme" },
-                                ListElement { textEn: "Female"; textFr: "Femme" },
-                                ListElement { textEn: "Other"; textFr: "Autre" }
-                            ]
-                        }
-
-                        ListElement {
-                            sectionTitleEn: "Time"
-                            sectionTitleFr: "Temps"
-                            filters: [
-                                ListElement { textEn: "All"; textFr: "Tous" },
-                                ListElement { textEn: "Today"; textFr: "Aujourd'hui" },
-                                ListElement { textEn: "This year"; textFr: "Cette année" },
-                                ListElement { textEn: "From the beginning"; textFr: "Depuis le début" }
-                            ]
-                        }
-                    }
-
-                    // display
-                    ColumnLayout {
-                        id: subfilter
-
-                        property int currentIndex: 0
-                        // reset index when RFID tag changes
-                        property variant resetter: window.rfidTag
-                        onResetterChanged: currentIndex = 0
-
+                    // 1st-level filters
+                    RowLayout {
                         Layout.fillWidth: true
+                        Layout.fillHeight: true
+                        Layout.alignment: Qt.AlignHCenter
+                        spacing: 24
 
-                        spacing: 15
+                        // reset on RFID tag change
+                        property variant resetter: window.rfidTag
+                        onResetterChanged: filterHighlighted = ""
 
-                        // section title
+                        // TODO: wrap in Repeater and simplify identifier declarations
+                        WidgetFilterButton {
+                            label: BilingualText { textEn: "Age"; textFr: "Âge" }
+                            checked: filterHighlighted === "ageBtn"
+                            onClicked: filterHighlighted = "ageBtn"
+                        }
+
+                        WidgetFilterButton {
+                            label: BilingualText { textEn: "Gender"; textFr: "Genre" }
+                            checked: filterHighlighted === "genreBtn"
+                            onClicked: filterHighlighted = "genreBtn"
+                        }
+
+                        WidgetFilterButton {
+                            label: BilingualText { textEn: "Culture"; textFr: "Culture" }
+                            checked: filterHighlighted === "cultureBtn"
+                            onClicked: filterHighlighted = "cultureBtn"
+                        }
+
+                        WidgetFilterButton {
+                            label: BilingualText { textEn: "Language"; textFr: "Langue" }
+                            checked: filterHighlighted === "langBtn"
+                            onClicked: filterHighlighted = "langBtn"
+                        }
+                    }
+
+
+                }
+            }
+
+            // Index 2: multi-filter selection
+            // filter rows are selectively hidden depending on first-axis selection
+            ColumnLayout {
+                Layout.fillWidth: true
+                spacing: 0
+
+                ColumnLayout {
+                    Layout.fillWidth: true
+                    Layout.leftMargin: 40
+                    Layout.rightMargin: 40
+                    spacing: 30
+
+                    // age slider
+                    ColumnLayout {
+                        Layout.fillWidth: true
+                        spacing: 0
+
                         Label {
-                            text: sectionTitle.text
+                            text: ageLabel.text
                             color: "#fff"
                             font {
                                 pixelSize: 11
@@ -540,26 +438,109 @@ ColumnLayout {
                             background: Item {}
 
                             BilingualText {
-                                id: sectionTitle
-                                textEn: sectionTitleEn
-                                textFr: sectionTitleFr
+                                id: ageLabel
+                                textEn: "Age"
+                                textFr: "Âge"
                             }
                         }
 
-                        Flow {
+                        WidgetAnswerSlider {
+                            textLeft: "0"
+                            textRight: "120"
+                            showNumber: true
+                            sliderFrom: 0
+                            sliderTo: 120
+                            sliderValue: 18
+                            fullWidth: true
+                        }
+                    }
+
+                    Repeater {
+                        // model
+                        model: ListModel {
+                            ListElement {
+                                sectionTitleEn: "Culture"
+                                sectionTitleFr: "Culture"
+                                filters: [
+                                    ListElement { textEn: "All"; textFr: "Tous" },
+                                    ListElement { textEn: "Quebecois"; textFr: "Québécoise" },
+                                    ListElement { textEn: "Canadian"; textFr: "Canadienne" },
+                                    ListElement { textEn: "Native"; textFr: "Autochtone" },
+                                    ListElement { textEn: "American"; textFr: "Américaine" },
+                                    ListElement { textEn: "European"; textFr: "Européenne" },
+                                    ListElement { textEn: "Other"; textFr: "Autre" }
+                                ]
+                            }
+
+                            ListElement {
+                                sectionTitleEn: "Gender"
+                                sectionTitleFr: "Genre"
+                                filters: [
+                                    ListElement { textEn: "All"; textFr: "Tous" },
+                                    ListElement { textEn: "Male"; textFr: "Homme" },
+                                    ListElement { textEn: "Female"; textFr: "Femme" },
+                                    ListElement { textEn: "Other"; textFr: "Autre" }
+                                ]
+                            }
+
+                            ListElement {
+                                sectionTitleEn: "Time"
+                                sectionTitleFr: "Temps"
+                                filters: [
+                                    ListElement { textEn: "All"; textFr: "Tous" },
+                                    ListElement { textEn: "Today"; textFr: "Aujourd'hui" },
+                                    ListElement { textEn: "This year"; textFr: "Cette année" },
+                                    ListElement { textEn: "From the beginning"; textFr: "Depuis le début" }
+                                ]
+                            }
+                        }
+
+                        // display
+                        ColumnLayout {
+                            id: subfilter
+
+                            property int currentIndex: 0
+                            // reset index when RFID tag changes
+                            property variant resetter: window.rfidTag
+                            onResetterChanged: currentIndex = 0
+
                             Layout.fillWidth: true
-                            Layout.leftMargin: -10
-                            spacing: 10
 
-                            Repeater {
-                                model: filters
+                            spacing: 15
 
-                                // filter button
-                                WidgetFilterButton {
-                                    label: BilingualText { textEn: model.textEn; textFr: model.textFr }
+                            // section title
+                            Label {
+                                text: sectionTitle.text
+                                color: "#fff"
+                                font {
+                                    pixelSize: 11
+                                    letterSpacing: 11 * 25 / 1000
+                                    capitalization: Font.AllUppercase
+                                }
+                                background: Item {}
 
-                                    checked: index === subfilter.currentIndex
-                                    onClicked: subfilter.currentIndex = index
+                                BilingualText {
+                                    id: sectionTitle
+                                    textEn: sectionTitleEn
+                                    textFr: sectionTitleFr
+                                }
+                            }
+
+                            Flow {
+                                Layout.fillWidth: true
+                                Layout.leftMargin: -10
+                                spacing: 10
+
+                                Repeater {
+                                    model: filters
+
+                                    // filter button
+                                    WidgetFilterButton {
+                                        label: BilingualText { textEn: model.textEn; textFr: model.textFr }
+
+                                        checked: index === subfilter.currentIndex
+                                        onClicked: subfilter.currentIndex = index
+                                    }
                                 }
                             }
                         }
@@ -567,5 +548,33 @@ ColumnLayout {
                 }
             }
         }
+
+        // filter navigation
+        RowLayout {
+            Layout.fillWidth: true
+            Layout.fillHeight: true
+            Layout.alignment: Qt.AlignRight | Qt.AlignTop
+            Layout.topMargin: 50
+            Layout.rightMargin: 100
+            visible: datavizIndex > 0
+
+            RoundButton {
+                text: qsTr("Left")
+
+                onClicked: {
+                    if (hasMultipleQuestions) datavizIndex = index_QUESTIONS;
+                    else datavizIndex--;
+                }
+            }
+            RoundButton {
+                text: qsTr("Right")
+                enabled: datavizIndex !== index_CHOOSE_MULTIPLE
+                opacity: enabled
+
+                onClicked: datavizIndex++
+            }
+        }
     }
+
+
 }

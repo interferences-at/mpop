@@ -2,6 +2,7 @@ import QtQuick 2.9
 import QtQuick.Controls 2.2
 import QtQuick.Layouts 1.3
 import QtQuick.Window 2.11
+import QtGraphicalEffects 1.0
 import Screensaver 1.0
 
 /**
@@ -700,20 +701,35 @@ ApplicationWindow {
                                 Layout.topMargin: 30
                                 spacing: 5
 
-                                RoundButton {
-                                    id: button
-
+                                Item {
                                     Layout.preferredWidth: 80
                                     Layout.preferredHeight: 80
 
-                                    background: Rectangle {
-                                        radius: 40
-                                        color: button.down ? Palette.accent : Palette.white
+                                    RoundButton {
+                                        id: closeAppButton
+
+                                        implicitWidth: 80
+                                        implicitHeight: 80
+
+                                        background: Rectangle {
+                                            radius: 40
+                                            color: closeAppButton.down ? Palette.accent : Palette.white
+                                        }
+
+                                        Image {
+                                            anchors.centerIn: parent
+                                            source: "qrc:/cross.svg"
+                                        }
                                     }
 
-                                    Image {
-                                        anchors.centerIn: parent
-                                        source: "qrc:/cross.svg"
+                                    DropShadow {
+                                        anchors.fill: closeAppButton
+                                        horizontalOffset: 2
+                                        verticalOffset: 4
+                                        radius: 4
+                                        samples: 9
+                                        color: "#66000000"
+                                        source: closeAppButton
                                     }
                                 }
 
