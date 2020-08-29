@@ -15,6 +15,7 @@ ApplicationWindow {
     property string lastMessageReceived: ""
     property alias lang: userProfile.language // All the BilingualText items watch this value
     property alias rfidTag: userProfile.rfidTag
+    property bool invertedTheme: true         // used to differentiate light from dark mode (might get turned to string to account for accent-bg variant)
 
     readonly property string const_KIOSK_MODE_ENTRY: "entrance"
     readonly property string const_KIOSK_MODE_CENTRAL: "central"
@@ -67,6 +68,10 @@ ApplicationWindow {
     width: 1920
     height: 1080
     title: textWindowTitle.text
+
+    background: Rectangle {
+        color: Palette.lightBlack
+    }
 
     Component.onCompleted: {
         if (kioskConfig.is_fullscreen) {
@@ -458,6 +463,8 @@ ApplicationWindow {
 
             // TODO: Move this out of this page:
             WidgetPreviousNext {
+                Layout.alignment: Qt.AlignBottom
+                Layout.rightMargin: 25
                 visible: demographicQuestionsStackLayout.currentIndex !== demographicQuestionsStackLayout.count - 1
                 showPrevButton: demographicQuestionsStackLayout.currentIndex > 0
 
@@ -632,8 +639,15 @@ ApplicationWindow {
                         Layout.fillHeight: true
                         Layout.preferredWidth: 130
                         z: 10
-                        Layout.topMargin: -50
-                        Layout.bottomMargin: 25
+                        Layout.topMargin: -80
+
+                        // border
+                        Rectangle {
+                            anchors.left: parent.left
+                            height: parent.height
+                            width: 1
+                            color: "#fff"
+                        }
 
                         ColumnLayout {
                             width: parent.width
@@ -642,6 +656,7 @@ ApplicationWindow {
 
                             ColumnLayout {
                                 Layout.alignment: Qt.AlignTop | Qt.AlignHCenter
+                                Layout.topMargin: 30
                                 spacing: 5
 
                                 RoundButton {
@@ -678,6 +693,7 @@ ApplicationWindow {
 
                             WidgetPreviousNext {
                                 Layout.alignment: Qt.AlignBottom | Qt.AlignHCenter
+                                Layout.bottomMargin: 30
 
                                 readonly property int num_PAGES: 15
 

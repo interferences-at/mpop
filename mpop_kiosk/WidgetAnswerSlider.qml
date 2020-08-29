@@ -1,6 +1,7 @@
 import QtQuick 2.9
 import QtQuick.Controls 2.2
 import QtQuick.Layouts 1.3
+import QtGraphicalEffects 1.0
 
 /**
  * Slider to answer a question.
@@ -25,6 +26,7 @@ ColumnLayout {
         text: slider0.value
         visible: showNumber
         font.pixelSize: 20
+        Layout.bottomMargin: 10
 
         transform: Translate {
             x: (slider0.visualPosition * (slider0.availableWidth - slider0.implicitHandleWidth)) + (slider0.implicitHandleWidth / 2) - (numberLabel.paintedWidth / 2)
@@ -41,20 +43,37 @@ ColumnLayout {
         snapMode: Slider.SnapAlways
         padding: 0
 
-//        background: Rectangle {
-//            implicitHeight: 10
-//            width: slider0.availableWidth
-//            height: implicitHeight
-//            color: Palette.lightGrey
+        background: Rectangle {
+            width: slider0.availableWidth
+            height: 10
+            color: window.invertedTheme ? Palette.mediumGrey : Palette.lightGrey
 
-//            Rectangle {
-//                width: slider0.visualPosition * parent.width
-//                height: parent.height
-//                color: Palette.lightBlack
-//            }
-//        }
+            Rectangle {
+                width: slider0.visualPosition * (slider0.availableWidth - handle.implicitWidth) + (handle.implicitWidth / 2)
+                height: parent.height
+                color: window.invertedTheme ? Palette.white : Palette.lightBlack
+            }
+        }
 
-        // TODO: handle
+        handle: Rectangle {
+            id: handle
+            implicitWidth: 26
+            implicitHeight: 26
+            radius: 13
+            color: window.invertedTheme ? Palette.white : Palette.lightBlack
+            x: slider0.visualPosition * (slider0.availableWidth - implicitWidth)
+            y: 5 - (implicitHeight / 2)
+        }
+
+        DropShadow {
+            anchors.fill: handle
+            horizontalOffset: 1
+            verticalOffset: 2
+            radius: 3
+            samples: 7
+            color: "#66000000"
+            source: handle
+        }
     }
 
     RowLayout {
