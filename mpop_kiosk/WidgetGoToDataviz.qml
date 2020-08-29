@@ -4,6 +4,19 @@ import QtQuick.Layouts 1.3
 
 // Button to go to the dataviz
 Label {
+    id: goToDataviz
+
+    property list<BilingualText> labels: [
+        BilingualText {
+            textEn: "Visualize data"
+            textFr: "Visualiser les données"
+        },
+        BilingualText {
+            textEn: "Return to questions"
+            textFr: "Retour aux questions"
+        }
+    ]
+
     property bool toggled: false
     property string arrow: toggled ? "↓" : "↑"
 
@@ -14,9 +27,7 @@ Label {
 
     horizontalAlignment: Text.AlignHCenter
     verticalAlignment: Text.AlignVCenter
-    id: datavisual
-    //text: [arrow, textDataVisualization.text, arrow].join(" ")
-    text: [arrow, "Voir les données", arrow].join("  ")
+    text: [arrow, labels[toggled ? 1 : 0].text, arrow].join("  ")
     font {
         pixelSize: 45
         capitalization: Font.AllUppercase
@@ -30,6 +41,6 @@ Label {
 
     MouseArea {
         anchors.fill: parent
-        onClicked: clicked()
+        onClicked: goToDataviz.clicked()
     }
 }

@@ -544,6 +544,10 @@ ApplicationWindow {
 
                 WidgetGoToDataviz {
                     anchors.top: parent.top
+
+                    // automatically checks if current page has dataviz enabled
+                    toggled: questionsStackLayout.children[questionsStackLayout.currentIndex].datavizIndex !== 0
+                    onClicked: questionsStackLayout.toggleDataviz()
                 }
 
                 RowLayout {
@@ -552,17 +556,29 @@ ApplicationWindow {
                     spacing: 0
 
                     Label {
+                        Layout.fillHeight: true
                         Layout.alignment: Qt.AlignTop
+                        Layout.preferredWidth: 295
+                        topPadding: 55
+                        horizontalAlignment: Text.AlignHCenter
 
                         id: currentPageNumberLabel
                         text: "01" // Changed dynamically
                         font.capitalization: Font.AllUppercase
                         color: "#ffffff"
-                        font.bold : true
-                        font.pixelSize: 75
-                        //visible: sliderWidgetVisibility
+                        font {
+                            pixelSize: 206
+                        }
 
                         background: Item {}
+
+                        // border
+                        Rectangle {
+                            anchors.right: parent.right
+                            height: parent.height
+                            width: 1
+                            color: "#fff"
+                        }
                     }
 
                     // Outline around the questions
@@ -573,8 +589,12 @@ ApplicationWindow {
                         readonly property int index_FIRST_QUESTION: 0
 
                         currentIndex: 0
-                        Layout.fillWidth: true
                         Layout.fillHeight: true
+                        Layout.preferredWidth: 1415
+
+                        function toggleDataviz() {
+                            children[currentIndex].toggleDataviz();
+                        }
 
                         // The pages for single and multiple questions:
                         // TODO: wrap in Repeater and feed with model data
@@ -612,7 +632,7 @@ ApplicationWindow {
                         Layout.fillHeight: true
                         Layout.preferredWidth: 130
                         z: 10
-                        Layout.topMargin: -80 + 25
+                        Layout.topMargin: -50
                         Layout.bottomMargin: 25
 
                         ColumnLayout {
@@ -664,17 +684,15 @@ ApplicationWindow {
                                 showPrevButton: questionsStackLayout.currentIndex > 0
 
                                 onNextButtonClicked: {
-                                    var i = questionsStackLayout.currentIndex;
+                                    var i = questionsStackLayout.currentIndex + 1;
                                     if (i === num_PAGES) {
                                         mainStackLayout.currentIndex = mainStackLayout.index_EXIT_SECTION;
                                     } else {
-                                        i += 1;
                                         questionsStackLayout.currentIndex = i;
                                     }
                                 }
                                 onPreviousButtonClicked: {
-                                    var i = questionsStackLayout.currentIndex;
-                                    i -= 1;
+                                    var i = questionsStackLayout.currentIndex - 1;
                                     questionsStackLayout.currentIndex = i;
                                 }
                             }

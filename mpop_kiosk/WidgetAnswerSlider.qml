@@ -15,55 +15,70 @@ ColumnLayout {
     property real sliderFrom: 0
     property real sliderTo: 100
     property real sliderStepSize: 1
-    property real leftAndRightMargin: 80
+    property bool fullWidth: false
+
+    Layout.maximumWidth: fullWidth ? Number.POSITIVE_INFINITY : 920
+    spacing: 0
+
+    Label {
+        id: numberLabel
+        text: slider0.value
+        visible: showNumber
+        font.pixelSize: 20
+
+        transform: Translate {
+            x: (slider0.visualPosition * (slider0.availableWidth - slider0.implicitHandleWidth)) + (slider0.implicitHandleWidth / 2) - (numberLabel.paintedWidth / 2)
+        }
+    }
 
     Slider {
         id: slider0
-        Layout.alignment: Qt.AlignCenter
         Layout.fillWidth: true
-        Layout.leftMargin: leftAndRightMargin
-        Layout.rightMargin: 75
         value: sliderValue
         from: sliderFrom
         to: sliderTo
         stepSize: sliderStepSize
         snapMode: Slider.SnapAlways
-        // TODO: Customize the size of the background line and handle
-        // background.implicitHeight: 100
-        // handle.implicitHeight: 100
+        padding: 0
+
+//        background: Rectangle {
+//            implicitHeight: 10
+//            width: slider0.availableWidth
+//            height: implicitHeight
+//            color: Palette.lightGrey
+
+//            Rectangle {
+//                width: slider0.visualPosition * parent.width
+//                height: parent.height
+//                color: Palette.lightBlack
+//            }
+//        }
+
+        // TODO: handle
     }
 
     RowLayout {
         Layout.fillWidth: true
-        Layout.leftMargin: leftAndRightMargin
-        Layout.rightMargin: leftAndRightMargin
 
         Label {
             text: textLeft
-            Layout.fillWidth: false
-            //Layout.alignment: Qt.Alignleft
-            font.pixelSize: 12
-        }
-        ColumnLayout {
-            Layout.fillWidth: true
-            Layout.alignment: Qt.AlignCenter
-
-            // FIXME: The value label should be in the center
-            Label {
-                text: slider0.value
-                visible: showNumber
-                Layout.fillWidth: true
-                Layout.alignment: Qt.AlignCenter
-                font.pixelSize: 12
+            font {
+                pixelSize: 11
+                capitalization: Font.AllUppercase
+                letterSpacing: 11 * 25 / 1000
             }
         }
 
+        Item { Layout.fillWidth: true }
+
         Label {
             text: textRight
-            Layout.fillWidth: false
             Layout.alignment: Qt.AlignRight
-            //Layout.rightMargin: 100
-            font.pixelSize: 12
+            font {
+                pixelSize: 11
+                capitalization: Font.AllUppercase
+                letterSpacing: 11 * 25 / 1000
+            }
         }
     }
 }
