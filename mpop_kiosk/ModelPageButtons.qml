@@ -24,7 +24,7 @@ ListModel {
 
     ListElement {
         pageNumber: "01"
-        isHighlighted: false
+        isHighlighted: true
     }
     ListElement {
         pageNumber: "02"

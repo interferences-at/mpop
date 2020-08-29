@@ -5,26 +5,39 @@ import QtQuick.Layouts 1.3
 /**
  * Button for choosing a question.
  */
-ColumnLayout {
+Button {
     id: thisWidget
 
-    signal buttonClicked()
+    width: parent.width
+    implicitHeight: 57
 
-    property string buttonTitle: ""
-    property alias highlighted: childButton.highlighted
+    property bool afterCurrent: false
 
     // TODO: Improve the look of this buttons
-    Button {
-        id: childButton
-        text: thisWidget.buttonTitle
-        font.pixelSize: 12
-        font.capitalization: Font.MixedCase
-        Layout.fillWidth: true
-        topPadding: 0
-        bottomPadding: 0
+    text: "01"
+    font.pixelSize: 20
+    font.capitalization: Font.AllUppercase
+    topPadding: 0
+    bottomPadding: 0
 
-        onClicked: {
-            thisWidget.buttonClicked();
-        }
+    contentItem: Text {
+        text: thisWidget.text
+        font: thisWidget.font
+        horizontalAlignment: Qt.AlignHCenter
+        verticalAlignment: Qt.AlignVCenter
+        color: afterCurrent ? Palette.mediumGrey : Palette.lightBlack
+    }
+
+    background: Item {}
+
+    // highlight
+    Rectangle {
+        width: 64
+        height: 64
+        color: Palette.lightGrey
+        anchors.centerIn: parent
+        visible: highlighted
+        radius: 32
+        z: -1
     }
 }
