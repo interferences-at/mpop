@@ -648,7 +648,7 @@ ApplicationWindow {
                         // The pages for single and multiple questions:
                         // TODO: wrap in Repeater and feed with model data
 
-                        // Page 01
+                        // Page 01 - single
                         PageQuestion {
                             modelQuestions: modelQuestions
                             questionIdentifiers: ["incidence_drogue"]
@@ -658,12 +658,27 @@ ApplicationWindow {
                             Layout.fillHeight: true
                         }
 
-                        // TODO: page 02 single decriminalisation_crimes_non_violents
+                        // Page 02 - single
+                        PageQuestion {
+                            modelQuestions: modelQuestions
+                            questionIdentifiers: ["decriminalisation_crimes_non_violents"]
+                            datavizSender: datavizManager
+                            serviceClient: userProfile
+                            Layout.fillWidth: true
+                            Layout.fillHeight: true
+                        }
 
+                        // Page 03 - single
+                        PageQuestion {
+                            modelQuestions: modelQuestions
+                            questionIdentifiers: ["systeme_bureaucrate"]
+                            datavizSender: datavizManager
+                            serviceClient: userProfile
+                            Layout.fillWidth: true
+                            Layout.fillHeight: true
+                        }
 
-                        // TODO page 03 single systeme_bureaucrate
-
-                        // page 03 (multiple)
+                        // Page 04 - multiple
                         PageQuestion {
                             // FIXME: the main question text should be common (most often) to all questions in a multiple-question page:
                             questionIdentifiers: ["equitable_victimes", "equitable_vulnerables", "equitable_jeunes_contrevenants", "equitable_riches", "equitable_minorites_culturelles"]
@@ -674,7 +689,115 @@ ApplicationWindow {
                             Layout.fillHeight: true
                         }
 
-                        // TODO: remaining questions
+                        // Page 05 - single
+                        PageQuestion {
+                            modelQuestions: modelQuestions
+                            questionIdentifiers: ["confiance_systeme"]
+                            datavizSender: datavizManager
+                            serviceClient: userProfile
+                            Layout.fillWidth: true
+                            Layout.fillHeight: true
+                        }
+
+                        // Page 06 - single
+                        PageQuestion {
+                            modelQuestions: modelQuestions
+                            questionIdentifiers: ["interner"]
+                            datavizSender: datavizManager
+                            serviceClient: userProfile
+                            Layout.fillWidth: true
+                            Layout.fillHeight: true
+                        }
+
+                        // Page 07 - single
+                        PageQuestion {
+                            modelQuestions: modelQuestions
+                            questionIdentifiers: ["peine_plus_severes"]
+                            datavizSender: datavizManager
+                            serviceClient: userProfile
+                            Layout.fillWidth: true
+                            Layout.fillHeight: true
+                        }
+
+                        // Page 08 - single
+                        PageQuestion {
+                            modelQuestions: modelQuestions
+                            questionIdentifiers: ["taux_recidive"]
+                            datavizSender: datavizManager
+                            serviceClient: userProfile
+                            Layout.fillWidth: true
+                            Layout.fillHeight: true
+                        }
+
+                        // Page 09 - single
+                        PageQuestion {
+                            modelQuestions: modelQuestions
+                            questionIdentifiers: ["bon_traitement"]
+                            datavizSender: datavizManager
+                            serviceClient: userProfile
+                            Layout.fillWidth: true
+                            Layout.fillHeight: true
+                        }
+
+                        // Page 10 - single
+                        PageQuestion {
+                            modelQuestions: modelQuestions
+                            questionIdentifiers: ["confinement_solitaire"]
+                            datavizSender: datavizManager
+                            serviceClient: userProfile
+                            Layout.fillWidth: true
+                            Layout.fillHeight: true
+                        }
+
+                        // Page 11 - multiple
+                        PageQuestion {
+                            modelQuestions: modelQuestions
+                            questionIdentifiers: ["soins_physiques", "soins_mentaux"]
+                            datavizSender: datavizManager
+                            serviceClient: userProfile
+                            Layout.fillWidth: true
+                            Layout.fillHeight: true
+                        }
+
+                        // Page 12 - single
+                        PageQuestion {
+                            modelQuestions: modelQuestions
+                            questionIdentifiers: ["ressources_reinsertion"]
+                            datavizSender: datavizManager
+                            serviceClient: userProfile
+                            Layout.fillWidth: true
+                            Layout.fillHeight: true
+                        }
+
+                        // Page 13 - single
+                        PageQuestion {
+                            modelQuestions: modelQuestions
+                            questionIdentifiers: ["benefice_justice_reparatrice"]
+                            datavizSender: datavizManager
+                            serviceClient: userProfile
+                            Layout.fillWidth: true
+                            Layout.fillHeight: true
+                        }
+
+                        // Page 14 - single
+                        PageQuestion {
+                            modelQuestions: modelQuestions
+                            questionIdentifiers: ["developper_alternatives_prison"]
+                            datavizSender: datavizManager
+                            serviceClient: userProfile
+                            Layout.fillWidth: true
+                            Layout.fillHeight: true
+                        }
+
+                        // Page 15 - multiple
+                        PageQuestion {
+                            modelQuestions: modelQuestions
+                            questionIdentifiers: ["investir_education", "investir_sante_services_sociaux", "investir_emploi"]
+                            datavizSender: datavizManager
+                            serviceClient: userProfile
+                            Layout.fillWidth: true
+                            Layout.fillHeight: true
+                        }
                     }
 
                     Item {
