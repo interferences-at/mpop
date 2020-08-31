@@ -48,8 +48,11 @@ RowLayout {
             delegate: WidgetChoiceButton {
                 BilingualText {
                     id: choiceButtonLabel
-                    textFr: model.text_fr ? model.text_fr : (model.text ? model.text : modelData + ((index > 1) ? " ans" : " ans"))
-                    textEn: model.text_en ? model.text_en : (model.text ? model.text : modelData + ((index > 1) ? " years" : " year"))
+                    // In French, it takes an S if there is 0 or 1 item.
+                    textFr: model.text_fr ? model.text_fr : (model.text ? model.text : modelData + ((index > 1) ? " ans" : " an"))
+                    // In English - and that is tricky - it takes an S if there is 0 items.
+                    // But no S if there is 1 item.
+                    textEn: model.text_en ? model.text_en : (model.text ? model.text : modelData + ((index === 1) ? " year" : " years"))
                 }
 
                 text: choiceButtonLabel.text
