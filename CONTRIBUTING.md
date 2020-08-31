@@ -119,6 +119,7 @@ A dialog will prompt you for the location of your Qt installation. C:\Qt is typi
 
 We follow the Qt style guide for C++ and QML.
 
+
 ## Layout of the kiosk
 
 The layout of the kiosk - in QML - looks like something like this:

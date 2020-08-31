@@ -23,6 +23,7 @@ See doc/OSC.md and all the files in doc/.
 - Alexandre Quessy - Lead software developer
 - Aveline Barlerin - Business analyst
 - Dame Diongue (Bay Dam) - Software developer
+- Julien Vermette - Software developer
 - Mandeep Kaur Hari - Software developer
 - Mehul Bhavsar - Software developer
 - Rajwinder Kaur - Software developer
