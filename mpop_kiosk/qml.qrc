@@ -22,5 +22,6 @@
         <file>arrow.svg</file>
         <file>WidgetGoToDataviz.qml</file>
         <file>cross.svg</file>
+        <file>WidgetAgeRangeSlider.qml</file>
     </qresource>
 </RCC>

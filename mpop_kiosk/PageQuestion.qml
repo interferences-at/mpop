@@ -30,7 +30,6 @@ ColumnLayout {
             rightText1.textFr = firstQuestion.max_fr;
             rightText1.textEn = firstQuestion.max_en;
 
-
             if (numberOfQuestions >= 2) {
                 var item2 = modelQuestions.findQuestion(questionIdentifiers[1]);
                 questionText2.textFr = item2.subtitle_fr;
@@ -172,7 +171,6 @@ ColumnLayout {
     Component.onCompleted: {
         loadQuestions();
         loadAnswersForCurrentVisitor();
-
         // TODO: Retrieve value for user from service and populate the slider, if set.
     }
 
@@ -289,7 +287,7 @@ ColumnLayout {
                         }
 
                         WidgetAnswerSlider {
-                            sliderValue: 35
+                            sliderValue: 50
                             textLeft: leftText3.text
                             textRight: rightText3.text
                             showNumber: false
@@ -315,7 +313,7 @@ ColumnLayout {
                         }
 
                         WidgetAnswerSlider {
-                            sliderValue: 35
+                            sliderValue: 50
                             textLeft: leftText4.text
                             textRight: rightText4.text
                             showNumber: false
@@ -341,7 +339,7 @@ ColumnLayout {
                         }
 
                         WidgetAnswerSlider {
-                            sliderValue: 35
+                            sliderValue: 50
                             textLeft: leftText5.text
                             textRight: rightText5.text
                             showNumber: false
@@ -405,8 +403,6 @@ ColumnLayout {
                             onClicked: filterHighlighted = "langBtn"
                         }
                     }
-
-
                 }
             }
 
@@ -422,7 +418,7 @@ ColumnLayout {
                     Layout.rightMargin: 40
                     spacing: 30
 
-                    // age slider
+                    // age range slider
                     ColumnLayout {
                         Layout.fillWidth: true
                         spacing: 0
@@ -444,14 +440,22 @@ ColumnLayout {
                             }
                         }
 
-                        WidgetAnswerSlider {
+                        WidgetAgeRangeSlider {
                             textLeft: "0"
                             textRight: "120"
-                            showNumber: true
+                            showNumbers: true
                             sliderFrom: 0
                             sliderTo: 120
-                            sliderValue: 18
+                            valueFrom: 0
+                            valueTo: 120
                             fullWidth: true
+
+                            onValueFromChanged: {
+                                // TODO
+                            }
+                            onValueToChanged: {
+                                // TODO
+                            }
                         }
                     }
 
@@ -575,6 +579,4 @@ ColumnLayout {
             }
         }
     }
-
-
 }
