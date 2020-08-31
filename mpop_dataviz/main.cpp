@@ -102,8 +102,9 @@ int main(int argc, char* argv[]) {
     options.window_width = parser.value(widthOption).toInt();
     options.window_height = parser.value(heightOption).toInt();
     options.osc_receive_port = static_cast<quint16>(parser.value(oscReceivePortOption).toInt());
-    options.window_height = parser.value(heightOption).toInt();
     options.window_offset_id = parser.value(windowIdOffsetOption).toUInt();
+    options.window_x = parser.value(xWindowPositionOption).toInt();
+    options.window_y = parser.value(yWindowPositionOption).toInt();
 
     if (options.verbose) {
 //        for (int i = 0; i < argc; ++ i) {
