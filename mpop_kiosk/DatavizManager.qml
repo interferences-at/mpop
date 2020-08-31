@@ -114,7 +114,14 @@ Item {
      * @param value Array List of ints for my current answers. There should be between 2 and 5 answers.
      */
     function my_answers(values) {
-        oscMessageSender.send(_makePath("my_answer"), values);
+        var path = _makePath("my_answer");
+        _verb(path, values);
+        oscMessageSender.send(path, values);
+    }
+
+
+    function _verb(path, args) {
+        console.log("Send OSC: " + path + " " + args.toString());
     }
 
 

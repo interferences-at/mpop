@@ -5,6 +5,14 @@ import QtQuick.Layouts 1.3
 RowLayout {
     id: pageEntrance
 
+    /**
+     * Sets the currentSelected.
+     * -1 means none - indices start at 0
+     */
+    function setHightlighted(index) {
+        currentSelected = index;
+    }
+
     property int currentSelected: -1
     property variant model
     property BilingualText sideLabel

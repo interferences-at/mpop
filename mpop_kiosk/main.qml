@@ -18,6 +18,10 @@ ApplicationWindow {
     property alias rfidTag: userProfile.rfidTag
     property bool invertedTheme: true         // used to differentiate light from dark mode (might get turned to string to account for accent-bg variant)
 
+    // Those aliases are accessed directly via the global window item:
+    property alias userProfile: userProfile
+    property alias datavizManager: datavizManager
+
     readonly property string const_KIOSK_MODE_ENTRY: "entrance"
     readonly property string const_KIOSK_MODE_CENTRAL: "central"
     readonly property string const_KIOSK_MODE_EXIT: "exit"
@@ -188,6 +192,20 @@ ApplicationWindow {
                 }
             }
         }
+
+        onUserAnswersUpdated: {
+            // Update the value of each slider according to the answer of the visitor for that slider:
+            var numQuestions = modelQuestions.rowCount;
+            for(var i = 0; i < numQuestions; i ++) {
+                var item = modelQuestions.get(i);
+                var identifier = item.identifier;
+
+                // retrieve it in the property of the UserProfile
+                if (answers.hasOwnProperty(identifier)) {
+                    // TODO var theQuestionPage =
+                }
+            }
+        }
     }
 
     // Keyboard shortcuts:
@@ -333,15 +351,15 @@ ApplicationWindow {
                 id: demographicQuestionsStackLayout
 
                 /**
-             * Go to the previous page.
-             */
+                 * Go to the previous page.
+                 */
                 function previousPage() {
                     demographicQuestionsStackLayout.currentIndex -= 1
                 }
 
                 /**
-             * Go to the next page.
-             */
+                 * Go to the next page.
+                 */
                 function nextPage() {
                     demographicQuestionsStackLayout.currentIndex += 1
                 }
@@ -641,6 +659,13 @@ ApplicationWindow {
                         Layout.fillHeight: true
                         Layout.preferredWidth: 1415
 
+                        onCurrentIndexChanged: {
+                            children[currentIndex].loadAnswersForCurrentVisitor();
+                        }
+
+                        /**
+                         * Go to the dataviz mode, or leaves it - for the current page.
+                         */
                         function toggleDataviz() {
                             children[currentIndex].toggleDataviz();
                         }

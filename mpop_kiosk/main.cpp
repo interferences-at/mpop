@@ -2,21 +2,24 @@
 #include <QQmlContext>
 #include <QQmlApplicationEngine>
 #include <QFontDatabase>
+#include <QApplication>
 #include "rfidreader.h"
 #include "oscreceiver.h"
 #include "oscsender.h"
 #include "screensaver.h"
 #include "kioskconfig.h"
 
+// Constants:
+static const QString APPLICATION_VERSION = "0.1.0-SNAPSHOT";
+static const QString APPLICATION_NAME = "mpop_kiosk";
 
 /**
  * @brief Load the kiosk configuration from the environment variables.
- * @param config
  */
 void load_kiosk_config_from_env_vars(KioskConfig& config) {
     QProcessEnvironment env = QProcessEnvironment::systemEnvironment();
 
-    config.send_osc_dataviz_port = env.value("SEND_OSC_DATAVIZ_PORT", "14444").toUInt();
+    config.send_osc_dataviz_port = env.value("SEND_OSC_DATAVIZ_PORT", "31337").toUInt();
     config.send_osc_dataviz_host = env.value("SEND_OSC_DATAVIZ_HOST", "127.0.0.1");
     config.service_host = env.value("MPOP_SERVICE_HOST", "0.0.0.0");
     config.service_port_number = env.value("MPOP_SERVICE_PORT_NUMBER", "3333").toUInt();
@@ -24,17 +27,6 @@ void load_kiosk_config_from_env_vars(KioskConfig& config) {
     config.is_verbose = KioskConfig::toBoolean(env.value("CONFIG_IS_VERBOSE", "true"));
     config.is_fullscreen = KioskConfig::toBoolean(env.value("CONFIG_IS_FULLSCREEN", "false"));
     config.kiosk_mode = env.value("MPOP_KIOSK_MODE", "central");
-
-    if (config.is_verbose) {
-        qDebug() << "send_osc_dataviz_port:" << config.send_osc_dataviz_port;
-        qDebug() << "send_osc_dataviz_host:" << config.send_osc_dataviz_host;
-        qDebug() << "service_host:" << config.service_host;
-        qDebug() << "service_port_number:" << config.service_port_number;
-        qDebug() << "receive_osc_port:" << config.receive_osc_port;
-        qDebug() << "is_verbose:" << config.is_verbose;
-        qDebug() << "is_fullscreen:" << config.is_fullscreen;
-        qDebug() << "kiosk_mode:" << config.kiosk_mode;
-    }
 
     if (config.kiosk_mode == "entrance") {
         // ok
@@ -52,6 +44,104 @@ void load_kiosk_config_from_env_vars(KioskConfig& config) {
 
 
 /**
+ * @brief Load configuration options from command line options.
+ */
+void load_kiosk_config_from_command_line(KioskConfig& config) {
+    // Parse command-line arguments.
+    QCommandLineParser parser;
+    parser.setApplicationDescription("Kiosk for MPOP");
+    parser.addHelpOption();
+    parser.addVersionOption();
+
+    // boolean options: (flags)
+    const QCommandLineOption verboseOption({"V", "verbose"}, "Enable a verbose output."); // bool
+    parser.addOption(verboseOption);
+
+    // const QCommandLineOption hideCursorOption({"c", "hide-cursor"}, "Hide the mouse cursor."); // bool
+    // parser.addOption(hideCursorOption);
+
+    const QCommandLineOption fullscreenOption({"f", "fullscreen"}, "Fullscreen window"); // bool
+    parser.addOption(fullscreenOption);
+
+    // const QCommandLineOption showWindowFrameOption({"F", "show-window-frame"}, "Show the window frame."); // bool
+    // parser.addOption(showWindowFrameOption);
+
+    // int options:
+    const QCommandLineOption sendOscDatavizPort({"d", "send-osc-dataviz-port"}, "Send OSC Dataviz port number", "send-osc-dataviz-port");
+    parser.addOption(sendOscDatavizPort);
+
+    const QCommandLineOption sendOscDatavizHost({"D", "send-osc-dataviz-host"}, "Send OSC Dataviz host", "send-osc-dataviz-host");
+    parser.addOption(sendOscDatavizHost);
+
+    const QCommandLineOption serviceHostOption({"S", "service-host"}, "Service host", "service-host");
+    parser.addOption(serviceHostOption);
+
+    const QCommandLineOption servicePortOption({"s", "service-port"}, "Service port", "service-port");
+    parser.addOption(servicePortOption);
+
+    const QCommandLineOption receiveOscPortOptions({"p", "receive-osc-port"}, "Receive OSC port", "receive-osc-port");
+    parser.addOption(receiveOscPortOptions);
+
+    // String options:
+    const QCommandLineOption kioskModeOption({"m", "kiosk-mode"}, "Kiosk mode (entry,central,exit)", "kiosk-mode");
+    parser.addOption(kioskModeOption);
+
+    // parser.process(app); // parse for --help and --version options.
+    // Parse our custom options:
+    if (! parser.parse(QApplication::arguments())) {
+        QString errorMessage = parser.errorText();
+        qDebug() << errorMessage;
+        parser.showHelp(1);
+    }
+
+    if (parser.isSet("help")) {
+        parser.showHelp(0);
+    }
+    if (parser.isSet(verboseOption)) {
+        config.is_verbose = true;
+    }
+    if (parser.isSet(sendOscDatavizPort)) {
+        config.send_osc_dataviz_port = parser.value(sendOscDatavizPort).toInt();;
+    }
+    if (parser.isSet(sendOscDatavizHost)) {
+        config.send_osc_dataviz_host = parser.value(sendOscDatavizHost);
+    }
+    if (parser.isSet(serviceHostOption)) {
+        config.service_host = parser.value(serviceHostOption);
+    }
+    if (parser.isSet(servicePortOption)) {
+        config.service_port_number = parser.value(servicePortOption).toInt();
+    }
+    if (parser.isSet(receiveOscPortOptions)) {
+        config.receive_osc_port = parser.value(receiveOscPortOptions).toInt();
+    }
+    if (parser.isSet(fullscreenOption)) {
+        config.is_fullscreen = true;
+    }
+    if (parser.isSet(kioskModeOption)) {
+        config.kiosk_mode = parser.value(kioskModeOption);
+    }
+}
+
+
+/**
+ * @brief Print the options, if verbose.
+ */
+void print_kiosk_options_if_verbose(const KioskConfig& config) {
+    if (config.is_verbose) {
+        qDebug() << "send_osc_dataviz_port:" << config.send_osc_dataviz_port;
+        qDebug() << "send_osc_dataviz_host:" << config.send_osc_dataviz_host;
+        qDebug() << "service_host:" << config.service_host;
+        qDebug() << "service_port_number:" << config.service_port_number;
+        qDebug() << "receive_osc_port:" << config.receive_osc_port;
+        qDebug() << "is_verbose:" << config.is_verbose;
+        qDebug() << "is_fullscreen:" << config.is_fullscreen;
+        qDebug() << "kiosk_mode:" << config.kiosk_mode;
+    }
+}
+
+
+/**
  * @brief Main entry point for this software.
  * @param argc Count of command-line arguments.
  * @param argv Values for all command-line arguments.
@@ -60,18 +150,23 @@ void load_kiosk_config_from_env_vars(KioskConfig& config) {
 int main(int argc, char *argv[])
 {
     QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
+    QApplication::setApplicationName(APPLICATION_NAME);
+    QApplication::setApplicationVersion(APPLICATION_VERSION);
     QGuiApplication app(argc, argv);
 
-    // Load the configuration option from environment variables:
+    // Load the configuration option from environment variables and/or command-line options:
     KioskConfig kioskConfig;
-    load_kiosk_config_from_env_vars(kioskConfig);
+    load_kiosk_config_from_env_vars(kioskConfig); // Load env vars first
+    load_kiosk_config_from_command_line(kioskConfig); // Override with command-line options, if set
+    print_kiosk_options_if_verbose(kioskConfig);
 
     // Load fonts
     QDir fontDir("static/fonts");
 
     // Check if folder exists
-    if (!fontDir.exists())
+    if (!fontDir.exists()) {
         qDebug() << "----------\nERROR :: Fonts folder doesn't exist.\nMake sure you've included them appropriately in the deployment folder.\n----------";
+    }
 
     // Add fonts to application database
     for (auto file : fontDir.entryList(QDir::Files)) {
@@ -79,24 +174,7 @@ int main(int argc, char *argv[])
             qDebug() << "Failed to load font:" << file;
     }
 
-    // Allow to override some configuration options with command line arguments:
-    int argumentCount = QCoreApplication::arguments().size();
-    QStringList argumentList = QCoreApplication::arguments();
     QTextStream standardOutput(stdout);
-
-    if (argumentCount > 1) {
-        kioskConfig.send_osc_dataviz_host = argumentList.at(1);
-    }
-    if (argumentCount > 2) {
-        kioskConfig.send_osc_dataviz_port = static_cast<quint16>(argumentList.at(2).toInt());
-    }
-    if (argumentCount > 3) {
-        kioskConfig.receive_osc_port = static_cast<quint16>(argumentList.at(3).toInt());
-    }
-    if (argumentCount == 1) {
-        standardOutput << QObject::tr("To specify an OSC send host and port: %1 <sendHost> <sendPort> <receivePort").arg(
-                              argumentList.first()) << endl;
-    }
 
     // Print some useful info:
     standardOutput << QObject::tr("Send OSC to %1:%2").arg(
@@ -121,8 +199,9 @@ int main(int argc, char *argv[])
 
     // Load main QML file
     engine.load(QUrl(QStringLiteral("qrc:/main.qml")));
-    if (engine.rootObjects().isEmpty())
+    if (engine.rootObjects().isEmpty()) {
         return -1;
+    }
 
     return app.exec();
 }

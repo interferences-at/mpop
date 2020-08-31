@@ -9,6 +9,10 @@ import QtGraphicalEffects 1.0
 ColumnLayout {
     // Provides signal onSliderValueChanged
 
+    id: thisWidget
+
+    signal sliderMoved(int intValue)
+
     property string textLeft: ""
     property string textRight: ""
     property bool showNumber: false
@@ -42,6 +46,11 @@ ColumnLayout {
         stepSize: sliderStepSize
         snapMode: Slider.SnapAlways
         padding: 0
+
+        onMoved: {
+            var intValue = Math.round(value);
+            thisWidget.sliderMoved(intValue);
+        }
 
         background: Rectangle {
             width: slider0.availableWidth
