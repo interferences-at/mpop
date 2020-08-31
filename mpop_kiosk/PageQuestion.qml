@@ -71,8 +71,56 @@ ColumnLayout {
 
     function loadAnswersForCurrentVisitor() {
         // TODO: Retrieve value for user from service and populate the slider, if set.
+        for (var i = 0; i < numberOfQuestions; i ++) {
+            var key = questionIdentifiers[i];
+            var value = 50; // default
+            if (window.userProfile.answers.hasOwnProperty(key)) {
+                value = window.userProfile.answers[key];
+            }
+            switch (i) {
+            case 0:
+                answerSlider1.sliderValue = value;
+                break;
+            case 1:
+                answerSlider2.sliderValue = value;
+                break;
+            case 2:
+                answerSlider3.sliderValue = value;
+                break;
+            case 3:
+                answerSlider4.sliderValue = value;
+                break;
+            case 4:
+                answerSlider5.sliderValue = value;
+                break;
+            }
+        }
     }
 
+
+    function handleSliderMoved(sliderIndex, value) {
+        console.log("handleSliderMoved(" + sliderIndex + "," + value + ")");
+        var identifier = questionIdentifiers[sliderIndex];
+        var userId = window.userProfile.userId;
+
+        window.userProfile.setUserAnswer(userId, identifier, value, function (err, user_id) {
+            if (err) {
+                console.log("Error calling setUserAnswer(" + userId + "," + identifier + "," + value + "): " + err.message);
+            } else {
+                console.log("Success calling setUserAnswer(" + userId + "," + identifier + "," + value + ")");
+            }
+        });
+
+        sendDatavizShowQuestion(value);
+    }
+
+    function sendDatavizShowQuestion(currentValue) {
+        window.datavizManager.my_answer(currentValue);
+    }
+
+    /**
+     * Show/hide the dataviz section.
+     */
     function toggleDataviz() {
         if (datavizIndex !== index_QUESTIONS) datavizIndex = index_QUESTIONS;
         else {
@@ -237,10 +285,16 @@ ColumnLayout {
                             visible: hasMultipleQuestions
                         }
                         WidgetAnswerSlider {
+                            id: answerSlider1
+
                             sliderValue: 35
                             textLeft: leftText1.text
                             textRight: rightText1.text
                             showNumber: false
+
+                            onSliderMoved: {
+                                thisPage.handleSliderMoved(0, intValue);
+                            }
                         }
                     }
 
@@ -261,11 +315,17 @@ ColumnLayout {
                             visible: hasMultipleQuestions && (numberOfQuestions >= 2)
                         }
                         WidgetAnswerSlider {
+                            id: answerSlider2
+
                             sliderValue: 35
                             textLeft: leftText2.text
                             textRight: rightText2.text
                             showNumber: false
                             visible: hasMultipleQuestions && (numberOfQuestions >= 2)
+
+                            onSliderMoved: {
+                                thisPage.handleSliderMoved(1, intValue);
+                            }
                         }
                     }
 
@@ -287,11 +347,17 @@ ColumnLayout {
                         }
 
                         WidgetAnswerSlider {
+                            id: answerSlider3
+
                             sliderValue: 50
                             textLeft: leftText3.text
                             textRight: rightText3.text
                             showNumber: false
                             visible: hasMultipleQuestions && (numberOfQuestions >= 3)
+
+                            onSliderMoved: {
+                                thisPage.handleSliderMoved(2, intValue);
+                            }
                         }
                     }
 
@@ -313,11 +379,17 @@ ColumnLayout {
                         }
 
                         WidgetAnswerSlider {
+                            id: answerSlider4
+
                             sliderValue: 50
                             textLeft: leftText4.text
                             textRight: rightText4.text
                             showNumber: false
                             visible: hasMultipleQuestions && (numberOfQuestions >= 4)
+
+                            onSliderMoved: {
+                                thisPage.handleSliderMoved(3, intValue);
+                            }
                         }
                     }
 
@@ -339,11 +411,17 @@ ColumnLayout {
                         }
 
                         WidgetAnswerSlider {
+                            id: answerSlider5
+
                             sliderValue: 50
                             textLeft: leftText5.text
                             textRight: rightText5.text
                             showNumber: false
                             visible: hasMultipleQuestions && (numberOfQuestions >= 5)
+
+                            onSliderMoved: {
+                                thisPage.handleSliderMoved(4, intValue);
+                            }
                         }
                     }
                 }

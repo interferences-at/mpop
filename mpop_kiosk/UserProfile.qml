@@ -14,6 +14,8 @@ import QtWebSockets 1.0
 Item {
     id: thisUserProfile
 
+    signal userAnswersUpdated()
+
     // constants
     readonly property int const_NUM_QUESTIONS: 999 // FIXME
     readonly property int const_INVALID_NUMBER: -1
@@ -31,7 +33,7 @@ Item {
     property string ethnicity: const_INVALID_STRING
     property int age: const_INVALID_NUMBER
     property string language: const_INVALID_STRING
-    property var answers: []
+    property var answers: ({}) // JavaScript object - for key-value pairs
     property string rfidTag: const_INVALID_STRING
     property int userId: const_INVALID_NUMBER
     property bool sent_user_info_to_service: false
@@ -48,7 +50,7 @@ Item {
         ethnicity = const_INVALID_STRING;
         age = const_INVALID_NUMBER;
         language = const_INVALID_STRING;
-        answers = [];
+        answers = {};
         userId = const_INVALID_NUMBER
         rfidTag = const_INVALID_STRING
 
@@ -263,7 +265,10 @@ Item {
                     for (var key in userAnswers) {
                         var answerValue = userAnswers[key];
                         console.log("TODO: store answer " + key + " = " + answerValue);
+                        thisUserProfile.answers[key] = answerValue;
                     }
+
+                    userAnswersUpdated();
 
                     cb(null); // done
                 }
