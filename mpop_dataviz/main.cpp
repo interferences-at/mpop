@@ -174,8 +174,7 @@ int main(int argc, char* argv[]) {
         if (options.show_window_frame) {
             mainWindow->setWindowFlags(mainWindow->windowFlags() | Qt::Window);
         } else {
-            mainWindow->setWindowFlags(mainWindow->windowFlags() | Qt::FramelessWindowHint);
-            mainWindow->setWindowState(mainWindow->windowState() ^ Qt::WindowFullScreen);
+            mainWindow->setWindowFlags(mainWindow->windowFlags() | Qt::FramelessWindowHint | Qt::X11BypassWindowManagerHint);
         }
         QObject::connect(window.data(), &DatavizWindow::closed, mainWindow, &QWidget::close);
         // Show main window
