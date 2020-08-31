@@ -24,28 +24,18 @@ To reset your database: (for example, if a migration script has beed modified)
 The migration scripts are in the flyway/sql folder.
 
 
-## Deploying MPOP service
+## Deploying MPOP Service
 
-Mpop service offers a JSON-RPC 2.0 Websocket API.
+MPOP Service offers a JSON-RPC 2.0 Websocket API.
 
-Build the service with:
-
-`qmake . && make`
-
-And then, run the service with:
-
-`./run-service.sh`
-
-It expects to find the MySQL server running, in its Docker Compose container.
-
-To configure the service, provide some environment variables.
+The Docker Compose setup should build mpop\_service and deploy it.
 
 
-## Deploying MPOP kiosk
+## Deploying MPOP Kiosk
 
-MPOP kiosk is the user interface to answer to all questions and control the dataviz.
+MPOP Kiosk is the user interface to answer to all questions and control the dataviz.
 
-We plan to use Lunch to launch it. For now, we parse command-line options.
+It can be launched with Lunch - the distributed process launcher - or manually. It can parse command-line options and/or environment variables.
 
 There are three (3) flavours of MPOP kiosk:
 
@@ -53,7 +43,7 @@ There are three (3) flavours of MPOP kiosk:
 - central: Asks demographic questions, if not answered, and then allows visitors to answer all question and control the dataviz.
 - exit: Frees the RFID tag, so that other users can use it. (they also all expire at midnight)
 
-The mpop_kiosk is configured mainly via environment variables. Here is the list of variables with their default value:
+The mpop\_kiosk is configured mainly via environment variables. Here is the list of variables with their default value:
 (see in KioskConfig.h and main.cpp for the most up-to-date list)
 
 ```
@@ -67,8 +57,13 @@ CONFIG_IS_FULLSCREEN=false
 MPOP_KIOSK_MODE=central
 ```
 
+The MPOP Kiosk should know on which host to find the MPOP Service and the MPOP Dataviz.
+The devops engineer who deploys it must make sure that its configuration options are set properly.
 
-## Deploying MPOP dataviz
 
-Mpop service offers an OSC API.
+## Deploying MPOP Dataviz
+
+Mpop Dataviz offers an OSC API.
+
+Launch it directly, or with Lunch.
 
