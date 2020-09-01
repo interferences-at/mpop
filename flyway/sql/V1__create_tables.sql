@@ -33,7 +33,8 @@ CREATE TABLE IF NOT EXISTS `answer`
   `visitor_id` BIGINT UNSIGNED NOT NULL,
   `question_id` BIGINT UNSIGNED NOT NULL,
   `answer_value` TINYINT UNSIGNED NOT NULL, -- number within the range [0,100]
-  `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+  `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+   UNIQUE `visitor_question_id` (`visitor_id`, `question_id`)
   -- maybe later: `is_latest` ENUM('yes', 'no') DEFAULT 'yes',
 ) CHARACTER SET utf8 COLLATE utf8_general_ci;
 
