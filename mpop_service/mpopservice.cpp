@@ -1,5 +1,5 @@
 #include "mpopservice.h"
-
+#include "sqlerror.h"
 #include <QtWebSockets>
 #include <exception>
 #include <QtCore>
@@ -189,6 +189,9 @@ bool MPopService::handleFacadeMethod(const Request& request, Response& response)
         } catch(MissingParameterError& e) {
             msg.append(e.what());
             response.error.message = msg;
+        } catch(SQLError& e){
+            msg.append(e.what());
+            response.error.message = msg;
         }
     }
     else if (method == "getUserInfo") {
@@ -197,6 +200,9 @@ bool MPopService::handleFacadeMethod(const Request& request, Response& response)
             int userId = request.getParamByPosition(0).toInt();
             response.result = QVariant(this->_facade.getUserInfo(userId));
         } catch (MissingParameterError& e) {
+            msg.append(e.what());
+            response.error.message = msg;
+        } catch(SQLError& e){
             msg.append(e.what());
             response.error.message = msg;
         }
@@ -212,6 +218,9 @@ bool MPopService::handleFacadeMethod(const Request& request, Response& response)
         } catch (MissingParameterError& e) {
             msg.append(e.what());
             response.error.message = msg;
+        } catch(SQLError& e){
+            msg.append(e.what());
+            response.error.message = msg;
         }
     }
     else if (method == "setUserAnswer") {
@@ -224,6 +233,9 @@ bool MPopService::handleFacadeMethod(const Request& request, Response& response)
         } catch (MissingParameterError& e) {
             msg.append(e.what());
             response.error.message = msg;
+        } catch(SQLError& e){
+            msg.append(e.what());
+            response.error.message = msg;
         }
     }
     else if (method=="freeTag") {
@@ -234,6 +246,9 @@ bool MPopService::handleFacadeMethod(const Request& request, Response& response)
         } catch (MissingParameterError& e) {
             msg.append(e.what());
             response.error.message = msg;
+        } catch(SQLError& e){
+            msg.append(e.what());
+            response.error.message = msg;
         }
     }
     else if (method == "freeUnusedTags") {
@@ -241,6 +256,9 @@ bool MPopService::handleFacadeMethod(const Request& request, Response& response)
         try {
             this->_facade.freeAllTags();
         } catch (MissingParameterError& e) {
+            msg.append(e.what());
+            response.error.message = msg;
+        } catch(SQLError& e){
             msg.append(e.what());
             response.error.message = msg;
         }
@@ -254,6 +272,9 @@ bool MPopService::handleFacadeMethod(const Request& request, Response& response)
         } catch (MissingParameterError& e) {
             msg.append(e.what());
             response.error.message = msg;
+        } catch(SQLError& e){
+            msg.append(e.what());
+            response.error.message = msg;
         }
     }
     else if (method == "setUserGender") {
@@ -263,6 +284,9 @@ bool MPopService::handleFacadeMethod(const Request& request, Response& response)
             QString gender = request.getParamByPosition(1).toString();
             response.result = QVariant(this->_facade.setUserGender(userId, gender));
         } catch (MissingParameterError& e) {
+            msg.append(e.what());
+            response.error.message = msg;
+        } catch(SQLError& e){
             msg.append(e.what());
             response.error.message = msg;
         }
@@ -276,6 +300,9 @@ bool MPopService::handleFacadeMethod(const Request& request, Response& response)
         } catch (MissingParameterError &e) {
             msg.append(e.what());
             response.error.message = msg;
+        } catch(SQLError& e){
+            msg.append(e.what());
+            response.error.message = msg;
         }
     }
     else if (method == "setUserAge") {
@@ -287,7 +314,11 @@ bool MPopService::handleFacadeMethod(const Request& request, Response& response)
         } catch (MissingParameterError &e) {
             msg.append(e.what());
             response.error.message = msg;
+        } catch(SQLError& e){
+            msg.append(e.what());
+            response.error.message = msg;
         }
+
     }
     else if (method == "getAnswers") {
         QTextStream(stdout) << "Method is: getAnswers" << endl;
@@ -302,6 +333,9 @@ bool MPopService::handleFacadeMethod(const Request& request, Response& response)
             QMap<QString,int> avgOfAns = this->_facade.getAnswers(questionIds, ageFrom, ageTo, ethnicity, gender, timeAnswered);
             response.result = QVariant(MPopService::stringIntMapToQVariantMap(avgOfAns));
         } catch (MissingParameterError &e) {
+            msg.append(e.what());
+            response.error.message = msg;
+        } catch(SQLError& e){
             msg.append(e.what());
             response.error.message = msg;
         }
@@ -319,6 +353,9 @@ bool MPopService::handleFacadeMethod(const Request& request, Response& response)
         } catch (MissingParameterError &e) {
             msg.append(e.what());
             response.error.message = msg;
+        } catch(SQLError& e){
+            msg.append(e.what());
+            response.error.message = msg;
         }
     }
     else if (method == "getAnswerByGender") {
@@ -332,6 +369,9 @@ bool MPopService::handleFacadeMethod(const Request& request, Response& response)
             QMap<QString,int> ansByGender = this->_facade.getAnswerByGender(questionId, ethnicity, ageTo, ageFrom, timeAnswered);
             response.result = QVariant(MPopService::stringIntMapToQVariantMap(ansByGender));
         } catch (MissingParameterError &e) {
+            msg.append(e.what());
+            response.error.message = msg;
+        } catch(SQLError& e){
             msg.append(e.what());
             response.error.message = msg;
         }
@@ -350,6 +390,9 @@ bool MPopService::handleFacadeMethod(const Request& request, Response& response)
         } catch (MissingParameterError &e) {
             msg.append(e.what());
             response.error.message = msg;
+        } catch(SQLError& e){
+            msg.append(e.what());
+            response.error.message = msg;
         }
     }
     else if (method == "getAllAnswers") {
@@ -359,6 +402,9 @@ bool MPopService::handleFacadeMethod(const Request& request, Response& response)
             QMap<QString,int> ansByEthnicity = this->_facade.getAllAnswers();
             response.result = QVariant(MPopService::stringIntMapToQVariantMap(ansByEthnicity));
         } catch (MissingParameterError &e) {
+            msg.append(e.what());
+            response.error.message = msg;
+        } catch(SQLError& e){
             msg.append(e.what());
             response.error.message = msg;
         }

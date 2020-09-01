@@ -406,10 +406,15 @@ void TestMpopService::test_20_setUserAnswer() {
     static const int TEST_QUESTION_02_VALUE = 100;
     static const int TEST_QUESTION_03_VALUE = 0;
     static const int TEST_QUESTION_04_VALUE = 99;
+    static const int TEST_QUESTION_01_UPDATE_VALUE = 33;
+    static const int TEST_QUESTION_02_UPDATE_VALUE = 90;
+    static const int TEST_QUESTION_03_UPDATE_VALUE = 10;
+    static const int TEST_QUESTION_04_UPDATE_VALUE = 80;
     static const QString TEST_RFID_TAG = "test_RFID_tag_0005";
 
     int userId = this->facade->getOrCreateUser(TEST_RFID_TAG);
 
+    // set User Answers
     this->facade->setUserAnswer(userId, TEST_QUESTION_01_ID, TEST_QUESTION_01_VALUE);
     this->facade->setUserAnswer(userId, TEST_QUESTION_02_ID, TEST_QUESTION_02_VALUE);
     this->facade->setUserAnswer(userId, TEST_QUESTION_03_ID, TEST_QUESTION_03_VALUE);
@@ -421,4 +426,20 @@ void TestMpopService::test_20_setUserAnswer() {
     QCOMPARE(answers[TEST_QUESTION_02_ID], TEST_QUESTION_02_VALUE);
     QCOMPARE(answers[TEST_QUESTION_03_ID], TEST_QUESTION_03_VALUE);
     QCOMPARE(answers[TEST_QUESTION_04_ID], TEST_QUESTION_04_VALUE);
+
+    // update user answers
+    this->facade->setUserAnswer(userId, TEST_QUESTION_01_ID, TEST_QUESTION_01_UPDATE_VALUE);
+    this->facade->setUserAnswer(userId, TEST_QUESTION_02_ID, TEST_QUESTION_02_UPDATE_VALUE);
+    this->facade->setUserAnswer(userId, TEST_QUESTION_03_ID, TEST_QUESTION_03_UPDATE_VALUE);
+    this->facade->setUserAnswer(userId, TEST_QUESTION_04_ID, TEST_QUESTION_04_UPDATE_VALUE);
+
+    //retrive Updated Answers
+    QMap<QString, int> answers1 = this->facade->getUserAnswers(userId);
+
+    qDebug() << answers1;
+
+    QCOMPARE(answers1[TEST_QUESTION_01_ID], TEST_QUESTION_01_UPDATE_VALUE);
+    QCOMPARE(answers1[TEST_QUESTION_02_ID], TEST_QUESTION_02_UPDATE_VALUE);
+    QCOMPARE(answers1[TEST_QUESTION_03_ID], TEST_QUESTION_03_UPDATE_VALUE);
+    QCOMPARE(answers1[TEST_QUESTION_04_ID], TEST_QUESTION_04_UPDATE_VALUE);
 }

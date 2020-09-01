@@ -25,7 +25,8 @@ HEADERS += \
     mpopservice.h \
     notification.h \
     request.h \
-    response.h
+    response.h \
+    sqlerror.h
 
 # EXAMPLE_FILES += exampleclient.html
 
