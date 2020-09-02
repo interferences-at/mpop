@@ -36,6 +36,11 @@ private slots:
     void test_20_setUserAnswer();
     void test_21_getUserAnswers();
 
+    void test_22_getAnswerByAge();
+    void test_23_getAnswerByEthnicity();
+    void test_24_getAnswerByGender();
+    void test_25_getAnswers();
+
     // TODO: test to free a tag
 
     // test methods for the survey questions, for multiple visitors: (for the dataviz)
