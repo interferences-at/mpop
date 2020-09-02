@@ -149,6 +149,7 @@ Column {
     signal previousButtonClicked()
 
     BilingualText {
+        id: mainQuestionText
     }
 
     BilingualText {
@@ -253,7 +254,7 @@ Column {
 
             // Index 0: answering the questions
             ColumnLayout {
-                Layout.fillWidth: true
+                Layout.fillHeight: false
                 spacing: 0
 
                 // To answer the question(s) with the sliders:
@@ -425,7 +426,7 @@ Column {
             // Index 1: single question first axis
             // this screen is automatically skipped if hasMultipleQuestions === true
             ColumnLayout {
-                Layout.fillWidth: true
+                Layout.fillHeight: false
                 spacing: 0
 
                 ColumnLayout {
@@ -492,7 +493,7 @@ Column {
             // Index 2: multi-filter selection
             // filter rows are selectively hidden depending on first-axis selection
             ColumnLayout {
-                Layout.fillWidth: true
+                Layout.fillHeight: false
                 spacing: 0
 
                 ColumnLayout {
