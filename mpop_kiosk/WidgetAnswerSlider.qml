@@ -55,12 +55,12 @@ ColumnLayout {
         background: Rectangle {
             width: slider0.availableWidth
             height: 10
-            color: window.invertedTheme ? Palette.mediumGrey : Palette.lightGrey
+            color: window.invertedTheme ? Palette.lightGrey : Palette.mediumGrey
 
             Rectangle {
                 width: slider0.visualPosition * (slider0.availableWidth - handle.implicitWidth) + (handle.implicitWidth / 2)
                 height: parent.height
-                color: window.invertedTheme ? Palette.white : Palette.lightBlack
+                color: window.invertedTheme ? Palette.lightBlack : Palette.white
             }
         }
 
@@ -69,7 +69,7 @@ ColumnLayout {
             implicitWidth: 26
             implicitHeight: 26
             radius: 13
-            color: window.invertedTheme ? Palette.white : Palette.lightBlack
+            color: window.invertedTheme ? Palette.lightBlack : Palette.white
             x: slider0.visualPosition * (slider0.availableWidth - implicitWidth)
             y: 5 - (implicitHeight / 2)
         }
@@ -95,6 +95,7 @@ ColumnLayout {
                 capitalization: Font.AllUppercase
                 letterSpacing: 11 * 25 / 1000
             }
+            color: invertedTheme ? Palette.lightBlack : Palette.white
         }
 
         Item { Layout.fillWidth: true }
@@ -107,6 +108,7 @@ ColumnLayout {
                 capitalization: Font.AllUppercase
                 letterSpacing: 11 * 25 / 1000
             }
+            color: invertedTheme ? Palette.lightBlack : Palette.white
         }
     }
 }

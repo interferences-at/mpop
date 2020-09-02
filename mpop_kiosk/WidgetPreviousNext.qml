@@ -67,10 +67,10 @@ ColumnLayout {
 
                 DropShadow {
                     anchors.fill: button
-                    horizontalOffset: 2
-                    verticalOffset: 4
-                    radius: 4
-                    samples: 9
+                    horizontalOffset: 1
+                    verticalOffset: 3
+                    radius: 5
+                    samples: 11
                     color: "#66000000"
                     source: button
                 }
@@ -78,7 +78,7 @@ ColumnLayout {
 
             Label {
                 text: (model.index ? textNext : textPrevious).text
-                color: "#ffffff"
+                color: invertedTheme ? Palette.lightBlack : Palette.white
                 font {
                     pixelSize: 11
                     letterSpacing: 11 * 25 / 1000
