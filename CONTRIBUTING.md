@@ -114,6 +114,10 @@ And then this:
 
 A dialog will prompt you for the location of your Qt installation. C:\Qt is typical.
 
+Next It will ask you for the executable file path. Choose \build_Folder\mpop_dataviz\debug\mpop_dataviz.exe
+
+It will generate Stand-alone executable file to run mpop_dataviz.exe
+
 
 # Coding style
 
