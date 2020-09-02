@@ -6,7 +6,6 @@ Button {
 
     id: widgetFilterButton
     text: label.text
-    checkable: true
 
     leftPadding: 20
     rightPadding: 20
@@ -20,12 +19,12 @@ Button {
         text: widgetFilterButton.text
         horizontalAlignment: Text.AlignHCenter
         verticalAlignment: Text.AlignVCenter
-        color: checked ? "#000" : "#fff"
+        color: highlighted ? "#000" : "#fff"
         font: widgetFilterButton.font
     }
 
     background: Rectangle {
-        color: checked ? "#fff" : "transparent"
+        color: highlighted ? "#fff" : "transparent"
         implicitHeight: 40
         border.color: "#fff"
         radius: 30

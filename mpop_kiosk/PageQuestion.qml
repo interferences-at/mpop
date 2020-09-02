@@ -5,7 +5,7 @@ import QtQuick.Layouts 1.3
 /**
  * Page that contains a single question.
  */
-ColumnLayout {
+Column {
 
     id: thisPage
 
@@ -148,12 +148,7 @@ ColumnLayout {
     signal nextButtonClicked()
     signal previousButtonClicked()
 
-    Layout.leftMargin: 40
-    Layout.rightMargin: 40
-    Layout.topMargin: 90
-
     BilingualText {
-        id: mainQuestionText
     }
 
     BilingualText {
@@ -230,13 +225,13 @@ ColumnLayout {
 
     // The main question text:
     Label {
-        Layout.fillWidth: true
+        width: parent.width
         text: mainQuestionText.text
         font {
             pixelSize: 45
             capitalization: Font.AllUppercase
         }
-        wrapMode: Text.WordWrap
+        wrapMode: Label.WordWrap
 
         leftPadding: 40
         rightPadding: 40
@@ -248,7 +243,7 @@ ColumnLayout {
      * StackLayout to switch from answering the question to data viz.
      */
     ColumnLayout {
-        Layout.fillWidth: true
+        width: parent.width
 
         StackLayout {
             id: questionDatavizStackLayout
@@ -440,16 +435,26 @@ ColumnLayout {
                     spacing: 0
 
                     Label {
-                        Layout.alignment: Qt.AlignCenter
-                        text: qsTr("Please select a basic viewing setting")
+                        BilingualText {
+                            id: firstFilterTooltip
+                            textEn: "Please select a basic viewing setting"
+                            textFr: "Veuillez choisir un réglage de visualisation de base"
+                        }
+
+                        text: firstFilterTooltip.text
                         color: "#fff"
-                        font.pixelSize: 30
+                        font {
+                            family: "Red Hat Display"
+                            weight: Font.Medium
+                            pixelSize: 24
+                        }
+                        padding: 0
                     }
                     // 1st-level filters
                     RowLayout {
                         Layout.fillWidth: true
-                        Layout.fillHeight: true
                         Layout.alignment: Qt.AlignHCenter
+                        Layout.topMargin: 20
                         spacing: 24
 
                         // reset on RFID tag change
@@ -459,25 +464,25 @@ ColumnLayout {
                         // TODO: wrap in Repeater and simplify identifier declarations
                         WidgetFilterButton {
                             label: BilingualText { textEn: "Age"; textFr: "Âge" }
-                            checked: filterHighlighted === "ageBtn"
+                            highlighted: filterHighlighted === "ageBtn"
                             onClicked: filterHighlighted = "ageBtn"
                         }
 
                         WidgetFilterButton {
                             label: BilingualText { textEn: "Gender"; textFr: "Genre" }
-                            checked: filterHighlighted === "genreBtn"
+                            highlighted: filterHighlighted === "genreBtn"
                             onClicked: filterHighlighted = "genreBtn"
                         }
 
                         WidgetFilterButton {
                             label: BilingualText { textEn: "Culture"; textFr: "Culture" }
-                            checked: filterHighlighted === "cultureBtn"
+                            highlighted: filterHighlighted === "cultureBtn"
                             onClicked: filterHighlighted = "cultureBtn"
                         }
 
                         WidgetFilterButton {
                             label: BilingualText { textEn: "Language"; textFr: "Langue" }
-                            checked: filterHighlighted === "langBtn"
+                            highlighted: filterHighlighted === "langBtn"
                             onClicked: filterHighlighted = "langBtn"
                         }
                     }
@@ -620,7 +625,7 @@ ColumnLayout {
                                     WidgetFilterButton {
                                         label: BilingualText { textEn: model.textEn; textFr: model.textFr }
 
-                                        checked: index === subfilter.currentIndex
+                                        highlighted: index === subfilter.currentIndex
                                         onClicked: subfilter.currentIndex = index
                                     }
                                 }
@@ -634,7 +639,6 @@ ColumnLayout {
         // filter navigation
         RowLayout {
             Layout.fillWidth: true
-            Layout.fillHeight: true
             Layout.alignment: Qt.AlignRight | Qt.AlignTop
             Layout.topMargin: 50
             Layout.rightMargin: 100
