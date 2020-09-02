@@ -89,6 +89,12 @@ public:
      */
     static bool toBoolean(const QString& value);
 
+    /**
+     * @brief called every 1 min to check provided time in config is reach.
+     * @param config The Config struct to populate.
+     */
+    static void timeWatcher(const Config& config);
+
     static QVariantMap stringIntMapToQVariantMap(const QMap<QString, int>& value) {
         QVariantMap ret;
         for (auto iter = value.constBegin(); iter != value.constEnd(); ++ iter) {

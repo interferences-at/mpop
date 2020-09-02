@@ -71,9 +71,9 @@ public:
 
     /**
      * @brief Frees all tags that have not been used in a while.
-     * FIXME: Define what is the timeout?
+     * function called when timer reaches to mid-night 00:01 Hr.
      */
-    void freeUnusedTags();
+    static void freeAllTags ();
     bool setUserEthnicity(int userId, const QString& ethnicity);
     bool setUserLanguage(int userId, const QString& language);
     bool setUserGender(int userId, const QString& gender);

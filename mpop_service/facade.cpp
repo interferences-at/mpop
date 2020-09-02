@@ -343,7 +343,7 @@ void Facade::freeTag(const QString& rfidTag) {
 }
 
 
-void Facade::freeUnusedTags() {
+void Facade::freeAllTags() {
     qDebug() << "freeUnusedTags";
     QString sql = "UPDATE `tag` SET `visitor_id` = NULL";
     QSqlQuery query;

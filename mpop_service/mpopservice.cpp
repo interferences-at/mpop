@@ -29,6 +29,8 @@ void MPopService::load_config_from_env_vars(Config& config) {
     config.mysql_host = env.value("CONFIG_MYSQL_HOST", "db"); // Use '0.0.0.0' as a hostname, if you use from outside docker-compose
     config.service_port_number = env.value("MPOP_SERVICE_PORT_NUMBER", "3333").toUInt();
     config.is_verbose = toBoolean(env.value("CONFIG_IS_VERBOSE", "true"));
+    config.periodic_interval = env.value("CONFIG_PERIODIC_INTERVAL","60000").toUInt();
+    config.time_at_free_all_tag = env.value("CONFIG_TIME_FREE_ALL_TAG","00:01");
     if (config.is_verbose) {
         qDebug() << "mysql_port:" << config.mysql_port;
         qDebug() << "mysql_user:" << config.mysql_user;
@@ -37,6 +39,8 @@ void MPopService::load_config_from_env_vars(Config& config) {
         qDebug() << "mysql_host:" << config.mysql_host;
         qDebug() << "service_port_number:" << config.service_port_number;
         qDebug() << "is_verbose:" << config.is_verbose;
+        qDebug() << "periodic_interval" << config.periodic_interval;
+        qDebug() << "time_at_free_all_tag" << config.time_at_free_all_tag;
     }
 }
 
@@ -235,7 +239,7 @@ bool MPopService::handleFacadeMethod(const Request& request, Response& response)
     else if (method == "freeUnusedTags") {
         QTextStream(stdout) << "Method is: freeUnusedTags" << endl;
         try {
-            this->_facade.freeUnusedTags();
+            this->_facade.freeAllTags();
         } catch (MissingParameterError& e) {
             msg.append(e.what());
             response.error.message = msg;
@@ -367,4 +371,24 @@ bool MPopService::handleFacadeMethod(const Request& request, Response& response)
     // TODO QList<int> getStatsForQuestion(const QString& questionId);
 
     return true;
+}
+
+
+void MPopService::timeWatcher(const Config& config){
+
+    QTextStream(stdout) << "Method is: timeWatcher";
+    QDateTime local = QDateTime::currentDateTime();
+    QString curTime = local.toString("hh:mm");
+    QTextStream(stdout) << "Current time  is : " << curTime;
+    if(curTime == config.time_at_free_all_tag) {
+
+        //TODO: Exception Handling should be Uncommented when PR with SQLError.h Merge
+//       try {
+           Facade::freeAllTags();
+//       } catch(SQLError& e){
+//             qWarning() << "Internal Server Error :: " << e.what();
+
+//       }
+   }
+
 }
