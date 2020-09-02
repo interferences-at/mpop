@@ -16,7 +16,7 @@ ApplicationWindow {
     property string lastMessageReceived: ""
     property alias lang: userProfile.language // All the BilingualText items watch this value
     property alias rfidTag: userProfile.rfidTag
-    property bool invertedTheme: true         // used to differentiate light from dark mode (might get turned to string to account for accent-bg variant)
+    property alias invertedTheme: mainStackLayout.invertedTheme
 
     // Those aliases are accessed directly via the global window item:
     property alias userProfile: userProfile
@@ -316,6 +316,11 @@ ApplicationWindow {
         readonly property int index_SURVEY_QUESTIONS: 2
         readonly property int index_EXIT_SECTION: 3
         readonly property int index_OSC_DEBUG: 4
+
+        property alias currentQuestion: questionsStackLayout.currentIndex
+        property bool invertedTheme: currentIndex === index_SURVEY_QUESTIONS && questionsStackLayout.children[currentQuestion].datavizIndex < 1
+
+        onInvertedThemeChanged: console.log(invertedTheme)
 
         function nextPage() {
             mainStackLayout.currentIndex = (mainStackLayout.currentIndex + 1) % mainStackLayout.count;
@@ -650,6 +655,11 @@ ApplicationWindow {
                 Layout.fillWidth: true
                 Layout.fillHeight: true
 
+                Rectangle {
+                    anchors.fill: parent
+                    color: invertedTheme ? Palette.white : Palette.lightBlack
+                }
+
                 WidgetGoToDataviz {
                     anchors.top: parent.top
 
@@ -667,13 +677,14 @@ ApplicationWindow {
                         Layout.fillHeight: true
                         Layout.alignment: Qt.AlignTop
                         Layout.preferredWidth: 295
-                        topPadding: 55
+                        Layout.topMargin: -80
+                        topPadding: 55 + 80
                         horizontalAlignment: Text.AlignHCenter
 
                         id: currentPageNumberLabel
                         text: "01" // Changed dynamically
                         font.capitalization: Font.AllUppercase
-                        color: "#ffffff"
+                        color: invertedTheme ? Palette.lightBlack : Palette.white
                         font {
                             pixelSize: 206
                         }
@@ -685,7 +696,7 @@ ApplicationWindow {
                             anchors.right: parent.right
                             height: parent.height
                             width: 1
-                            color: "#fff"
+                            color: invertedTheme ? Palette.lightBlack : Palette.white
                         }
                     }
 
@@ -877,7 +888,7 @@ ApplicationWindow {
                             anchors.left: parent.left
                             height: parent.height
                             width: 1
-                            color: "#fff"
+                            color: invertedTheme ? Palette.lightBlack : Palette.white
                         }
 
                         ColumnLayout {
@@ -923,11 +934,17 @@ ApplicationWindow {
                                 }
 
                                 Label {
+                                    BilingualText {
+                                        id: closeAppLabel
+                                        textEn: "Quit the quiz"
+                                        textFr: "Quitter le questionnaire"
+                                    }
+
                                     Layout.maximumWidth: 80
-                                    text: "Quitter le questionnaire"
+                                    text: closeAppLabel.text
                                     wrapMode: Text.WordWrap
                                     horizontalAlignment: Text.AlignHCenter
-                                    color: "#ffffff"
+                                    color: invertedTheme ? Palette.lightBlack : Palette.white
                                     font {
                                         pixelSize: 11
                                         letterSpacing: 11 * 25 / 1000

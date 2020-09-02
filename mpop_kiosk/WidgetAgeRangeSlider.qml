@@ -67,13 +67,13 @@ ColumnLayout {
                 width: slider0.availableWidth
                 height: implicitHeight
                 radius: 2
-                color: window.invertedTheme ? Palette.mediumGrey : Palette.lightGrey
+                color: window.invertedTheme ? Palette.lightGrey : Palette.mediumGrey
 
                 Rectangle {
                     x: slider0.first.visualPosition * parent.width
                     width: slider0.second.visualPosition * parent.width - x
                     height: parent.height
-                    color: window.invertedTheme ? Palette.white : Palette.lightBlack
+                    color: window.invertedTheme ? Palette.lightBlack : Palette.white
                     radius: 2
                 }
             }
@@ -85,7 +85,7 @@ ColumnLayout {
                 implicitHeight: 26
                 radius: 13
                 color: slider0.first.pressed ? colorPressed : colorNotPressed
-                border.color: window.invertedTheme ? Palette.mediumGrey : Palette.lightGrey
+                border.color: window.invertedTheme ? Palette.lightGrey : Palette.mediumGrey
             }
 
             second.handle: Rectangle {
@@ -95,7 +95,7 @@ ColumnLayout {
                 implicitHeight: 26
                 radius: 13
                 color: slider0.second.pressed ? colorPressed : colorNotPressed
-                border.color: window.invertedTheme ? Palette.mediumGrey : Palette.lightGrey
+                border.color: window.invertedTheme ? Palette.lightGrey : Palette.mediumGrey
             }
     }
 

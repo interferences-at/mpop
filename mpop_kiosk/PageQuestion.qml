@@ -225,19 +225,25 @@ Column {
     }
 
     // The main question text:
-    Label {
+    ColumnLayout {
         width: parent.width
-        text: mainQuestionText.text
-        font {
-            pixelSize: 45
-            capitalization: Font.AllUppercase
-        }
-        wrapMode: Label.WordWrap
 
-        leftPadding: 40
-        rightPadding: 40
-        topPadding: 90
-        bottomPadding: 70
+        Label {
+            Layout.fillWidth: true
+            Layout.fillHeight: true
+            text: mainQuestionText.text
+            font {
+                pixelSize: 45
+                capitalization: Font.AllUppercase
+            }
+            wrapMode: Label.WordWrap
+            color: invertedTheme ? Palette.lightBlack : Palette.white
+
+            leftPadding: 40
+            rightPadding: 40
+            topPadding: 90
+            bottomPadding: 70
+        }
     }
 
     /**
@@ -277,6 +283,7 @@ Column {
                                 pixelSize: 24
                                 letterSpacing: 24 * 10 / 1000
                             }
+                            color: invertedTheme ? Palette.lightBlack : Palette.white
 
                             visible: hasMultipleQuestions
                         }
@@ -307,6 +314,7 @@ Column {
                                 pixelSize: 24
                                 letterSpacing: 24 * 10 / 1000
                             }
+                            color: invertedTheme ? Palette.lightBlack : Palette.white
 
                             visible: hasMultipleQuestions && (numberOfQuestions >= 2)
                         }
@@ -338,6 +346,7 @@ Column {
                                 pixelSize: 24
                                 letterSpacing: 24 * 10 / 1000
                             }
+                            color: invertedTheme ? Palette.lightBlack : Palette.white
 
                             visible: hasMultipleQuestions && (numberOfQuestions >= 3)
                         }
@@ -370,6 +379,7 @@ Column {
                                 pixelSize: 24
                                 letterSpacing: 24 * 10 / 1000
                             }
+                            color: invertedTheme ? Palette.lightBlack : Palette.white
 
                             visible: hasMultipleQuestions && (numberOfQuestions >= 4)
                         }
@@ -402,6 +412,7 @@ Column {
                                 pixelSize: 24
                                 letterSpacing: 24 * 10 / 1000
                             }
+                            color: invertedTheme ? Palette.lightBlack : Palette.white
 
                             visible: hasMultipleQuestions && (numberOfQuestions >= 5)
                         }
