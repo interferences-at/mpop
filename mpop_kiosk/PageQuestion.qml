@@ -137,7 +137,7 @@ Column {
     property int numberOfQuestions: questionIdentifiers.length // [1,5]
     property bool hasMultipleQuestions: numberOfQuestions > 1
     property var questionIdentifiers: []
-    property string filterHighlighted: ""
+    property int filterHighlighted: -1
     property bool buttonTextHighlight: true
 
     property alias datavizIndex: questionDatavizStackLayout.currentIndex
@@ -460,31 +460,36 @@ Column {
 
                         // reset on RFID tag change
                         property variant resetter: window.rfidTag
-                        onResetterChanged: filterHighlighted = ""
+                        onResetterChanged: filterHighlighted = -1
 
-                        // TODO: wrap in Repeater and simplify identifier declarations
-                        WidgetFilterButton {
-                            label: BilingualText { textEn: "Age"; textFr: "Âge" }
-                            highlighted: filterHighlighted === "ageBtn"
-                            onClicked: filterHighlighted = "ageBtn"
-                        }
+                        Repeater {
+                            model: ListModel {
+                                ListElement {
+                                    text_en: "Age"
+                                    text_fr: "Âge"
+                                }
 
-                        WidgetFilterButton {
-                            label: BilingualText { textEn: "Gender"; textFr: "Genre" }
-                            highlighted: filterHighlighted === "genreBtn"
-                            onClicked: filterHighlighted = "genreBtn"
-                        }
+                                ListElement {
+                                    text_en: "Culture"
+                                    text_fr: "Culture"
+                                }
 
-                        WidgetFilterButton {
-                            label: BilingualText { textEn: "Culture"; textFr: "Culture" }
-                            highlighted: filterHighlighted === "cultureBtn"
-                            onClicked: filterHighlighted = "cultureBtn"
-                        }
+                                ListElement {
+                                    text_en: "Gender"
+                                    text_fr: "Genre"
+                                }
 
-                        WidgetFilterButton {
-                            label: BilingualText { textEn: "Language"; textFr: "Langue" }
-                            highlighted: filterHighlighted === "langBtn"
-                            onClicked: filterHighlighted = "langBtn"
+                                ListElement {
+                                    text_en: "Language"
+                                    text_fr: "Langue"
+                                }
+                            }
+
+                            WidgetFilterButton {
+                                label: BilingualText { textEn: model.text_en; textFr: model.text_fr }
+                                highlighted: filterHighlighted === model.index
+                                onClicked: filterHighlighted = model.index
+                            }
                         }
                     }
                 }
@@ -506,6 +511,8 @@ Column {
                     ColumnLayout {
                         Layout.fillWidth: true
                         spacing: 0
+
+                        visible: filterHighlighted !== 0
 
                         Label {
                             text: ageLabel.text
@@ -544,6 +551,8 @@ Column {
                     }
 
                     Repeater {
+                        id: filterRepeater
+
                         // model
                         model: ListModel {
                             ListElement {
@@ -593,8 +602,8 @@ Column {
                             onResetterChanged: currentIndex = 0
 
                             Layout.fillWidth: true
-
                             spacing: 15
+                            visible: filterHighlighted !== model.index + 1 || model.index === filterRepeater.count - 1
 
                             // section title
                             Label {
@@ -655,7 +664,7 @@ Column {
             }
             RoundButton {
                 text: qsTr("Right")
-                enabled: datavizIndex !== index_CHOOSE_MULTIPLE
+                enabled: datavizIndex !== index_CHOOSE_MULTIPLE && filterHighlighted >= 0
                 opacity: enabled
 
                 onClicked: datavizIndex++
