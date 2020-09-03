@@ -18,5 +18,9 @@ int main(int argc, char *argv[])
     Config config;
     MPopService::load_config_from_env_vars(config);
     MPopService service(config);
+    QTimer mytimer;
+    QObject::connect(&mytimer,&QTimer::timeout, std::bind(MPopService::timeWatcher, config));
+    mytimer.start(config.periodic_interval);
+
     return application.exec();
 }

@@ -47,7 +47,7 @@ void TestMpopService::removeDatabaseTestEntries() {
 // called after the last test function was executed
 void TestMpopService::cleanupTestCase()
 {
-    this->removeDatabaseTestEntries();
+    //this->removeDatabaseTestEntries();
 
     // No need to delete the MPopService
     // Though, once the destructor is called, the MySQL connection will close.
@@ -224,6 +224,7 @@ void TestMpopService::test_21_getUserAnswers() {
     QMap<QString, int> answers = this->facade->getUserAnswers(userId);
     QVariant actual = answers[TEST_QUESTION_ID];
     QCOMPARE(actual, value);
+
 }
 
 void TestMpopService::test_12_setUserLanguage() {
@@ -409,10 +410,15 @@ void TestMpopService::test_20_setUserAnswer() {
     static const int TEST_QUESTION_02_VALUE = 100;
     static const int TEST_QUESTION_03_VALUE = 0;
     static const int TEST_QUESTION_04_VALUE = 99;
+    static const int TEST_QUESTION_01_UPDATE_VALUE = 33;
+    static const int TEST_QUESTION_02_UPDATE_VALUE = 90;
+    static const int TEST_QUESTION_03_UPDATE_VALUE = 10;
+    static const int TEST_QUESTION_04_UPDATE_VALUE = 80;
     static const QString TEST_RFID_TAG = "test_RFID_tag_0005";
 
     int userId = this->facade->getOrCreateUser(TEST_RFID_TAG);
 
+    // set User Answers
     this->facade->setUserAnswer(userId, TEST_QUESTION_01_ID, TEST_QUESTION_01_VALUE);
     this->facade->setUserAnswer(userId, TEST_QUESTION_02_ID, TEST_QUESTION_02_VALUE);
     this->facade->setUserAnswer(userId, TEST_QUESTION_03_ID, TEST_QUESTION_03_VALUE);
@@ -424,34 +430,38 @@ void TestMpopService::test_20_setUserAnswer() {
     QCOMPARE(answers[TEST_QUESTION_02_ID], TEST_QUESTION_02_VALUE);
     QCOMPARE(answers[TEST_QUESTION_03_ID], TEST_QUESTION_03_VALUE);
     QCOMPARE(answers[TEST_QUESTION_04_ID], TEST_QUESTION_04_VALUE);
+
+    // update user answers
+    this->facade->setUserAnswer(userId, TEST_QUESTION_01_ID, TEST_QUESTION_01_UPDATE_VALUE);
+    this->facade->setUserAnswer(userId, TEST_QUESTION_02_ID, TEST_QUESTION_02_UPDATE_VALUE);
+    this->facade->setUserAnswer(userId, TEST_QUESTION_03_ID, TEST_QUESTION_03_UPDATE_VALUE);
+    this->facade->setUserAnswer(userId, TEST_QUESTION_04_ID, TEST_QUESTION_04_UPDATE_VALUE);
+
+    //retrive Updated Answers
+    QMap<QString, int> answers1 = this->facade->getUserAnswers(userId);
+
+    qDebug() << answers1;
+
+    QCOMPARE(answers1[TEST_QUESTION_01_ID], TEST_QUESTION_01_UPDATE_VALUE);
+    QCOMPARE(answers1[TEST_QUESTION_02_ID], TEST_QUESTION_02_UPDATE_VALUE);
+    QCOMPARE(answers1[TEST_QUESTION_03_ID], TEST_QUESTION_03_UPDATE_VALUE);
+    QCOMPARE(answers1[TEST_QUESTION_04_ID], TEST_QUESTION_04_UPDATE_VALUE);
 }
 
 void TestMpopService::test_22_getAnswerByAge() {
-    // Set demographic questions for multiple user
-    // Set multiple answers for multiple user
-    // check avg value of each question is ok.
 
     if (! this->is_mysql_supported) {
         QSKIP("This test requires MySQL");
     }
 
-    // User Questions
+    // User Question
     static const QString TEST_QUESTION_01_ID = "incidence_drogue";
-    static const QString TEST_QUESTION_02_ID = "decriminalisation_crimes_non_violents";
-    static const QString TEST_QUESTION_03_ID = "systeme_bureaucrate";
-    static const QString TEST_QUESTION_04_ID = "equitable_victimes";
 
     // User Answers
     static const int TEST_QUESTION_01_VALUE = 25;
-    static const int TEST_QUESTION_02_VALUE = 15;
-    static const int TEST_QUESTION_03_VALUE = 10;
-    static const int TEST_QUESTION_04_VALUE = 90;
 
     // Calculated Avg. for three User
     static const int Test_QUESTION_01_AVG = 25;
-    static const int Test_QUESTION_02_AVG = 15;
-    static const int Test_QUESTION_03_AVG = 10;
-    static const int Test_QUESTION_04_AVG = 90;
 
     // declaration of RFIDs
     static const QString TEST_RFID_TAG_1 = "test_RFID_tag_0006";
@@ -478,9 +488,14 @@ void TestMpopService::test_22_getAnswerByAge() {
     int user_2 = this->facade->getOrCreateUser(TEST_RFID_TAG_2);
     int user_3 = this->facade->getOrCreateUser(TEST_RFID_TAG_3);
 
+    qDebug() << "user_1" << user_1;
+    qDebug() << "TEST_USER_1_LANGUAGE" << TEST_USER_1_LANGUAGE;
     // set users Languages
+    qDebug() << "this->facade->setUserLanguage(user_1, TEST_USER_1_LANGUAGE)" << this->facade->setUserLanguage(user_1, TEST_USER_1_LANGUAGE);
     bool okSetLanguage_1 = this->facade->setUserLanguage(user_1, TEST_USER_1_LANGUAGE);
+    qDebug() << "okSetLanguage_1" << okSetLanguage_1;
     QCOMPARE(okSetLanguage_1, true);
+
     bool okSetLanguage_2 = this->facade->setUserLanguage(user_2, TEST_USER_2_LANGUAGE);
     QCOMPARE(okSetLanguage_2, true);
     bool okSetLanguage_3 = this->facade->setUserLanguage(user_3, TEST_USER_3_LANGUAGE);
@@ -504,54 +519,186 @@ void TestMpopService::test_22_getAnswerByAge() {
 
     // set Users Answers
     this->facade->setUserAnswer(user_1, TEST_QUESTION_01_ID, TEST_QUESTION_01_VALUE);
-    this->facade->setUserAnswer(user_1, TEST_QUESTION_02_ID, TEST_QUESTION_02_VALUE);
-    this->facade->setUserAnswer(user_1, TEST_QUESTION_03_ID, TEST_QUESTION_03_VALUE);
-    this->facade->setUserAnswer(user_1, TEST_QUESTION_04_ID, TEST_QUESTION_04_VALUE);
 
     this->facade->setUserAnswer(user_2, TEST_QUESTION_01_ID, TEST_QUESTION_01_VALUE);
-    this->facade->setUserAnswer(user_2, TEST_QUESTION_02_ID, TEST_QUESTION_02_VALUE);
-    this->facade->setUserAnswer(user_2, TEST_QUESTION_03_ID, TEST_QUESTION_03_VALUE);
-    this->facade->setUserAnswer(user_2, TEST_QUESTION_04_ID, TEST_QUESTION_04_VALUE);
 
     this->facade->setUserAnswer(user_3, TEST_QUESTION_01_ID, TEST_QUESTION_01_VALUE);
-    this->facade->setUserAnswer(user_3, TEST_QUESTION_02_ID, TEST_QUESTION_02_VALUE);
-    this->facade->setUserAnswer(user_3, TEST_QUESTION_03_ID, TEST_QUESTION_03_VALUE);
-    this->facade->setUserAnswer(user_3, TEST_QUESTION_04_ID, TEST_QUESTION_04_VALUE);
 
 
-    QList<int> answers = this->facade->getAnswerByAge(TEST_QUESTION_01_ID,"all","all","all");
+    QList<int> answers1 = this->facade->getAnswerByAge(TEST_QUESTION_01_ID,"all","all","all");
 
-    //QCOMPARE(answers[TEST_QUESTION_01_ID], Test_QUESTION_01_AVG);
-    //QCOMPARE(answers[TEST_QUESTION_02_ID], Test_QUESTION_02_AVG);
-    //QCOMPARE(answers[TEST_QUESTION_03_ID], Test_QUESTION_03_AVG);
-    //QCOMPARE(answers[TEST_QUESTION_04_ID], Test_QUESTION_04_AVG);
+     qDebug() << "Questions List" << answers1;
+    //QCOMPARE(answers1[TEST_QUESTION_01_ID], Test_QUESTION_01_AVG);
 
 }
 
 void TestMpopService::test_23_getAnswerByEthnicity() {
     qDebug() << "test_23_getAnswerByEthnicity";
-    // User Questions
+    // Set demographic questions for multiple user
+    // Set multiple answers for multiple user
+    // check avg value of each question is ok.
 
     if (! this->is_mysql_supported) {
         QSKIP("This test requires MySQL");
     }
 
+    // User Questions
     static const QString TEST_QUESTION_01_ID = "incidence_drogue";
+
+    // User Answers
+    static const int TEST_QUESTION_01_VALUE = 25;
+
+    // Calculated Avg. for three User
+    static const int Test_QUESTION_01_AVG = 25;
+
+    // declaration of RFIDs
+    static const QString TEST_RFID_TAG_1 = "test_RFID_tag_0006";
+    static const QString TEST_RFID_TAG_2 = "test_RFID_tag_0007";
+    static const QString TEST_RFID_TAG_3 = "test_RFID_tag_0008";
+
+    // declaration of language for users
+    static const QString TEST_USER_1_LANGUAGE ="fr";
+    static const QString TEST_USER_2_LANGUAGE ="en";
+    static const QString TEST_USER_3_LANGUAGE ="en";
+
+    // declaration of gender for users
+    static const QString TEST_USER_1_GENDER = "male";
+    static const QString TEST_USER_2_GENDER = "female";
+    static const QString TEST_USER_3_GENDER = "male";
+
+    // declaration of Ethnicity for users
+    static const QString TEST_USER_1_Ethnicity = "quebecer";
+    static const QString TEST_USER_2_Ethnicity = "canadian";
+    static const QString TEST_USER_3_Ethnicity = "quebecer";
+
+    // Get or create user id.
+    int user_1 = this->facade->getOrCreateUser(TEST_RFID_TAG_1);
+    int user_2 = this->facade->getOrCreateUser(TEST_RFID_TAG_2);
+    int user_3 = this->facade->getOrCreateUser(TEST_RFID_TAG_3);
+
+    qDebug() << "user_1" << user_1;
+    qDebug() << "TEST_USER_1_LANGUAGE" << TEST_USER_1_LANGUAGE;
+    // set users Languages
+    qDebug() << "this->facade->setUserLanguage(user_1, TEST_USER_1_LANGUAGE)" << this->facade->setUserLanguage(user_1, TEST_USER_1_LANGUAGE);
+    bool okSetLanguage_1 = this->facade->setUserLanguage(user_1, TEST_USER_1_LANGUAGE);
+    qDebug() << "okSetLanguage_1" << okSetLanguage_1;
+    QCOMPARE(okSetLanguage_1, true);
+
+    bool okSetLanguage_2 = this->facade->setUserLanguage(user_2, TEST_USER_2_LANGUAGE);
+    QCOMPARE(okSetLanguage_2, true);
+    bool okSetLanguage_3 = this->facade->setUserLanguage(user_3, TEST_USER_3_LANGUAGE);
+    QCOMPARE(okSetLanguage_3, true);
+
+    // set users Gender
+    bool okSetGender_1 = this->facade->setUserGender(user_1, TEST_USER_1_GENDER);
+    QCOMPARE(okSetGender_1, true);
+    bool okSetGender_2 = this->facade->setUserGender(user_2, TEST_USER_2_GENDER);
+    QCOMPARE(okSetGender_2, true);
+    bool okSetGender_3 = this->facade->setUserGender(user_3, TEST_USER_3_GENDER);
+    QCOMPARE(okSetGender_3, true);
+
+    // set users Ethnicity
+    bool okSetEthnicity_1 = this->facade->setUserEthnicity(user_1, TEST_USER_1_Ethnicity);
+    QCOMPARE(okSetEthnicity_1, true);
+    bool okSetEthnicity_2 = this->facade->setUserEthnicity(user_2, TEST_USER_2_Ethnicity);
+    QCOMPARE(okSetEthnicity_2, true);
+    bool okSetEthnicity_3 = this->facade->setUserEthnicity(user_3, TEST_USER_3_Ethnicity);
+    QCOMPARE(okSetEthnicity_3, true);
+
+    // set Users Answers
+    this->facade->setUserAnswer(user_1, TEST_QUESTION_01_ID, TEST_QUESTION_01_VALUE);
+
+    this->facade->setUserAnswer(user_2, TEST_QUESTION_01_ID, TEST_QUESTION_01_VALUE);
+
+    this->facade->setUserAnswer(user_3, TEST_QUESTION_01_ID, TEST_QUESTION_01_VALUE);
+
     QMap<QString,int> answers = this->facade->getAnswerByEthnicity(TEST_QUESTION_01_ID,-1,-1,"all","all");
+    QCOMPARE(answers[TEST_QUESTION_01_ID], Test_QUESTION_01_AVG);
 }
 
 void TestMpopService::test_24_getAnswerByGender() {
     qDebug() << "test_24_getAnswerByGender";
+    // Set demographic questions for multiple user
+    // Set multiple answers for multiple user
+    // check avg value of each question is ok.
+
     if (! this->is_mysql_supported) {
         QSKIP("This test requires MySQL");
     }
 
+    // User Questions
     static const QString TEST_QUESTION_01_ID = "incidence_drogue";
+
+    // User Answers
+    static const int TEST_QUESTION_01_VALUE = 25;
+
+    // Calculated Avg. for three User
+    static const int Test_QUESTION_01_AVG = 25;
+
+    // declaration of RFIDs
+    static const QString TEST_RFID_TAG_1 = "test_RFID_tag_0006";
+    static const QString TEST_RFID_TAG_2 = "test_RFID_tag_0007";
+    static const QString TEST_RFID_TAG_3 = "test_RFID_tag_0008";
+
+    // declaration of language for users
+    static const QString TEST_USER_1_LANGUAGE ="fr";
+    static const QString TEST_USER_2_LANGUAGE ="en";
+    static const QString TEST_USER_3_LANGUAGE ="en";
+
+    // declaration of gender for users
+    static const QString TEST_USER_1_GENDER = "male";
+    static const QString TEST_USER_2_GENDER = "female";
+    static const QString TEST_USER_3_GENDER = "male";
+
+    // declaration of Ethnicity for users
+    static const QString TEST_USER_1_Ethnicity = "quebecer";
+    static const QString TEST_USER_2_Ethnicity = "canadian";
+    static const QString TEST_USER_3_Ethnicity = "quebecer";
+
+    // Get or create user id.
+    int user_1 = this->facade->getOrCreateUser(TEST_RFID_TAG_1);
+    int user_2 = this->facade->getOrCreateUser(TEST_RFID_TAG_2);
+    int user_3 = this->facade->getOrCreateUser(TEST_RFID_TAG_3);
+
+    qDebug() << "user_1" << user_1;
+    qDebug() << "TEST_USER_1_LANGUAGE" << TEST_USER_1_LANGUAGE;
+    // set users Languages
+    qDebug() << "this->facade->setUserLanguage(user_1, TEST_USER_1_LANGUAGE)" << this->facade->setUserLanguage(user_1, TEST_USER_1_LANGUAGE);
+    bool okSetLanguage_1 = this->facade->setUserLanguage(user_1, TEST_USER_1_LANGUAGE);
+    qDebug() << "okSetLanguage_1" << okSetLanguage_1;
+    QCOMPARE(okSetLanguage_1, true);
+
+    bool okSetLanguage_2 = this->facade->setUserLanguage(user_2, TEST_USER_2_LANGUAGE);
+    QCOMPARE(okSetLanguage_2, true);
+    bool okSetLanguage_3 = this->facade->setUserLanguage(user_3, TEST_USER_3_LANGUAGE);
+    QCOMPARE(okSetLanguage_3, true);
+
+    // set users Gender
+    bool okSetGender_1 = this->facade->setUserGender(user_1, TEST_USER_1_GENDER);
+    QCOMPARE(okSetGender_1, true);
+    bool okSetGender_2 = this->facade->setUserGender(user_2, TEST_USER_2_GENDER);
+    QCOMPARE(okSetGender_2, true);
+    bool okSetGender_3 = this->facade->setUserGender(user_3, TEST_USER_3_GENDER);
+    QCOMPARE(okSetGender_3, true);
+
+    // set users Ethnicity
+    bool okSetEthnicity_1 = this->facade->setUserEthnicity(user_1, TEST_USER_1_Ethnicity);
+    QCOMPARE(okSetEthnicity_1, true);
+    bool okSetEthnicity_2 = this->facade->setUserEthnicity(user_2, TEST_USER_2_Ethnicity);
+    QCOMPARE(okSetEthnicity_2, true);
+    bool okSetEthnicity_3 = this->facade->setUserEthnicity(user_3, TEST_USER_3_Ethnicity);
+    QCOMPARE(okSetEthnicity_3, true);
+
+    // set Users Answers
+    this->facade->setUserAnswer(user_1, TEST_QUESTION_01_ID, TEST_QUESTION_01_VALUE);
+
+    this->facade->setUserAnswer(user_2, TEST_QUESTION_01_ID, TEST_QUESTION_01_VALUE);
+
+    this->facade->setUserAnswer(user_3, TEST_QUESTION_01_ID, TEST_QUESTION_01_VALUE);
+
     QMap<QString,int> answers = this->facade->getAnswerByGender(TEST_QUESTION_01_ID,"all",-1,-1,"all");
+    QCOMPARE(answers[TEST_QUESTION_01_ID], Test_QUESTION_01_AVG);
 }
 
-void TestMpopService::test_25_getAnswers() {
-    qDebug() << "test_25_getAnswers";
-}
 
 

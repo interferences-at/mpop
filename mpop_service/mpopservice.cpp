@@ -1,5 +1,5 @@
 #include "mpopservice.h"
-
+#include "sqlerror.h"
 #include <QtWebSockets>
 #include <exception>
 #include <QtCore>
@@ -29,6 +29,8 @@ void MPopService::load_config_from_env_vars(Config& config) {
     config.mysql_host = env.value("CONFIG_MYSQL_HOST", "db"); // Use '0.0.0.0' as a hostname, if you use from outside docker-compose
     config.service_port_number = env.value("MPOP_SERVICE_PORT_NUMBER", "3333").toUInt();
     config.is_verbose = toBoolean(env.value("CONFIG_IS_VERBOSE", "true"));
+    config.periodic_interval = env.value("CONFIG_PERIODIC_INTERVAL","60000").toUInt();
+    config.time_at_free_all_tag = env.value("CONFIG_TIME_FREE_ALL_TAG","00:01");
     if (config.is_verbose) {
         qDebug() << "mysql_port:" << config.mysql_port;
         qDebug() << "mysql_user:" << config.mysql_user;
@@ -37,6 +39,8 @@ void MPopService::load_config_from_env_vars(Config& config) {
         qDebug() << "mysql_host:" << config.mysql_host;
         qDebug() << "service_port_number:" << config.service_port_number;
         qDebug() << "is_verbose:" << config.is_verbose;
+        qDebug() << "periodic_interval" << config.periodic_interval;
+        qDebug() << "time_at_free_all_tag" << config.time_at_free_all_tag;
     }
 }
 
@@ -185,6 +189,9 @@ bool MPopService::handleFacadeMethod(const Request& request, Response& response)
         } catch(MissingParameterError& e) {
             msg.append(e.what());
             response.error.message = msg;
+        } catch(SQLError& e){
+            msg.append(e.what());
+            response.error.message = msg;
         }
     }
     else if (method == "getUserInfo") {
@@ -193,6 +200,9 @@ bool MPopService::handleFacadeMethod(const Request& request, Response& response)
             int userId = request.getParamByPosition(0).toInt();
             response.result = QVariant(this->_facade.getUserInfo(userId));
         } catch (MissingParameterError& e) {
+            msg.append(e.what());
+            response.error.message = msg;
+        } catch(SQLError& e){
             msg.append(e.what());
             response.error.message = msg;
         }
@@ -208,6 +218,9 @@ bool MPopService::handleFacadeMethod(const Request& request, Response& response)
         } catch (MissingParameterError& e) {
             msg.append(e.what());
             response.error.message = msg;
+        } catch(SQLError& e){
+            msg.append(e.what());
+            response.error.message = msg;
         }
     }
     else if (method == "setUserAnswer") {
@@ -220,6 +233,9 @@ bool MPopService::handleFacadeMethod(const Request& request, Response& response)
         } catch (MissingParameterError& e) {
             msg.append(e.what());
             response.error.message = msg;
+        } catch(SQLError& e){
+            msg.append(e.what());
+            response.error.message = msg;
         }
     }
     else if (method=="freeTag") {
@@ -230,13 +246,19 @@ bool MPopService::handleFacadeMethod(const Request& request, Response& response)
         } catch (MissingParameterError& e) {
             msg.append(e.what());
             response.error.message = msg;
+        } catch(SQLError& e){
+            msg.append(e.what());
+            response.error.message = msg;
         }
     }
     else if (method == "freeUnusedTags") {
         QTextStream(stdout) << "Method is: freeUnusedTags" << endl;
         try {
-            this->_facade.freeUnusedTags();
+            this->_facade.freeAllTags();
         } catch (MissingParameterError& e) {
+            msg.append(e.what());
+            response.error.message = msg;
+        } catch(SQLError& e){
             msg.append(e.what());
             response.error.message = msg;
         }
@@ -250,6 +272,9 @@ bool MPopService::handleFacadeMethod(const Request& request, Response& response)
         } catch (MissingParameterError& e) {
             msg.append(e.what());
             response.error.message = msg;
+        } catch(SQLError& e){
+            msg.append(e.what());
+            response.error.message = msg;
         }
     }
     else if (method == "setUserGender") {
@@ -259,6 +284,9 @@ bool MPopService::handleFacadeMethod(const Request& request, Response& response)
             QString gender = request.getParamByPosition(1).toString();
             response.result = QVariant(this->_facade.setUserGender(userId, gender));
         } catch (MissingParameterError& e) {
+            msg.append(e.what());
+            response.error.message = msg;
+        } catch(SQLError& e){
             msg.append(e.what());
             response.error.message = msg;
         }
@@ -272,6 +300,9 @@ bool MPopService::handleFacadeMethod(const Request& request, Response& response)
         } catch (MissingParameterError &e) {
             msg.append(e.what());
             response.error.message = msg;
+        } catch(SQLError& e){
+            msg.append(e.what());
+            response.error.message = msg;
         }
     }
     else if (method == "setUserAge") {
@@ -283,7 +314,11 @@ bool MPopService::handleFacadeMethod(const Request& request, Response& response)
         } catch (MissingParameterError &e) {
             msg.append(e.what());
             response.error.message = msg;
+        } catch(SQLError& e){
+            msg.append(e.what());
+            response.error.message = msg;
         }
+
     }
     else if (method == "getAnswers") {
         QTextStream(stdout) << "Method is: getAnswers" << endl;
@@ -298,6 +333,9 @@ bool MPopService::handleFacadeMethod(const Request& request, Response& response)
             QMap<QString,int> avgOfAns = this->_facade.getAnswers(questionIds, ageFrom, ageTo, ethnicity, gender, timeAnswered);
             response.result = QVariant(MPopService::stringIntMapToQVariantMap(avgOfAns));
         } catch (MissingParameterError &e) {
+            msg.append(e.what());
+            response.error.message = msg;
+        } catch(SQLError& e){
             msg.append(e.what());
             response.error.message = msg;
         }
@@ -315,6 +353,9 @@ bool MPopService::handleFacadeMethod(const Request& request, Response& response)
         } catch (MissingParameterError &e) {
             msg.append(e.what());
             response.error.message = msg;
+        } catch(SQLError& e){
+            msg.append(e.what());
+            response.error.message = msg;
         }
     }
     else if (method == "getAnswerByGender") {
@@ -328,6 +369,9 @@ bool MPopService::handleFacadeMethod(const Request& request, Response& response)
             QMap<QString,int> ansByGender = this->_facade.getAnswerByGender(questionId, ethnicity, ageTo, ageFrom, timeAnswered);
             response.result = QVariant(MPopService::stringIntMapToQVariantMap(ansByGender));
         } catch (MissingParameterError &e) {
+            msg.append(e.what());
+            response.error.message = msg;
+        } catch(SQLError& e){
             msg.append(e.what());
             response.error.message = msg;
         }
@@ -346,6 +390,9 @@ bool MPopService::handleFacadeMethod(const Request& request, Response& response)
         } catch (MissingParameterError &e) {
             msg.append(e.what());
             response.error.message = msg;
+        } catch(SQLError& e){
+            msg.append(e.what());
+            response.error.message = msg;
         }
     }
     else if (method == "getAllAnswers") {
@@ -355,6 +402,9 @@ bool MPopService::handleFacadeMethod(const Request& request, Response& response)
             QMap<QString,int> ansByEthnicity = this->_facade.getAllAnswers();
             response.result = QVariant(MPopService::stringIntMapToQVariantMap(ansByEthnicity));
         } catch (MissingParameterError &e) {
+            msg.append(e.what());
+            response.error.message = msg;
+        } catch(SQLError& e){
             msg.append(e.what());
             response.error.message = msg;
         }
@@ -367,4 +417,24 @@ bool MPopService::handleFacadeMethod(const Request& request, Response& response)
     // TODO QList<int> getStatsForQuestion(const QString& questionId);
 
     return true;
+}
+
+
+void MPopService::timeWatcher(const Config& config){
+
+    QTextStream(stdout) << "Method is: timeWatcher";
+    QDateTime local = QDateTime::currentDateTime();
+    QString curTime = local.toString("hh:mm");
+    QTextStream(stdout) << "Current time  is : " << curTime;
+    if(curTime == config.time_at_free_all_tag) {
+
+        //TODO: Exception Handling should be Uncommented when PR with SQLError.h Merge
+//       try {
+           Facade::freeAllTags();
+//       } catch(SQLError& e){
+//             qWarning() << "Internal Server Error :: " << e.what();
+
+//       }
+   }
+
 }

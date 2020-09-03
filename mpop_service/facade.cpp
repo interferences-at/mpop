@@ -1,4 +1,5 @@
 #include "facade.h"
+#include "sqlerror.h"
 #include <QSqlQuery>
 #include <QVariant>
 #include <QSqlError>
@@ -94,6 +95,7 @@ int Facade::getOrCreateUser(const QString& rfidTag) {
         // FIXME: Check the exact error type and close the DB connection only if this is due to the connection being lost.
         // Then retry to connect when the reconnect timer triggers.
         qWarning() << "ERROR: " << query.lastError().text();
+        throw SQLError{query.lastError().text()};
         _database.close();
     } else {
         bool foundSomeVisitorWhoseTagMatches = query.next();
@@ -101,7 +103,13 @@ int Facade::getOrCreateUser(const QString& rfidTag) {
             bool tagExistsButHasNoUser = query.isNull(0);
             if (tagExistsButHasNoUser) {
                 visitorId = this->createNewUser(rfidTag);
-                updateTagSetVisitorId(rfidTag, visitorId);
+                try {
+                    updateTagSetVisitorId(rfidTag, visitorId);
+                } catch (std::exception & e) {
+                    qWarning() << "Internal Server Error ::" << e.what();
+                    throw SQLError(e.what());
+                }
+
             }
             else {
                 visitorId = query.value(0).toInt(); // value("visitor_id") would also work, but is less efficient
@@ -112,6 +120,8 @@ int Facade::getOrCreateUser(const QString& rfidTag) {
             } catch (std::exception & e) {
                 // TODO: Answer with an error response
                 qWarning() << "Internal Server Error ::" << e.what();
+                throw SQLError(e.what());
+                _database.close();
             }
         }
     }
@@ -159,6 +169,7 @@ int Facade::createNewUser(const QString& rfidTag) {
     int visitorId = -1;
     if (! ok) {
         qWarning() << "ERROR: " << query.lastError().text();
+        throw SQLError{query.lastError().text()};
     } else {
         visitorId = query.lastInsertId().toInt();
     }
@@ -181,6 +192,7 @@ bool Facade::updateTagSetVisitorId(const QString& rfidTag, int visitorId) {
     bool ok = query.exec();
     if (! ok) {
         qWarning() << "ERROR: " << query.lastError().text();
+        throw (query.lastError().text());
     } else {
         ok = query.numRowsAffected() == 1;
     }
@@ -215,6 +227,7 @@ QMap<QString, QVariant> Facade::getUserInfo(int userId) {
     bool ok = query.exec();
     if (! ok) {
         qWarning() << "ERROR: " << query.lastError().text();
+        throw SQLError{query.lastError().text()};
     }
 
     bool retrieved = query.next();
@@ -249,6 +262,7 @@ QMap<QString, QVariant> Facade::getUserInfo(int userId) {
         bool ok1 = query1.exec();
         if (! ok1) {
             qWarning() << "ERROR: " << query1.lastError().text();
+            throw SQLError{query.lastError().text()};
         }
         bool retrieved1 = query1.next();
         if (retrieved1) {
@@ -268,22 +282,29 @@ QMap<QString, QVariant> Facade::getUserInfo(int userId) {
 
 void Facade::setUserAnswer(int userId, const QString& questionId, int value=50) {
     qDebug() << "setUserAnswer";
-    QString sql= "INSERT INTO `answer` "
-                 "(`visitor_id`, `question_id`, `answer_value`) "
-                 "SELECT ?, `question`.`id`, ? "
-                 "FROM `question` "
-                 "WHERE `question`.`identifier` = ?";
+    QString sql=" INSERT INTO `answer`"
+                " (`visitor_id`, `question_id`, `answer_value`)"
+                " SELECT ?, `question`.`id`, ? "
+                " FROM `question` "
+                " WHERE `question`.`identifier` = ?"
+                " ON DUPLICATE KEY"
+                " UPDATE "
+                " answer.answer_value = ?";
     QSqlQuery query;
     query.prepare(sql);
 
     // Value(s) that replace the question mark(s) (?):
+    // Param values for new ans Insert
     query.addBindValue(QVariant(userId));
     query.addBindValue(QVariant(value));
     query.addBindValue(QVariant(questionId));
+    // Param value for Update if exist
+    query.addBindValue(QVariant(value));
 
     bool ok = query.exec();
     if (! ok) {
         qWarning() << "ERROR: " << query.lastError().text();
+        throw SQLError{query.lastError().text()};
     }
 }
 
@@ -306,6 +327,7 @@ QMap<QString, int> Facade::getUserAnswers(int userId) {
     bool ok = query.exec();
     if (! ok) {
         qWarning() << "ERROR: " << query.lastError().text();
+        throw SQLError{query.lastError().text()};
     }
     while (query.next()) {
         QString questionId = query.value(0).toString();
@@ -339,11 +361,12 @@ void Facade::freeTag(const QString& rfidTag) {
     bool ok = query.exec();
     if (! ok) {
         qWarning() << "ERROR: " << query.lastError().text();
+        throw SQLError{query.lastError().text()};
     }
 }
 
 
-void Facade::freeUnusedTags() {
+void Facade::freeAllTags() {
     qDebug() << "freeUnusedTags";
     QString sql = "UPDATE `tag` SET `visitor_id` = NULL";
     QSqlQuery query;
@@ -351,6 +374,7 @@ void Facade::freeUnusedTags() {
     bool ok = query.exec();
     if (! ok) {
         qWarning() << "ERROR: " << query.lastError().text();
+        throw SQLError{query.lastError().text()};
     }
 }
 
@@ -368,8 +392,10 @@ bool Facade::setUserLanguage(int userId, const QString& language) {
     bool ok = query.exec();
     if (! ok) {
         qWarning() << "ERROR: " << query.lastError().text();
+        throw SQLError{query.lastError().text()};
     }
-     qDebug() << query.numRowsAffected();
+    qDebug() << "query.numRowsAffected();";
+    qDebug() << query.numRowsAffected();
     return query.numRowsAffected() == 1;
 }
 
@@ -387,6 +413,7 @@ bool Facade::setUserGender(int userId, const QString& gender) {
     bool ok = query.exec();
     if (! ok) {
         qWarning() << "ERROR: " << query.lastError().text();
+        throw SQLError{query.lastError().text()};
     }
     qDebug() << query.numRowsAffected();
     return query.numRowsAffected() == 1;
@@ -405,6 +432,7 @@ bool Facade::setUserAge(int userId, int age) {
     bool ok = query.exec();
     if (! ok) {
         qWarning() << "ERROR: " << query.lastError().text();
+        throw SQLError{query.lastError().text()};
     }
     return query.numRowsAffected() == 1;
 }
@@ -425,6 +453,7 @@ bool Facade::setUserEthnicity(int userId, const QString& ethnicity){
     bool ok = query.exec();
     if (! ok) {
         qWarning() << "ERROR: " << query.lastError().text();
+        throw SQLError{query.lastError().text()};
     }
     return query.numRowsAffected() == 1;
 }
@@ -457,6 +486,7 @@ bool Facade::deleteAllFromDatabase() {
         bool ok = query.exec();
         if (! ok) {
             qWarning() << "ERROR: " << query.lastError().text();
+            throw SQLError{query.lastError().text()};
         }
         ret = ret || query.numRowsAffected() > 0;
     }
@@ -468,6 +498,7 @@ bool Facade::deleteAllFromDatabase() {
         bool ok = query.exec();
         if (! ok) {
             qWarning() << "ERROR: " << query.lastError().text();
+            throw SQLError{query.lastError().text()};
         }
         ret = ret || query.numRowsAffected() > 0;
     }
@@ -503,6 +534,7 @@ bool Facade::deleteTagsVisitorsAndTheirAnswers(const QList<QString>& rfidTags) {
             bool ok = query.exec();
             if (! ok) {
                 qWarning() << "ERROR: " << query.lastError().text();
+                throw SQLError{query.lastError().text()};
             }
             ret = ret || query.numRowsAffected() > 0;
 
@@ -601,6 +633,7 @@ QList<int> Facade::getAnswerByAge(const QString& questionId,const QString& ethen
 
     if(!ok) {
         qWarning()<<"ERROR :: "<< query.lastError().text();
+        throw SQLError{query.lastError().text()};
     }
     while (query.next()) {
 
@@ -726,6 +759,7 @@ QMap<QString,int> Facade::getAnswerByGender(const QString& questionId, const QSt
 
     if(!ok) {
         qWarning()<<"ERROR :: "<< query.lastError().text();
+        throw SQLError{query.lastError().text()};
     }
     while (query.next()){
 
@@ -839,6 +873,7 @@ QMap<QString, int> Facade::getAnswerByEthnicity(const QString& questionId,int ag
 
     if(!ok){
         qWarning()<<"ERROR :: "<< query.lastError().text();
+        throw SQLError{query.lastError().text()};
     }
 
     while (query.next()) {
@@ -868,6 +903,7 @@ QMap<QString, int > Facade:: getAllAnswers(){
     bool ok = query.exec(sqlQuery);
     if (! ok) {
         qWarning() << "ERROR: " << query.lastError().text();
+        throw SQLError{query.lastError().text()};
     }
     while (query.next()) {
         QString questionId = query.value(0).toString();
@@ -998,6 +1034,7 @@ QMap<QString, int> Facade:: getAnswers(const QList<QString>& questionIds, int ag
 
         if(!ok){
             qWarning() <<"ERROR :: "<< query.lastError().text();
+            throw SQLError{query.lastError().text()};
         }
 
         while (query.next()) {

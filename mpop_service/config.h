@@ -15,4 +15,6 @@ public:
     QString mysql_user;
     quint16 service_port_number;
     bool is_verbose; // if true, print a lot of info
+    quint32 periodic_interval;
+    QString time_at_free_all_tag;
 };
