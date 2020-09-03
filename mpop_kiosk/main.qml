@@ -117,7 +117,6 @@ ApplicationWindow {
      */
     Connections {
         target: oscReceiver
-
         onMessageReceived: {
             handleMessageReceived(oscAddress, message);
         }
@@ -125,13 +124,25 @@ ApplicationWindow {
 
     Timer {
         id: idleTimer
-
-        interval: 500 // TODO: change this
-        running: true
-        repeat: true
+        interval: 60 * 1000
+        repeat: false
+        running: false
+        triggeredOnStart: false
         onTriggered: {
-            // TODO: detect clicks, and time how time elapsed since last click
             // if idle for too long, go to screensaver
+            console.log("if screen do not touched then go to screen saver ");
+            screensaverrectangle.visible = true;
+            mainStackLayout.currentIndex = mainStackLayout.index_SCREENSAVER;
+           userProfile.userId = -1;
+        }
+    }
+    // touch area of your root component
+    MouseArea {
+        anchors.fill: parent
+        propagateComposedEvents: true
+        onClicked: {
+            console.log("Screen touched");
+            idleTimer.start();
         }
     }
 
