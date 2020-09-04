@@ -499,7 +499,10 @@ Column {
                             WidgetFilterButton {
                                 label: BilingualText { textEn: model.text_en; textFr: model.text_fr }
                                 highlighted: filterHighlighted === model.index
-                                onClicked: filterHighlighted = model.index
+                                onClicked: {
+                                    filterHighlighted = model.index;
+                                    datavizIndex++;
+                                }
                             }
                         }
                     }
@@ -511,6 +514,7 @@ Column {
             ColumnLayout {
                 Layout.fillHeight: false
                 spacing: 0
+                visible: datavizIndex > 1
 
                 ColumnLayout {
                     Layout.fillWidth: true
