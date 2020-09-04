@@ -77,6 +77,24 @@ ApplicationWindow {
     height: kioskConfig.kiosk_mode === const_KIOSK_MODE_CENTRAL ? 1080 : 640
     title: textWindowTitle.text
 
+    // Checks for mouse events - so that we go to the screensaver after some inactivity.
+    MouseArea {
+
+        propagateComposedEvents: true
+        onClicked: {
+            idleTimer.resetIdleTimer();
+            mouse.accepted = false;
+        }
+        onDoubleClicked: {
+            idleTimer.resetIdleTimer();
+            mouse.accepted = false;
+        }
+        onPressAndHold: {
+            idleTimer.resetIdleTimer();
+            mouse.accepted = false;
+        }
+    }
+
     background: Rectangle {
         color: Palette.lightBlack
     }
@@ -124,25 +142,22 @@ ApplicationWindow {
 
     Timer {
         id: idleTimer
-        interval: 60 * 1000
+
+        function resetIdleTimer() {
+            idleTimer.restart();
+        }
+
+        readonly property int duration_SECONDS: 10
+
+        interval: duration_SECONDS * 1000
         repeat: false
         running: false
         triggeredOnStart: false
         onTriggered: {
             // if idle for too long, go to screensaver
-            console.log("if screen do not touched then go to screen saver ");
-            screensaverrectangle.visible = true;
+            console.log("Idle for a while: go to screensaver ");
             mainStackLayout.currentIndex = mainStackLayout.index_SCREENSAVER;
-           userProfile.userId = -1;
-        }
-    }
-    // touch area of your root component
-    MouseArea {
-        anchors.fill: parent
-        propagateComposedEvents: true
-        onClicked: {
-            console.log("Screen touched");
-            idleTimer.start();
+            userProfile.userId = -1;
         }
     }
 
@@ -190,6 +205,7 @@ ApplicationWindow {
                 console.log("Error: invalid userId");
                 mainStackLayout.currentIndex = mainStackLayout.index_SCREENSAVER;
             } else {
+                idleTimer.resetIdleTimer();
                 // Go to the demographic question if this is the entry kiosk
                 if (kioskConfig.kiosk_mode == window.const_KIOSK_MODE_ENTRY) {
                     goToDemographicQuestions();
