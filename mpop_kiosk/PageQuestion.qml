@@ -11,96 +11,30 @@ Column {
 
     function loadQuestions() {
         // Retrieve the first question model item:
-        var firstQuestion = modelQuestions.findQuestion(questionIdentifiers[0]);
+        // var firstQuestion = modelQuestions.findQuestion(questionIdentifiers[0]);
 
         // Set the text of the main question:
-        mainQuestionText.textFr = firstQuestion.question_fr;
-        mainQuestionText.textEn = firstQuestion.question_en;
-        leftText1.textFr = firstQuestion.min_fr;
-        leftText1.textEn = firstQuestion.min_en;
-        rightText1.textFr = firstQuestion.max_fr;
-        rightText1.textEn = firstQuestion.max_en;
-
-
-        if (hasMultipleQuestions) {
-            questionText1.textFr = firstQuestion.subtitle_fr;
-            questionText1.textEn = firstQuestion.subtitle_en;
-            leftText1.textFr = firstQuestion.min_fr;
-            leftText1.textEn = firstQuestion.min_en;
-            rightText1.textFr = firstQuestion.max_fr;
-            rightText1.textEn = firstQuestion.max_en;
-
-            if (numberOfQuestions >= 2) {
-                var item2 = modelQuestions.findQuestion(questionIdentifiers[1]);
-                questionText2.textFr = item2.subtitle_fr;
-                questionText2.textEn = item2.subtitle_en;
-                leftText2.textFr = item2.min_fr;
-                leftText2.textEn = item2.min_en;
-                rightText2.textFr = item2.max_fr;
-                rightText2.textEn = item2.max_en;
-            }
-            if (numberOfQuestions >= 3) {
-                var item3 = modelQuestions.findQuestion(questionIdentifiers[2]);
-                questionText3.textFr = item3.subtitle_fr;
-                questionText3.textEn = item3.subtitle_en;
-                leftText3.textFr = item3.min_fr;
-                leftText3.textEn = item3.min_en;
-                rightText3.textFr = item3.max_fr;
-                rightText3.textEn = item3.max_en;
-            }
-            if (numberOfQuestions >= 4) {
-                var item4 = modelQuestions.findQuestion(questionIdentifiers[3]);
-                questionText4.textFr = item4.subtitle_fr;
-                questionText4.textEn = item4.subtitle_en;
-                leftText4.textFr = item4.min_fr;
-                leftText4.textEn = item4.min_en;
-                rightText4.textFr = item4.max_fr;
-                rightText4.textEn = item4.max_en;
-            }
-            if (numberOfQuestions >= 5) {
-                var item5 = modelQuestions.findQuestion(questionIdentifiers[4]);
-                questionText5.textFr = item5.subtitle_fr;
-                questionText5.textEn = item5.subtitle_en;
-                leftText5.textFr = item5.min_fr;
-                leftText5.textEn = item5.min_en;
-                rightText5.textFr = item5.max_fr;
-                rightText5.textEn = item5.max_en;
-            }
-        }
+        mainQuestionText.textFr = model.question_fr;
+        mainQuestionText.textEn = model.question_en;
     }
 
     function loadAnswersForCurrentVisitor() {
         // TODO: Retrieve value for user from service and populate the slider, if set.
         for (var i = 0; i < numberOfQuestions; i ++) {
-            var key = questionIdentifiers[i];
+            var key = model.identifier || model.subquestions.get(i).identifier;
             var value = 50; // default
             if (window.userProfile.answers.hasOwnProperty(key)) {
                 value = window.userProfile.answers[key];
             }
-            switch (i) {
-            case 0:
-                answerSlider1.sliderValue = value;
-                break;
-            case 1:
-                answerSlider2.sliderValue = value;
-                break;
-            case 2:
-                answerSlider3.sliderValue = value;
-                break;
-            case 3:
-                answerSlider4.sliderValue = value;
-                break;
-            case 4:
-                answerSlider5.sliderValue = value;
-                break;
-            }
+
+            sliderRepeater.itemAt(i).sliderValue = value;
         }
     }
 
 
     function handleSliderMoved(sliderIndex, value) {
         console.log("handleSliderMoved(" + sliderIndex + "," + value + ")");
-        var identifier = questionIdentifiers[sliderIndex];
+        var identifier = model.identifier || model.subquestions.get(sliderIndex).identifier;
         var userId = window.userProfile.userId;
 
         window.userProfile.setUserAnswer(userId, identifier, value, function (err, user_id) {
@@ -130,15 +64,16 @@ Column {
         }
     }
 
-    property var modelQuestions: null
-    property var serviceClient: null
-    property var datavizSender: null
+    // property var modelQuestions: null
+    property var questionModel: model
     property string titleText: ""
-    property int numberOfQuestions: questionIdentifiers.length // [1,5]
+    property int numberOfQuestions: subquestions ? subquestions.rowCount() : 1 // [1,5]
     property bool hasMultipleQuestions: numberOfQuestions > 1
     property var questionIdentifiers: []
     property int filterHighlighted: -1
     property bool buttonTextHighlight: true
+
+
 
     property alias datavizIndex: questionDatavizStackLayout.currentIndex
     readonly property int index_QUESTIONS: 0
@@ -150,66 +85,6 @@ Column {
 
     BilingualText {
         id: mainQuestionText
-    }
-
-    BilingualText {
-        id: questionText1
-    }
-
-    BilingualText {
-        id: questionText2
-    }
-
-    BilingualText {
-        id: questionText3
-    }
-
-    BilingualText {
-        id: questionText4
-    }
-
-    BilingualText {
-        id: questionText5
-    }
-
-    BilingualText {
-        id: leftText1
-    }
-
-    BilingualText {
-        id: rightText1
-    }
-
-    BilingualText {
-        id: leftText2
-    }
-
-    BilingualText {
-        id: rightText2
-    }
-
-    BilingualText {
-        id: leftText3
-    }
-
-    BilingualText {
-        id: rightText3
-    }
-
-    BilingualText {
-        id: leftText4
-    }
-
-    BilingualText {
-        id: rightText4
-    }
-
-    BilingualText {
-        id: leftText5
-    }
-
-    BilingualText {
-        id: rightText5
     }
 
     Component.onCompleted: {
@@ -284,164 +159,56 @@ Column {
                 Layout.rightMargin: 40
                 spacing: 40
 
-                // first slider
-                ColumnLayout {
-                    spacing: 15
+                Repeater {
+                    id: sliderRepeater
+                    model: subquestions || 1
 
-                    Label {
-                        Layout.alignment: Qt.AlignLeft
-                        text: questionText1.text
-                        font {
-                            family: "Red Hat Display"
-                            weight: Font.Medium
-                            pixelSize: 24
-                            letterSpacing: 24 * 10 / 1000
+                    ColumnLayout {
+                        spacing: 15
+
+                        property alias sliderValue: answerSlider.sliderValue
+
+                        BilingualText {
+                            id: leftText
+                            textEn: questionModel.min_en
+                            textFr: questionModel.min_fr
                         }
-                        color: invertedTheme ? Palette.lightBlack : Palette.white
 
-                        visible: hasMultipleQuestions
-                    }
-                    WidgetAnswerSlider {
-                        id: answerSlider1
-
-                        sliderValue: 35
-                        textLeft: leftText1.text
-                        textRight: rightText1.text
-                        showNumber: false
-
-                        onSliderMoved: {
-                            thisPage.handleSliderMoved(0, intValue);
+                        BilingualText {
+                            id: rightText
+                            textEn: questionModel.max_en
+                            textFr: questionModel.max_fr
                         }
-                    }
-                }
 
-                // second slider
-                ColumnLayout {
-                    spacing: 15
-
-                    Label {
-                        Layout.alignment: Qt.AlignLeft
-                        text: questionText2.text
-                        font {
-                            family: "Red Hat Display"
-                            weight: Font.Medium
-                            pixelSize: 24
-                            letterSpacing: 24 * 10 / 1000
+                        BilingualText {
+                            id: questionText
+                            textEn: subtitle_en || ""
+                            textFr: subtitle_fr || ""
                         }
-                        color: invertedTheme ? Palette.lightBlack : Palette.white
 
-                        visible: hasMultipleQuestions && (numberOfQuestions >= 2)
-                    }
-                    WidgetAnswerSlider {
-                        id: answerSlider2
-
-                        sliderValue: 35
-                        textLeft: leftText2.text
-                        textRight: rightText2.text
-                        showNumber: false
-                        visible: hasMultipleQuestions && (numberOfQuestions >= 2)
-
-                        onSliderMoved: {
-                            thisPage.handleSliderMoved(1, intValue);
+                        Label {
+                            Layout.alignment: Qt.AlignLeft
+                            text: questionText.text
+                            visible: questionText.text
+                            font {
+                                family: "Red Hat Display"
+                                weight: Font.Medium
+                                pixelSize: 24
+                                letterSpacing: 24 * 10 / 1000
+                            }
+                            color: invertedTheme ? Palette.lightBlack : Palette.white
                         }
-                    }
-                }
+                        WidgetAnswerSlider {
+                            id: answerSlider
 
-                // third slider
-                ColumnLayout {
-                    spacing: 15
+                            sliderValue: 35
+                            textLeft: leftText.text
+                            textRight: rightText.text
+                            showNumber: false
 
-                    Label {
-                        Layout.alignment: Qt.AlignLeft
-                        text: questionText3.text
-                        font {
-                            family: "Red Hat Display"
-                            weight: Font.Medium
-                            pixelSize: 24
-                            letterSpacing: 24 * 10 / 1000
-                        }
-                        color: invertedTheme ? Palette.lightBlack : Palette.white
-
-                        visible: hasMultipleQuestions && (numberOfQuestions >= 3)
-                    }
-
-                    WidgetAnswerSlider {
-                        id: answerSlider3
-
-                        sliderValue: 50
-                        textLeft: leftText3.text
-                        textRight: rightText3.text
-                        showNumber: false
-                        visible: hasMultipleQuestions && (numberOfQuestions >= 3)
-
-                        onSliderMoved: {
-                            thisPage.handleSliderMoved(2, intValue);
-                        }
-                    }
-                }
-
-                // fourth slider
-                ColumnLayout {
-                    spacing: 15
-
-                    Label {
-                        Layout.alignment: Qt.AlignLeft
-                        text: questionText4.text
-                        font {
-                            family: "Red Hat Display"
-                            weight: Font.Medium
-                            pixelSize: 24
-                            letterSpacing: 24 * 10 / 1000
-                        }
-                        color: invertedTheme ? Palette.lightBlack : Palette.white
-
-                        visible: hasMultipleQuestions && (numberOfQuestions >= 4)
-                    }
-
-                    WidgetAnswerSlider {
-                        id: answerSlider4
-
-                        sliderValue: 50
-                        textLeft: leftText4.text
-                        textRight: rightText4.text
-                        showNumber: false
-                        visible: hasMultipleQuestions && (numberOfQuestions >= 4)
-
-                        onSliderMoved: {
-                            thisPage.handleSliderMoved(3, intValue);
-                        }
-                    }
-                }
-
-                // fifth slider
-                ColumnLayout {
-                    spacing: 15
-
-                    Label {
-                        Layout.alignment: Qt.AlignLeft
-                        text: questionText5.text
-                        font {
-                            family: "Red Hat Display"
-                            weight: Font.Medium
-                            pixelSize: 24
-                            letterSpacing: 24 * 10 / 1000
-                        }
-                        color: invertedTheme ? Palette.lightBlack : Palette.white
-
-                        visible: hasMultipleQuestions && (numberOfQuestions >= 5)
-                    }
-
-                    WidgetAnswerSlider {
-                        id: answerSlider5
-
-                        sliderValue: 50
-                        textLeft: leftText5.text
-                        textRight: rightText5.text
-                        showNumber: false
-                        visible: hasMultipleQuestions && (numberOfQuestions >= 5)
-
-                        onSliderMoved: {
-                            thisPage.handleSliderMoved(4, intValue);
+                            onSliderMoved: {
+                                thisPage.handleSliderMoved(model.index, intValue);
+                            }
                         }
                     }
                 }

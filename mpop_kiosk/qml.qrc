@@ -24,5 +24,6 @@
         <file>cross.svg</file>
         <file>WidgetAgeRangeSlider.qml</file>
         <file>WidgetIconButton.qml</file>
+        <file>ModelFinalQuestions.qml</file>
     </qresource>
 </RCC>
