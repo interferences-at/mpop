@@ -226,11 +226,11 @@ Column {
 
     // The main question text:
     ColumnLayout {
+        id: mainQuestion
         width: parent.width
 
         Label {
             Layout.fillWidth: true
-            Layout.fillHeight: true
             text: mainQuestionText.text
             font {
                 pixelSize: 45
@@ -254,283 +254,387 @@ Column {
 
         StackLayout {
             id: questionDatavizStackLayout
-
+            visible: false
             Layout.fillWidth: true
             currentIndex: 0
+        }
 
-            // Index 0: answering the questions
-            ColumnLayout {
-                Layout.fillHeight: false
-                spacing: 0
-
-                // To answer the question(s) with the sliders:
-                ColumnLayout {
-                    Layout.preferredWidth: 920
-                    Layout.leftMargin: 40
-                    Layout.rightMargin: 40
-                    spacing: 40
-
-                    // first slider
-                    ColumnLayout {
-                        spacing: 15
-
-                        Label {
-                            Layout.alignment: Qt.AlignLeft
-                            text: questionText1.text
-                            font {
-                                family: "Red Hat Display"
-                                weight: Font.Medium
-                                pixelSize: 24
-                                letterSpacing: 24 * 10 / 1000
-                            }
-                            color: invertedTheme ? Palette.lightBlack : Palette.white
-
-                            visible: hasMultipleQuestions
-                        }
-                        WidgetAnswerSlider {
-                            id: answerSlider1
-
-                            sliderValue: 35
-                            textLeft: leftText1.text
-                            textRight: rightText1.text
-                            showNumber: false
-
-                            onSliderMoved: {
-                                thisPage.handleSliderMoved(0, intValue);
-                            }
-                        }
-                    }
-
-                    // second slider
-                    ColumnLayout {
-                        spacing: 15
-
-                        Label {
-                            Layout.alignment: Qt.AlignLeft
-                            text: questionText2.text
-                            font {
-                                family: "Red Hat Display"
-                                weight: Font.Medium
-                                pixelSize: 24
-                                letterSpacing: 24 * 10 / 1000
-                            }
-                            color: invertedTheme ? Palette.lightBlack : Palette.white
-
-                            visible: hasMultipleQuestions && (numberOfQuestions >= 2)
-                        }
-                        WidgetAnswerSlider {
-                            id: answerSlider2
-
-                            sliderValue: 35
-                            textLeft: leftText2.text
-                            textRight: rightText2.text
-                            showNumber: false
-                            visible: hasMultipleQuestions && (numberOfQuestions >= 2)
-
-                            onSliderMoved: {
-                                thisPage.handleSliderMoved(1, intValue);
-                            }
-                        }
-                    }
-
-                    // third slider
-                    ColumnLayout {
-                        spacing: 15
-
-                        Label {
-                            Layout.alignment: Qt.AlignLeft
-                            text: questionText3.text
-                            font {
-                                family: "Red Hat Display"
-                                weight: Font.Medium
-                                pixelSize: 24
-                                letterSpacing: 24 * 10 / 1000
-                            }
-                            color: invertedTheme ? Palette.lightBlack : Palette.white
-
-                            visible: hasMultipleQuestions && (numberOfQuestions >= 3)
-                        }
-
-                        WidgetAnswerSlider {
-                            id: answerSlider3
-
-                            sliderValue: 50
-                            textLeft: leftText3.text
-                            textRight: rightText3.text
-                            showNumber: false
-                            visible: hasMultipleQuestions && (numberOfQuestions >= 3)
-
-                            onSliderMoved: {
-                                thisPage.handleSliderMoved(2, intValue);
-                            }
-                        }
-                    }
-
-                    // fourth slider
-                    ColumnLayout {
-                        spacing: 15
-
-                        Label {
-                            Layout.alignment: Qt.AlignLeft
-                            text: questionText4.text
-                            font {
-                                family: "Red Hat Display"
-                                weight: Font.Medium
-                                pixelSize: 24
-                                letterSpacing: 24 * 10 / 1000
-                            }
-                            color: invertedTheme ? Palette.lightBlack : Palette.white
-
-                            visible: hasMultipleQuestions && (numberOfQuestions >= 4)
-                        }
-
-                        WidgetAnswerSlider {
-                            id: answerSlider4
-
-                            sliderValue: 50
-                            textLeft: leftText4.text
-                            textRight: rightText4.text
-                            showNumber: false
-                            visible: hasMultipleQuestions && (numberOfQuestions >= 4)
-
-                            onSliderMoved: {
-                                thisPage.handleSliderMoved(3, intValue);
-                            }
-                        }
-                    }
-
-                    // fifth slider
-                    ColumnLayout {
-                        spacing: 15
-
-                        Label {
-                            Layout.alignment: Qt.AlignLeft
-                            text: questionText5.text
-                            font {
-                                family: "Red Hat Display"
-                                weight: Font.Medium
-                                pixelSize: 24
-                                letterSpacing: 24 * 10 / 1000
-                            }
-                            color: invertedTheme ? Palette.lightBlack : Palette.white
-
-                            visible: hasMultipleQuestions && (numberOfQuestions >= 5)
-                        }
-
-                        WidgetAnswerSlider {
-                            id: answerSlider5
-
-                            sliderValue: 50
-                            textLeft: leftText5.text
-                            textRight: rightText5.text
-                            showNumber: false
-                            visible: hasMultipleQuestions && (numberOfQuestions >= 5)
-
-                            onSliderMoved: {
-                                thisPage.handleSliderMoved(4, intValue);
-                            }
-                        }
-                    }
-                }
+        Item {
+            Layout.fillWidth: true
+            Layout.preferredHeight: 110
+            Layout.bottomMargin: 15
+            visible: datavizIndex > 0
+            Rectangle {
+                width: parent.width
+                height: 1
+                color: Palette.white
+                anchors.bottom: parent.bottom
             }
+        }
 
-            // Index 1: single question first axis
-            // this screen is automatically skipped if hasMultipleQuestions === true
+        // Index 0: answering the questions
+        ColumnLayout {
+            spacing: 0
+            visible: datavizIndex === index_QUESTIONS
+
+            // To answer the question(s) with the sliders:
             ColumnLayout {
-                Layout.fillHeight: false
-                spacing: 0
+                Layout.preferredWidth: 920
+                Layout.leftMargin: 40
+                Layout.rightMargin: 40
+                spacing: 40
 
+                // first slider
                 ColumnLayout {
-                    Layout.fillWidth: true
-                    Layout.leftMargin: 40
-                    Layout.rightMargin: 40
-                    spacing: 0
+                    spacing: 15
 
                     Label {
-                        BilingualText {
-                            id: firstFilterTooltip
-                            textEn: "Please select a basic viewing setting"
-                            textFr: "Veuillez choisir un réglage de visualisation de base"
-                        }
-
-                        text: firstFilterTooltip.text
-                        color: "#fff"
+                        Layout.alignment: Qt.AlignLeft
+                        text: questionText1.text
                         font {
                             family: "Red Hat Display"
                             weight: Font.Medium
                             pixelSize: 24
+                            letterSpacing: 24 * 10 / 1000
                         }
-                        padding: 0
+                        color: invertedTheme ? Palette.lightBlack : Palette.white
+
+                        visible: hasMultipleQuestions
                     }
-                    // 1st-level filters
-                    RowLayout {
-                        Layout.fillWidth: true
-                        Layout.alignment: Qt.AlignHCenter
-                        Layout.topMargin: 20
-                        spacing: 24
+                    WidgetAnswerSlider {
+                        id: answerSlider1
 
-                        // reset on RFID tag change
-                        property variant resetter: window.rfidTag
-                        onResetterChanged: filterHighlighted = -1
+                        sliderValue: 35
+                        textLeft: leftText1.text
+                        textRight: rightText1.text
+                        showNumber: false
 
-                        Repeater {
-                            model: ListModel {
-                                ListElement {
-                                    text_en: "Age"
-                                    text_fr: "Âge"
-                                }
+                        onSliderMoved: {
+                            thisPage.handleSliderMoved(0, intValue);
+                        }
+                    }
+                }
 
-                                ListElement {
-                                    text_en: "Culture"
-                                    text_fr: "Culture"
-                                }
+                // second slider
+                ColumnLayout {
+                    spacing: 15
 
-                                ListElement {
-                                    text_en: "Gender"
-                                    text_fr: "Genre"
-                                }
+                    Label {
+                        Layout.alignment: Qt.AlignLeft
+                        text: questionText2.text
+                        font {
+                            family: "Red Hat Display"
+                            weight: Font.Medium
+                            pixelSize: 24
+                            letterSpacing: 24 * 10 / 1000
+                        }
+                        color: invertedTheme ? Palette.lightBlack : Palette.white
 
-                                ListElement {
-                                    text_en: "Language"
-                                    text_fr: "Langue"
-                                }
+                        visible: hasMultipleQuestions && (numberOfQuestions >= 2)
+                    }
+                    WidgetAnswerSlider {
+                        id: answerSlider2
+
+                        sliderValue: 35
+                        textLeft: leftText2.text
+                        textRight: rightText2.text
+                        showNumber: false
+                        visible: hasMultipleQuestions && (numberOfQuestions >= 2)
+
+                        onSliderMoved: {
+                            thisPage.handleSliderMoved(1, intValue);
+                        }
+                    }
+                }
+
+                // third slider
+                ColumnLayout {
+                    spacing: 15
+
+                    Label {
+                        Layout.alignment: Qt.AlignLeft
+                        text: questionText3.text
+                        font {
+                            family: "Red Hat Display"
+                            weight: Font.Medium
+                            pixelSize: 24
+                            letterSpacing: 24 * 10 / 1000
+                        }
+                        color: invertedTheme ? Palette.lightBlack : Palette.white
+
+                        visible: hasMultipleQuestions && (numberOfQuestions >= 3)
+                    }
+
+                    WidgetAnswerSlider {
+                        id: answerSlider3
+
+                        sliderValue: 50
+                        textLeft: leftText3.text
+                        textRight: rightText3.text
+                        showNumber: false
+                        visible: hasMultipleQuestions && (numberOfQuestions >= 3)
+
+                        onSliderMoved: {
+                            thisPage.handleSliderMoved(2, intValue);
+                        }
+                    }
+                }
+
+                // fourth slider
+                ColumnLayout {
+                    spacing: 15
+
+                    Label {
+                        Layout.alignment: Qt.AlignLeft
+                        text: questionText4.text
+                        font {
+                            family: "Red Hat Display"
+                            weight: Font.Medium
+                            pixelSize: 24
+                            letterSpacing: 24 * 10 / 1000
+                        }
+                        color: invertedTheme ? Palette.lightBlack : Palette.white
+
+                        visible: hasMultipleQuestions && (numberOfQuestions >= 4)
+                    }
+
+                    WidgetAnswerSlider {
+                        id: answerSlider4
+
+                        sliderValue: 50
+                        textLeft: leftText4.text
+                        textRight: rightText4.text
+                        showNumber: false
+                        visible: hasMultipleQuestions && (numberOfQuestions >= 4)
+
+                        onSliderMoved: {
+                            thisPage.handleSliderMoved(3, intValue);
+                        }
+                    }
+                }
+
+                // fifth slider
+                ColumnLayout {
+                    spacing: 15
+
+                    Label {
+                        Layout.alignment: Qt.AlignLeft
+                        text: questionText5.text
+                        font {
+                            family: "Red Hat Display"
+                            weight: Font.Medium
+                            pixelSize: 24
+                            letterSpacing: 24 * 10 / 1000
+                        }
+                        color: invertedTheme ? Palette.lightBlack : Palette.white
+
+                        visible: hasMultipleQuestions && (numberOfQuestions >= 5)
+                    }
+
+                    WidgetAnswerSlider {
+                        id: answerSlider5
+
+                        sliderValue: 50
+                        textLeft: leftText5.text
+                        textRight: rightText5.text
+                        showNumber: false
+                        visible: hasMultipleQuestions && (numberOfQuestions >= 5)
+
+                        onSliderMoved: {
+                            thisPage.handleSliderMoved(4, intValue);
+                        }
+                    }
+                }
+            }
+        }
+
+        // Index 1: single question first axis
+        // this screen is automatically skipped if hasMultipleQuestions === true
+        ColumnLayout {
+            spacing: 0
+            visible: datavizIndex === index_CHOOSE_SINGLE
+
+            ColumnLayout {
+                Layout.fillWidth: true
+                Layout.leftMargin: 40
+                Layout.rightMargin: 40
+                spacing: 0
+
+                Label {
+                    BilingualText {
+                        id: firstFilterTooltip
+                        textEn: "Please select a basic viewing setting"
+                        textFr: "Veuillez choisir un réglage de visualisation de base"
+                    }
+
+                    text: firstFilterTooltip.text
+                    color: "#fff"
+                    font {
+                        family: "Red Hat Display"
+                        weight: Font.Medium
+                        pixelSize: 24
+                    }
+                    padding: 0
+                }
+                // 1st-level filters
+                RowLayout {
+                    Layout.fillWidth: true
+                    Layout.topMargin: 20
+                    spacing: 24
+
+                    // reset on RFID tag change
+                    property variant resetter: window.rfidTag
+                    onResetterChanged: filterHighlighted = -1
+
+                    Repeater {
+                        model: ListModel {
+                            ListElement {
+                                text_en: "Age"
+                                text_fr: "Âge"
                             }
 
-                            WidgetFilterButton {
-                                label: BilingualText { textEn: model.text_en; textFr: model.text_fr }
-                                highlighted: filterHighlighted === model.index
-                                onClicked: {
-                                    filterHighlighted = model.index;
-                                    datavizIndex++;
-                                }
+                            ListElement {
+                                text_en: "Culture"
+                                text_fr: "Culture"
+                            }
+
+                            ListElement {
+                                text_en: "Gender"
+                                text_fr: "Genre"
+                            }
+
+                            ListElement {
+                                text_en: "Language"
+                                text_fr: "Langue"
+                            }
+                        }
+
+                        WidgetFilterButton {
+                            label: BilingualText { textEn: model.text_en; textFr: model.text_fr }
+                            highlighted: filterHighlighted === model.index
+                            onClicked: {
+                                filterHighlighted = model.index;
+                                datavizIndex++;
                             }
                         }
                     }
                 }
             }
+        }
 
-            // Index 2: multi-filter selection
-            // filter rows are selectively hidden depending on first-axis selection
+        // Index 2: multi-filter selection
+        // filter rows are selectively hidden depending on first-axis selection
+        ColumnLayout {
+            spacing: 0
+            visible: datavizIndex === index_CHOOSE_MULTIPLE
+
             ColumnLayout {
-                Layout.fillHeight: false
-                spacing: 0
-                visible: datavizIndex > 1
+                Layout.fillWidth: true
+                Layout.leftMargin: 40
+                Layout.rightMargin: 40
+                spacing: 30
 
+                // age range slider
                 ColumnLayout {
                     Layout.fillWidth: true
-                    Layout.leftMargin: 40
-                    Layout.rightMargin: 40
-                    spacing: 30
+                    spacing: 0
 
-                    // age range slider
+                    visible: filterHighlighted !== 0
+
+                    Label {
+                        text: ageLabel.text
+                        color: "#fff"
+                        font {
+                            pixelSize: 11
+                            letterSpacing: 11 * 25 / 1000
+                            capitalization: Font.AllUppercase
+                        }
+                        background: Item {}
+
+                        BilingualText {
+                            id: ageLabel
+                            textEn: "Age"
+                            textFr: "Âge"
+                        }
+                    }
+
+                    WidgetAgeRangeSlider {
+                        textLeft: "0"
+                        textRight: "120"
+                        showNumbers: true
+                        sliderFrom: 0
+                        sliderTo: 120
+                        valueFrom: 0
+                        valueTo: 120
+                        fullWidth: true
+
+                        onValueFromChanged: {
+                            // TODO
+                        }
+                        onValueToChanged: {
+                            // TODO
+                        }
+                    }
+                }
+
+                Repeater {
+                    id: filterRepeater
+
+                    // model
+                    model: ListModel {
+                        ListElement {
+                            sectionTitleEn: "Culture"
+                            sectionTitleFr: "Culture"
+                            filters: [
+                                ListElement { textEn: "All"; textFr: "Tous" },
+                                ListElement { textEn: "Quebecois"; textFr: "Québécoise" },
+                                ListElement { textEn: "Canadian"; textFr: "Canadienne" },
+                                ListElement { textEn: "Native"; textFr: "Autochtone" },
+                                ListElement { textEn: "American"; textFr: "Américaine" },
+                                ListElement { textEn: "European"; textFr: "Européenne" },
+                                ListElement { textEn: "Other"; textFr: "Autre" }
+                            ]
+                        }
+
+                        ListElement {
+                            sectionTitleEn: "Gender"
+                            sectionTitleFr: "Genre"
+                            filters: [
+                                ListElement { textEn: "All"; textFr: "Tous" },
+                                ListElement { textEn: "Male"; textFr: "Homme" },
+                                ListElement { textEn: "Female"; textFr: "Femme" },
+                                ListElement { textEn: "Other"; textFr: "Autre" }
+                            ]
+                        }
+
+                        ListElement {
+                            sectionTitleEn: "Time"
+                            sectionTitleFr: "Temps"
+                            filters: [
+                                ListElement { textEn: "All"; textFr: "Tous" },
+                                ListElement { textEn: "Today"; textFr: "Aujourd'hui" },
+                                ListElement { textEn: "This year"; textFr: "Cette année" },
+                                ListElement { textEn: "From the beginning"; textFr: "Depuis le début" }
+                            ]
+                        }
+                    }
+
+                    // display
                     ColumnLayout {
+                        id: subfilter
+
+                        property int currentIndex: 0
+                        // reset index when RFID tag changes
+                        property variant resetter: window.rfidTag
+                        onResetterChanged: currentIndex = 0
+
                         Layout.fillWidth: true
-                        spacing: 0
+                        spacing: 15
+                        visible: filterHighlighted !== model.index + 1 || model.index === filterRepeater.count - 1
 
-                        visible: filterHighlighted !== 0
-
+                        // section title
                         Label {
-                            text: ageLabel.text
+                            text: sectionTitle.text
                             color: "#fff"
                             font {
                                 pixelSize: 11
@@ -540,119 +644,26 @@ Column {
                             background: Item {}
 
                             BilingualText {
-                                id: ageLabel
-                                textEn: "Age"
-                                textFr: "Âge"
+                                id: sectionTitle
+                                textEn: sectionTitleEn
+                                textFr: sectionTitleFr
                             }
                         }
 
-                        WidgetAgeRangeSlider {
-                            textLeft: "0"
-                            textRight: "120"
-                            showNumbers: true
-                            sliderFrom: 0
-                            sliderTo: 120
-                            valueFrom: 0
-                            valueTo: 120
-                            fullWidth: true
-
-                            onValueFromChanged: {
-                                // TODO
-                            }
-                            onValueToChanged: {
-                                // TODO
-                            }
-                        }
-                    }
-
-                    Repeater {
-                        id: filterRepeater
-
-                        // model
-                        model: ListModel {
-                            ListElement {
-                                sectionTitleEn: "Culture"
-                                sectionTitleFr: "Culture"
-                                filters: [
-                                    ListElement { textEn: "All"; textFr: "Tous" },
-                                    ListElement { textEn: "Quebecois"; textFr: "Québécoise" },
-                                    ListElement { textEn: "Canadian"; textFr: "Canadienne" },
-                                    ListElement { textEn: "Native"; textFr: "Autochtone" },
-                                    ListElement { textEn: "American"; textFr: "Américaine" },
-                                    ListElement { textEn: "European"; textFr: "Européenne" },
-                                    ListElement { textEn: "Other"; textFr: "Autre" }
-                                ]
-                            }
-
-                            ListElement {
-                                sectionTitleEn: "Gender"
-                                sectionTitleFr: "Genre"
-                                filters: [
-                                    ListElement { textEn: "All"; textFr: "Tous" },
-                                    ListElement { textEn: "Male"; textFr: "Homme" },
-                                    ListElement { textEn: "Female"; textFr: "Femme" },
-                                    ListElement { textEn: "Other"; textFr: "Autre" }
-                                ]
-                            }
-
-                            ListElement {
-                                sectionTitleEn: "Time"
-                                sectionTitleFr: "Temps"
-                                filters: [
-                                    ListElement { textEn: "All"; textFr: "Tous" },
-                                    ListElement { textEn: "Today"; textFr: "Aujourd'hui" },
-                                    ListElement { textEn: "This year"; textFr: "Cette année" },
-                                    ListElement { textEn: "From the beginning"; textFr: "Depuis le début" }
-                                ]
-                            }
-                        }
-
-                        // display
-                        ColumnLayout {
-                            id: subfilter
-
-                            property int currentIndex: 0
-                            // reset index when RFID tag changes
-                            property variant resetter: window.rfidTag
-                            onResetterChanged: currentIndex = 0
-
+                        Flow {
                             Layout.fillWidth: true
-                            spacing: 15
-                            visible: filterHighlighted !== model.index + 1 || model.index === filterRepeater.count - 1
+                            Layout.leftMargin: -10
+                            spacing: 10
 
-                            // section title
-                            Label {
-                                text: sectionTitle.text
-                                color: "#fff"
-                                font {
-                                    pixelSize: 11
-                                    letterSpacing: 11 * 25 / 1000
-                                    capitalization: Font.AllUppercase
-                                }
-                                background: Item {}
+                            Repeater {
+                                model: filters
 
-                                BilingualText {
-                                    id: sectionTitle
-                                    textEn: sectionTitleEn
-                                    textFr: sectionTitleFr
-                                }
-                            }
+                                // filter button
+                                WidgetFilterButton {
+                                    label: BilingualText { textEn: model.textEn; textFr: model.textFr }
 
-                            Flow {
-                                Layout.fillWidth: true
-                                Layout.leftMargin: -10
-                                spacing: 10
-
-                                Repeater {
-                                    model: filters
-
-                                    // filter button
-                                    WidgetFilterButton {
-                                        label: BilingualText { textEn: model.textEn; textFr: model.textFr }
-
-                                        highlighted: index === subfilter.currentIndex
-                                        onClicked: subfilter.currentIndex = index
-                                    }
+                                    highlighted: index === subfilter.currentIndex
+                                    onClicked: subfilter.currentIndex = index
                                 }
                             }
                         }
@@ -663,12 +674,13 @@ Column {
 
         // filter navigation
         RowLayout {
-            width: parent.width
+            Layout.fillWidth: true
             visible: datavizIndex > 0
 
             WidgetIconButton {
                 Layout.leftMargin: 30
                 Layout.topMargin: 50
+                Layout.alignment: Qt.AlignBottom
 
                 BilingualText {
                     id: goBackLabel

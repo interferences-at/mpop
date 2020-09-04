@@ -23,6 +23,8 @@ ColumnLayout {
     opacity: enabled
     spacing: 5
 
+    Layout.fillWidth: false
+
     Item {
         Layout.preferredWidth: buttonSize
         Layout.preferredHeight: buttonSize
@@ -68,6 +70,9 @@ ColumnLayout {
             letterSpacing: 11 * 25 / 1000
             capitalization: Font.AllUppercase
         }
+        wrapMode: Label.WordWrap
+        Layout.preferredWidth: buttonSize
         Layout.alignment: Qt.AlignHCenter
+        horizontalAlignment: Text.AlignHCenter
     }
 }

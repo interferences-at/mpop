@@ -320,8 +320,6 @@ ApplicationWindow {
         property alias currentQuestion: questionsStackLayout.currentIndex
         property bool invertedTheme: currentIndex === index_SURVEY_QUESTIONS && questionsStackLayout.children[currentQuestion].datavizIndex < 1
 
-        onInvertedThemeChanged: console.log(invertedTheme)
-
         function nextPage() {
             mainStackLayout.currentIndex = (mainStackLayout.currentIndex + 1) % mainStackLayout.count;
         }
@@ -536,7 +534,6 @@ ApplicationWindow {
 
                 onNextButtonClicked: {
                     if (demographicQuestionsStackLayout.currentIndex === demographicQuestionsStackLayout.count - 2) {
-                        console.log(kioskConfig.kiosk_mode);
                         // if this is the entry kiosk, show the "enjoy your visit" page.
                         // if this is the center kiosk, go to the questions
                         if (kioskConfig.kiosk_mode !== window.const_KIOSK_MODE_ENTRY) {
@@ -732,8 +729,6 @@ ApplicationWindow {
                             questionIdentifiers: ["incidence_drogue"]
                             datavizSender: datavizManager
                             serviceClient: userProfile
-                            Layout.fillWidth: true
-                            Layout.fillHeight: true
                         }
 
                         // Page 02 - single
@@ -742,8 +737,6 @@ ApplicationWindow {
                             questionIdentifiers: ["decriminalisation_crimes_non_violents"]
                             datavizSender: datavizManager
                             serviceClient: userProfile
-                            Layout.fillWidth: true
-                            Layout.fillHeight: true
                         }
 
                         // Page 03 - single
@@ -752,8 +745,6 @@ ApplicationWindow {
                             questionIdentifiers: ["systeme_bureaucrate"]
                             datavizSender: datavizManager
                             serviceClient: userProfile
-                            Layout.fillWidth: true
-                            Layout.fillHeight: true
                         }
 
                         // Page 04 - multiple
@@ -763,8 +754,6 @@ ApplicationWindow {
                             datavizSender: datavizManager
                             serviceClient: userProfile
                             modelQuestions: modelQuestions // The whole model with all questions.
-                            Layout.fillWidth: true
-                            Layout.fillHeight: true
                         }
 
                         // Page 05 - single
@@ -773,8 +762,6 @@ ApplicationWindow {
                             questionIdentifiers: ["confiance_systeme"]
                             datavizSender: datavizManager
                             serviceClient: userProfile
-                            Layout.fillWidth: true
-                            Layout.fillHeight: true
                         }
 
                         // Page 06 - single
@@ -783,8 +770,6 @@ ApplicationWindow {
                             questionIdentifiers: ["interner"]
                             datavizSender: datavizManager
                             serviceClient: userProfile
-                            Layout.fillWidth: true
-                            Layout.fillHeight: true
                         }
 
                         // Page 07 - single
@@ -793,8 +778,6 @@ ApplicationWindow {
                             questionIdentifiers: ["peine_plus_severes"]
                             datavizSender: datavizManager
                             serviceClient: userProfile
-                            Layout.fillWidth: true
-                            Layout.fillHeight: true
                         }
 
                         // Page 08 - single
@@ -803,8 +786,6 @@ ApplicationWindow {
                             questionIdentifiers: ["taux_recidive"]
                             datavizSender: datavizManager
                             serviceClient: userProfile
-                            Layout.fillWidth: true
-                            Layout.fillHeight: true
                         }
 
                         // Page 09 - single
@@ -813,8 +794,6 @@ ApplicationWindow {
                             questionIdentifiers: ["bon_traitement"]
                             datavizSender: datavizManager
                             serviceClient: userProfile
-                            Layout.fillWidth: true
-                            Layout.fillHeight: true
                         }
 
                         // Page 10 - single
@@ -823,8 +802,6 @@ ApplicationWindow {
                             questionIdentifiers: ["confinement_solitaire"]
                             datavizSender: datavizManager
                             serviceClient: userProfile
-                            Layout.fillWidth: true
-                            Layout.fillHeight: true
                         }
 
                         // Page 11 - multiple
@@ -833,8 +810,6 @@ ApplicationWindow {
                             questionIdentifiers: ["soins_physiques", "soins_mentaux"]
                             datavizSender: datavizManager
                             serviceClient: userProfile
-                            Layout.fillWidth: true
-                            Layout.fillHeight: true
                         }
 
                         // Page 12 - single
@@ -843,8 +818,6 @@ ApplicationWindow {
                             questionIdentifiers: ["ressources_reinsertion"]
                             datavizSender: datavizManager
                             serviceClient: userProfile
-                            Layout.fillWidth: true
-                            Layout.fillHeight: true
                         }
 
                         // Page 13 - single
@@ -853,8 +826,6 @@ ApplicationWindow {
                             questionIdentifiers: ["benefice_justice_reparatrice"]
                             datavizSender: datavizManager
                             serviceClient: userProfile
-                            Layout.fillWidth: true
-                            Layout.fillHeight: true
                         }
 
                         // Page 14 - single
@@ -863,8 +834,6 @@ ApplicationWindow {
                             questionIdentifiers: ["developper_alternatives_prison"]
                             datavizSender: datavizManager
                             serviceClient: userProfile
-                            Layout.fillWidth: true
-                            Layout.fillHeight: true
                         }
 
                         // Page 15 - multiple
@@ -873,8 +842,6 @@ ApplicationWindow {
                             questionIdentifiers: ["investir_education", "investir_sante_services_sociaux", "investir_emploi"]
                             datavizSender: datavizManager
                             serviceClient: userProfile
-                            Layout.fillWidth: true
-                            Layout.fillHeight: true
                         }
                     }
 

@@ -35,6 +35,7 @@ ColumnLayout {
             showButton: model.index ? showNextButton : showPrevButton
             iconRotation: model.index * 180
             labelText: (model.index ? textNext : textPrevious).text
+            Layout.alignment: Qt.AlignHCenter
 
             onClicked: thisWidget[model.index ? "nextButtonClicked" : "previousButtonClicked"]()
         }
