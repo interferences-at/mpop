@@ -19,12 +19,12 @@ Button {
         text: widgetFilterButton.text
         horizontalAlignment: Text.AlignHCenter
         verticalAlignment: Text.AlignVCenter
-        color: highlighted ? "#000" : "#fff"
+        color: highlighted || down ? "#000" : "#fff"
         font: widgetFilterButton.font
     }
 
     background: Rectangle {
-        color: highlighted ? "#fff" : "transparent"
+        color: highlighted || down ? "#fff" : "transparent"
         implicitHeight: 40
         border.color: "#fff"
         radius: 30
