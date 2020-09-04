@@ -673,6 +673,7 @@ ApplicationWindow {
                     anchors.topMargin: 80
                     spacing: 0
 
+                    // Question index label
                     Label {
                         Layout.fillHeight: true
                         Layout.alignment: Qt.AlignTop
@@ -877,11 +878,12 @@ ApplicationWindow {
                         }
                     }
 
+                    // Question navigation
                     Item {
                         Layout.fillHeight: true
                         Layout.preferredWidth: 130
-                        z: 10
                         Layout.topMargin: -80
+                        z: 10
 
                         // border
                         Rectangle {
@@ -896,62 +898,18 @@ ApplicationWindow {
                             height: parent.height
                             spacing: 0
 
-                            ColumnLayout {
+                            WidgetIconButton {
                                 Layout.alignment: Qt.AlignTop | Qt.AlignHCenter
                                 Layout.topMargin: 30
-                                spacing: 5
 
-                                Item {
-                                    Layout.preferredWidth: 80
-                                    Layout.preferredHeight: 80
-
-                                    RoundButton {
-                                        id: closeAppButton
-
-                                        implicitWidth: 80
-                                        implicitHeight: 80
-
-                                        background: Rectangle {
-                                            radius: 40
-                                            color: closeAppButton.down ? Palette.accent : Palette.white
-                                        }
-
-                                        Image {
-                                            anchors.centerIn: parent
-                                            source: "qrc:/cross.svg"
-                                        }
-                                    }
-
-                                    DropShadow {
-                                        anchors.fill: closeAppButton
-                                        horizontalOffset: 2
-                                        verticalOffset: 4
-                                        radius: 4
-                                        samples: 9
-                                        color: "#66000000"
-                                        source: closeAppButton
-                                    }
+                                BilingualText {
+                                    id: closeQuizText
+                                    textEn: "Exit the quiz"
+                                    textFr: "Quitter le questionnaire"
                                 }
 
-                                Label {
-                                    BilingualText {
-                                        id: closeAppLabel
-                                        textEn: "Quit the quiz"
-                                        textFr: "Quitter le questionnaire"
-                                    }
-
-                                    Layout.maximumWidth: 80
-                                    text: closeAppLabel.text
-                                    wrapMode: Text.WordWrap
-                                    horizontalAlignment: Text.AlignHCenter
-                                    color: invertedTheme ? Palette.lightBlack : Palette.white
-                                    font {
-                                        pixelSize: 11
-                                        letterSpacing: 11 * 25 / 1000
-                                        capitalization: Font.AllUppercase
-                                    }
-                                    Layout.alignment: Qt.AlignHCenter
-                                }
+                                labelText: closeQuizText.text
+                                iconSource: "qrc:/cross.svg"
                             }
 
                             WidgetPreviousNext {

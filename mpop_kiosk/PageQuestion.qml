@@ -660,25 +660,13 @@ Column {
         // filter navigation
         RowLayout {
             Layout.fillWidth: true
-            Layout.alignment: Qt.AlignRight | Qt.AlignTop
-            Layout.topMargin: 50
-            Layout.rightMargin: 100
             visible: datavizIndex > 0
 
             RoundButton {
-                text: qsTr("Left")
-
                 onClicked: {
                     if (hasMultipleQuestions) datavizIndex = index_QUESTIONS;
                     else datavizIndex--;
                 }
-            }
-            RoundButton {
-                text: qsTr("Right")
-                enabled: datavizIndex !== index_CHOOSE_MULTIPLE && filterHighlighted >= 0
-                opacity: enabled
-
-                onClicked: datavizIndex++
             }
         }
     }

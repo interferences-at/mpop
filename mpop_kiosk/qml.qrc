@@ -23,5 +23,6 @@
         <file>WidgetGoToDataviz.qml</file>
         <file>cross.svg</file>
         <file>WidgetAgeRangeSlider.qml</file>
+        <file>WidgetIconButton.qml</file>
     </qresource>
 </RCC>
