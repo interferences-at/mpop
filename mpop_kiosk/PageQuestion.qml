@@ -659,10 +659,22 @@ Column {
 
         // filter navigation
         RowLayout {
-            Layout.fillWidth: true
+            width: parent.width
             visible: datavizIndex > 0
 
-            RoundButton {
+            WidgetIconButton {
+                Layout.leftMargin: 30
+                Layout.topMargin: 50
+
+                BilingualText {
+                    id: goBackLabel
+                    textEn: "Back"
+                    textFr: "Retour"
+                }
+
+                buttonSize: 50
+                iconRotation: -90
+                labelText: goBackLabel.text
                 onClicked: {
                     if (hasMultipleQuestions) datavizIndex = index_QUESTIONS;
                     else datavizIndex--;
