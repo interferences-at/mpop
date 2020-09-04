@@ -511,7 +511,6 @@ Column {
 
                         WidgetFilterButton {
                             label: BilingualText { textEn: model.text_en; textFr: model.text_fr }
-                            highlighted: filterHighlighted === model.index
                             onClicked: {
                                 filterHighlighted = model.index;
                                 datavizIndex++;
