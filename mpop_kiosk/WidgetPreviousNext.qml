@@ -31,61 +31,12 @@ ColumnLayout {
     Repeater {
         model: 2
 
-        ColumnLayout {
-            enabled: model.index ? showNextButton : showPrevButton
-            opacity: model.index ? showNextButton : showPrevButton
-            spacing: 5
+        WidgetIconButton {
+            showButton: model.index ? showNextButton : showPrevButton
+            iconRotation: model.index * 180
+            labelText: (model.index ? textNext : textPrevious).text
 
-            Item {
-                Layout.preferredWidth: 80
-                Layout.preferredHeight: 80
-
-                RoundButton {
-                    id: button
-                    implicitWidth: 80
-                    implicitHeight: 80
-
-                    background: Rectangle {
-                        radius: 40
-                        color: button.down ? Palette.accent : Palette.white
-                    }
-
-                    Image {
-                        id: arrowIcon
-                        anchors.centerIn: parent
-                        source: "qrc:/arrow.svg"
-
-                        transform: Rotation {
-                            angle: model.index * 180
-                            origin.x: arrowIcon.width / 2
-                            origin.y: arrowIcon.height / 2
-                        }
-                    }
-
-                    onClicked: thisWidget[model.index ? "nextButtonClicked" : "previousButtonClicked"]();
-                }
-
-                DropShadow {
-                    anchors.fill: button
-                    horizontalOffset: 1
-                    verticalOffset: 3
-                    radius: 5
-                    samples: 11
-                    color: "#66000000"
-                    source: button
-                }
-            }
-
-            Label {
-                text: (model.index ? textNext : textPrevious).text
-                color: invertedTheme ? Palette.lightBlack : Palette.white
-                font {
-                    pixelSize: 11
-                    letterSpacing: 11 * 25 / 1000
-                    capitalization: Font.AllUppercase
-                }
-                Layout.alignment: Qt.AlignHCenter
-            }
+            onClicked: thisWidget[model.index ? "nextButtonClicked" : "previousButtonClicked"]()
         }
     }
 }
