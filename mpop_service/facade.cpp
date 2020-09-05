@@ -394,7 +394,7 @@ bool Facade::setUserLanguage(int userId, const QString& language) {
         qWarning() << "ERROR: " << query.lastError().text();
         throw SQLError{query.lastError().text()};
     }
-     qDebug() << query.numRowsAffected();
+    qDebug() << query.numRowsAffected();
     return query.numRowsAffected() == 1;
 }
 
@@ -678,7 +678,7 @@ QMap<QString,int> Facade::getAnswerByGender(const QString& questionId, const QSt
     qDebug() << "getAnswerByGender";
     QMap<QString,int> AvgAnsByGender;
     
-    QString sqlQuery= "SELECT  IFNULL( ROUND(AVG( CASE WHEN v.gender='male' "
+    QString sqlQuery= "SELECT IFNULL(ROUND(AVG( CASE WHEN v.gender='male' "
                       "THEN a.answer_value ELSE 0 END ),2),'-1') as 'Male', "
                       "IFNULL(ROUND(AVG( CASE WHEN v.gender='female' THEN "
                       " a.answer_value ELSE 0 END ),2),'-1') as 'Female',"
@@ -687,6 +687,7 @@ QMap<QString,int> Facade::getAnswerByGender(const QString& questionId, const QSt
                       "FROM answer AS a JOIN visitor AS v ON a.visitor_id = v.id JOIN"
                       " question AS q ON a.question_id = q.id "
                       "JOIN ethnicity AS e ON v.ethnicity= e.id WHERE q.identifier=?";
+
 
     
     if(ethenicity != "all") {
@@ -786,6 +787,7 @@ QMap<QString,int> Facade::getAnswerByGender(const QString& questionId, const QSt
 QMap<QString, int> Facade::getAnswerByEthnicity(const QString& questionId,int ageFrom=-1, int ageTo =-1, const QString& gender="all",const QString& timeAnswered="all"){
 
     qDebug() << "GetAnswerByEthnicity";
+    qDebug() << questionId;
     QMap<QString, int> AvgAnsByEthnicity;
 
     QString sqlQuery="SELECT IFNULL(ROUND(AVG( CASE WHEN e.identifier='quebecer' THEN a.answer_value ELSE 0 END ),2),'-1') as 'Quebecer',"
@@ -866,7 +868,7 @@ QMap<QString, int> Facade::getAnswerByEthnicity(const QString& questionId,int ag
         query.addBindValue(QVariant(timeFilter));
     }
 
-    qDebug() << "getAnswerByEthnicity ::: Query ::" <<sqlQuery;
+    //qDebug() << "getAnswerByEthnicity ::: Query ::" <<sqlQuery;
 
     bool ok = query.exec();
 
@@ -878,12 +880,12 @@ QMap<QString, int> Facade::getAnswerByEthnicity(const QString& questionId,int ag
     while (query.next()) {
 
         //providers Question Identifier's  avg answer_value by Ethnicity
-        AvgAnsByEthnicity.insert("quebecer",query.value(0).toInt());
-        AvgAnsByEthnicity.insert("canadian",query.value(1).toInt());
-        AvgAnsByEthnicity.insert("american",query.value(2).toInt());
-        AvgAnsByEthnicity.insert("european",query.value(3).toInt());
-        AvgAnsByEthnicity.insert("native",query.value(4).toInt());
-        AvgAnsByEthnicity.insert("other",query.value(5).toInt());
+        AvgAnsByEthnicity.insert("quebecer",query.value(0).toDouble());
+        AvgAnsByEthnicity.insert("canadian",query.value(1).toDouble());
+        AvgAnsByEthnicity.insert("american",query.value(2).toDouble());
+        AvgAnsByEthnicity.insert("european",query.value(3).toDouble());
+        AvgAnsByEthnicity.insert("native",query.value(4).toDouble());
+        AvgAnsByEthnicity.insert("other",query.value(5).toDouble());
     }
 
     return  AvgAnsByEthnicity;
