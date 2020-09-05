@@ -180,9 +180,6 @@ void TestMpopService:: test_15_getAnswers() {
 
     QMap<QString, int> answers = this->facade->getAnswers(questionList,-1,-1,"all","all","all");
 
-    qDebug() << "answers[TEST_QUESTION_01_ID]" << answers[TEST_QUESTION_01_ID];
-    qDebug() << "Test_QUESTION_01_AVG" << Test_QUESTION_01_AVG;
-
     QCOMPARE(answers[TEST_QUESTION_01_ID], Test_QUESTION_01_AVG);
     QCOMPARE(answers[TEST_QUESTION_02_ID], Test_QUESTION_02_AVG);
     QCOMPARE(answers[TEST_QUESTION_03_ID], Test_QUESTION_03_AVG);
