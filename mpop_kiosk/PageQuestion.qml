@@ -9,19 +9,10 @@ Column {
 
     id: thisPage
 
-    function loadQuestions() {
-        // Retrieve the first question model item:
-        // var firstQuestion = modelQuestions.findQuestion(questionIdentifiers[0]);
-
-        // Set the text of the main question:
-        mainQuestionText.textFr = model.question_fr;
-        mainQuestionText.textEn = model.question_en;
-    }
-
     function loadAnswersForCurrentVisitor() {
         // TODO: Retrieve value for user from service and populate the slider, if set.
         for (var i = 0; i < numberOfQuestions; i ++) {
-            var key = model.identifier || model.subquestions.get(i).identifier;
+            var key = model.subquestions ? model.subquestions.get(i).identifier : model.identifier;
             var value = 50; // default
             if (window.userProfile.answers.hasOwnProperty(key)) {
                 value = window.userProfile.answers[key];
@@ -73,8 +64,6 @@ Column {
     property int filterHighlighted: -1
     property bool buttonTextHighlight: true
 
-
-
     property alias datavizIndex: questionDatavizStackLayout.currentIndex
     readonly property int index_QUESTIONS: 0
     readonly property int index_CHOOSE_SINGLE: 1
@@ -83,12 +72,7 @@ Column {
     signal nextButtonClicked()
     signal previousButtonClicked()
 
-    BilingualText {
-        id: mainQuestionText
-    }
-
     Component.onCompleted: {
-        loadQuestions();
         loadAnswersForCurrentVisitor();
         // TODO: Retrieve value for user from service and populate the slider, if set.
     }
@@ -105,6 +89,12 @@ Column {
         width: parent.width
 
         Label {
+            BilingualText {
+                id: mainQuestionText
+                textEn: model.question_en
+                textFr: model.question_fr
+            }
+
             Layout.fillWidth: true
             text: mainQuestionText.text
             font {

@@ -9,9 +9,10 @@ Button {
     id: thisWidget
 
     width: parent.width
-    implicitHeight: 57
+    implicitHeight: 56
 
     property bool afterCurrent: false
+    property bool bgCoverAll: false
 
     // TODO: Improve the look of this buttons
     text: "01"
@@ -32,12 +33,13 @@ Button {
 
     // highlight
     Rectangle {
-        width: 64
-        height: 64
+        implicitWidth: 64
+        implicitHeight: 64
         color: Palette.lightGrey
         anchors.centerIn: parent
+        anchors.fill: bgCoverAll ? parent : undefined
         visible: highlighted
-        radius: 32
+        radius: bgCoverAll ? 0 : 32
         z: -1
     }
 }
