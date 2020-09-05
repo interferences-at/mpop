@@ -132,7 +132,6 @@ ApplicationWindow {
         onTriggered: {
             // TODO: detect clicks, and time how time elapsed since last click
             // if idle for too long, go to screensaver
-            screensaver.visible = true;
         }
     }
 
@@ -377,13 +376,10 @@ ApplicationWindow {
             // touch area of your root component
             MouseArea {
                 anchors.fill: parent
-                propagateComposedEvents: true
                 onClicked: {
                     console.log("Screensaver touched");
                     clickedMessage.visible = true;
                     hideTextTimer.start();
-                    idleTimer.running = false;
-                    idleTimer.running = true;
                 }
             }
         }
