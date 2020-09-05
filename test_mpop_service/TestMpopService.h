@@ -17,9 +17,13 @@ private slots:
     // test methods for the utility methods of the Facade class:
     void test_01_toBoolean();
 
-
     // test method for Get Average of Answers  for Multiple Question Ids:
     void test_15_getAnswers();
+
+    //test methods for get answer by filters
+    void test_23_getAnswerByEthnicity();
+    void test_24_getAnswerByGender();
+    void test_22_getAnswerByAge();
 
     // test methods for the Request and Response classes:
     void test_02_requestParams();
@@ -35,11 +39,6 @@ private slots:
     // test methods for the survey question for a single visitor:
     void test_20_setUserAnswer();
     void test_21_getUserAnswers();
-
-    //test methods for get answer by filters
-    void test_22_getAnswerByAge();
-    void test_23_getAnswerByEthnicity();
-    void test_24_getAnswerByGender();
 
     // TODO: test to free a tag
 
