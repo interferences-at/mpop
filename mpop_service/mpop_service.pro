@@ -1,4 +1,4 @@
-QT += websockets
+QT += websockets 
 QT += sql
 QT += core
 # QT -= gui
@@ -12,6 +12,7 @@ TEMPLATE = app
 
 SOURCES += \
     facade.cpp \
+    logutils.cpp \
     main.cpp \
     mpopservice.cpp \
     notification.cpp \
@@ -21,6 +22,7 @@ SOURCES += \
 HEADERS += \
     config.h \
     facade.h \
+    logutils.h \
     missingparametererror.h \
     mpopservice.h \
     notification.h \
