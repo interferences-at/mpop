@@ -8,6 +8,7 @@
 #include <QProcessEnvironment>
 #include "mpopservice.h"
 #include "config.h"
+#include "Logger.h"
 #include <QDebug>
 
 
@@ -15,12 +16,13 @@ int main(int argc, char *argv[])
 {
     QCoreApplication application(argc, argv);
     application.setApplicationName("mpop_service");
+    Logger();
     Config config;
     MPopService::load_config_from_env_vars(config);
     MPopService service(config);
     QTimer mytimer;
     QObject::connect(&mytimer,&QTimer::timeout, std::bind(MPopService::timeWatcher, config));
-    mytimer.start(config.periodic_interval);
 
+    mytimer.start(config.periodic_interval);
     return application.exec();
 }

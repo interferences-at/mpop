@@ -11,6 +11,7 @@ CONFIG += c++11
 TEMPLATE = app
 
 SOURCES += \
+    Logger.cpp \
     facade.cpp \
     main.cpp \
     mpopservice.cpp \
@@ -19,6 +20,7 @@ SOURCES += \
     response.cpp
 
 HEADERS += \
+    Logger.h \
     config.h \
     facade.h \
     missingparametererror.h \
