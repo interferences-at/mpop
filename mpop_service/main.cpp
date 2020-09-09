@@ -15,7 +15,7 @@
 int main(int argc, char *argv[])
 {
     QCoreApplication application(argc, argv);
-    application.setApplicationName("mpop_service");4
+    application.setApplicationName("mpop_service");
     Logger();
     Config config;
     MPopService::load_config_from_env_vars(config);
