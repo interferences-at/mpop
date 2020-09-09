@@ -8,15 +8,13 @@
 #include <QObject>
 #include <QString>
 #include <QDebug>
-#include <QDate>
-#include <QTime>
 
 /**
  * @brief The Logutils class implements logs logic for this application.
  *
  * Different API can call the methods of the single instance of this object, if needed.
  */
-class logutils : public QObject
+class Logger : public QObject
 {
     Q_OBJECT
 public:
@@ -24,7 +22,7 @@ public:
     * @brief Constructor.
     * set File Path and install qMessageHandler.
     */
-    explicit logutils();
+    explicit Logger();
 
     /**
      * @brief myMessageHandler to write logs for different types.

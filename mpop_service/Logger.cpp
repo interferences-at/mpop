@@ -1,4 +1,4 @@
-#include "logutils.h"
+#include "Logger.h"
 #include <QTime>
 #include <QFile>
 #include <QFileInfo>
@@ -10,7 +10,7 @@
 static QString logFileName;
 static QString logFolderPath;
 
-logutils::logutils()
+Logger::Logger()
 {
     // set logfiles path.
     logFolderPath = "/var/log/";
@@ -21,12 +21,12 @@ logutils::logutils()
     QFile outFile(logFileName);
     if(outFile.open(QIODevice::WriteOnly | QIODevice::Append))
     {
-        qInstallMessageHandler(logutils::myMessageHandler);
+        qInstallMessageHandler(Logger::myMessageHandler);
     }
 }
 
 
-void logutils::initLogFileName()
+void Logger::initLogFileName()
 {
 
     logFileName = QString( logFolderPath + "mpop-service-%1.log")
@@ -36,7 +36,7 @@ void logutils::initLogFileName()
 /**
  * @brief deletes old log files, only the last ones are kept
  */
-void logutils::deleteOldLogs()
+void Logger::deleteOldLogs()
 {
     QDir dir;
     dir.setFilter(QDir::Files | QDir::Hidden | QDir::NoSymLinks);
@@ -62,7 +62,7 @@ void logutils::deleteOldLogs()
 }
 
 
-void logutils::myMessageHandler(QtMsgType type, const QMessageLogContext &context, const QString& msg)
+void Logger::myMessageHandler(QtMsgType type, const QMessageLogContext &context, const QString& msg)
 {
     QFile outFile(logFileName);
     outFile.open(QIODevice::WriteOnly | QIODevice::Append);
@@ -70,19 +70,19 @@ void logutils::myMessageHandler(QtMsgType type, const QMessageLogContext &contex
 
     switch (type) {
     case QtDebugMsg:
-        ostream <<"Debugging Message:" << msg << endl;
+        ostream << "Debugging Message:" << msg << endl;
         break;
     case QtInfoMsg:
-        ostream<<"Information Message:" << msg << endl;
+        ostream << "Information Message:" << msg << endl;
         break;
     case QtWarningMsg:
-        ostream<<"Warnning Message:" << msg << endl;
+        ostream << "Warnning Message:" << msg << endl;
         break;
     case QtFatalMsg:
-        ostream<<"Fatal Message: " << msg << endl;
+        ostream << "Fatal Message: " << msg << endl;
         break;
     case QtCriticalMsg:
-        ostream<<"Critical Message: " << msg << endl;
+        ostream << "Critical Message: " << msg << endl;
         break;
     default:
         break;

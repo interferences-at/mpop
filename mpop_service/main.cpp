@@ -8,15 +8,15 @@
 #include <QProcessEnvironment>
 #include "mpopservice.h"
 #include "config.h"
-#include "logutils.h"
+#include "Logger.h"
 #include <QDebug>
 
 
 int main(int argc, char *argv[])
 {
     QCoreApplication application(argc, argv);
-    application.setApplicationName("mpop_service");
-    logutils();
+    application.setApplicationName("mpop_service");4
+    Logger();
     Config config;
     MPopService::load_config_from_env_vars(config);
     MPopService service(config);
