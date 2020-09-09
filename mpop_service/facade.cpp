@@ -880,12 +880,12 @@ QMap<QString, int> Facade::getAnswerByEthnicity(const QString& questionId,int ag
     while (query.next()) {
 
         //providers Question Identifier's  avg answer_value by Ethnicity
-        AvgAnsByEthnicity.insert("quebecer",query.value(0).toDouble());
-        AvgAnsByEthnicity.insert("canadian",query.value(1).toDouble());
-        AvgAnsByEthnicity.insert("american",query.value(2).toDouble());
-        AvgAnsByEthnicity.insert("european",query.value(3).toDouble());
-        AvgAnsByEthnicity.insert("native",query.value(4).toDouble());
-        AvgAnsByEthnicity.insert("other",query.value(5).toDouble());
+        AvgAnsByEthnicity.insert("quebecer",(int)(query.value(0).toDouble()));
+        AvgAnsByEthnicity.insert("canadian",(int)(query.value(1).toDouble()));
+        AvgAnsByEthnicity.insert("american",(int)(query.value(2).toDouble()));
+        AvgAnsByEthnicity.insert("european",(int)(query.value(3).toDouble()));
+        AvgAnsByEthnicity.insert("native",(int)(query.value(4).toDouble()));
+        AvgAnsByEthnicity.insert("other",(int)(query.value(5).toDouble()));
     }
 
     return  AvgAnsByEthnicity;
