@@ -38,11 +38,12 @@ void TestMpopService::removeDatabaseTestEntries() {
         rfidTagsToDelete.push_back("test_RFID_tag_0006");
         rfidTagsToDelete.push_back("test_RFID_tag_0007");
         rfidTagsToDelete.push_back("test_RFID_tag_0008");
-
+        rfidTagsToDelete.push_back("test_RFID_tag_0009");
+        rfidTagsToDelete.push_back("test_RFID_tag_00010");
+        rfidTagsToDelete.push_back("test_RFID_tag_00011");
         this->facade->deleteTagsVisitorsAndTheirAnswers(rfidTagsToDelete);
     }
 }
-
 
 // called after the last test function was executed
 void TestMpopService::cleanupTestCase()
@@ -52,7 +53,6 @@ void TestMpopService::cleanupTestCase()
     // No need to delete the MPopService
     // Though, once the destructor is called, the MySQL connection will close.
 }
-
 
 void TestMpopService::test_01_toBoolean()
 {
@@ -74,7 +74,6 @@ void TestMpopService::test_01_toBoolean()
     QCOMPARE(MPopService::toBoolean("987"), false);
     QCOMPARE(MPopService::toBoolean("!!!!!!"), false);
 }
-
 
 void TestMpopService:: test_15_getAnswers() {
 
@@ -204,7 +203,6 @@ void TestMpopService::test_10_getOrCreateUser() {
     QCOMPARE(userIdAgain, userId);
 }
 
-
 void TestMpopService::test_21_getUserAnswers() {
     // Get/set a single answer for a user.
 
@@ -221,6 +219,7 @@ void TestMpopService::test_21_getUserAnswers() {
     QMap<QString, int> answers = this->facade->getUserAnswers(userId);
     QVariant actual = answers[TEST_QUESTION_ID];
     QCOMPARE(actual, value);
+
 }
 
 void TestMpopService::test_12_setUserLanguage() {
@@ -250,7 +249,6 @@ void TestMpopService::test_12_setUserLanguage() {
     QCOMPARE(userLanguage, TEST_USER_LANGUAGE);
 }
 
-
 void TestMpopService::test_13_setUserGender() {
     // Set/get the gender of a user.
 
@@ -276,7 +274,6 @@ void TestMpopService::test_13_setUserGender() {
     QVariant userGender = userInfo2[KEY_GENDER];
     QCOMPARE(TEST_USER_GENDER, userGender);
 }
-
 
 void TestMpopService::test_14_setUserEthnicity() {
     // Set/get the ethnicity of a user.
@@ -336,7 +333,6 @@ void TestMpopService::test_02_requestParams() {
      QCOMPARE(EXPECTED_REQUEST_ID, request_id);
 }
 
-
 void TestMpopService::test_03_response() {
     // Checks that a response can copy the id from a request,
     // so that clients can know which of their request to associate them to.
@@ -388,7 +384,6 @@ void TestMpopService::test_04_error_response() {
     // make sure the string matches what it should be
     QCOMPARE(errorResponseString, EXPECTED_ERROR_STRING);
 }
-
 
 void TestMpopService::test_20_setUserAnswer() {
     // Set multiple answers for a user
@@ -443,3 +438,116 @@ void TestMpopService::test_20_setUserAnswer() {
     QCOMPARE(answers1[TEST_QUESTION_03_ID], TEST_QUESTION_03_UPDATE_VALUE);
     QCOMPARE(answers1[TEST_QUESTION_04_ID], TEST_QUESTION_04_UPDATE_VALUE);
 }
+
+void TestMpopService::test_22_getAnswerByAge() {
+
+    if (! this->is_mysql_supported) {
+        QSKIP("This test requires MySQL");
+    }
+
+    // User Question
+    static const QString TEST_QUESTION_05_ID = "equitable_vulnerables";
+
+    // User Answers
+    static const int TEST_QUESTION_05_VALUE = 35;
+
+    // Calculated Avg. for three User
+    static const int Test_QUESTION_05_AVG = 35;
+
+    // declaration of RFIDs
+    static const QString TEST_RFID_TAG_1 = "test_RFID_tag_0009";
+
+    // Get or create user id.
+    int user_1 = this->facade->getOrCreateUser(TEST_RFID_TAG_1);
+
+    // set Users Answers
+    this->facade->setUserAnswer(user_1, TEST_QUESTION_05_ID, TEST_QUESTION_05_VALUE);
+
+
+    QList<int> answers1 = this->facade->getAnswerByAge(TEST_QUESTION_05_ID,"all","all","all");
+
+    qDebug() << "Questions List" << answers1;
+    //QCOMPARE(answers1[TEST_QUESTION_05_ID], Test_QUESTION_05_AVG);
+
+}
+
+void TestMpopService::test_23_getAnswerByEthnicity() {
+    qDebug() << "test_23_getAnswerByEthnicity";
+    // Set demographic questions for multiple user
+    // Set multiple answers for multiple user
+    // check avg value of each question is ok.
+
+    if (! this->is_mysql_supported) {
+        QSKIP("This test requires MySQL");
+    }
+
+    // User Questions
+    static const QString TEST_QUESTION_06_ID = "equitable_jeunes_contrevenants";
+
+    // User Answers
+    static const int TEST_QUESTION_06_VALUE = 45;
+
+    // Calculated Avg. for three User
+    static const int Test_QUESTION_06_AVG = 45;
+
+    // declaration of RFIDs
+    static const QString TEST_RFID_TAG_1 = "test_RFID_tag_00010";
+
+    // declaration of Ethnicity for users
+    static const QString TEST_USER_1_Ethnicity = "quebecer";
+
+    // Get or create user id.
+    int user_1 = this->facade->getOrCreateUser(TEST_RFID_TAG_1);
+
+
+    // set users Ethnicity
+    bool okSetEthnicity_1 = this->facade->setUserEthnicity(user_1, TEST_USER_1_Ethnicity);
+    QCOMPARE(okSetEthnicity_1, true);
+
+    // set Users Answers
+    this->facade->setUserAnswer(user_1, TEST_QUESTION_06_ID, TEST_QUESTION_06_VALUE);
+
+    QMap<QString,int> answers = this->facade->getAnswerByEthnicity(TEST_QUESTION_06_ID,-1,-1,"all","all");
+    qDebug() << answers;
+    QCOMPARE(answers[TEST_USER_1_Ethnicity], Test_QUESTION_06_AVG);
+}
+
+void TestMpopService::test_24_getAnswerByGender() {
+    qDebug() << "test_24_getAnswerByGender";
+
+    if (! this->is_mysql_supported) {
+        QSKIP("This test requires MySQL");
+    }
+
+    // User Questions
+    static const QString TEST_QUESTION_07_ID = "equitable_riches";
+
+    // User Answers
+    static const int TEST_QUESTION_07_VALUE = 55;
+
+    // Calculated Avg. for three User
+    static const int Test_QUESTION_07_AVG = 55;
+
+    // declaration of RFIDs
+    static const QString TEST_RFID_TAG_1 = "test_RFID_tag_00011";
+
+    // declaration of gender for users
+    static const QString TEST_USER_1_GENDER = "male";
+
+    // Get or create user id.
+    int user_1 = this->facade->getOrCreateUser(TEST_RFID_TAG_1);
+
+    // set users Gender
+    bool okSetGender_1 = this->facade->setUserGender(user_1, TEST_USER_1_GENDER);
+    QCOMPARE(okSetGender_1, true);
+
+    // set Users Answers
+    this->facade->setUserAnswer(user_1, TEST_QUESTION_07_ID, TEST_QUESTION_07_VALUE);
+
+    QMap<QString,int> answers = this->facade->getAnswerByGender(TEST_QUESTION_07_ID,"all",-1,-1,"all");
+
+    QCOMPARE(answers[TEST_QUESTION_07_ID], Test_QUESTION_07_AVG);
+}
+
+
+
