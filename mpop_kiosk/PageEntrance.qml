@@ -23,7 +23,7 @@ RowLayout {
 
     // Page label to the left
     Label {
-        Layout.preferredWidth: 435
+        Layout.preferredWidth: 400
         Layout.fillHeight: true
         Layout.leftMargin: 40
         Layout.topMargin: 100
@@ -37,7 +37,7 @@ RowLayout {
     }
 
     Rectangle {
-        Layout.preferredWidth: 480
+        Layout.fillWidth: true
         Layout.fillHeight: true
         Layout.topMargin: -1
         Layout.bottomMargin: -1

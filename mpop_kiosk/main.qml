@@ -399,6 +399,8 @@ ApplicationWindow {
          */
         RowLayout {
 
+            spacing: 0
+
             StackLayout {
                 id: demographicQuestionsStackLayout
 
@@ -513,10 +515,15 @@ ApplicationWindow {
                 }
 
                 // Enjoy your visit (only shown in the entry kiosk)
-                ColumnLayout {
+                Rectangle {
+                    Layout.fillWidth: true
+                    Layout.fillHeight: true
+
+                    color: Palette.accent
+
                     Label {
-                        Layout.leftMargin: 40
-                        Layout.topMargin: 100
+                        leftPadding: 40
+                        topPadding: 80
 
                         BilingualText {
                             id: textThankYou
@@ -524,6 +531,7 @@ ApplicationWindow {
                             textFr: "Merci beaucoup!\nVous pouvez maintenant\ncommencer votre visite."
                         }
                         text: textThankYou.text
+                        color: Palette.lightBlack
 
                         font {
                             pixelSize: 57
@@ -533,31 +541,39 @@ ApplicationWindow {
                 }
             }
 
-            WidgetPreviousNext {
+            RowLayout {
+                Layout.preferredWidth: 110
+                Layout.fillHeight: true
                 Layout.alignment: Qt.AlignBottom
-                Layout.rightMargin: 25
-                Layout.bottomMargin: 30
-                visible: demographicQuestionsStackLayout.currentIndex !== demographicQuestionsStackLayout.count - 1
-                showPrevButton: demographicQuestionsStackLayout.currentIndex > 0
+                spacing: 0
 
-                onNextButtonClicked: {
-                    if (demographicQuestionsStackLayout.currentIndex === demographicQuestionsStackLayout.count - 2) {
-                        // if this is the entry kiosk, show the "enjoy your visit" page.
-                        // if this is the center kiosk, go to the questions
-                        if (kioskConfig.kiosk_mode !== window.const_KIOSK_MODE_ENTRY) {
-                            // kiosk_mode is central:
-                            mainStackLayout.nextPage();
-                            // prevent changing page
-                            return;
+                visible: demographicQuestionsStackLayout.currentIndex !== demographicQuestionsStackLayout.index_ENJOY_YOUR_VISIT
+
+                WidgetPreviousNext {
+                    Layout.alignment: Qt.AlignBottom | Qt.AlignHCenter
+                    Layout.bottomMargin: 30
+                    visible: demographicQuestionsStackLayout.currentIndex !== demographicQuestionsStackLayout.count - 1
+                    showPrevButton: demographicQuestionsStackLayout.currentIndex > 0
+
+                    onNextButtonClicked: {
+                        if (demographicQuestionsStackLayout.currentIndex === demographicQuestionsStackLayout.count - 2) {
+                            // if this is the entry kiosk, show the "enjoy your visit" page.
+                            // if this is the center kiosk, go to the questions
+                            if (kioskConfig.kiosk_mode !== window.const_KIOSK_MODE_ENTRY) {
+                                // kiosk_mode is central:
+                                mainStackLayout.nextPage();
+                                // prevent changing page
+                                return;
+                            }
                         }
+
+                        // change demographic question page
+                        demographicQuestionsStackLayout.nextPage();
                     }
 
-                    // change demographic question page
-                    demographicQuestionsStackLayout.nextPage();
-                }
-
-                onPreviousButtonClicked: {
-                    demographicQuestionsStackLayout.previousPage();
+                    onPreviousButtonClicked: {
+                        demographicQuestionsStackLayout.previousPage();
+                    }
                 }
             }
         }
@@ -820,7 +836,7 @@ ApplicationWindow {
                     // Question navigation
                     Item {
                         Layout.fillHeight: true
-                        Layout.preferredWidth: 130
+                        Layout.preferredWidth: 110
                         Layout.topMargin: -80
                         z: 10
 
