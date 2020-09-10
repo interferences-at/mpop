@@ -546,7 +546,7 @@ void TestMpopService::test_24_getAnswerByGender() {
 
     QMap<QString,int> answers = this->facade->getAnswerByGender(TEST_QUESTION_07_ID,"all",-1,-1,"all");
 
-    QCOMPARE(answers[TEST_QUESTION_07_ID], Test_QUESTION_07_AVG);
+    QCOMPARE(answers[TEST_USER_1_GENDER], Test_QUESTION_07_AVG);
 }
 
 
