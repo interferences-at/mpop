@@ -116,7 +116,7 @@ RowLayout {
     // Navigation
     Rectangle {
         Layout.fillHeight: true
-        Layout.preferredWidth: 130
+        Layout.preferredWidth: 110
         Layout.margins: -1
         Layout.leftMargin: 0
 
