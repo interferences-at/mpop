@@ -73,8 +73,8 @@ ApplicationWindow {
 
     // assigning properties
     visible: true
-    width: 1920
-    height: 1080
+    width: kioskConfig.kiosk_mode === const_KIOSK_MODE_CENTRAL ? 1920 : 1024
+    height: kioskConfig.kiosk_mode === const_KIOSK_MODE_CENTRAL ? 1080 : 640
     title: textWindowTitle.text
 
     background: Rectangle {
@@ -96,8 +96,6 @@ ApplicationWindow {
         textEn: "MPOP Kiosk"
         textFr: "Le kiosque MPOP"
     }
-
-
 
     /**
      * Handles the signals from the RFID serial reader.
@@ -159,6 +157,11 @@ ApplicationWindow {
         function goToSurveyQuestions() {
             mainStackLayout.currentIndex = mainStackLayout.index_SURVEY_QUESTIONS;
             questionsStackLayout.currentIndex = questionsStackLayout.index_FIRST_QUESTION;
+        }
+
+        function goToFinalQuestions() {
+            mainStackLayout.currentIndex = mainStackLayout.index_EXIT_SECTION;
+            exitSection.currentIndex = exitSection.index_LAST_QUESTIONS;
 
         }
 
@@ -180,8 +183,8 @@ ApplicationWindow {
                 if (kioskConfig.kiosk_mode == window.const_KIOSK_MODE_ENTRY) {
                     goToDemographicQuestions();
 
-                    // Go to the survey questions if this is the central kiosk
-                    // But: if the user hasn't answered the demographic questions, send them there.
+                // Go to the survey questions if this is the central kiosk
+                // But: if the user hasn't answered the demographic questions, send them there.
                 } else if (kioskConfig.kiosk_mode == window.const_KIOSK_MODE_CENTRAL) {
                     if (userProfile.hasDemographicQuestionsAnswered()) {
                         goToSurveyQuestions();
@@ -190,10 +193,9 @@ ApplicationWindow {
                         goToDemographicQuestions();
                     }
 
-                    // If this is the exit kiosk, send them to the final pages
+                // If this is the exit kiosk, send them to the final pages
                 } else if (kioskConfig.kiosk_mode == window.const_KIOSK_MODE_EXIT) {
-                    // TODO
-                    console.log("TODO: go to exit kiosk mode");
+                    goToFinalQuestions();
                 }
             }
         }
@@ -296,6 +298,10 @@ ApplicationWindow {
      */
     ModelQuestions {
         id: modelQuestions
+    }
+
+    ModelFinalQuestions {
+        id: modelFinalQuestions
     }
 
     /**
@@ -881,34 +887,44 @@ ApplicationWindow {
             id: exitSection
 
             readonly property int index_LAST_QUESTIONS: 0
+            readonly property int index_THANK_YOU: 1
 
             Layout.fillWidth: true
             Layout.fillHeight: true
             Layout.margins: 0
 
             PageFinalQuestion {
-                // TODO
+                model: modelFinalQuestions.get(0)
+
+                showPrevButton: kioskConfig.kiosk_mode !== const_KIOSK_MODE_EXIT
+                onPreviousClicked: mainStackLayout.currentIndex--
+                onNextClicked: exitSection.currentIndex++
             }
 
-            ColumnLayout {
-                Label {
-                    text: textMerci.text
-                    font.capitalization: Font.AllUppercase
+            Rectangle {
+                Layout.fillWidth: true
+                Layout.fillHeight: true
 
-                    BilingualText {
-                        id: textMerci
-                        textEn: "Thanks a lot."
-                        textFr: "Merci beaucoup."
-                    }
-                }
-                Label {
-                    text: textGiveYouKeyBack.text
-                    font.capitalization: Font.AllUppercase
+                color: Palette.accent
 
-                    BilingualText {
-                        id: textGiveYouKeyBack
-                        textEn: "Don't forget\nto give your key back."
-                        textFr: "N'oubliez pas\nde remettre votre clé."
+                ColumnLayout {
+                    Label {
+                        Layout.leftMargin: 40
+                        Layout.topMargin: 80
+                        padding: 0
+
+                        BilingualText {
+                            id: textMerci
+                            textEn: "Thanks a lot!\nDon't forget\nto give your key back."
+                            textFr: "Merci beaucoup!\nN'oubliez pas\nde remettre votre clé."
+                        }
+
+                        text: textMerci.text
+                        font {
+                            pixelSize: 57
+                            capitalization: Font.AllUppercase
+                        }
+                        color: Palette.lightBlack
                     }
                 }
             }
