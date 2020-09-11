@@ -71,6 +71,14 @@ ApplicationWindow {
         mainStackLayout.currentIndex = mainStackLayout.index_OSC_DEBUG;;
     }
 
+    /**
+     * Reset the timer
+     */
+    function resetIdleTimer() {
+        console.log("resetting timer");
+        idleTimer.restart();
+    }
+
     // assigning properties
     visible: true
     width: kioskConfig.kiosk_mode === const_KIOSK_MODE_CENTRAL ? 1920 : 1024
@@ -79,20 +87,12 @@ ApplicationWindow {
 
     // Checks for mouse events - so that we go to the screensaver after some inactivity.
     MouseArea {
-
         propagateComposedEvents: true
-        onClicked: {
-            idleTimer.resetIdleTimer();
-            mouse.accepted = false;
-        }
-        onDoubleClicked: {
-            idleTimer.resetIdleTimer();
-            mouse.accepted = false;
-        }
-        onPressAndHold: {
-            idleTimer.resetIdleTimer();
-            mouse.accepted = false;
-        }
+
+        anchors.fill: parent
+        onClicked: resetIdleTimer()
+        onDoubleClicked: resetIdleTimer()
+        onPressAndHold: resetIdleTimer()
     }
 
     background: Rectangle {

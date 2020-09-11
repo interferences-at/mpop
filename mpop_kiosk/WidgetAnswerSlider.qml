@@ -50,6 +50,7 @@ ColumnLayout {
         onMoved: {
             var intValue = Math.round(value);
             thisWidget.sliderMoved(intValue);
+            resetIdleTimer();
         }
 
         background: Rectangle {
