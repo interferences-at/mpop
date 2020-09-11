@@ -25,9 +25,7 @@ jobs:
         uses: ryankurte/action-apt@v0.1.0
         with:
           # apt packages to install
-          packages:
-            - docker.io
-            - docker-compose 
+          packages: "docker.io docker-compose" 
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
 
