@@ -75,7 +75,6 @@ ApplicationWindow {
      * Reset the timer
      */
     function resetIdleTimer() {
-        console.log("resetting timer");
         idleTimer.restart();
     }
 
@@ -143,11 +142,7 @@ ApplicationWindow {
     Timer {
         id: idleTimer
 
-        function resetIdleTimer() {
-            idleTimer.restart();
-        }
-
-        readonly property int duration_SECONDS: 10
+        readonly property int duration_SECONDS: 120   // 2 minutes
 
         interval: duration_SECONDS * 1000
         repeat: false
@@ -205,7 +200,7 @@ ApplicationWindow {
                 console.log("Error: invalid userId");
                 mainStackLayout.currentIndex = mainStackLayout.index_SCREENSAVER;
             } else {
-                idleTimer.resetIdleTimer();
+                resetIdleTimer();
                 // Go to the demographic question if this is the entry kiosk
                 if (kioskConfig.kiosk_mode == window.const_KIOSK_MODE_ENTRY) {
                     goToDemographicQuestions();
