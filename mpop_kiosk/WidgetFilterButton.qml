@@ -29,4 +29,6 @@ Button {
         border.color: "#fff"
         radius: 30
     }
+
+    onPressed: resetIdleTimer()
 }

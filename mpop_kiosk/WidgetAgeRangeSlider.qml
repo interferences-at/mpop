@@ -101,6 +101,9 @@ ColumnLayout {
             color: slider0.second.pressed ? colorPressed : colorNotPressed
             border.color: window.invertedTheme ? Palette.lightGrey : Palette.mediumGrey
         }
+
+        first.onMoved: resetIdleTimer()
+        second.onMoved: resetIdleTimer()
     }
 
     RowLayout {

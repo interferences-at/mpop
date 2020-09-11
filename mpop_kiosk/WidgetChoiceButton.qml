@@ -35,4 +35,6 @@ Button {
         anchors.fill: parent
         color: "transparent"
     }
+
+    onPressed: resetIdleTimer()
 }
