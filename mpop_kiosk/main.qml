@@ -723,8 +723,10 @@ ApplicationWindow {
                                 height: 56
                                 padding: 0
                                 leftPadding: 25
+                                rightPadding: 25
                                 color: index > currentQuestionIndex ? Palette.mediumGrey : Palette.lightBlack
                                 text: questionText.text
+                                elide: Text.ElideRight
                                 verticalAlignment: Label.AlignVCenter
 
                                 font {
