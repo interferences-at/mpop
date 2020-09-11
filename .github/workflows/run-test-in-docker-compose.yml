@@ -20,12 +20,7 @@ jobs:
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       - name: Install apt packages
-        # You may pin to the exact commit or the version.
-        # uses: ryankurte/action-apt@854f019356a19d5b1537e1e4496fe29a643189c2
-        uses: ryankurte/action-apt@v0.1.0
-        with:
-          # apt packages to install
-          packages: "docker.io docker-compose" 
+        run: sudo apt-get install docker.io docker-compose
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
 
