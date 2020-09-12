@@ -17,6 +17,8 @@ ApplicationWindow {
     property alias lang: userProfile.language // All the BilingualText items watch this value
     property alias rfidTag: userProfile.rfidTag
     property alias invertedTheme: mainStackLayout.invertedTheme
+    property alias viewAllQuestions: questionsContainer.viewAllQuestions
+    property alias currentQuestionIndex: pageButtonsListView.currentIndex
 
     // Those aliases are accessed directly via the global window item:
     property alias userProfile: userProfile
@@ -71,8 +73,8 @@ ApplicationWindow {
 
     // assigning properties
     visible: true
-    width: 1920
-    height: 1080
+    width: kioskConfig.kiosk_mode === const_KIOSK_MODE_CENTRAL ? 1920 : 1024
+    height: kioskConfig.kiosk_mode === const_KIOSK_MODE_CENTRAL ? 1080 : 640
     title: textWindowTitle.text
 
     background: Rectangle {
@@ -94,8 +96,6 @@ ApplicationWindow {
         textEn: "MPOP Kiosk"
         textFr: "Le kiosque MPOP"
     }
-
-
 
     /**
      * Handles the signals from the RFID serial reader.
@@ -157,6 +157,11 @@ ApplicationWindow {
         function goToSurveyQuestions() {
             mainStackLayout.currentIndex = mainStackLayout.index_SURVEY_QUESTIONS;
             questionsStackLayout.currentIndex = questionsStackLayout.index_FIRST_QUESTION;
+        }
+
+        function goToFinalQuestions() {
+            mainStackLayout.currentIndex = mainStackLayout.index_EXIT_SECTION;
+            exitSection.currentIndex = exitSection.index_LAST_QUESTIONS;
 
         }
 
@@ -178,8 +183,8 @@ ApplicationWindow {
                 if (kioskConfig.kiosk_mode == window.const_KIOSK_MODE_ENTRY) {
                     goToDemographicQuestions();
 
-                    // Go to the survey questions if this is the central kiosk
-                    // But: if the user hasn't answered the demographic questions, send them there.
+                // Go to the survey questions if this is the central kiosk
+                // But: if the user hasn't answered the demographic questions, send them there.
                 } else if (kioskConfig.kiosk_mode == window.const_KIOSK_MODE_CENTRAL) {
                     if (userProfile.hasDemographicQuestionsAnswered()) {
                         goToSurveyQuestions();
@@ -188,10 +193,9 @@ ApplicationWindow {
                         goToDemographicQuestions();
                     }
 
-                    // If this is the exit kiosk, send them to the final pages
+                // If this is the exit kiosk, send them to the final pages
                 } else if (kioskConfig.kiosk_mode == window.const_KIOSK_MODE_EXIT) {
-                    // TODO
-                    console.log("TODO: go to exit kiosk mode");
+                    goToFinalQuestions();
                 }
             }
         }
@@ -296,6 +300,10 @@ ApplicationWindow {
         id: modelQuestions
     }
 
+    ModelFinalQuestions {
+        id: modelFinalQuestions
+    }
+
     /**
      * This is where we implement all OSC message sending.
      */
@@ -390,6 +398,8 @@ ApplicationWindow {
          * This is our main two-column layout.
          */
         RowLayout {
+
+            spacing: 0
 
             StackLayout {
                 id: demographicQuestionsStackLayout
@@ -505,10 +515,15 @@ ApplicationWindow {
                 }
 
                 // Enjoy your visit (only shown in the entry kiosk)
-                ColumnLayout {
+                Rectangle {
+                    Layout.fillWidth: true
+                    Layout.fillHeight: true
+
+                    color: Palette.accent
+
                     Label {
-                        Layout.leftMargin: 40
-                        Layout.topMargin: 100
+                        leftPadding: 40
+                        topPadding: 80
 
                         BilingualText {
                             id: textThankYou
@@ -516,6 +531,7 @@ ApplicationWindow {
                             textFr: "Merci beaucoup!\nVous pouvez maintenant\ncommencer votre visite."
                         }
                         text: textThankYou.text
+                        color: Palette.lightBlack
 
                         font {
                             pixelSize: 57
@@ -525,31 +541,39 @@ ApplicationWindow {
                 }
             }
 
-            WidgetPreviousNext {
+            RowLayout {
+                Layout.preferredWidth: 110
+                Layout.fillHeight: true
                 Layout.alignment: Qt.AlignBottom
-                Layout.rightMargin: 25
-                Layout.bottomMargin: 30
-                visible: demographicQuestionsStackLayout.currentIndex !== demographicQuestionsStackLayout.count - 1
-                showPrevButton: demographicQuestionsStackLayout.currentIndex > 0
+                spacing: 0
 
-                onNextButtonClicked: {
-                    if (demographicQuestionsStackLayout.currentIndex === demographicQuestionsStackLayout.count - 2) {
-                        // if this is the entry kiosk, show the "enjoy your visit" page.
-                        // if this is the center kiosk, go to the questions
-                        if (kioskConfig.kiosk_mode !== window.const_KIOSK_MODE_ENTRY) {
-                            // kiosk_mode is central:
-                            mainStackLayout.nextPage();
-                            // prevent changing page
-                            return;
+                visible: demographicQuestionsStackLayout.currentIndex !== demographicQuestionsStackLayout.index_ENJOY_YOUR_VISIT
+
+                WidgetPreviousNext {
+                    Layout.alignment: Qt.AlignBottom | Qt.AlignHCenter
+                    Layout.bottomMargin: 30
+                    visible: demographicQuestionsStackLayout.currentIndex !== demographicQuestionsStackLayout.count - 1
+                    showPrevButton: demographicQuestionsStackLayout.currentIndex > 0
+
+                    onNextButtonClicked: {
+                        if (demographicQuestionsStackLayout.currentIndex === demographicQuestionsStackLayout.count - 2) {
+                            // if this is the entry kiosk, show the "enjoy your visit" page.
+                            // if this is the center kiosk, go to the questions
+                            if (kioskConfig.kiosk_mode !== window.const_KIOSK_MODE_ENTRY) {
+                                // kiosk_mode is central:
+                                mainStackLayout.nextPage();
+                                // prevent changing page
+                                return;
+                            }
                         }
+
+                        // change demographic question page
+                        demographicQuestionsStackLayout.nextPage();
                     }
 
-                    // change demographic question page
-                    demographicQuestionsStackLayout.nextPage();
-                }
-
-                onPreviousButtonClicked: {
-                    demographicQuestionsStackLayout.previousPage();
+                    onPreviousButtonClicked: {
+                        demographicQuestionsStackLayout.previousPage();
+                    }
                 }
             }
         }
@@ -567,83 +591,161 @@ ApplicationWindow {
             Layout.margins: 0
             spacing: 0
 
+            property bool viewAllQuestions: false
+
             function setCurrentPage(index) {
                 // format pageNumberText from index
                 var pageNumberText = ('00' + (index + 1)).slice(-2);
 
                 // propagate to subcomponents
                 questionsStackLayout.currentIndex = index;
-                pageButtonsListView.currentIndex = index;
+                currentQuestionIndex = index;
                 currentPageNumberLabel.text = pageNumberText;
             }
 
             /**
              * List of buttons to access each question page.
              */
-            Rectangle {
-                Layout.preferredWidth: 80
-                Layout.fillHeight: true
-                color: Palette.white
-                border.color: Palette.lightBlack
-                Layout.topMargin: -1
-                Layout.bottomMargin: -1
-                Layout.leftMargin: -1
+            RowLayout {
+                spacing: 0
+                z: 200 // takes priority over Everything
 
-                ColumnLayout {
-                    anchors.fill: parent
+                Rectangle {
+                    color: Palette.white
+                    border.color: Palette.lightBlack
+                    Layout.preferredWidth: 80
+                    Layout.fillHeight: true
+                    Layout.topMargin: -1
+                    Layout.bottomMargin: -1
+                    Layout.leftMargin: -1
 
-                    // "Questions" label
-                    Label {
-                        Layout.fillWidth: true
-                        Layout.preferredHeight: 170
-                        horizontalAlignment: Text.AlignHCenter
-                        verticalAlignment: Text.AlignVCenter
-                        text: "Questions"
-                        font {
-                            pixelSize: 20
-                            capitalization: Font.AllUppercase
+                    ColumnLayout {
+                        anchors.fill: parent
+
+                        // "Questions" label
+                        Label {
+                            Layout.fillWidth: true
+                            Layout.fillHeight: true
+                            horizontalAlignment: Text.AlignHCenter
+                            verticalAlignment: Text.AlignVCenter
+                            text: "Questions"
+                            font {
+                                pixelSize: 20
+                                capitalization: Font.AllUppercase
+                            }
+                            color: Palette.lightBlack
+                            rotation: -90
+                            transformOrigin: Item.Center
                         }
-                        color: Palette.lightBlack
-                        rotation: -90
-                        transformOrigin: Item.Center
+
+                        // Page indexes
+                        ListView {
+                            id: pageButtonsListView
+
+                            Layout.fillWidth: true
+                            Layout.preferredHeight: contentItem.childrenRect.height
+                            Layout.bottomMargin: -5
+                            Layout.alignment: Qt.AlignBottom
+                            boundsBehavior: Flickable.StopAtBounds
+                            orientation: Qt.Vertical
+
+                            // There are 15 pages, and that should not change.
+                            model: modelQuestions
+
+                            // Let's draw each button:
+                            delegate: WidgetQuestionButton {
+                                text: ("00" + (index + 1)).slice(-2) // Property of the items in the list model this ListView uses.
+                                highlighted: index === currentQuestionIndex // Property of the items in the list model this ListView uses.
+                                afterCurrent: index > currentQuestionIndex
+
+                                onClicked: {
+                                    questionsContainer.setCurrentPage(index);
+                                }
+                            }
+                        }
+
+                        // "All" questions button
+                        WidgetQuestionButton {
+                            BilingualText {
+                                id: allQuestionsText
+                                textFr: "Toutes"
+                                textEn: "All"
+                            }
+
+                            text: allQuestionsText.text
+                            font.pixelSize: 11
+                            font.letterSpacing: 11 * 25 / 1000
+                            Layout.fillWidth: true
+
+                            bgCoverAll: true
+                            highlighted: viewAllQuestions
+                            onClicked: viewAllQuestions = !viewAllQuestions
+                        }
                     }
+                }
 
-                    ListView {
-                        id: pageButtonsListView
+                Item {
+                    Layout.fillHeight: true
+                    visible: viewAllQuestions
 
-                        Layout.fillWidth: true
-                        Layout.fillHeight: true
-                        orientation: Qt.Vertical
+                    Rectangle {
+                        anchors.left: parent.left
+                        anchors.top: parent.top
+                        anchors.bottom: parent.bottom
+                        anchors.margins: -1
+                        height: parent.height
+                        implicitWidth: 1670
+                        color: Palette.white
+                        border.color: Palette.mediumGrey
 
-                        // There are 15 pages, and that should not change.
-                        // oops!
-                        // should instead directly feed from the total amount of questions
-                        // to prevent having to change this every time the question count changes
-                        // this model is convoluted and unnecessary!
-                        model: ModelPageButtons {
-                            id: pageButtonsModel
-                        }
+                        ListView {
+                            id: pageQuestionsViewList
 
-                        // Let's draw each button:
-                        delegate: WidgetQuestionButton {
-                            text: ("00" + (index + 1)).slice(-2) // Property of the items in the list model this ListView uses.
-                            highlighted: index === pageButtonsListView.currentIndex // Property of the items in the list model this ListView uses.
-                            afterCurrent: index > pageButtonsListView.currentIndex
+                            width: parent.width
+                            height: contentItem.childrenRect.height
+                            anchors.bottom: parent.bottom
+                            anchors.bottomMargin: 56
+                            boundsBehavior: Flickable.StopAtBounds
+                            orientation: Qt.Vertical
 
-                            onClicked: {
-                                questionsContainer.setCurrentPage(index);
+                            // There are 15 pages, and that should not change.
+                            model: modelQuestions
+
+                            // Let's draw each button:
+                            delegate: Label {
+                                BilingualText {
+                                    id: questionText
+                                    textEn: model.question_en
+                                    textFr: model.question_fr
+                                }
+
+                                width: parent.width
+                                height: 56
+                                padding: 0
+                                leftPadding: 25
+                                rightPadding: 25
+                                color: index > currentQuestionIndex ? Palette.mediumGrey : Palette.lightBlack
+                                text: questionText.text
+                                elide: Text.ElideRight
+                                verticalAlignment: Label.AlignVCenter
+
+                                font {
+                                    pixelSize: 20
+                                    capitalization: Font.AllUppercase
+                                }
+
+                                background: Rectangle {
+                                    color: "transparent"
+                                    border.color: Palette.mediumGrey
+                                    anchors.fill: parent
+                                    anchors.bottomMargin: -1
+                                }
                             }
                         }
                     }
-
-                    WidgetQuestionButton {
-                        text: "Toutes"
-                        font.pixelSize: 11
-                        font.letterSpacing: 11 * 25 / 1000
-                        Layout.fillWidth: true
-                    }
                 }
             }
+
 
             /**
              * Displays the current page number.
@@ -652,11 +754,13 @@ ApplicationWindow {
                 Layout.fillWidth: true
                 Layout.fillHeight: true
 
+                // background
                 Rectangle {
                     anchors.fill: parent
                     color: invertedTheme ? Palette.white : Palette.lightBlack
                 }
 
+                // dataviz toggler
                 WidgetGoToDataviz {
                     anchors.top: parent.top
 
@@ -665,6 +769,7 @@ ApplicationWindow {
                     onClicked: questionsStackLayout.toggleDataviz()
                 }
 
+                // main question display layout
                 RowLayout {
                     anchors.fill: parent
                     anchors.topMargin: 80
@@ -723,132 +828,17 @@ ApplicationWindow {
                         // The pages for single and multiple questions:
                         // TODO: wrap in Repeater and feed with model data
 
-                        // Page 01 - single
-                        PageQuestion {
-                            modelQuestions: modelQuestions
-                            questionIdentifiers: ["incidence_drogue"]
-                            datavizSender: datavizManager
-                            serviceClient: userProfile
-                        }
+                        Repeater {
+                            model: modelQuestions
 
-                        // Page 02 - single
-                        PageQuestion {
-                            modelQuestions: modelQuestions
-                            questionIdentifiers: ["decriminalisation_crimes_non_violents"]
-                            datavizSender: datavizManager
-                            serviceClient: userProfile
-                        }
-
-                        // Page 03 - single
-                        PageQuestion {
-                            modelQuestions: modelQuestions
-                            questionIdentifiers: ["systeme_bureaucrate"]
-                            datavizSender: datavizManager
-                            serviceClient: userProfile
-                        }
-
-                        // Page 04 - multiple
-                        PageQuestion {
-                            // FIXME: the main question text should be common (most often) to all questions in a multiple-question page:
-                            questionIdentifiers: ["equitable_victimes", "equitable_vulnerables", "equitable_jeunes_contrevenants", "equitable_riches", "equitable_minorites_culturelles"]
-                            datavizSender: datavizManager
-                            serviceClient: userProfile
-                            modelQuestions: modelQuestions // The whole model with all questions.
-                        }
-
-                        // Page 05 - single
-                        PageQuestion {
-                            modelQuestions: modelQuestions
-                            questionIdentifiers: ["confiance_systeme"]
-                            datavizSender: datavizManager
-                            serviceClient: userProfile
-                        }
-
-                        // Page 06 - single
-                        PageQuestion {
-                            modelQuestions: modelQuestions
-                            questionIdentifiers: ["interner"]
-                            datavizSender: datavizManager
-                            serviceClient: userProfile
-                        }
-
-                        // Page 07 - single
-                        PageQuestion {
-                            modelQuestions: modelQuestions
-                            questionIdentifiers: ["peine_plus_severes"]
-                            datavizSender: datavizManager
-                            serviceClient: userProfile
-                        }
-
-                        // Page 08 - single
-                        PageQuestion {
-                            modelQuestions: modelQuestions
-                            questionIdentifiers: ["taux_recidive"]
-                            datavizSender: datavizManager
-                            serviceClient: userProfile
-                        }
-
-                        // Page 09 - single
-                        PageQuestion {
-                            modelQuestions: modelQuestions
-                            questionIdentifiers: ["bon_traitement"]
-                            datavizSender: datavizManager
-                            serviceClient: userProfile
-                        }
-
-                        // Page 10 - single
-                        PageQuestion {
-                            modelQuestions: modelQuestions
-                            questionIdentifiers: ["confinement_solitaire"]
-                            datavizSender: datavizManager
-                            serviceClient: userProfile
-                        }
-
-                        // Page 11 - multiple
-                        PageQuestion {
-                            modelQuestions: modelQuestions
-                            questionIdentifiers: ["soins_physiques", "soins_mentaux"]
-                            datavizSender: datavizManager
-                            serviceClient: userProfile
-                        }
-
-                        // Page 12 - single
-                        PageQuestion {
-                            modelQuestions: modelQuestions
-                            questionIdentifiers: ["ressources_reinsertion"]
-                            datavizSender: datavizManager
-                            serviceClient: userProfile
-                        }
-
-                        // Page 13 - single
-                        PageQuestion {
-                            modelQuestions: modelQuestions
-                            questionIdentifiers: ["benefice_justice_reparatrice"]
-                            datavizSender: datavizManager
-                            serviceClient: userProfile
-                        }
-
-                        // Page 14 - single
-                        PageQuestion {
-                            modelQuestions: modelQuestions
-                            questionIdentifiers: ["developper_alternatives_prison"]
-                            datavizSender: datavizManager
-                            serviceClient: userProfile
-                        }
-
-                        // Page 15 - multiple
-                        PageQuestion {
-                            modelQuestions: modelQuestions
-                            questionIdentifiers: ["investir_education", "investir_sante_services_sociaux", "investir_emploi"]
-                            datavizSender: datavizManager
-                            serviceClient: userProfile
+                            PageQuestion {}
                         }
                     }
 
                     // Question navigation
                     Item {
                         Layout.fillHeight: true
-                        Layout.preferredWidth: 130
+                        Layout.preferredWidth: 110
                         Layout.topMargin: -80
                         z: 10
 
@@ -900,6 +890,13 @@ ApplicationWindow {
                         }
                     }
                 }
+
+                // all questions overlay
+                Rectangle {
+                    anchors.fill: parent
+                    color: Palette.lightBlack
+                    opacity: viewAllQuestions ? 0.5 : 0
+                }
             }
         }
 
@@ -908,34 +905,44 @@ ApplicationWindow {
             id: exitSection
 
             readonly property int index_LAST_QUESTIONS: 0
+            readonly property int index_THANK_YOU: 1
 
             Layout.fillWidth: true
             Layout.fillHeight: true
             Layout.margins: 0
 
             PageFinalQuestion {
-                // TODO
+                model: modelFinalQuestions.get(0)
+
+                showPrevButton: kioskConfig.kiosk_mode !== const_KIOSK_MODE_EXIT
+                onPreviousClicked: mainStackLayout.currentIndex--
+                onNextClicked: exitSection.currentIndex++
             }
 
-            ColumnLayout {
-                Label {
-                    text: textMerci.text
-                    font.capitalization: Font.AllUppercase
+            Rectangle {
+                Layout.fillWidth: true
+                Layout.fillHeight: true
 
-                    BilingualText {
-                        id: textMerci
-                        textEn: "Thanks a lot."
-                        textFr: "Merci beaucoup."
-                    }
-                }
-                Label {
-                    text: textGiveYouKeyBack.text
-                    font.capitalization: Font.AllUppercase
+                color: Palette.accent
 
-                    BilingualText {
-                        id: textGiveYouKeyBack
-                        textEn: "Don't forget\nto give your key back."
-                        textFr: "N'oubliez pas\nde remettre votre clé."
+                ColumnLayout {
+                    Label {
+                        Layout.leftMargin: 40
+                        Layout.topMargin: 80
+                        padding: 0
+
+                        BilingualText {
+                            id: textMerci
+                            textEn: "Thanks a lot!\nDon't forget\nto give your key back."
+                            textFr: "Merci beaucoup!\nN'oubliez pas\nde remettre votre clé."
+                        }
+
+                        text: textMerci.text
+                        font {
+                            pixelSize: 57
+                            capitalization: Font.AllUppercase
+                        }
+                        color: Palette.lightBlack
                     }
                 }
             }

@@ -87,64 +87,49 @@ ListModel {
     // Page 4
     // Group of 5:
     ListElement {
-        identifier: "equitable_victimes"
-        question_fr: "Trouvez-vous que le système judiciaire est juste envers…"
-        question_en: "Do you think the justice system is fair towards…"
+        question_fr: "Trouvez-vous que le système judiciaire est juste envers…?"
+        question_en: "Do you think the justice system is fair towards…?"
         min_fr: "Pas du tout"
         max_fr: "Tout à fait"
         min_en: "Not at all"
         max_en: "Absolutely"
-        subtitle_fr: "les victimes?"
-        subtitle_en: "victims?"
-        db_row_id: 4
-    }
-    ListElement {
-        identifier: "equitable_vulnerables"
-        question_fr: "Trouvez-vous que le système judiciaire est juste envers…"
-        question_en: "Do you think the justice system is fair towards…"
-        min_fr: "Pas du tout"
-        max_fr: "Tout à fait"
-        min_en: "Not at all"
-        max_en: "Absolutely"
-        subtitle_fr: "les personnes marginalisées?"
-        subtitle_en: "marginalized people?"
-        db_row_id: 5
-    }
-    ListElement {
-        identifier: "equitable_jeunes_contrevenants"
-        question_fr: "Trouvez-vous que le système judiciaire est juste envers…"
-        question_en: "Do you think the justice system is fair towards…"
-        min_fr: "Pas du tout"
-        max_fr: "Tout à fait"
-        min_en: "Not at all"
-        max_en: "Absolutely"
-        subtitle_fr: "les jeunes contrevenants?"
-        subtitle_en: "young offenders?"
-        db_row_id: 6
-    }
-    ListElement {
-        identifier: "equitable_riches"
-        question_fr: "Trouvez-vous que le système judiciaire est juste envers…"
-        question_en: "Do you think the justice system is fair towards…"
-        min_fr: "Pas du tout"
-        max_fr: "Tout à fait"
-        min_en: "Not at all"
-        max_en: "Absolutely"
-        subtitle_fr: "les gens fortunés?"
-        subtitle_en: "wealthy people?"
-        db_row_id: 7
-    }
-    ListElement {
-        identifier: "equitable_minorites_culturelles"
-        question_fr: "Trouvez-vous que le système judiciaire est juste envers…"
-        question_en: "Do you think the justice system is fair towards…"
-        min_fr: "Pas du tout"
-        max_fr: "Tout à fait"
-        min_en: "Not at all"
-        max_en: "Absolutely"
-        subtitle_fr: "les minorités visibles ou culturelles?"
-        subtitle_en: "visible or cultural minorities?"
-        db_row_id: 8
+
+        subquestions: [
+            ListElement {
+                identifier: "equitable_victimes"
+                subtitle_fr: "les victimes"
+                subtitle_en: "victims"
+                db_row_id: 4
+            },
+
+            ListElement {
+                identifier: "equitable_vulnerables"
+                subtitle_fr: "les personnes marginalisées"
+                subtitle_en: "marginalized people"
+                db_row_id: 5
+            },
+
+            ListElement {
+                identifier: "equitable_jeunes_contrevenants"
+                subtitle_fr: "les jeunes contrevenants"
+                subtitle_en: "young offenders"
+                db_row_id: 6
+            },
+
+            ListElement {
+                identifier: "equitable_riches"
+                subtitle_fr: "les gens fortunés"
+                subtitle_en: "wealthy people"
+                db_row_id: 7
+            },
+
+            ListElement {
+                identifier: "equitable_minorites_culturelles"
+                subtitle_fr: "les minorités visibles ou culturelles"
+                subtitle_en: "visible or cultural minorities"
+                db_row_id: 8
+            }
+        ]
     }
 
     // Page 5
@@ -240,28 +225,27 @@ ListModel {
     // Page 11
     // Group of 2:
     ListElement {
-        identifier: "soins_physiques"
         question_fr: "Croyez-vous que les soins médicaux sont adéquats en prison?"
         question_en: "Do you think that medical care in prison is adequate?"
         min_fr: "Pas du tout"
         max_fr: "Tout à fait"
         min_en: "Not at all"
         max_en: "Absolutely"
-        subtitle_fr: "Santé physique"
-        subtitle_en: "Physical health"
-        db_row_id: 15
-    }
-    ListElement {
-        identifier: "soins_mentaux"
-        question_fr: "Croyez-vous que les soins médicaux sont adéquats en prison?"
-        question_en: "Do you think that medical care in prison is adequate?"
-        min_fr: "Pas du tout"
-        max_fr: "Tout à fait"
-        min_en: "Not at all"
-        max_en: "Absolutely"
-        subtitle_fr: "Santé mentale"
-        subtitle_en: "Mental health"
-        db_row_id: 16
+
+        subquestions: [
+            ListElement {
+                identifier: "soins_physiques"
+                subtitle_fr: "Santé physique"
+                subtitle_en: "Physical health"
+                db_row_id: 15
+            },
+            ListElement {
+                identifier: "soins_mentaux"
+                subtitle_fr: "Santé mentale"
+                subtitle_en: "Mental health"
+                db_row_id: 16
+            }
+        ]
     }
 
     // Page 12
@@ -312,78 +296,32 @@ ListModel {
     // Page 15
     // Group of 3:
     ListElement {
-        identifier: "investir_education"
-        question_fr: "Pour réduire le taux de criminalité, à quelle hauteur devrait-on investir dans…"
-        question_en: "To reduce the rate of criminal activity, to what degree should we invest in…"
+        question_fr: "Pour réduire le taux de criminalité, à quelle hauteur devrait-on investir dans…?"
+        question_en: "To reduce the rate of criminal activity, to what degree should we invest in…?"
         min_fr: "Rien"
         max_fr: "Beaucoup"
         min_en: "Nothing"
         max_en: "A lot"
-        subtitle_fr: "L’éducation?"
-        subtitle_en: "Education?"
-        db_row_id: 20
-    }
-    ListElement {
-        identifier: "investir_sante_services_sociaux"
-        question_fr: "Pour réduire le taux de criminalité, à quelle hauteur devrait-on investir dans…"
-        question_en: "To reduce the rate of criminal activity, to what degree should we invest in…"
-        min_fr: "Rien"
-        max_fr: "Beaucoup"
-        min_en: "Nothing"
-        max_en: "A lot"
-        subtitle_fr: "La santé et les services sociaux?"
-        subtitle_en: "Health and Social Services?"
-        db_row_id: 21
-    }
-    ListElement {
-        identifier: "investir_emploi"
-        question_fr: "Pour réduire le taux de criminalité, à quelle hauteur devrait-on investir dans…"
-        question_en: "To reduce the rate of criminal activity, to what degree should we invest in…"
-        min_fr: "Rien"
-        max_fr: "Beaucoup"
-        min_en: "Nothing"
-        max_en: "A lot"
-        subtitle_fr: "Les programmes liés à l’emploi?"
-        subtitle_en: "Job-related programs?"
-        db_row_id: 22
-    }
 
-    // Final questions
-    // Group of 3:
-    ListElement {
-        identifier: "importance_assurance_protection_population"
-        question_fr: "Selon vous, à quoi sert la prison?"
-        question_en: "In your opinion, what is the purpose of prison?"
-        min_fr: "Aucunement"
-        max_fr: "Principalement"
-        min_en: "Not at all"
-        max_en: "Primarily"
-        subtitle_fr: "À assurer la sécurité de la population"
-        subtitle_en: "To ensure the population’s safety"
-        db_row_id: 23
-    }
-    ListElement {
-        identifier: "importance_repondre_actes"
-        question_fr: "Selon vous, à quoi sert la prison?"
-        question_en: "In your opinion, what is the purpose of prison?"
-        min_fr: "Aucunement"
-        max_fr: "Principalement"
-        min_en: "Not at all"
-        max_en: "Primarily"
-        subtitle_fr: "À punir les criminels"
-        subtitle_en: "To punish criminals"
-        db_row_id: 24
-    }
-    ListElement {
-        identifier: "importance_soutien_rehabilitation"
-        question_fr: "Selon vous, à quoi sert la prison?"
-        question_en: "In your opinion, what is the purpose of prison?"
-        min_fr: "Aucunement"
-        max_fr: "Principalement"
-        min_en: "Not at all"
-        max_en: "Primarily"
-        subtitle_fr: "À soutenir la réhabilitation des délinquants"
-        subtitle_en: "To assist the rehabilitation of offenders"
-        db_row_id: 25
+        subquestions: [
+            ListElement {
+                identifier: "investir_education"
+                subtitle_fr: "L’éducation?"
+                subtitle_en: "Education?"
+                db_row_id: 20
+            },
+            ListElement {
+                identifier: "investir_sante_services_sociaux"
+                subtitle_fr: "La santé et les services sociaux?"
+                subtitle_en: "Health and Social Services?"
+                db_row_id: 21
+            },
+            ListElement {
+                identifier: "investir_emploi"
+                subtitle_fr: "Les programmes liés à l’emploi?"
+                subtitle_en: "Job-related programs?"
+                db_row_id: 22
+            }
+        ]
     }
 }

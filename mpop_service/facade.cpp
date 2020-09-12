@@ -578,13 +578,16 @@ QList<int> Facade::getAnswerByAge(const QString& questionId,const QString& ethen
                       " IFNULL(ROUND(AVG (CASE WHEN (v.age>90 and v.age<=95) THEN a.answer_value ELSE 0 END),2),'-1') AS '[91-95]',"
                       " IFNULL(ROUND(AVG (CASE WHEN (v.age>95 and v.age<=100) THEN a.answer_value ELSE 0 END),2),'-1') AS '[96-100]'"
                       "FROM answer AS a "
-                      "JOIN  visitor AS v ON a.visitor_id=v.id JOIN question AS q ON a.question_id = q.id JOIN ethnicity AS e"
-                      " ON v.ethnicity= e.id  WHERE q.identifier= ?";
+                      "JOIN  visitor AS v ON a.visitor_id=v.id JOIN question AS q ON a.question_id = q.id ";
 
     if(ethenicity != "all") {
 
-        sqlQuery += " and e.`identifier`= ?";
+        sqlQuery += " JOIN ethnicity AS e ON v.ethnicity= e.id  WHERE q.identifier= ? and e.`identifier`= ? ";
     }
+    else{
+         sqlQuery += " WHERE q.identifier= ? ";
+    }
+
     if (gender != "all"){
         if(gender == "male"|| gender =="female" || gender == "other"){
             sqlQuery += " and v.`gender`= ?";
@@ -594,10 +597,10 @@ QList<int> Facade::getAnswerByAge(const QString& questionId,const QString& ethen
     if(timeAnswered != "all") {
 
         if(timeAnswered == "this_year"){
-            sqlQuery += " and YEAR(v.`created_at`)= ?";
+            sqlQuery += " and YEAR(a.`created_at`)= ?";
         }
         else if (timeAnswered == "today"){
-            sqlQuery += " and date(v.`created_at`)= ?";
+            sqlQuery += " and date(a.`created_at`)= ?";
         }
     }
     QSqlQuery query;
@@ -637,26 +640,26 @@ QList<int> Facade::getAnswerByAge(const QString& questionId,const QString& ethen
     while (query.next()) {
 
         //providers Question Identifier's List of avg answer_value by age range
-        avgAnsByAge.insert(1,query.value(0).toInt()), //[0-5]
-        avgAnsByAge.insert(2,query.value(1).toInt()); //[6-10]
-        avgAnsByAge.insert(3,query.value(2).toInt()); //[11-15]
-        avgAnsByAge.insert(4,query.value(3).toInt()); //[16-20]
-        avgAnsByAge.insert(5,query.value(4).toInt()); //[21-25]
-        avgAnsByAge.insert(6,query.value(5).toInt()); //[26-30]
-        avgAnsByAge.insert(7,query.value(6).toInt()); //[31-35]
-        avgAnsByAge.insert(8,query.value(7).toInt()); //[36-40]
-        avgAnsByAge.insert(9,query.value(8).toInt());// [41-45]
-        avgAnsByAge.insert(10,query.value(9).toInt());//[46-50]
-        avgAnsByAge.insert(11,query.value(10).toInt()); // [51-55]
-        avgAnsByAge.insert(12,query.value(11).toInt()); //[56-60]
-        avgAnsByAge.insert(13,query.value(12).toInt()); //[61-65]
-        avgAnsByAge.insert(14,query.value(13).toInt()); //[66-70]
-        avgAnsByAge.insert(15,query.value(14).toInt()); //[71-75]
-        avgAnsByAge.insert(16,query.value(15).toInt()), //[76-80]
-        avgAnsByAge.insert(17,query.value(16).toInt()); //[81-85]
-        avgAnsByAge.insert(18,query.value(17).toInt()); //[86-90]
-        avgAnsByAge.insert(19,query.value(18).toInt()); //[91-95]
-        avgAnsByAge.insert(20,query.value(19).toInt()); // [96-100]
+        avgAnsByAge.insert(1,(int)query.value(0).toDouble()), //[0-5]
+        avgAnsByAge.insert(2,(int)query.value(1).toDouble()); //[6-10]
+        avgAnsByAge.insert(3,(int)query.value(2).toDouble()); //[11-15]
+        avgAnsByAge.insert(4,(int)query.value(3).toDouble()); //[16-20]
+        avgAnsByAge.insert(5,(int)query.value(4).toDouble()); //[21-25]
+        avgAnsByAge.insert(6,(int)query.value(5).toDouble()); //[26-30]
+        avgAnsByAge.insert(7,(int)query.value(6).toDouble()); //[31-35]
+        avgAnsByAge.insert(8,(int)query.value(7).toDouble()); //[36-40]
+        avgAnsByAge.insert(9,(int)query.value(8).toDouble());// [41-45]
+        avgAnsByAge.insert(10,(int)query.value(9).toDouble());//[46-50]
+        avgAnsByAge.insert(11,(int)query.value(10).toDouble()); // [51-55]
+        avgAnsByAge.insert(12,(int)query.value(11).toDouble()); //[56-60]
+        avgAnsByAge.insert(13,(int)query.value(12).toDouble()); //[61-65]
+        avgAnsByAge.insert(14,(int)query.value(13).toDouble()); //[66-70]
+        avgAnsByAge.insert(15,(int)query.value(14).toDouble()); //[71-75]
+        avgAnsByAge.insert(16,(int)query.value(15).toDouble()), //[76-80]
+        avgAnsByAge.insert(17,(int)query.value(16).toDouble()); //[81-85]
+        avgAnsByAge.insert(18,(int)query.value(17).toDouble()); //[86-90]
+        avgAnsByAge.insert(19,(int)query.value(18).toDouble()); //[91-95]
+        avgAnsByAge.insert(20,(int)query.value(19).toDouble()); // [96-100]
     }
 
     return  avgAnsByAge;
@@ -685,14 +688,18 @@ QMap<QString,int> Facade::getAnswerByGender(const QString& questionId, const QSt
                       "IFNULL(ROUND(AVG(CASE WHEN v.gender='other' THEN a.answer_value"
                       " ELSE 0 END ),2) ,'-1')as 'Other' "
                       "FROM answer AS a JOIN visitor AS v ON a.visitor_id = v.id JOIN"
-                      " question AS q ON a.question_id = q.id "
-                      "JOIN ethnicity AS e ON v.ethnicity= e.id WHERE q.identifier=?";
+                      " question AS q ON a.question_id = q.id " ;
+
+
 
 
     
     if(ethenicity != "all") {
 
-        sqlQuery += " and e.`identifier`= ?";
+        sqlQuery += " JOIN ethnicity AS e ON v.ethnicity= e.id WHERE q.identifier=? and e.`identifier`= ?";
+    } else {
+
+         sqlQuery += " WHERE q.identifier=? ";
     }
 
     if(ageTo != -1 && ageFrom != -1 ) {
@@ -711,10 +718,10 @@ QMap<QString,int> Facade::getAnswerByGender(const QString& questionId, const QSt
     if(timeAnswered != "all") {
 
         if(timeAnswered == "this_year"){
-            sqlQuery += " and YEAR(v.`created_at`)= ?";
+            sqlQuery += " and YEAR(a.`created_at`)= ?";
         }
         else if (timeAnswered == "today"){
-            sqlQuery += " and date(v.`created_at`)= ?";
+            sqlQuery += " and date(a.`created_at`)= ?";
         }
     }
 
@@ -764,9 +771,9 @@ QMap<QString,int> Facade::getAnswerByGender(const QString& questionId, const QSt
     while (query.next()){
 
         //providers Question Identifier's  avg answer_value by Gender
-        AvgAnsByGender.insert("male",query.value(0).toInt()); //male
-        AvgAnsByGender.insert("female",query.value(1).toInt()); //female
-        AvgAnsByGender.insert("other",query.value(2).toInt());//other
+        AvgAnsByGender.insert("male",(int)query.value(0).toDouble()); //male
+        AvgAnsByGender.insert("female",(int)query.value(1).toDouble()); //female
+        AvgAnsByGender.insert("other",(int)query.value(2).toDouble());//other
 
     }
 
@@ -820,10 +827,10 @@ QMap<QString, int> Facade::getAnswerByEthnicity(const QString& questionId,int ag
     if(timeAnswered != "all"){
 
         if(timeAnswered == "this_year"){
-            sqlQuery += " and YEAR(v.`created_at`) = ?";
+            sqlQuery += " and YEAR(a.`created_at`) = ?";
         }
         else if (timeAnswered == "today"){
-            sqlQuery += " and date(v.`created_at`) = ?";
+            sqlQuery += " and date(a.`created_at`) = ?";
         }
     }
 
@@ -880,12 +887,12 @@ QMap<QString, int> Facade::getAnswerByEthnicity(const QString& questionId,int ag
     while (query.next()) {
 
         //providers Question Identifier's  avg answer_value by Ethnicity
-        AvgAnsByEthnicity.insert("quebecer",query.value(0).toDouble());
-        AvgAnsByEthnicity.insert("canadian",query.value(1).toDouble());
-        AvgAnsByEthnicity.insert("american",query.value(2).toDouble());
-        AvgAnsByEthnicity.insert("european",query.value(3).toDouble());
-        AvgAnsByEthnicity.insert("native",query.value(4).toDouble());
-        AvgAnsByEthnicity.insert("other",query.value(5).toDouble());
+        AvgAnsByEthnicity.insert("quebecer",(int)(query.value(0).toDouble()));
+        AvgAnsByEthnicity.insert("canadian",(int)(query.value(1).toDouble()));
+        AvgAnsByEthnicity.insert("american",(int)(query.value(2).toDouble()));
+        AvgAnsByEthnicity.insert("european",(int)(query.value(3).toDouble()));
+        AvgAnsByEthnicity.insert("native",(int)(query.value(4).toDouble()));
+        AvgAnsByEthnicity.insert("other",(int)(query.value(5).toDouble()));
     }
 
     return  AvgAnsByEthnicity;
@@ -908,7 +915,7 @@ QMap<QString, int > Facade:: getAllAnswers(){
     }
     while (query.next()) {
         QString questionId = query.value(0).toString();
-        int answerValue = query.value(1).toInt();
+        int answerValue = (int)query.value(1).toDouble();
         avgQueAns.insert(questionId, answerValue);
     }
 
@@ -939,8 +946,18 @@ QMap<QString, int> Facade:: getAnswers(const QList<QString>& questionIds, int ag
         auto questionId = (*iter);
 
         QString sqlQuery=" SELECT q.identifier AS 'Question', AVG(a.answer_value) AS 'Average' "
-                         " FROM answer AS a JOIN question AS q ON a.question_id = q.id"
-                         " WHERE q.identifier= ?";
+                         " FROM answer AS a JOIN visitor AS v ON a.visitor_id = v.id  JOIN question AS q ON a.question_id = q.id ";
+
+
+
+        //filter by ethnicity
+        if(ethnicity != DEFAULT_FILTER) {
+
+            sqlQuery += " JOIN ethnicity AS e ON v.ethnicity= e.id  WHERE q.identifier= ? AND e.`identifier`= ? ";
+        }
+        else{
+             sqlQuery += " WHERE q.identifier= ? ";
+        }
 
 
         // filter age group
@@ -958,7 +975,7 @@ QMap<QString, int> Facade:: getAnswers(const QList<QString>& questionIds, int ag
             sqlQuery += " and v.age BETWEEN ? AND  100 ";
         }
 
-        //filter by ethnicity
+
         if(ethnicity != DEFAULT_FILTER) {
 
             sqlQuery += " AND e.`identifier`= ?";
@@ -974,10 +991,10 @@ QMap<QString, int> Facade:: getAnswers(const QList<QString>& questionIds, int ag
         if(timeAnswered != DEFAULT_FILTER){
 
             if(timeAnswered == "this_year"){
-                sqlQuery += " AND YEAR(v.`created_at`) = ?";
+                sqlQuery += " AND YEAR(a.`created_at`) = ? ";
             }
             else if (timeAnswered == "today"){
-                sqlQuery += " AND date(v.`created_at`) = ?";
+                sqlQuery += " AND date(a.`created_at`) = ? ";
             }
         }
 
@@ -991,7 +1008,9 @@ QMap<QString, int> Facade:: getAnswers(const QList<QString>& questionIds, int ag
         // ? replaces the perameter in query
         query.addBindValue(QVariant(questionId));
 
-
+        if(ethnicity != DEFAULT_FILTER) {
+            query.addBindValue(QVariant(ethnicity));
+        }
 
         if(ageTo != DEFAULT_AGE and ageFrom != DEFAULT_AGE){
             query.addBindValue(QVariant(ageFrom));
@@ -1004,11 +1023,6 @@ QMap<QString, int> Facade:: getAnswers(const QList<QString>& questionIds, int ag
         else if (ageFrom != DEFAULT_AGE){
 
             query.addBindValue(QVariant(ageFrom));
-        }
-
-
-        if(ethnicity != DEFAULT_FILTER) {
-            query.addBindValue(QVariant(ethnicity));
         }
 
 
@@ -1042,7 +1056,7 @@ QMap<QString, int> Facade:: getAnswers(const QList<QString>& questionIds, int ag
 
             //providers Question Identifier's  avg answer_value with optional filters.
             QString questionId = query.value(0).toString();
-            int answerValue = query.value(1).toInt();
+            int answerValue = (int)query.value(1).toDouble();
             avgAnsQueList.insert(questionId, answerValue);
         }
 
