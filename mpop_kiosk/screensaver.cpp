@@ -3,7 +3,18 @@
 
 QQuickFramebufferObject::Renderer *Screensaver::createRenderer() const
 {
-    return new StickRenderer();
+    StickRenderer *stickRenderer = new StickRenderer();
+    // Enable/disable renderer on the OpenGL side
+    stickRenderer->enableRendering(getEnable());
+    return stickRenderer;
+}
+
+void Screensaver::setEnable(bool enable)
+{
+    if (enable != _enable) {
+        _enable = enable;
+        emit renderChanged();
+    }
 }
 
 StickRenderer::StickRenderer()
@@ -119,8 +130,11 @@ QPointF StickRenderer::sizeFromPixel(qreal width, qreal height)
 
 void StickRenderer::render()
 {
-    // call painter function
-    paintGLCanvas();
+    // Check if rendering is enable on the QML side
+    if (renderingIsEnabled()) {
+        // call painter function
+        paintGLCanvas();
+    }
 }
 
 QOpenGLFramebufferObject *StickRenderer::createFramebufferObject(const QSize &size)

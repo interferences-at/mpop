@@ -388,6 +388,7 @@ ApplicationWindow {
             Screensaver {
                 id: screensaver
                 anchors.fill: parent
+                render: true
             }
 
             Label {
