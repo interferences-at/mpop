@@ -138,7 +138,10 @@ int main(int argc, char* argv[]) {
         windowContainer->setFocusPolicy(Qt::StrongFocus);
         // Create a layout and set margin
         QHBoxLayout *windowLayout = new QHBoxLayout;
+        // Important! remove all the content margins
         windowLayout->setContentsMargins(0, 0, 0, 0);
+        // Align inner wiindow to the left side
+        windowLayout->setAlignment(Qt::AlignLeft);
         // Add dataviz widget to layout
         windowLayout->addWidget(windowContainer);
         // Create mainWindow and keep everything inside
