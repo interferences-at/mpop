@@ -19,6 +19,10 @@
 class Screensaver : public QQuickFramebufferObject
 {
     Q_OBJECT
+    /*
+     *  Add QML property to Screensaver that allow to disable it while not shown
+    */
+    Q_PROPERTY(bool render READ getEnable WRITE setEnable NOTIFY renderChanged)
 
 public:
     /*
@@ -26,6 +30,15 @@ public:
      *  while the GUI thread is blocked
     */
     Renderer *createRenderer() const override;
+    // Getter and Setter of render enable/disable
+    bool getEnable() const { return _enable;}
+    void setEnable(bool enable);
+
+signals:
+    void renderChanged();
+
+private:
+    bool _enable;
 };
 
 /*
@@ -42,6 +55,9 @@ public:
     void initializeGLCanvas();
     void resizeGLCanvas(int width, int height);
     void paintGLCanvas();
+    // Enable of disable rendering
+    void enableRendering(bool enable) { _enableRendering = enable; }
+    bool renderingIsEnabled() const { return _enableRendering; }
 
 protected:
     // This function is called when the FBO should be rendered into
@@ -78,6 +94,9 @@ private:
     {
         return ostart + (ostop - ostart) * ((value - istart) / (istop - istart));
     }
+
+    // Enable render
+    bool _enableRendering = false;
 };
 
 #endif // SCREENSAVER_H
