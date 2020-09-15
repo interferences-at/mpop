@@ -180,9 +180,6 @@ void TestMpopService:: test_15_getAnswers() {
 
     QMap<QString, int> answers = this->facade->getAnswers(questionList,-1,-1,"all","all","all");
 
-    qDebug() << "answers[TEST_QUESTION_01_ID]" << answers[TEST_QUESTION_01_ID];
-    qDebug() << "Test_QUESTION_01_AVG" << Test_QUESTION_01_AVG;
-
     QCOMPARE(answers[TEST_QUESTION_01_ID], Test_QUESTION_01_AVG);
     QCOMPARE(answers[TEST_QUESTION_02_ID], Test_QUESTION_02_AVG);
     QCOMPARE(answers[TEST_QUESTION_03_ID], Test_QUESTION_03_AVG);
@@ -524,32 +521,60 @@ void TestMpopService::test_24_getAnswerByGender() {
 
     // User Questions
     static const QString TEST_QUESTION_07_ID = "equitable_riches";
+    static const QString TEST_QUESTION_08_ID = "equitable_minorites_culturelles";
+    static const QString TEST_QUESTION_09_ID = "confiance_systeme";
 
     // User Answers
     static const int TEST_QUESTION_07_VALUE = 55;
+    static const int TEST_QUESTION_08_VALUE = 65;
+    static const int TEST_QUESTION_09_VALUE = 67;
+
 
     // Calculated Avg. for three User
     static const int Test_QUESTION_07_AVG = 55;
+    static const int Test_QUESTION_08_AVG = 65;
+    static const int Test_QUESTION_09_AVG = 67;
 
     // declaration of RFIDs
     static const QString TEST_RFID_TAG_1 = "test_RFID_tag_00011";
+    static const QString TEST_RFID_TAG_2 = "test_RFID_tag_00012";
+    static const QString TEST_RFID_TAG_3 = "test_RFID_tag_00013";
+
 
     // declaration of gender for users
     static const QString TEST_USER_1_GENDER = "male";
+    static const QString TEST_USER_2_GENDER = "female";
+    static const QString TEST_USER_3_GENDER = "other";
 
     // Get or create user id.
     int user_1 = this->facade->getOrCreateUser(TEST_RFID_TAG_1);
+    int user_2 = this->facade->getOrCreateUser(TEST_RFID_TAG_2);
+    int user_3 = this->facade->getOrCreateUser(TEST_RFID_TAG_3);
 
     // set users Gender
     bool okSetGender_1 = this->facade->setUserGender(user_1, TEST_USER_1_GENDER);
     QCOMPARE(okSetGender_1, true);
 
+    bool okSetGender_2 = this->facade->setUserGender(user_2, TEST_USER_2_GENDER);
+    QCOMPARE(okSetGender_2, true);
+
+    bool okSetGender_3 = this->facade->setUserGender(user_3, TEST_USER_3_GENDER);
+    QCOMPARE(okSetGender_3, true);
+
     // set Users Answers
     this->facade->setUserAnswer(user_1, TEST_QUESTION_07_ID, TEST_QUESTION_07_VALUE);
+    this->facade->setUserAnswer(user_2, TEST_QUESTION_08_ID, TEST_QUESTION_08_VALUE);
+    this->facade->setUserAnswer(user_3, TEST_QUESTION_09_ID, TEST_QUESTION_09_VALUE);
 
     QMap<QString,int> answers = this->facade->getAnswerByGender(TEST_QUESTION_07_ID,"all",-1,-1,"all");
+    QMap<QString,int> answers1 = this->facade->getAnswerByGender(TEST_QUESTION_08_ID,"all",-1,-1,"all");
+    QMap<QString,int> answers2 = this->facade->getAnswerByGender(TEST_QUESTION_09_ID,"all",-1,-1,"all");
 
+    //Multiple User with Multiple answers
     QCOMPARE(answers[TEST_USER_1_GENDER], Test_QUESTION_07_AVG);
+    QCOMPARE(answers1[TEST_USER_2_GENDER], Test_QUESTION_08_AVG);
+    QCOMPARE(answers2[TEST_USER_3_GENDER], Test_QUESTION_09_AVG);
+
 
 }
 
