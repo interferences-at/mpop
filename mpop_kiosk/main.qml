@@ -71,11 +71,28 @@ ApplicationWindow {
         mainStackLayout.currentIndex = mainStackLayout.index_OSC_DEBUG;;
     }
 
+    /**
+     * Reset the timer
+     */
+    function resetIdleTimer() {
+        idleTimer.restart();
+    }
+
     // assigning properties
     visible: true
     width: kioskConfig.kiosk_mode === const_KIOSK_MODE_CENTRAL ? 1920 : 1024
     height: kioskConfig.kiosk_mode === const_KIOSK_MODE_CENTRAL ? 1080 : 640
     title: textWindowTitle.text
+
+    // Checks for mouse events - so that we go to the screensaver after some inactivity.
+    MouseArea {
+        propagateComposedEvents: true
+
+        anchors.fill: parent
+        onClicked: resetIdleTimer()
+        onDoubleClicked: resetIdleTimer()
+        onPressAndHold: resetIdleTimer()
+    }
 
     background: Rectangle {
         color: Palette.lightBlack
@@ -117,7 +134,6 @@ ApplicationWindow {
      */
     Connections {
         target: oscReceiver
-
         onMessageReceived: {
             handleMessageReceived(oscAddress, message);
         }
@@ -126,12 +142,17 @@ ApplicationWindow {
     Timer {
         id: idleTimer
 
-        interval: 500 // TODO: change this
-        running: true
-        repeat: true
+        readonly property int duration_SECONDS: 120   // 2 minutes
+
+        interval: duration_SECONDS * 1000
+        repeat: false
+        running: false
+        triggeredOnStart: false
         onTriggered: {
-            // TODO: detect clicks, and time how time elapsed since last click
             // if idle for too long, go to screensaver
+            console.log("Idle for a while: go to screensaver ");
+            mainStackLayout.currentIndex = mainStackLayout.index_SCREENSAVER;
+            userProfile.userId = -1;
         }
     }
 
@@ -179,6 +200,7 @@ ApplicationWindow {
                 console.log("Error: invalid userId");
                 mainStackLayout.currentIndex = mainStackLayout.index_SCREENSAVER;
             } else {
+                resetIdleTimer();
                 // Go to the demographic question if this is the entry kiosk
                 if (kioskConfig.kiosk_mode == window.const_KIOSK_MODE_ENTRY) {
                     goToDemographicQuestions();

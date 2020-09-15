@@ -640,26 +640,26 @@ QList<int> Facade::getAnswerByAge(const QString& questionId,const QString& ethen
     while (query.next()) {
 
         //providers Question Identifier's List of avg answer_value by age range
-        avgAnsByAge.insert(1,(int)query.value(0).toDouble()), //[0-5]
-        avgAnsByAge.insert(2,(int)query.value(1).toDouble()); //[6-10]
-        avgAnsByAge.insert(3,(int)query.value(2).toDouble()); //[11-15]
-        avgAnsByAge.insert(4,(int)query.value(3).toDouble()); //[16-20]
-        avgAnsByAge.insert(5,(int)query.value(4).toDouble()); //[21-25]
-        avgAnsByAge.insert(6,(int)query.value(5).toDouble()); //[26-30]
-        avgAnsByAge.insert(7,(int)query.value(6).toDouble()); //[31-35]
-        avgAnsByAge.insert(8,(int)query.value(7).toDouble()); //[36-40]
-        avgAnsByAge.insert(9,(int)query.value(8).toDouble());// [41-45]
-        avgAnsByAge.insert(10,(int)query.value(9).toDouble());//[46-50]
-        avgAnsByAge.insert(11,(int)query.value(10).toDouble()); // [51-55]
-        avgAnsByAge.insert(12,(int)query.value(11).toDouble()); //[56-60]
-        avgAnsByAge.insert(13,(int)query.value(12).toDouble()); //[61-65]
-        avgAnsByAge.insert(14,(int)query.value(13).toDouble()); //[66-70]
-        avgAnsByAge.insert(15,(int)query.value(14).toDouble()); //[71-75]
-        avgAnsByAge.insert(16,(int)query.value(15).toDouble()), //[76-80]
-        avgAnsByAge.insert(17,(int)query.value(16).toDouble()); //[81-85]
-        avgAnsByAge.insert(18,(int)query.value(17).toDouble()); //[86-90]
-        avgAnsByAge.insert(19,(int)query.value(18).toDouble()); //[91-95]
-        avgAnsByAge.insert(20,(int)query.value(19).toDouble()); // [96-100]
+        avgAnsByAge.insert(1, static_cast<int>(query.value(0).toDouble())); //[0-5]
+        avgAnsByAge.insert(2, static_cast<int>(query.value(1).toDouble())); //[6-10]
+        avgAnsByAge.insert(3, static_cast<int>(query.value(2).toDouble())); //[11-15]
+        avgAnsByAge.insert(4, static_cast<int>(query.value(3).toDouble())); //[16-20]
+        avgAnsByAge.insert(5, static_cast<int>(query.value(4).toDouble())); //[21-25]
+        avgAnsByAge.insert(6, static_cast<int>(query.value(5).toDouble())); //[26-30]
+        avgAnsByAge.insert(7, static_cast<int>(query.value(6).toDouble())); //[31-35]
+        avgAnsByAge.insert(8, static_cast<int>(query.value(7).toDouble())); //[36-40]
+        avgAnsByAge.insert(9, static_cast<int>(query.value(8).toDouble()));// [41-45]
+        avgAnsByAge.insert(10, static_cast<int>(query.value(9).toDouble()));//[46-50]
+        avgAnsByAge.insert(11, static_cast<int>(query.value(10).toDouble())); // [51-55]
+        avgAnsByAge.insert(12, static_cast<int>(query.value(11).toDouble())); //[56-60]
+        avgAnsByAge.insert(13, static_cast<int>(query.value(12).toDouble())); //[61-65]
+        avgAnsByAge.insert(14, static_cast<int>(query.value(13).toDouble())); //[66-70]
+        avgAnsByAge.insert(15, static_cast<int>(query.value(14).toDouble())); //[71-75]
+        avgAnsByAge.insert(16, static_cast<int>(query.value(15).toDouble())); //[76-80]
+        avgAnsByAge.insert(17, static_cast<int>(query.value(16).toDouble())); //[81-85]
+        avgAnsByAge.insert(18, static_cast<int>(query.value(17).toDouble())); //[86-90]
+        avgAnsByAge.insert(19, static_cast<int>(query.value(18).toDouble())); //[91-95]
+        avgAnsByAge.insert(20, static_cast<int>(query.value(19).toDouble())); // [96-100]
     }
 
     return  avgAnsByAge;
@@ -771,9 +771,9 @@ QMap<QString,int> Facade::getAnswerByGender(const QString& questionId, const QSt
     while (query.next()){
 
         //providers Question Identifier's  avg answer_value by Gender
-        AvgAnsByGender.insert("male",(int)query.value(0).toDouble()); //male
-        AvgAnsByGender.insert("female",(int)query.value(1).toDouble()); //female
-        AvgAnsByGender.insert("other",(int)query.value(2).toDouble());//other
+        AvgAnsByGender.insert("male", static_cast<int>(query.value(0).toDouble())); //male
+        AvgAnsByGender.insert("female", static_cast<int>(query.value(1).toDouble())); //female
+        AvgAnsByGender.insert("other", static_cast<int>(query.value(2).toDouble()));//other
 
     }
 
@@ -885,18 +885,16 @@ QMap<QString, int> Facade::getAnswerByEthnicity(const QString& questionId,int ag
     }
 
     while (query.next()) {
-
         //providers Question Identifier's  avg answer_value by Ethnicity
-        AvgAnsByEthnicity.insert("quebecer",(int)(query.value(0).toDouble()));
-        AvgAnsByEthnicity.insert("canadian",(int)(query.value(1).toDouble()));
-        AvgAnsByEthnicity.insert("american",(int)(query.value(2).toDouble()));
-        AvgAnsByEthnicity.insert("european",(int)(query.value(3).toDouble()));
-        AvgAnsByEthnicity.insert("native",(int)(query.value(4).toDouble()));
-        AvgAnsByEthnicity.insert("other",(int)(query.value(5).toDouble()));
+        AvgAnsByEthnicity.insert("quebecer", static_cast<int>(query.value(0).toDouble()));
+        AvgAnsByEthnicity.insert("canadian", static_cast<int>(query.value(1).toDouble()));
+        AvgAnsByEthnicity.insert("american", static_cast<int>(query.value(2).toDouble()));
+        AvgAnsByEthnicity.insert("european", static_cast<int>(query.value(3).toDouble()));
+        AvgAnsByEthnicity.insert("native", static_cast<int>(query.value(4).toDouble()));
+        AvgAnsByEthnicity.insert("other", static_cast<int>(query.value(5).toDouble()));
     }
 
     return  AvgAnsByEthnicity;
-
 }
 
 QMap<QString, int > Facade:: getAllAnswers(){
@@ -915,7 +913,7 @@ QMap<QString, int > Facade:: getAllAnswers(){
     }
     while (query.next()) {
         QString questionId = query.value(0).toString();
-        int answerValue = (int)query.value(1).toDouble();
+        int answerValue = static_cast<int>(query.value(1).toDouble());
         avgQueAns.insert(questionId, answerValue);
     }
 
@@ -1056,7 +1054,7 @@ QMap<QString, int> Facade:: getAnswers(const QList<QString>& questionIds, int ag
 
             //providers Question Identifier's  avg answer_value with optional filters.
             QString questionId = query.value(0).toString();
-            int answerValue = (int)query.value(1).toDouble();
+            int answerValue = static_cast<int>(query.value(1).toDouble());
             avgAnsQueList.insert(questionId, answerValue);
         }
 

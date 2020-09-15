@@ -42,4 +42,6 @@ Button {
         radius: bgCoverAll ? 0 : 32
         z: -1
     }
+
+    onPressed: resetIdleTimer()
 }

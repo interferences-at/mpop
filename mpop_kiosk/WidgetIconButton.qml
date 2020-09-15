@@ -47,6 +47,7 @@ ColumnLayout {
             }
 
             onClicked: widgetIconButton.clicked()
+            onPressed: resetIdleTimer()
         }
 
         DropShadow {

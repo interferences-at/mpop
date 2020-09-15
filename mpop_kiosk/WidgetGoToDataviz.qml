@@ -42,5 +42,6 @@ Label {
     MouseArea {
         anchors.fill: parent
         onClicked: goToDataviz.clicked()
+        onPressed: resetIdleTimer()
     }
 }
