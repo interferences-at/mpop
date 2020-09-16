@@ -1073,8 +1073,8 @@ QMap<QString,float>  Facade::getRandomValueByTotalAns(){
     QMap<QString, float> radValueTotalAns;
     QString strkey = "total_num_answers";
 
-    QString sqlQuery="select count(*) as 'Total Answer' "
-                     "from answer";
+    QString sqlQuery = "SELECT COUNT(*) AS 'Total Answer' "
+                     "FROM answer";
 
     QSqlQuery query;
 
@@ -1101,8 +1101,8 @@ QMap<QString,float>  Facade:: getRandomValueByAnsLastHour(){
     QMap<QString, float> radValueAnsLastHour;
     QString strkey = "num_answer_last_hour";
 
-    QString sqlQuery="select count(*) as 'AnsLastHour' "
-                     "from answer where `created_at` >= DATE_SUB(CURDATE(), INTERVAL 1 HOUR) ";
+    QString sqlQuery = "SELECT COUNT(*) AS 'AnsLastHour' "
+                     "FROM answer WHERE `created_at` >= DATE_SUB(CURDATE(), INTERVAL 1 HOUR) ";
 
     QSqlQuery query;
 
@@ -1130,8 +1130,8 @@ QMap<QString,float>  Facade:: getRandomValueByAvgofAllAns(){
     QMap<QString, float> radValueAvgAns;
     QString strkey = "overall_average_answer";
 
-    QString sqlQuery="select avg(answer_value) as 'AvgOfAns' "
-                     "from answer ";
+    QString sqlQuery = "SELECT AVG(answer_value) AS 'AvgOfAns' "
+                     "FROM answer ";
 
     QSqlQuery query;
 
@@ -1159,8 +1159,8 @@ QMap<QString,float>  Facade:: getRandomValueByTotalVisitors(){
     QMap<QString, float> radValueTotalVisitor;
     QString strkey = "total_num_visitors";
 
-    QString sqlQuery="select count(*) as 'TotalVisitor' "
-                     "from visitor ";
+    QString sqlQuery = "SELECT COUNT(*) AS 'TotalVisitor' "
+                     "FROM visitor ";
 
     QSqlQuery query;
 
@@ -1188,8 +1188,8 @@ QMap<QString,float>  Facade:: getRandomValueByTodaysVisitors(){
     QMap<QString, float> radValueTodaysVisitors;
     QString strkey = "visitors_today";
 
-    QString sqlQuery="select count(*) as 'TotalVisitor' "
-                     "from visitor where `created_at` >= CURDATE()";
+    QString sqlQuery = "SELECT COUNT(*) AS 'TotalVisitor' "
+                     "FROM visitor WHERE `created_at` >= CURDATE()";
 
     QSqlQuery query;
 
