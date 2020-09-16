@@ -1068,7 +1068,7 @@ QMap<QString, int> Facade:: getAnswers(const QList<QString>& questionIds, int ag
  * @brief getRandomValueByTotalAns
  * @return total number of answer
  */
-QMap<QString,float> getRandomValueByTotalAns(){
+QMap<QString,float>  Facade::getRandomValueByTotalAns(){
 
     QMap<QString, float> radValueTotalAns;
     QString strkey = "total_num_answers";
@@ -1096,7 +1096,7 @@ QMap<QString,float> getRandomValueByTotalAns(){
  * @brief getRandomValueByAnsLastHour
  * @return total answers during the last hour
  */
-QMap<QString,float> getRandomValueByAnsLastHour(){
+QMap<QString,float>  Facade:: getRandomValueByAnsLastHour(){
 
     QMap<QString, float> radValueAnsLastHour;
     QString strkey = "num_answer_last_hour";
@@ -1124,7 +1124,7 @@ QMap<QString,float> getRandomValueByAnsLastHour(){
  * @brief getRandomValueByAvgofAllAns.
  * @return average of all answers.
  */
-QMap<QString,float> getRandomValueByAvgofAllAns(){
+QMap<QString,float>  Facade:: getRandomValueByAvgofAllAns(){
 
 
     QMap<QString, float> radValueAvgAns;
@@ -1154,7 +1154,7 @@ QMap<QString,float> getRandomValueByAvgofAllAns(){
  * @brief getRandomValueByTotalVisitors
  * @return  total number of visitors
  */
-QMap<QString,float> getRandomValueByTotalVisitors(){
+QMap<QString,float>  Facade:: getRandomValueByTotalVisitors(){
 
     QMap<QString, float> radValueTotalVisitor;
     QString strkey = "total_num_visitors";
@@ -1183,7 +1183,7 @@ QMap<QString,float> getRandomValueByTotalVisitors(){
  * @brief getRandomValueByTodaysVisitors
  * @return todays total visitors
  */
-QMap<QString,float> getRandomValueByTodaysVisitors(){
+QMap<QString,float>  Facade:: getRandomValueByTodaysVisitors(){
 
     QMap<QString, float> radValueTodaysVisitors;
     QString strkey = "visitors_today";
