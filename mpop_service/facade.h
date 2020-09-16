@@ -152,6 +152,38 @@ public:
     */
    QMap<QString, int > getAllAnswers();
 
+   /**
+    * @brief getRandomValueByTotalAns
+    * @return total number of answer
+    */
+   QMap<QString,float> getRandomValueByTotalAns();
+
+   /**
+    * @brief getRandomValueByAnsLastHour
+    * @return total new answers during the last hour
+    */
+   QMap<QString,float> getRandomValueByAnsLastHour();
+
+   /**
+    * @brief getRandomValueByAvgofAllAns
+    * @return the average of all answers
+    */
+   QMap<QString,float> getRandomValueByAvgofAllAns();
+
+   /**
+    * @brief getRandomValueByTotalVisitors
+    * @return  total number of visitors
+    */
+   QMap<QString,float> getRandomValueByTotalVisitors();
+
+   /**
+    * @brief getRandomValueByTodaysVisitors
+    * @return todays total visitors
+    */
+   QMap<QString,float> getRandomValueByTodaysVisitors();
+
+
+
 public slots:
    void reconnectTimerTriggered();
 

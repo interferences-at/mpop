@@ -103,6 +103,15 @@ public:
         return ret;
     }
 
+
+    static QVariantMap stringFloatMapToQVariantMap(const QMap<QString, float>& value) {
+        QVariantMap ret;
+        for (auto iter = value.constBegin(); iter != value.constEnd(); ++ iter) {
+            ret[iter.key()] = QVariant(iter.value());
+        }
+        return ret;
+    }
+
 private slots:
     void newConnectionCb();
     void textMessageReceivedCb(const QString &message);

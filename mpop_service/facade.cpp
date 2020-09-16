@@ -1060,3 +1060,149 @@ QMap<QString, int> Facade:: getAnswers(const QList<QString>& questionIds, int ag
     }
     return avgAnsQueList;
 }
+
+
+
+
+/**
+ * @brief getRandomValueByTotalAns
+ * @return total number of answer
+ */
+QMap<QString,float>  Facade::getRandomValueByTotalAns(){
+
+    QMap<QString, float> radValueTotalAns;
+    QString strkey = "total_num_answers";
+
+    QString sqlQuery = "SELECT COUNT(*) AS 'Total Answer' "
+                     "FROM answer";
+
+    QSqlQuery query;
+
+    bool ok = query.exec(sqlQuery);
+    if (! ok) {
+        qWarning() << "ERROR: " << query.lastError().text();
+        throw SQLError{query.lastError().text()};
+    }
+    while (query.next()) {
+        float totalAns = query.value(0).toFloat();
+        radValueTotalAns.insert(strkey, totalAns);
+    }
+
+    return radValueTotalAns;
+}
+
+
+/**
+ * @brief getRandomValueByAnsLastHour
+ * @return total answers during the last hour
+ */
+QMap<QString,float>  Facade:: getRandomValueByAnsLastHour(){
+
+    QMap<QString, float> radValueAnsLastHour;
+    QString strkey = "num_answer_last_hour";
+
+    QString sqlQuery = "SELECT COUNT(*) AS 'AnsLastHour' "
+                     "FROM answer WHERE `created_at` >= DATE_SUB(CURDATE(), INTERVAL 1 HOUR) ";
+
+    QSqlQuery query;
+
+    bool ok = query.exec(sqlQuery);
+    if (! ok) {
+        qWarning() << "ERROR: " << query.lastError().text();
+        throw SQLError{query.lastError().text()};
+    }
+    while (query.next()) {
+        float totalAnsLstHour = query.value(0).toFloat();
+        radValueAnsLastHour.insert(strkey, totalAnsLstHour);
+    }
+
+    return radValueAnsLastHour;
+}
+
+
+/**
+ * @brief getRandomValueByAvgofAllAns.
+ * @return average of all answers.
+ */
+QMap<QString,float>  Facade:: getRandomValueByAvgofAllAns(){
+
+
+    QMap<QString, float> radValueAvgAns;
+    QString strkey = "overall_average_answer";
+
+    QString sqlQuery = "SELECT AVG(answer_value) AS 'AvgOfAns' "
+                     "FROM answer ";
+
+    QSqlQuery query;
+
+    bool ok = query.exec(sqlQuery);
+    if (! ok) {
+        qWarning() << "ERROR: " << query.lastError().text();
+        throw SQLError{query.lastError().text()};
+    }
+    while (query.next()) {
+        float  avgOfAns = query.value(0).toFloat();
+        radValueAvgAns.insert(strkey, avgOfAns);
+    }
+
+    return radValueAvgAns;
+
+}
+
+
+/**
+ * @brief getRandomValueByTotalVisitors
+ * @return  total number of visitors
+ */
+QMap<QString,float>  Facade:: getRandomValueByTotalVisitors(){
+
+    QMap<QString, float> radValueTotalVisitor;
+    QString strkey = "total_num_visitors";
+
+    QString sqlQuery = "SELECT COUNT(*) AS 'TotalVisitor' "
+                     "FROM visitor ";
+
+    QSqlQuery query;
+
+    bool ok = query.exec(sqlQuery);
+    if (! ok) {
+        qWarning() << "ERROR: " << query.lastError().text();
+        throw SQLError{query.lastError().text()};
+    }
+    while (query.next()) {
+        float  totalVisitor = query.value(0).toFloat();
+        radValueTotalVisitor.insert(strkey, totalVisitor);
+    }
+
+    return radValueTotalVisitor;
+
+}
+
+
+/**
+ * @brief getRandomValueByTodaysVisitors
+ * @return todays total visitors
+ */
+QMap<QString,float>  Facade:: getRandomValueByTodaysVisitors(){
+
+    QMap<QString, float> radValueTodaysVisitors;
+    QString strkey = "visitors_today";
+
+    QString sqlQuery = "SELECT COUNT(*) AS 'TotalVisitor' "
+                     "FROM visitor WHERE `created_at` >= CURDATE()";
+
+    QSqlQuery query;
+
+    bool ok = query.exec(sqlQuery);
+    if (! ok) {
+        qWarning() << "ERROR: " << query.lastError().text();
+        throw SQLError{query.lastError().text()};
+    }
+    while (query.next()) {
+        float  todaysVisitor = query.value(0).toFloat();
+        radValueTodaysVisitors.insert(strkey, todaysVisitor);
+    }
+
+    return radValueTodaysVisitors;
+
+}
