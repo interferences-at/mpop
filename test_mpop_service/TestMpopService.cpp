@@ -43,6 +43,8 @@ void TestMpopService::removeDatabaseTestEntries() {
         rfidTagsToDelete.push_back("test_RFID_tag_00011");
         rfidTagsToDelete.push_back("test_RFID_tag_00012");
         rfidTagsToDelete.push_back("test_RFID_tag_00013");
+        rfidTagsToDelete.push_back("test_RFID_tag_00014");
+        rfidTagsToDelete.push_back("test_RFID_tag_00015");
         this->facade->deleteTagsVisitorsAndTheirAnswers(rfidTagsToDelete);
     }
 }
@@ -485,33 +487,55 @@ void TestMpopService::test_23_getAnswerByEthnicity() {
 
     // User Questions
     static const QString TEST_QUESTION_06_ID = "equitable_jeunes_contrevenants";
+    static const QString TEST_QUESTION_10_ID = "interner";
+    static const QString TEST_QUESTION_11_ID = "peine_plus_severes";
 
     // User Answers
     static const int TEST_QUESTION_06_VALUE = 45;
+    static const int TEST_QUESTION_10_VALUE = 47;
+    static const int TEST_QUESTION_11_VALUE = 49;
 
     // Calculated Avg. for three User
     static const int Test_QUESTION_06_AVG = 45;
+    static const int Test_QUESTION_10_AVG = 47;
+    static const int Test_QUESTION_11_AVG = 49;
 
     // declaration of RFIDs
     static const QString TEST_RFID_TAG_1 = "test_RFID_tag_00010";
+    static const QString TEST_RFID_TAG_2 = "test_RFID_tag_00014";
+    static const QString TEST_RFID_TAG_3 = "test_RFID_tag_00015";
 
     // declaration of Ethnicity for users
     static const QString TEST_USER_1_Ethnicity = "quebecer";
+    static const QString TEST_USER_2_Ethnicity = "canadian";
+    static const QString TEST_USER_3_Ethnicity = "american";
 
     // Get or create user id.
     int user_1 = this->facade->getOrCreateUser(TEST_RFID_TAG_1);
+    int user_2 = this->facade->getOrCreateUser(TEST_RFID_TAG_2);
+    int user_3 = this->facade->getOrCreateUser(TEST_RFID_TAG_3);
 
 
     // set users Ethnicity
     bool okSetEthnicity_1 = this->facade->setUserEthnicity(user_1, TEST_USER_1_Ethnicity);
     QCOMPARE(okSetEthnicity_1, true);
+    bool okSetEthnicity_2 = this->facade->setUserEthnicity(user_2, TEST_USER_2_Ethnicity);
+    QCOMPARE(okSetEthnicity_2, true);
+    bool okSetEthnicity_3 = this->facade->setUserEthnicity(user_3, TEST_USER_3_Ethnicity);
+    QCOMPARE(okSetEthnicity_3, true);
 
     // set Users Answers
     this->facade->setUserAnswer(user_1, TEST_QUESTION_06_ID, TEST_QUESTION_06_VALUE);
+    this->facade->setUserAnswer(user_2, TEST_QUESTION_10_ID, TEST_QUESTION_10_VALUE);
+    this->facade->setUserAnswer(user_3, TEST_QUESTION_11_ID, TEST_QUESTION_11_VALUE);
 
     QMap<QString,int> answers = this->facade->getAnswerByEthnicity(TEST_QUESTION_06_ID,-1,-1,"all","all");
-    qDebug() << answers;
+    QMap<QString,int> answers1 = this->facade->getAnswerByEthnicity(TEST_QUESTION_10_ID,-1,-1,"all","all");
+    QMap<QString,int> answers2 = this->facade->getAnswerByEthnicity(TEST_QUESTION_11_ID,-1,-1,"all","all");
+
     QCOMPARE(answers[TEST_USER_1_Ethnicity], Test_QUESTION_06_AVG);
+    QCOMPARE(answers1[TEST_USER_2_Ethnicity], Test_QUESTION_10_AVG);
+    QCOMPARE(answers2[TEST_USER_3_Ethnicity], Test_QUESTION_11_AVG);
 }
 
 void TestMpopService::test_24_getAnswerByGender() {
