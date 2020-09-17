@@ -409,68 +409,27 @@ bool MPopService::handleFacadeMethod(const Request& request, Response& response)
             response.error.message = msg;
         }
     }
-    else if (method == "getRandomValueByTotalAns") {
+    else if (method == "getRandomValue") {
 
-        QTextStream(stdout) << "Method is: getRandomValueByTotalAns" << endl;
+        QTextStream(stdout) << "Method is: getRandomValue" ;
+        QMap<QString,float> listOfRanVal;
         try {
-            QMap<QString,float> randVal = this->_facade.getRandomValueByTotalAns();
-            response.result = QVariant(MPopService::stringFloatMapToQVariantMap(randVal));
-        } catch (MissingParameterError &e) {
-            msg.append(e.what());
-            response.error.message = msg;
-        } catch(SQLError& e){
-            msg.append(e.what());
-            response.error.message = msg;
-        }
-    }
-    else if (method == "getRandomValueByAnsLastHour") {
+            QMap<QString,float> randValTotalAns = this->_facade.getRandomValueByTotalAns();
+            listOfRanVal.insert(randValTotalAns);
 
-        QTextStream(stdout) << "Method is: getRandomValueByAnsLastHour" << endl;
-        try {
-            QMap<QString,float> randVal = this->_facade.getRandomValueByAnsLastHour();
-            response.result = QVariant(MPopService::stringFloatMapToQVariantMap(randVal));
-        } catch (MissingParameterError &e) {
-            msg.append(e.what());
-            response.error.message = msg;
-        } catch(SQLError& e){
-            msg.append(e.what());
-            response.error.message = msg;
-        }
-    }
-    else if (method == "getRandomValueByAvgofAllAns") {
+            QMap<QString,float> randValAnsLastHour = this->_facade.getRandomValueByAnsLastHour();
+            listOfRanVal.insert(randValAnsLastHour);
 
-        QTextStream(stdout) << "Method is: getRandomValueByAvgofAllAns" << endl;
-        try {
-            QMap<QString,float> randVal = this->_facade.getRandomValueByAvgofAllAns();
-            response.result = QVariant(MPopService::stringFloatMapToQVariantMap(randVal));
-        } catch (MissingParameterError &e) {
-            msg.append(e.what());
-            response.error.message = msg;
-        } catch(SQLError& e){
-            msg.append(e.what());
-            response.error.message = msg;
-        }
-    }
-    else if (method == "getRandomValueByTotalVisitors") {
+            QMap<QString,float> randValAvgAllAns = this->_facade.getRandomValueByAvgofAllAns();
+            listOfRanVal.insert(randValAvgAllAns);
 
-        QTextStream(stdout) << "Method is: getRandomValueByTotalVisitors" << endl;
-        try {
-            QMap<QString,float> randVal = this->_facade.getRandomValueByTotalVisitors();
-            response.result = QVariant(MPopService::stringFloatMapToQVariantMap(randVal));
-        } catch (MissingParameterError &e) {
-            msg.append(e.what());
-            response.error.message = msg;
-        } catch(SQLError& e){
-            msg.append(e.what());
-            response.error.message = msg;
-        }
-    }
-    else if (method == "getRandomValueByTodaysVisitors") {
+            QMap<QString,float> randValTotalVistr = this->_facade.getRandomValueByTotalVisitors();
+            listOfRanVal.insert(randValTotalVistr);
 
-        QTextStream(stdout) << "Method is: getRandomValueByTodaysVisitors" << endl;
-        try {
-            QMap<QString,float> randVal = this->_facade.getRandomValueByTodaysVisitors();
-            response.result = QVariant(MPopService::stringFloatMapToQVariantMap(randVal));
+            QMap<QString,float> randValTodayVistor = this->_facade.getRandomValueByTodaysVisitors();
+            listOfRanVal.insert(randValTodayVistor);
+
+            response.result = QVariant(MPopService::stringFloatMapToQVariantMap(listOfRanVal));
         } catch (MissingParameterError &e) {
             msg.append(e.what());
             response.error.message = msg;
