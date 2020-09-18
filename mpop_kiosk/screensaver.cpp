@@ -115,8 +115,6 @@ void StickRenderer::paintGLCanvas()
 
         stick->draw();
     }
-    // Update to draw again
-    update();
 }
 
 QPointF StickRenderer::sizeFromPixel(qreal width, qreal height)
@@ -142,6 +140,9 @@ void StickRenderer::render()
         // call painter function
         paintGLCanvas();
     }
+
+    // Update to draw again
+    update();
 }
 
 QOpenGLFramebufferObject *StickRenderer::createFramebufferObject(const QSize &size)
