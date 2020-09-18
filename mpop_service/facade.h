@@ -156,31 +156,31 @@ public:
     * @brief getRandomValueByTotalAns
     * @return total number of answer
     */
-   QMap<QString,float> getRandomValueByTotalAns();
+   float getRandomValueByTotalAns();
 
    /**
     * @brief getRandomValueByAnsLastHour
     * @return total new answers during the last hour
     */
-   QMap<QString,float> getRandomValueByAnsLastHour();
+   float getRandomValueByAnsLastHour();
 
    /**
     * @brief getRandomValueByAvgofAllAns
     * @return the average of all answers
     */
-   QMap<QString,float> getRandomValueByAvgofAllAns();
+   float getRandomValueByAvgofAllAns();
 
    /**
     * @brief getRandomValueByTotalVisitors
     * @return  total number of visitors
     */
-   QMap<QString,float> getRandomValueByTotalVisitors();
+   float getRandomValueByTotalVisitors();
 
    /**
     * @brief getRandomValueByTodaysVisitors
     * @return todays total visitors
     */
-   QMap<QString,float> getRandomValueByTodaysVisitors();
+   float getRandomValueByTodaysVisitors();
 
 
 
