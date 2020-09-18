@@ -12,6 +12,9 @@
 
 #include "stick.h"
 
+// Forward declaration
+class StickRenderer;
+
 /*
  * This class for integrating OpenGL rendering using
  * a framebuffer object (FBO) with Qt Quick.
@@ -39,6 +42,7 @@ signals:
 
 private:
     bool _enable;
+    static StickRenderer *_stickRenderer;
 };
 
 /*
