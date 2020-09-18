@@ -412,22 +412,28 @@ bool MPopService::handleFacadeMethod(const Request& request, Response& response)
     else if (method == "getRandomValue") {
 
         QTextStream(stdout) << "Method is: getRandomValue" ;
+        QString strkeyTotalAns = "total_num_answers";
+        QString strkeyAnsLastHour = "num_answer_last_hour";
+        QString strkeyAvgAns = "overall_average_answer";
+        QString strkeyTotalVisitor = "total_num_visitors";
+        QString strkeyTodayVisitor = "visitors_today";
+
         QMap<QString,float> listOfRanVal;
         try {
-            QMap<QString,float> randValTotalAns = this->_facade.getRandomValueByTotalAns();
-            listOfRanVal.insert(randValTotalAns);
+            float randValTotalAns = this->_facade.getRandomValueByTotalAns();
+            listOfRanVal.insert(strkeyTotalAns,randValTotalAns);
 
-            QMap<QString,float> randValAnsLastHour = this->_facade.getRandomValueByAnsLastHour();
-            listOfRanVal.insert(randValAnsLastHour);
+            float randValAnsLastHour = this->_facade.getRandomValueByAnsLastHour();
+            listOfRanVal.insert(strkeyAnsLastHour,randValAnsLastHour);
 
-            QMap<QString,float> randValAvgAllAns = this->_facade.getRandomValueByAvgofAllAns();
-            listOfRanVal.insert(randValAvgAllAns);
+            float randValAvgAllAns = this->_facade.getRandomValueByAvgofAllAns();
+            listOfRanVal.insert(strkeyAvgAns,randValAvgAllAns);
 
-            QMap<QString,float> randValTotalVistr = this->_facade.getRandomValueByTotalVisitors();
-            listOfRanVal.insert(randValTotalVistr);
+            float randValTotalVistr = this->_facade.getRandomValueByTotalVisitors();
+            listOfRanVal.insert(strkeyTotalVisitor,randValTotalVistr);
 
-            QMap<QString,float> randValTodayVistor = this->_facade.getRandomValueByTodaysVisitors();
-            listOfRanVal.insert(randValTodayVistor);
+            float randValTodayVistor = this->_facade.getRandomValueByTodaysVisitors();
+            listOfRanVal.insert(strkeyTodayVisitor,randValTodayVistor);
 
             response.result = QVariant(MPopService::stringFloatMapToQVariantMap(listOfRanVal));
         } catch (MissingParameterError &e) {
