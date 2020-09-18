@@ -388,7 +388,7 @@ ApplicationWindow {
             Screensaver {
                 id: screensaver
                 anchors.fill: parent
-                render: true
+                render: mainStackLayout.currentIndex === mainStackLayout.index_SCREENSAVER
             }
 
             Label {

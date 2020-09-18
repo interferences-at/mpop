@@ -1,12 +1,15 @@
 #include "screensaver.h"
 
+StickRenderer *Screensaver::_stickRenderer = nullptr;
 
 QQuickFramebufferObject::Renderer *Screensaver::createRenderer() const
 {
-    StickRenderer *stickRenderer = new StickRenderer();
+    // Always reset stick renderer
+    _stickRenderer = new StickRenderer();
     // Enable/disable renderer on the OpenGL side
-    stickRenderer->enableRendering(getEnable());
-    return stickRenderer;
+    _stickRenderer->enableRendering(getEnable());
+
+    return _stickRenderer;
 }
 
 void Screensaver::setEnable(bool enable)
@@ -14,6 +17,10 @@ void Screensaver::setEnable(bool enable)
     if (enable != _enable) {
         _enable = enable;
         emit renderChanged();
+        // If renderer isn't null
+        if (_stickRenderer) {
+            _stickRenderer->enableRendering(getEnable());
+        }
     }
 }
 
@@ -108,8 +115,6 @@ void StickRenderer::paintGLCanvas()
 
         stick->draw();
     }
-    // Update to draw again
-    update();
 }
 
 QPointF StickRenderer::sizeFromPixel(qreal width, qreal height)
@@ -135,6 +140,9 @@ void StickRenderer::render()
         // call painter function
         paintGLCanvas();
     }
+
+    // Update to draw again
+    update();
 }
 
 QOpenGLFramebufferObject *StickRenderer::createFramebufferObject(const QSize &size)
