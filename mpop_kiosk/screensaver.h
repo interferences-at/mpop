@@ -34,15 +34,49 @@ public:
     */
     Renderer *createRenderer() const override;
     // Getter and Setter of render enable/disable
-    bool getEnable() const { return _enable;}
+    bool getEnable() const;
     void setEnable(bool enable);
 
 signals:
     void renderChanged();
 
-private:
-    bool _enable;
+protected:
     static StickRenderer *_stickRenderer;
+
+};
+
+/*
+ * This class for integrating OpenGL rendering using
+ * a framebuffer object (FBO) with Qt Quick for the barchart layout.
+*/
+class AnswersView : public Screensaver
+{
+    Q_OBJECT
+    /*
+     *  Add QML property to ResponseBars that expose the responses number
+    */
+    Q_PROPERTY(bool render READ getEnable WRITE setEnable NOTIFY renderChanged)
+    Q_PROPERTY(QVariant myAnswers READ getUserBars WRITE setUserBars NOTIFY userBarsChanged)
+    Q_PROPERTY(QVariant theirAnswers READ getTheirBars WRITE setTheirBars NOTIFY theirBarsChanged)
+
+public:
+    enum Answers {
+        UserAnswer,
+        TheirAnswer
+    };
+
+    // Overriding parent method
+    void setEnable(bool enable);
+
+    QVariant getUserBars() const;
+    void setUserBars(const QVariant &bars);
+
+    QVariant getTheirBars() const;
+    void setTheirBars(const QVariant &bars);
+
+signals:
+    void userBarsChanged();
+    void theirBarsChanged();
 };
 
 /*
@@ -51,6 +85,12 @@ private:
 class StickRenderer : public QQuickFramebufferObject::Renderer, protected QOpenGLFunctions
 {
 public:
+
+    enum DatavizLayout {
+        ScreensaverLayout,
+        AnswersViewLayout
+    };
+
     StickRenderer();
     // Get elapsed time since the screensaver is displayed
     qint64 elapsed() const { return _timer.elapsed(); }
@@ -59,9 +99,9 @@ public:
     void initializeGLCanvas();
     void resizeGLCanvas(int width, int height);
     void paintGLCanvas();
-    // Enable of disable rendering
-    void enableRendering(bool enable) { _enableRendering = enable; }
-    bool renderingIsEnabled() const { return _enableRendering; }
+
+    // Set bars vector
+    void setBars(int answerIndex, const QVariant &bars);
 
 protected:
     // This function is called when the FBO should be rendered into
@@ -71,9 +111,6 @@ protected:
     QOpenGLFramebufferObject *createFramebufferObject(const QSize &size) override;
     // This function is called as a result of QQuickFramebufferObject::update()
     void synchronize(QQuickFramebufferObject *item) override;
-
-
-
 
 private:
     // bar stick vectors
@@ -98,9 +135,25 @@ private:
     {
         return ostart + (ostop - ostart) * ((value - istart) / (istop - istart));
     }
+    // This function convert to OpenGL coordinate a given pixel position
+    QPointF coordinateFromPixel(qreal x, qreal y);
 
     // Enable render
-    bool _enableRendering = false;
+    bool _render;
+
+    //Barchart answers bars
+    QVector<QVariant> _answersRows;
+
+    QVector<Stick*> _answersSticks;
+
+    void paintScreensaver();
+    void paintAnswersView();
+
+    // Allow these class to use this class members
+    friend class Screensaver;
+    friend class AnswersView;
+
+    DatavizLayout _currentView;
 };
 
 #endif // SCREENSAVER_H

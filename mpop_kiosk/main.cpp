@@ -183,6 +183,8 @@ int main(int argc, char *argv[])
 
     // Create the Screensaver QML type
     qmlRegisterType<Screensaver>("Screensaver", 1, 0, "Screensaver");
+    // Create a QML type for barchart answers
+    qmlRegisterType<AnswersView>("AnswersView", 1, 0, "AnswersView");
 
     QQmlApplicationEngine engine;
 
