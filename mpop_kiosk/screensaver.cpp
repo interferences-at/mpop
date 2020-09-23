@@ -1,30 +1,67 @@
 #include "screensaver.h"
 
-StickRenderer *Screensaver::_stickRenderer = nullptr;
+StickRenderer *Screensaver::_stickRenderer = new StickRenderer;
 
+////////////////////////////////////////////////////////////////////
 QQuickFramebufferObject::Renderer *Screensaver::createRenderer() const
 {
-    // Always reset stick renderer
-    _stickRenderer = new StickRenderer();
-    // Enable/disable renderer on the OpenGL side
-    _stickRenderer->enableRendering(getEnable());
+    // Init OpenGL
+    _stickRenderer->initializeGLCanvas();
 
     return _stickRenderer;
 }
 
-void Screensaver::setEnable(bool enable)
+bool Screensaver::getEnable() const
 {
-    if (enable != _enable) {
-        _enable = enable;
-        emit renderChanged();
-        // If renderer isn't null
-        if (_stickRenderer) {
-            _stickRenderer->enableRendering(getEnable());
-        }
-    }
+    return _stickRenderer->_render;
 }
 
-StickRenderer::StickRenderer()
+void Screensaver::setEnable(bool enable)
+{
+    // Enable/disable renderer on the OpenGL side
+    _stickRenderer->_render = enable;
+    _stickRenderer->_currentView = _stickRenderer->ScreensaverLayout;
+
+    emit renderChanged();
+}
+////////////////////////////////////////////////////////////////////
+void AnswersView::setEnable(bool enable)
+{
+    _stickRenderer->_render = enable;
+    _stickRenderer->_currentView = _stickRenderer->AnswersViewLayout;
+
+    emit renderChanged();
+}
+
+QVariant AnswersView::getUserBars() const
+{
+    return _stickRenderer->_answersRows.at(UserAnswer);
+}
+
+void AnswersView::setUserBars(const QVariant &bars)
+{
+//    _stickRenderer->_answersBars[UserAnswer] = bars;
+    _stickRenderer->setBars(UserAnswer, bars);
+
+    emit userBarsChanged();
+}
+
+QVariant AnswersView::getTheirBars() const
+{
+    return _stickRenderer->_answersRows.at(TheirAnswer);
+}
+
+void AnswersView::setTheirBars(const QVariant &bars)
+{
+//    _stickRenderer->_answersBars[TheirAnswer] = bars;
+    _stickRenderer->setBars(TheirAnswer, bars);
+
+    emit theirBarsChanged();
+}
+////////////////////////////////////////////////////////////////////
+StickRenderer::StickRenderer() :
+    _render(false),
+    _currentView(ScreensaverLayout)
 {
 
     _barSticks = QVector<Stick*>();
@@ -40,8 +77,11 @@ StickRenderer::StickRenderer()
     randomRadius = std::uniform_real_distribution<qreal>(-1, 1);
     randomFrequency = std::uniform_real_distribution<qreal>(0.01, 0.1);
     randomRatioRotation = std::uniform_real_distribution<qreal>(-0.1, 0.1);
-    // Init OpenGL
-    initializeGLCanvas();
+
+    // Define rows vector
+    _answersRows = QVector<QVariant>(2);
+    // Define answers sticks
+    _answersSticks = QVector<Stick*>();
 }
 
 void StickRenderer::initializeGLCanvas()
@@ -94,6 +134,76 @@ void StickRenderer::paintGLCanvas()
     // Reset drawer program
     glUseProgram(0);
 
+    switch (_currentView) {
+    case ScreensaverLayout:
+        paintScreensaver();
+        break;
+    case AnswersViewLayout:
+        paintAnswersView();
+        break;
+    }
+
+}
+
+void StickRenderer::setBars(int answerIndex, const QVariant &bars)
+{
+    _answersRows[answerIndex] = bars;
+    int barSum = 0;
+
+    for (auto &answers : _answersRows) {
+        for (auto &row : answers.toList()) {
+            barSum += row.toInt();
+        }
+    }
+
+    if (barSum > 0) {
+        int barSize = _answersSticks.size();
+        if (barSum > barSize) {
+            int diff = barSum - barSize;
+
+            for (int i = 0; i < diff; i++) {
+                Stick *stick = new Stick;
+                _answersSticks.push_back(stick);
+            }
+        }
+
+        if (barSum < barSize) {
+            int diff = barSize - barSum;
+
+            for (int i = 0; i < diff; i++) {
+                _answersSticks.removeLast();
+            }
+        }
+    }
+
+}
+
+QPointF StickRenderer::sizeFromPixel(qreal width, qreal height)
+{
+    /*
+     * Translate a given value in pixel to the OpenGL coordinate
+     * mapValue(
+     *      width = stick width in pixel
+     *      0 = from 0px
+     *      _width / _pixelRatio = viewport width in pixel / pixel ratio for DPI adaptation
+     *      Here we divide the width by the pixel ratio for DPI scale
+     *      _right * 2 = (0 - -1) + 1 = 2 || 1 * 2. left -1 to right 1 = 2 || 1 * 2
+     * )
+    */
+    return QPointF(mapValue(width, 0, _width / _pixelRatio, 0, _right * 2),
+                   mapValue(height, 0, _height / _pixelRatio, 0, _top * 2));
+}
+
+QPointF StickRenderer::coordinateFromPixel(qreal x, qreal y)
+{
+    // Return a OpenGL coordinate from a given pixel position
+    return QPointF(mapValue(x, 0, _width, _left, _right),
+                   mapValue(y, _height, 0, _top, _bottom));
+}
+
+void StickRenderer::paintScreensaver()
+{
+
     QRandomGenerator generator;
 
     for (auto &stick : _barSticks) {
@@ -117,26 +227,62 @@ void StickRenderer::paintGLCanvas()
     }
 }
 
-QPointF StickRenderer::sizeFromPixel(qreal width, qreal height)
+void StickRenderer::paintAnswersView()
 {
-    /*
-     * Translate a given value in pixel to the OpenGL coordinate
-     * mapValue(
-     *      width = stick width in pixel
-     *      0 = from 0px
-     *      _width / _pixelRatio = viewport width in pixel / pixel ratio for DPI adaptation
-     *      Here we divide the width by the pixel ratio for DPI scale
-     *      _right * 2 = (0 - -1) + 1 = 2 || 1 * 2. left -1 to right 1 = 2 || 1 * 2
-     * )
-    */
-    return QPointF(mapValue(width, 0, _width / _pixelRatio, 0, _right * 2),
-                   mapValue(height, 0, _height / _pixelRatio, 0, _top * 2));
+    qreal barHeight = 35;
+    qreal startY = 118 + barHeight / 2;
+    qreal marginLeft = 100;
+
+    QPointF barSize = sizeFromPixel(3.5, barHeight);
+    QPointF startPosition = coordinateFromPixel(marginLeft, startY);
+
+    qreal barSpace = barSize.y() / 3.7;
+    qreal rowSpace = sizeFromPixel(0, 310).y();
+
+    QString barColor = "#FFFFFF";
+
+    int lineIndex = 0;
+
+    for (auto &answerBars : _answersRows) {
+        auto bars = answerBars.toList();
+        for (int rowIndex = 0; rowIndex < bars.size(); rowIndex++) {
+            for (int barIndex = 0; barIndex < bars.at(rowIndex).toInt(); barIndex++) {
+
+                Stick *stick = _answersSticks.at(lineIndex);
+                stick->setSize(barSize.x(), barSize.y());
+                stick->setColor(barColor);
+                int moduloFive = barIndex % 5;
+
+                qreal x = barIndex * barSpace;
+                qreal y = -rowIndex * (rowSpace + barSize.y());
+                qreal rotation = 0.0;
+
+                if (moduloFive == 4) {
+                    x = ((barIndex - 2) * barSpace) - (barSpace / 2);
+                    rotation = -73;
+
+                    stick->setSize(barSize.x(), barSize.y() * 1.25);
+                }
+
+                stick->setX(x + startPosition.x());
+                stick->setY(y - startPosition.y());
+                stick->setRotation(rotation);
+
+                stick->draw();
+
+                ++lineIndex; // Next index
+            }
+        }
+        // Some change for second row
+        startPosition = coordinateFromPixel(marginLeft, startY + barHeight + 12);
+        barColor = "#80E2A7";
+    }
 }
 
 void StickRenderer::render()
 {
     // Check if rendering is enable on the QML side
-    if (renderingIsEnabled()) {
+    if (_render) {
         // call painter function
         paintGLCanvas();
     }
@@ -152,7 +298,6 @@ QOpenGLFramebufferObject *StickRenderer::createFramebufferObject(const QSize &si
     _width = size.width() * _pixelRatio;
     _height = size.height() * _pixelRatio;
 
-    initializeGLCanvas();
     resizeGLCanvas(_width, _height);
 
     QOpenGLFramebufferObjectFormat format;
@@ -170,3 +315,4 @@ void StickRenderer::synchronize(QQuickFramebufferObject *item)
     // Update pixel ratio
     _pixelRatio = screensaver->window()->devicePixelRatio();
 }
+////////////////////////////////////////////////////////////////////
