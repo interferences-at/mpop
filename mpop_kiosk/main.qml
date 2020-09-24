@@ -82,6 +82,7 @@ ApplicationWindow {
     function goToScreenSaver() {
         mainStackLayout.currentIndex = mainStackLayout.index_SCREENSAVER;
         userProfile.userId = -1;
+        datavizManager.goto_screensaver();
     }
 
     function resetAllWidgetsToDefaultValues() {
@@ -219,7 +220,7 @@ ApplicationWindow {
         onUserIdChanged: {
             if (userId === const_INVALID_NUMBER) {
                 // go back to screensaver.
-                console.log("Error: invalid userId");
+                console.log("Error: invalid userId (this is maybe not an error)");
                 mainStackLayout.currentIndex = mainStackLayout.index_SCREENSAVER;
                 resetAllWidgetsToDefaultValues();
             } else {
