@@ -22,6 +22,12 @@ Column {
         }
     }
 
+    function resetToDefaultAnswer() {
+        for (var i = 0; i < numberOfQuestions; i ++) {
+            var value = 50; // default
+            sliderRepeater.itemAt(i).sliderValue = value;
+        }
+    }
 
     function handleSliderMoved(sliderIndex, value) {
         console.log("handleSliderMoved(" + sliderIndex + "," + value + ")");

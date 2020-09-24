@@ -264,7 +264,7 @@ Item {
                     // QMap<QString, int>
                     for (var key in userAnswers) {
                         var answerValue = userAnswers[key];
-                        console.log("TODO: store answer " + key + " = " + answerValue);
+                        console.log("Loading answer " + key + " = " + answerValue);
                         thisUserProfile.answers[key] = answerValue;
                     }
 
