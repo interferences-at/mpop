@@ -102,8 +102,11 @@ ColumnLayout {
             border.color: window.invertedTheme ? Palette.lightGrey : Palette.mediumGrey
         }
 
-        first.onMoved: resetIdleTimer()
-        second.onMoved: resetIdleTimer()
+        // On Qt 5.11:
+        // first.onMoved: resetIdleTimer()
+        // second.onMoved: resetIdleTimer()
+        first.onValueChanged: resetIdleTimer()
+        second.onValueChanged: resetIdleTimer()
     }
 
     RowLayout {
