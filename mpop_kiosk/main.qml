@@ -79,6 +79,28 @@ ApplicationWindow {
         idleTimer.restart();
     }
 
+    function goToScreenSaver() {
+        mainStackLayout.currentIndex = mainStackLayout.index_SCREENSAVER;
+        userProfile.userId = -1;
+    }
+
+    function resetAllWidgetsToDefaultValues() {
+        var highlightNone = -1;
+
+        pageGender.setHightlighted(highlightNone);
+        pageEthnicity.setHightlighted(highlightNone);
+        pageAge.setHightlighted(highlightNone);
+        pageLanguage.setHightlighted(highlightNone);
+
+        for (var i = 0; i < questionsStackLayout.children.length; i ++) {
+            console.log("Reset question " + i);
+            var pageQuestionItem = pageQuestionRepeater.itemAt(i);
+            if (pageQuestionItem !== null) {
+                pageQuestionItem.resetToDefaultAnswer();
+            }
+        }
+    }
+
     // assigning properties
     visible: true
     width: kioskConfig.kiosk_mode === const_KIOSK_MODE_CENTRAL ? 1920 : 1024
@@ -152,8 +174,7 @@ ApplicationWindow {
         onTriggered: {
             // if idle for too long, go to screensaver
             console.log("Idle for a while: go to screensaver ");
-            mainStackLayout.currentIndex = mainStackLayout.index_SCREENSAVER;
-            userProfile.userId = -1;
+            goToScreenSaver();
         }
     }
 
@@ -200,6 +221,7 @@ ApplicationWindow {
                 // go back to screensaver.
                 console.log("Error: invalid userId");
                 mainStackLayout.currentIndex = mainStackLayout.index_SCREENSAVER;
+                resetAllWidgetsToDefaultValues();
             } else {
                 resetIdleTimer();
                 // Go to the demographic question if this is the entry kiosk
@@ -225,14 +247,11 @@ ApplicationWindow {
 
         onUserAnswersUpdated: {
             // Update the value of each slider according to the answer of the visitor for that slider:
-            var numQuestions = modelQuestions.rowCount;
-            for(var i = 0; i < numQuestions; i ++) {
-                var item = modelQuestions.get(i);
-                var identifier = item.identifier;
-
-                // retrieve it in the property of the UserProfile
-                if (answers.hasOwnProperty(identifier)) {
-                    // TODO var theQuestionPage =
+            for (var i = 0; i < questionsStackLayout.children.length; i ++) {
+                console.log("Load answer for question " + i);
+                var pageQuestionItem = pageQuestionRepeater.itemAt(i);
+                if (pageQuestionItem !== null) {
+                    pageQuestionItem.loadAnswersForCurrentVisitor();
                 }
             }
         }
@@ -454,6 +473,7 @@ ApplicationWindow {
 
                 PageEntrance {
                     id: pageLanguage
+
                     sideLabel: BilingualText {
                         textFr: "Choisir une langue"
                         textEn: "Choose a language"
@@ -485,6 +505,7 @@ ApplicationWindow {
                 // Select your gender
                 PageEntrance {
                     id: pageGender
+
                     sideLabel: BilingualText {
                         textEn: "You are..."
                         textFr: "Vous êtes..."
@@ -494,8 +515,9 @@ ApplicationWindow {
                     onChoiceClicked: {
                         console.log("onGenderChosen " + index)
                         userProfile.setUserGender(userProfile.userId, model.get(index).identifier, function (err) {
-                            if (err)
+                            if (err) {
                                 console.log(err.message);
+                            }
                         });
                     }
                 }
@@ -832,6 +854,10 @@ ApplicationWindow {
                     StackLayout {
                         id: questionsStackLayout
 
+                        function loadAnswerForCurrentIndex() {
+                            pageQuestionRepeater.itemAt(currentIndex).loadAnswersForCurrentVisitor();
+                        }
+
                         readonly property int index_FIRST_QUESTION: 0
 
                         currentIndex: 0
@@ -839,20 +865,22 @@ ApplicationWindow {
                         Layout.preferredWidth: 1415
 
                         onCurrentIndexChanged: {
-                            children[currentIndex].loadAnswersForCurrentVisitor();
+                            loadAnswerForCurrentIndex();
                         }
 
                         /**
                          * Go to the dataviz mode, or leaves it - for the current page.
                          */
                         function toggleDataviz() {
-                            children[currentIndex].toggleDataviz();
+                            pageQuestionRepeater.itemAt(currentIndex).toggleDataviz();
                         }
 
                         // The pages for single and multiple questions:
                         // TODO: wrap in Repeater and feed with model data
 
                         Repeater {
+                            id: pageQuestionRepeater
+
                             model: modelQuestions
 
                             PageQuestion {}
@@ -879,7 +907,13 @@ ApplicationWindow {
                             height: parent.height
                             spacing: 0
 
+                            // Exit button
                             WidgetIconButton {
+
+                                onClicked: {
+                                    console.log("Exit clicked. Go to screensaver.");
+                                    goToScreenSaver();
+                                }
                                 Layout.alignment: Qt.AlignTop | Qt.AlignHCenter
                                 Layout.topMargin: 30
 
