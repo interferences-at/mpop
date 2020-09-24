@@ -151,6 +151,28 @@ Item {
     }
 
     /**
+     * Calls getAnswerByAge.
+     * @param questionId string.
+     * @param ethnicity string. (default: all)
+     * @param gender string. (default: all)
+     * @param timeAnswered string. (default: all)
+     * @see Facade.cpp
+     */
+    function getAnswerByAge(questionId, ethnicity, gender, timeAnswered, cb) {
+        // TODO: validate arguments
+        console.log("Calling getAnswerByAge(" + questionId + "," + ethnicity + "," + gender + "," + timeAnswered + ")");
+        websocket.callRemoteMethod("getAnswerByAge", [questionId, ethnicity, gender, timeAnswered], function (err, ansByAge) {
+            if (err) {
+                console.log("Error calling setUserAnswer(" + user_id + "," + question_identifier + "," + value + "): " + err.message);
+                cb(err);
+            } else {
+                // ansByAge is a list of 20 values
+                cb(null, ansByAge); // call callback with no error
+            }
+        });
+    }
+
+    /**
      * Sets the RFID tag.
      * Reads the info from the service, if any.
      * Populate the info here.

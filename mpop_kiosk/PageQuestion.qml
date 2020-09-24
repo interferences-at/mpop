@@ -290,6 +290,58 @@ Column {
             spacing: 0
             visible: datavizIndex === index_CHOOSE_MULTIPLE
 
+            readonly property int filter_AGE: 0
+            readonly property int filter_CULTURE: 1
+            readonly property int filter_GENDER: 2
+            readonly property int filter_LANGUAGE: 3
+
+            /**
+             * Gathers the values from all widgets.
+             * Retrieves the info from the service.
+             * Triggers sending OSC to the dataviz.
+             */
+            function sendDatavizViewBy() {
+                switch (filterHighlighted) {
+                case filter_AGE:
+                    // call get answer by age
+                    var questionId = model.identifier;
+                    var ethnicity = "all"; // FIXME load from widgets
+                    var gender = "all"; // FIXME load from widgets
+                    var timeAnswered = "all"; // FIXME load from widgets
+                    window.userProfile.getAnswerByAge(questionId, ethnicity, gender, timeAnswered, function (err, answerByAge) {
+                        if (err) {
+                            console.log("Error calling getAnswerByAge(" + questionId + "," + ethnicity + "," + gender + "," + timeAnswered + "): " + err.message);
+                        } else {
+                            // Retrieve my answer and my age:
+                            var myAnswer = window.userProfile.answers[questionId];
+                            var myAge = window.userProfile.age; // FIXME: it might be -1
+                            // answerByAge is a list of 20 values
+                            console.log("show_one_answer_by_age(" + myAnswer + ", " + myAge + ", " + answerByAge + ")");
+                            window.datavizManager.show_one_answer_by_age(myAnswer, myAge, answerByAge);
+                        }
+                    });
+                    break;
+                case filter_CULTURE:
+                    // TODO window.userProfile. call get answer by culture
+                    break;
+                case filter_GENDER:
+                    // TODO window.userProfile. call get answer by gender
+                    break;
+                case filter_LANGUAGE:
+                    // TODO window.userProfile. call get answer by lang
+                    break;
+                default: // in case this is a multiple question pageAge
+                    // TODO window.userProfile. call get answers
+                    break;
+                }
+            }
+
+            onVisibleChanged: {
+                if (visible) {
+                    sendDatavizViewBy();
+                }
+            }
+
             ColumnLayout {
                 Layout.fillWidth: true
                 Layout.leftMargin: 40
@@ -332,9 +384,11 @@ Column {
 
                         onValueFromChanged: {
                             // TODO
+                            sendDatavizViewBy();
                         }
                         onValueToChanged: {
                             // TODO
+                            sendDatavizViewBy();
                         }
                     }
                 }
@@ -347,6 +401,7 @@ Column {
                         ListElement {
                             sectionTitleEn: "Culture"
                             sectionTitleFr: "Culture"
+                            // TODO: Whenever the current selection changes, call sendDatavizViewBy();
                             filters: [
                                 ListElement { textEn: "All"; textFr: "Tous" },
                                 ListElement { textEn: "Quebecois"; textFr: "Québécoise" },
@@ -361,6 +416,7 @@ Column {
                         ListElement {
                             sectionTitleEn: "Gender"
                             sectionTitleFr: "Genre"
+                            // TODO: Whenever the current selection changes, call sendDatavizViewBy();
                             filters: [
                                 ListElement { textEn: "All"; textFr: "Tous" },
                                 ListElement { textEn: "Male"; textFr: "Homme" },
@@ -372,6 +428,7 @@ Column {
                         ListElement {
                             sectionTitleEn: "Time"
                             sectionTitleFr: "Temps"
+                            // TODO: Whenever the current selection changes, call sendDatavizViewBy();
                             filters: [
                                 ListElement { textEn: "All"; textFr: "Tous" },
                                 ListElement { textEn: "Today"; textFr: "Aujourd'hui" },
