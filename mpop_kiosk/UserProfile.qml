@@ -191,15 +191,15 @@ Item {
                     if (err2) {
                         cb(err2);
                     } else {
-                        // Set the userId property, so that we can use it from anywhere
-                        userId = user_id;
-                        _populateUserInfo(userId, function (err3) {
+                        _populateUserInfo(user_id, function (err3) {
                             if (err3) {
                                 console.log(err3); // let's no pass this error upstream
                                 cb(null); // done (even if an error occured)
                             } else {
+                                // Set the userId property, so that we can use it from anywhere
+                                userId = user_id;
                                 // TODO: also populate their answers
-                                _populateUserAnswers(userId, function (err4) {
+                                _populateUserAnswers(user_id, function (err4) {
                                     if (err4) {
                                         console.log(err4); // let's no pass this error upstream
                                         cb(null); // done (even if an error occured)
@@ -263,11 +263,44 @@ Item {
                     }
                     // TODO: store rfidTag for user
                     // TODO: store userId for user
+
+                    // check Kiosk Mode and demographic que. answered.
+                    _checkKioskMode();
                     cb(null); // done
                 }
             });
         }
     }
+
+
+    /**
+     * Check Kiosk mode for central, Entry or final.
+     * and also check if demographic questions are answered than skip to survey questions.
+     */
+
+    function  _checkKioskMode(){
+
+        // Go to the demographic question if this is the entry kiosk
+        if (kioskConfig.kiosk_mode == window.const_KIOSK_MODE_ENTRY) {
+                goToDemographicQuestions();
+
+        // Go to the survey questions if this is the central kiosk
+        // But: if the user hasn't answered the demographic questions, send them there.
+        } else if (kioskConfig.kiosk_mode == window.const_KIOSK_MODE_CENTRAL) {
+            if (userProfile.hasDemographicQuestionsAnswered()) {
+                goToSurveyQuestions();
+
+            } else {
+                goToDemographicQuestions();
+            }
+
+        // If this is the exit kiosk, send them to the final pages
+        } else if (kioskConfig.kiosk_mode == window.const_KIOSK_MODE_EXIT) {
+            goToFinalQuestions();
+        }
+    }
+
+
 
     /**
      * Retrieves all answers for a user - from the service -
