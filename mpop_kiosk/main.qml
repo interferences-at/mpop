@@ -225,24 +225,28 @@ ApplicationWindow {
                 resetAllWidgetsToDefaultValues();
             } else {
                 resetIdleTimer();
-                // Go to the demographic question if this is the entry kiosk
-                if (kioskConfig.kiosk_mode == window.const_KIOSK_MODE_ENTRY) {
-                    goToDemographicQuestions();
+//                // Go to the demographic question if this is the entry kiosk
+//                if (kioskConfig.kiosk_mode == window.const_KIOSK_MODE_ENTRY) {
+//                    if (userProfile.hasDemographicQuestionsAnswered()) {
+//                        goToSurveyQuestions();
+//                     }
+//                    else{
+//                        goToDemographicQuestions();
+//                    }
+//                // Go to the survey questions if this is the central kiosk
+//                // But: if the user hasn't answered the demographic questions, send them there.
+//                } else if (kioskConfig.kiosk_mode == window.const_KIOSK_MODE_CENTRAL) {
+//                    if (userProfile.hasDemographicQuestionsAnswered()) {
+//                        goToSurveyQuestions();
 
-                // Go to the survey questions if this is the central kiosk
-                // But: if the user hasn't answered the demographic questions, send them there.
-                } else if (kioskConfig.kiosk_mode == window.const_KIOSK_MODE_CENTRAL) {
-                    if (userProfile.hasDemographicQuestionsAnswered()) {
-                        goToSurveyQuestions();
+//                    } else {
+//                        goToDemographicQuestions();
+//                    }
 
-                    } else {
-                        goToDemographicQuestions();
-                    }
-
-                // If this is the exit kiosk, send them to the final pages
-                } else if (kioskConfig.kiosk_mode == window.const_KIOSK_MODE_EXIT) {
-                    goToFinalQuestions();
-                }
+//                // If this is the exit kiosk, send them to the final pages
+//                } else if (kioskConfig.kiosk_mode == window.const_KIOSK_MODE_EXIT) {
+//                    goToFinalQuestions();
+//                }
             }
         }
 
@@ -605,7 +609,7 @@ ApplicationWindow {
                     onNextButtonClicked: {
                         if (demographicQuestionsStackLayout.currentIndex === demographicQuestionsStackLayout.count - 2) {
                             // if this is the entry kiosk, show the "enjoy your visit" page.
-                            // if this is the center kiosk, go to the questions
+                            // if this is the center kiosk, go to the questions                                                                                                                                                                                                                                                                                            s the center kiosk, go to the questions
                             if (kioskConfig.kiosk_mode !== window.const_KIOSK_MODE_ENTRY) {
                                 // kiosk_mode is central:
                                 mainStackLayout.nextPage();
