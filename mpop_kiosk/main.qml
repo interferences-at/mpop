@@ -227,7 +227,7 @@ ApplicationWindow {
                 resetIdleTimer();
 //                // Go to the demographic question if this is the entry kiosk
 //                if (kioskConfig.kiosk_mode == window.const_KIOSK_MODE_ENTRY) {
-//                        goToDemographicQuestions();
+//                    goToDemographicQuestions();
 //
 //                // Go to the survey questions if this is the central kiosk
 //                // But: if the user hasn't answered the demographic questions, send them there.
@@ -605,7 +605,7 @@ ApplicationWindow {
                     onNextButtonClicked: {
                         if (demographicQuestionsStackLayout.currentIndex === demographicQuestionsStackLayout.count - 2) {
                             // if this is the entry kiosk, show the "enjoy your visit" page.
-                            // if this is the center kiosk, go to the questions                                                                                                                                                                                                                                                                                            s the center kiosk, go to the questions
+                            // if this is the center kiosk, go to the questions
                             if (kioskConfig.kiosk_mode !== window.const_KIOSK_MODE_ENTRY) {
                                 // kiosk_mode is central:
                                 mainStackLayout.nextPage();
