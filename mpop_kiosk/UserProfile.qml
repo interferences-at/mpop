@@ -191,12 +191,13 @@ Item {
                     if (err2) {
                         cb(err2);
                     } else {
-                        console.log("Userid ::",user_id);
                         _populateUserInfo(user_id, function (err3) {
                             if (err3) {
                                 console.log(err3); // let's no pass this error upstream
                                 cb(null); // done (even if an error occured)
                             } else {
+                                // Set the userId property, so that we can use it from anywhere
+                                userId = user_id;
                                 // TODO: also populate their answers
                                 _populateUserAnswers(user_id, function (err4) {
                                     if (err4) {
@@ -209,8 +210,6 @@ Item {
                                 });
                             }
                         });
-                        // Set the userId property, so that we can use it from anywhere
-                        userId = user_id;
                     }
                 });
             }
