@@ -531,7 +531,7 @@ ApplicationWindow {
                     id: pageEthnicity
                     sideLabel: BilingualText {
                         textEn: "To which nation do you identify the most?"
-                        textFr: "À quelle nationvous identifiez-vousle plus ?"
+                        textFr: "À quelle nation vous identifiez-vous le plus ?"
                     }
                     model: ModelEthnicities {}
 
