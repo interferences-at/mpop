@@ -1,7 +1,9 @@
 #include "screensaver.h"
 
-StickRenderer *Screensaver::_stickRenderer = new StickRenderer;
-
+Framebuffer::Framebuffer(QQuickItem *parent) : QQuickFramebufferObject(parent)
+{
+    _stickRenderer = new StickRenderer;
+}
 ////////////////////////////////////////////////////////////////////
 QQuickFramebufferObject::Renderer *Screensaver::createRenderer() const
 {
@@ -13,22 +15,40 @@ QQuickFramebufferObject::Renderer *Screensaver::createRenderer() const
 
 bool Screensaver::getEnable() const
 {
-    return _stickRenderer->_render;
+    return _stickRenderer->_render.at(_stickRenderer->ScreensaverLayout);
 }
 
 void Screensaver::setEnable(bool enable)
 {
-    // Enable/disable renderer on the OpenGL side
-    _stickRenderer->_render = enable;
-    _stickRenderer->_currentView = _stickRenderer->ScreensaverLayout;
+    if (enable) {
+        _stickRenderer->_currentView = _stickRenderer->ScreensaverLayout;
+    }
+
+    _stickRenderer->_render[_stickRenderer->ScreensaverLayout] = enable;
 
     emit renderChanged();
 }
 ////////////////////////////////////////////////////////////////////
+QQuickFramebufferObject::Renderer *AnswersView::createRenderer() const
+{
+    // Init OpenGL
+    _stickRenderer->initializeGLCanvas();
+
+    return _stickRenderer;
+}
+
+bool AnswersView::getEnable() const
+{
+    return _stickRenderer->_render.at(_stickRenderer->AnswersViewLayout);
+}
+
 void AnswersView::setEnable(bool enable)
 {
-    _stickRenderer->_render = enable;
-    _stickRenderer->_currentView = _stickRenderer->AnswersViewLayout;
+    if (enable) {
+        _stickRenderer->_currentView = _stickRenderer->AnswersViewLayout;
+    }
+
+    _stickRenderer->_render[_stickRenderer->AnswersViewLayout] = enable;
 
     emit renderChanged();
 }
@@ -40,7 +60,6 @@ QVariant AnswersView::getUserBars() const
 
 void AnswersView::setUserBars(const QVariant &bars)
 {
-//    _stickRenderer->_answersBars[UserAnswer] = bars;
     _stickRenderer->setBars(UserAnswer, bars);
 
     emit userBarsChanged();
@@ -53,14 +72,12 @@ QVariant AnswersView::getTheirBars() const
 
 void AnswersView::setTheirBars(const QVariant &bars)
 {
-//    _stickRenderer->_answersBars[TheirAnswer] = bars;
     _stickRenderer->setBars(TheirAnswer, bars);
 
     emit theirBarsChanged();
 }
 ////////////////////////////////////////////////////////////////////
 StickRenderer::StickRenderer() :
-    _render(false),
     _currentView(ScreensaverLayout)
 {
 
@@ -82,6 +99,8 @@ StickRenderer::StickRenderer() :
     _answersRows = QVector<QVariant>(2);
     // Define answers sticks
     _answersSticks = QVector<Stick*>();
+
+    _render = QVector<bool>(2, false);
 }
 
 void StickRenderer::initializeGLCanvas()
@@ -111,9 +130,6 @@ void StickRenderer::resizeGLCanvas(int width, int height)
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
 
-    glMatrixMode(GL_MODELVIEW );
-    glLoadIdentity();
-
     glOrtho(_left, _right, _bottom, _top, -1, 1);
 
     randomX = std::uniform_real_distribution<qreal>(_left * 1.2, _right * 1.2);
@@ -131,6 +147,10 @@ void StickRenderer::paintGLCanvas()
     // Clear background
     glClearColor(0, 0, 0, 0);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+    glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();
+
     // Reset drawer program
     glUseProgram(0);
 
@@ -203,7 +223,6 @@ QPointF StickRenderer::coordinateFromPixel(qreal x, qreal y)
 
 void StickRenderer::paintScreensaver()
 {
-
     QRandomGenerator generator;
 
     for (auto &stick : _barSticks) {
@@ -281,8 +300,8 @@ void StickRenderer::paintAnswersView()
 
 void StickRenderer::render()
 {
-    // Check if rendering is enable on the QML side
-    if (_render) {
+   // Check if rendering is enable on the QML side
+    if (_render.at(ScreensaverLayout) || _render.at(AnswersViewLayout)) {
         // call painter function
         paintGLCanvas();
     }
@@ -309,10 +328,9 @@ QOpenGLFramebufferObject *StickRenderer::createFramebufferObject(const QSize &si
 
 void StickRenderer::synchronize(QQuickFramebufferObject *item)
 {
-    Screensaver *screensaver = qobject_cast<Screensaver *>(item);
     // Reset OpenGL
-    screensaver->window()->resetOpenGLState();
+    item->window()->resetOpenGLState();
     // Update pixel ratio
-    _pixelRatio = screensaver->window()->devicePixelRatio();
+    _pixelRatio = item->window()->devicePixelRatio();
 }
 ////////////////////////////////////////////////////////////////////

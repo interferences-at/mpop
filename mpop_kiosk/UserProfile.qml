@@ -173,6 +173,29 @@ Item {
     }
 
     /**
+     * Calls getAnswers.
+     * @param questionIds QList.
+     * @param ageFrom int. (default: -1)
+     * @param ageTo int. (default: -1)
+     * @param ethnicity string. (default: all)
+     * @param gender string. (default: all)
+     * @param timeAnswered string. (default: all)
+     * @see Facade.cpp
+     */
+    function getAnswers(questionIds, ageFrom, ageTo, ethnicity, gender, timeAnswered, callback) {
+        console.log(`Calling getAnswers(${questionIds}, ${ageFrom}, ${ageTo}, ${ethnicity}, ${gender}, ${timeAnswered})`);
+        var params = [questionIds, ageFrom, ageTo, ethnicity, gender, timeAnswered];
+        websocket.callRemoteMethod("getAnswers", params, (error, allAnswers) => {
+            if (error) {
+                console.log(`Error calling getAnswers(${questionIds}, ${ageFrom}, ${ageTo}, ${ethnicity}, ${gender}, ${timeAnswered})`)
+                callback(error);
+            } else {
+                callback(null, allAnswers);
+            }
+        });
+    }
+
+    /**
      * Sets the RFID tag.
      * Reads the info from the service, if any.
      * Populate the info here.
