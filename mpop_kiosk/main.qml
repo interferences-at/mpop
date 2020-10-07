@@ -4,7 +4,6 @@ import QtQuick.Layouts 1.3
 import QtQuick.Window 2.11
 import QtGraphicalEffects 1.0
 import Screensaver 1.0
-import AnswersView 1.0
 
 /**
  * Main window of this application
