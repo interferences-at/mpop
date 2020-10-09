@@ -19,13 +19,40 @@ class StickRenderer;
  * This class for integrating OpenGL rendering using
  * a framebuffer object (FBO) with Qt Quick.
 */
-class Screensaver : public QQuickFramebufferObject
+class Framebuffer : public QQuickFramebufferObject
+{
+    Q_OBJECT
+    /*
+     *  Add QML property that allow to disable the rendering while the widget is not shown
+    */
+    Q_PROPERTY(bool render READ getEnable WRITE setEnable NOTIFY renderChanged)
+
+public:
+    Framebuffer(QQuickItem *parent = nullptr);
+
+    // Getter and Setter of render enable/disable
+    virtual bool getEnable() const = 0;
+    virtual void setEnable(bool enable) = 0;
+
+signals:
+    void renderChanged();
+
+protected:
+    StickRenderer *_stickRenderer;
+
+};
+
+/*
+ * This class for integrating OpenGL rendering using
+ * a framebuffer object (FBO) with Qt Quick.
+*/
+class Screensaver : public Framebuffer
 {
     Q_OBJECT
     /*
      *  Add QML property to Screensaver that allow to disable it while not shown
     */
-    Q_PROPERTY(bool render READ getEnable WRITE setEnable NOTIFY renderChanged)
+//    Q_PROPERTY(bool render READ getEnable WRITE setEnable NOTIFY renderChanged)
 
 public:
     /*
@@ -33,16 +60,9 @@ public:
      *  while the GUI thread is blocked
     */
     Renderer *createRenderer() const override;
-    // Getter and Setter of render enable/disable
-    bool getEnable() const;
-    void setEnable(bool enable);
 
-signals:
-    void renderChanged();
-
-protected:
-    static StickRenderer *_stickRenderer;
-
+    bool getEnable() const override;
+    void setEnable(bool enable) override;
 };
 
 /*
@@ -55,7 +75,6 @@ class AnswersView : public Screensaver
     /*
      *  Add QML property to ResponseBars that expose the responses number
     */
-    Q_PROPERTY(bool render READ getEnable WRITE setEnable NOTIFY renderChanged)
     Q_PROPERTY(QVariant myAnswers READ getUserBars WRITE setUserBars NOTIFY userBarsChanged)
     Q_PROPERTY(QVariant theirAnswers READ getTheirBars WRITE setTheirBars NOTIFY theirBarsChanged)
 
@@ -65,8 +84,15 @@ public:
         TheirAnswer
     };
 
+    /*
+     * This function will be called on the rendering thread
+     *  while the GUI thread is blocked
+    */
+    Renderer *createRenderer() const override;
+
     // Overriding parent method
-    void setEnable(bool enable);
+    bool getEnable() const override;
+    void setEnable(bool enable) override;
 
     QVariant getUserBars() const;
     void setUserBars(const QVariant &bars);
@@ -139,7 +165,7 @@ private:
     QPointF coordinateFromPixel(qreal x, qreal y);
 
     // Enable render
-    bool _render;
+    QVector<bool> _render;
 
     //Barchart answers bars
     QVector<QVariant> _answersRows;
