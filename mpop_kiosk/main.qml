@@ -29,6 +29,8 @@ ApplicationWindow {
     readonly property string const_KIOSK_MODE_CENTRAL: "central"
     readonly property string const_KIOSK_MODE_EXIT: "exit"
 
+    property bool showCursor: true // Show cursor by default
+
     /**
      * Handles the incoming OSC messages.
      */
@@ -271,7 +273,8 @@ ApplicationWindow {
 
     Shortcut {
         sequence: "Tab"
-        onActivated: toggleDebugView()
+        onActivated: showCursor = !showCursor; // Toggle
+//        onActivated: toggleDebugView()
     }
 
     Shortcut {
@@ -1045,5 +1048,12 @@ ApplicationWindow {
                 }
             }
         }
+    }
+
+    MouseArea {
+        anchors.fill: parent
+        enabled: false // Do not use the mouse here
+        // Show cursor when shortcut is triggred
+        cursorShape: window.showCursor ? Qt.ArrowCursor : Qt.BlankCursor
     }
 }
