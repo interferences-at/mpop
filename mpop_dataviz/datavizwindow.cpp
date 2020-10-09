@@ -38,7 +38,7 @@ void DatavizWindow::keyPressEvent(QKeyEvent *event)
     } else {
         switch (event->key()) {
         case Qt::Key_Tab:
-            _showFPS = !_showFPS; // Show/Hide FPS text with TAB
+            _showHUD = !_showHUD; // Show/Hide FPS text with TAB
             break;
         }
     }
@@ -132,9 +132,13 @@ void DatavizWindow::paintGL() {
                                    _viewModeManager->getViewTitles(viewActiveMode));
     }
 
-    // Draw Frame per second
-    if (_showFPS)
+    if (_showHUD) {
+        // Draw Frame per second
         _painter->drawFramePerSecond(_framePerSecond);
+        setCursor(QCursor(Qt::ArrowCursor));
+    } else {
+        setCursor(QCursor(Qt::BlankCursor));
+    }
 
     ++_framesCount; // Update the amount of frame
 
