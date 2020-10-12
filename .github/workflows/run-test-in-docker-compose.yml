@@ -20,8 +20,9 @@ jobs:
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       - name: Install apt packages
-        run: sudo DEBIAN_FRONTEND=noninteractive apt-get update --yes -qq
-        run: sudo DEBIAN_FRONTEND=noninteractive apt-get install --yes docker-compose
+        run: |
+            sudo DEBIAN_FRONTEND=noninteractive apt-get update --yes -qq
+            sudo DEBIAN_FRONTEND=noninteractive apt-get install --yes docker-compose
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
 
