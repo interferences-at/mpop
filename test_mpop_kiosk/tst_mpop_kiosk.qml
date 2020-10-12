@@ -36,6 +36,11 @@ TestCase {
      * Sends ping to the service.
      */
     function test_ping() {
+        if (userProfile.isConnected === false) {
+            skip("This test requires a connection to the MPOP Service via JSON-RPC.");
+            return;
+        }
+
         // if (! userProfile.isConnected) skip();
         var done = false;
         userProfile.ping(function (err, result) {
