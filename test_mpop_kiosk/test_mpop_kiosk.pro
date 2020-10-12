@@ -8,16 +8,19 @@ CONFIG += c++11
 TARGET = test_mpop_kiosk
 CONFIG += console
 CONFIG -= app_bundle
-
+CONFIG += warn_on qmltestcase
 TEMPLATE = app
 
-SOURCES += main.cpp \
-    TestMpopKiosk.cpp
+SOURCES += main.cpp
 
-HEADERS += \
-    TestMpopKiosk.h
+HEADERS +=
 
 INCLUDEPATH += $$PWD/../mpop_kiosk/
 
 # LIBS += -L$$PWD/../mpop_kiosk -lmpop_kiosk
+
+DISTFILES += \
+    TestConfigParser.qml \
+    tst_mpop_kiosk.qml \
+    tst_tests_work.qml
 

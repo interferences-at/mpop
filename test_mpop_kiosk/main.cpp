@@ -1,6 +1,3 @@
-#include <QtTest/QtTest>
-#include "TestMpopKiosk.h"
+#include <QtQuickTest>
 
-QTEST_MAIN(TestMpopKiosk)
-// #include "TestMpopKiosk.moc"
-
+QUICK_TEST_MAIN(TestMpopKiosk)
