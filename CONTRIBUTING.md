@@ -23,9 +23,7 @@ sudo apt-get install -y libqt5sql5-mysql qt5-default libqt5opengl5-dev libqt5ser
 
 ## Developer setup with VirtualBox on Windows
 
-### Download VirtualBox and Xubuntu
-
-
+### Download VirtualBox and Xubuntu 
 - https://download.virtualbox.org/virtualbox/6.1.12/VirtualBox-6.1.12-139181-Win.exe - http://mirror.csclub.uwaterloo.ca/xubuntu-releases/20.04/release/xubuntu-20.04.1-desktop-amd64.iso 
 ## Install Ubuntu (or Xubuntu) on VirtualBox machine
 
@@ -148,4 +146,23 @@ The layout of the kiosk - in QML - looks like something like this:
   - Page Final Three Questions
   - Page Dataviz Final Three Questions
   - Page Thank You
+
+
+## System tests
+
+In test_mpop_kiosk, we check that some JSON-RPC methods return the
+expected results.
+
+It requires the Docker Compose services to be running, so that you
+have an MPOP Service that is available.
+
+You can change the service host name and port number by passing
+command-line arguments to the test suite in Qt Creator.
+For example: `10.10.10.10 3334` will configure the test suite to
+communicate with the MPOP Service on that host IP and port number.
+You can pass only the first argument, so that you keep using the default
+port number, like this: `10.10.10.10`.
+You can set the command-line arguments to the test suite by clicking on
+"Project" and then "Run". Then, populate the "Command line arguments"
+text field.
 
