@@ -27,6 +27,7 @@ Item {
     property int service_port_number: 3333
     property string service_host: "0.0.0.0"
     property bool is_verbose: false
+    property bool isConnected: websocket.status === WebSocket.Open
 
     // user's profile:
     property string gender: const_INVALID_STRING
@@ -407,6 +408,13 @@ Item {
     }
 
     /**
+     * Sends a ping. The service should answer with "pong".
+     */
+    function ping(cb) {
+        websocket.sendPing(cb);
+    }
+
+    /**
      * Makes the client periodically reconnect with the weboscket server, if necessary.
      */
     Timer {
@@ -537,6 +545,7 @@ Item {
                     console.log("Found registered callback for " + callId.toString());
                     // Calling the callback:
                     var cb = responseCallbacks[key];
+                    console.log("Calling the callback with result " + callId.toString() + " " + result);
                     cb(null, result);
                     // Removing the callback:
                     delete responseCallbacks[key];
