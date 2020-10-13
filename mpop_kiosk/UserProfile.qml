@@ -535,7 +535,7 @@ Item {
 
             if (websocket.status === WebSocket.Open) {
                 websocket.sendTextMessage(strToSend);
-                console.log("string sent :", '"' + strToSend + '"');
+                // console.log("string sent :", '"' + strToSend + '"');
             } else {
                 console.log("Cannot call remote method: no websocket connection.");
                 cb(new Error("Cannot call remote method: no websocket connection."));
@@ -563,15 +563,15 @@ Item {
          */
         function _callCallbackForKeyIfFound(callId, result) {
             var foundCb = false;
-            console.log("_callCallbackForKeyIfFound " + JSON.stringify(result));
+            // console.log("_callCallbackForKeyIfFound " + JSON.stringify(result));
             for (var key in responseCallbacks) {
-                console.log("Check if callback " + key + " matches what we are looking for: " + callId.toString());
-                console.log("Types are " + (typeof key) + " and " + (typeof callId.toString()));
+                // console.log("Check if callback " + key + " matches what we are looking for: " + callId.toString());
+                // console.log("Types are " + (typeof key) + " and " + (typeof callId.toString()));
                 if (key === callId.toString()) {
-                    console.log("Found registered callback for " + callId.toString());
+                    // console.log("Found registered callback for " + callId.toString());
                     // Calling the callback:
                     var cb = responseCallbacks[key];
-                    console.log("Calling the callback with result " + callId.toString() + " " + result);
+                    // console.log("Calling the callback with result " + callId.toString() + " " + result);
                     cb(null, result);
                     // Removing the callback:
                     delete responseCallbacks[key];
@@ -616,8 +616,8 @@ Item {
         }
 
         onTextMessageReceived: {
-            console.log("onTextMessageReceived: " + message);
-            //messageBox.text = messageBox.text + "\nReceived message: " + message;
+            // console.log("onTextMessageReceived: " + message);
+            // messageBox.text = messageBox.text + "\nReceived message: " + message;
             var data = JSON.parse(message);
             var method = (data.hasOwnProperty("method")) ? data.method : "";
             var result = (data.hasOwnProperty("result")) ? data.result : "";
@@ -625,7 +625,7 @@ Item {
             var callId = data.id;
             // TODO: if it's a result, check for call id, otherwise, it must be a method call.
 
-            console.log("JSON-RPC: " + JSON.stringify(data));
+            // console.log("JSON-RPC: " + JSON.stringify(data));
 
             _callCallbackForKeyIfFound(callId, result);
         }
@@ -633,7 +633,7 @@ Item {
         onStatusChanged:
         {
             var stringStatus = statusToString(websocket.status);
-            console.log("websocket status changed to " + stringStatus);
+            // console.log("websocket status changed to " + stringStatus);
             if (websocket.status === WebSocket.Error) {
                 console.log("Error: " + websocket.errorString)
             } else if (websocket.status === WebSocket.Open) {
