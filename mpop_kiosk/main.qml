@@ -147,7 +147,13 @@ ApplicationWindow {
         onLastRfidReadChanged: {
             lastRfidRead = rfidReader.lastRfidRead;
             console.log("(QML) Last RFID read: " + lastRfidRead);
-            userProfile.setRfidTag(lastRfidRead);
+            userProfile.setRfidTag(lastRfidRead, function (err, result) {
+                if (err) {
+                    console.log("Error calling setRfidTag: " + err.message);
+                } else {
+                    console.log("Success calling setRfidTag: " + result);
+                }
+            });
         }
         onTagRead: {
             console.log("(QML) RFID read: " + tag);
