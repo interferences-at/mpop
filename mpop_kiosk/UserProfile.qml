@@ -28,6 +28,7 @@ Item {
     property string service_host: "0.0.0.0"
     property bool is_verbose: false
     property bool isConnected: websocket.status === WebSocket.Open
+    property bool thisIsInSystemTests: false
 
     // user's profile:
     property string gender: const_INVALID_STRING
@@ -145,7 +146,7 @@ Item {
                 console.log("Error calling setUserAnswer(" + user_id + "," + question_identifier + "," + value + "): " + err.message);
                 cb(err);
             } else {
-                thisUserProfile.age = value; // set the property
+                thisUserProfile.answers[question_identifier] = value;
                 cb(null); // call callback with no error
             }
         });
@@ -184,11 +185,11 @@ Item {
      * @see Facade.cpp
      */
     function getAnswers(questionIds, ageFrom, ageTo, ethnicity, gender, timeAnswered, callback) {
-        console.log(`Calling getAnswers(${questionIds}, ${ageFrom}, ${ageTo}, ${ethnicity}, ${gender}, ${timeAnswered})`);
+        console.log("Calling getAnswers(" + questionIds + ", " + ageFrom + "," + ageTo + "," + ethnicity + "," + gender + "," + timeAnswered + ")");
         var params = [questionIds, ageFrom, ageTo, ethnicity, gender, timeAnswered];
-        websocket.callRemoteMethod("getAnswers", params, (error, allAnswers) => {
+        websocket.callRemoteMethod("getAnswers", params, function (error, allAnswers) {
             if (error) {
-                console.log(`Error calling getAnswers(${questionIds}, ${ageFrom}, ${ageTo}, ${ethnicity}, ${gender}, ${timeAnswered})`)
+                console.log("Error calling getAnswers(" + questionIds + ", " + ageFrom + "," + ageTo + "," + ethnicity + "," + gender + "," + timeAnswered + ")");
                 callback(error);
             } else {
                 callback(null, allAnswers);
@@ -289,7 +290,9 @@ Item {
                     // TODO: store userId for user
 
                     // check Kiosk Mode and demographic que. answered.
-                    _checkKioskMode();
+                    if (thisIsInSystemTests === false) {
+                        _checkKioskMode();
+                    }
                     cb(null); // done
                 }
             });
@@ -300,9 +303,11 @@ Item {
     /**
      * Check Kiosk mode for central, Entry or final.
      * and also check if demographic questions are answered than skip to survey questions.
+     *
+     * FIXME: We should really not access functions and properties that belong to a parent from within a QML type.
+     * This is so that QML types are reusable, no matter in which context we use them. (for example, in a system test suite)
      */
-
-    function  _checkKioskMode(){
+    function _checkKioskMode(){
 
         // Go to the demographic question if this is the entry kiosk
         if (kioskConfig.kiosk_mode == window.const_KIOSK_MODE_ENTRY) {
@@ -323,8 +328,6 @@ Item {
             goToFinalQuestions();
         }
     }
-
-
 
     /**
      * Retrieves all answers for a user - from the service -
