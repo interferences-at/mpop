@@ -163,7 +163,7 @@ Item {
     function getAnswerByAge(questionId, ethnicity, gender, timeAnswered, cb) {
         // TODO: validate arguments
         console.log("Calling getAnswerByAge(" + questionId + "," + ethnicity + "," + gender + "," + timeAnswered + ")");
-        websocket.callRemoteMethod("getAnswerByAge", [questionId, ethnicity, gender, timeAnswered], function (err, ansByAge) {
+        websocket.callRemoteMethod("getAnswerByAge", [questionId, ethnicity, gender,timeAnswered], function (err, ansByAge) {
             if (err) {
                 console.log("Error calling setUserAnswer(" + user_id + "," + question_identifier + "," + value + "): " + err.message);
                 cb(err);
@@ -173,6 +173,51 @@ Item {
             }
         });
     }
+
+    function getAnswerByEthnicity(questionId, ageFrom, ageTo, gender, timeAnswered, cb){
+        // TODO: validate arguments
+        console.log("Calling getAnswerByEthnicity(" + questionId + "," + ageFrom + "," + ageTo + "," + gender + "," + timeAnswered + ")");
+        websocket.callRemoteMethod("getAnswerByEthnicity", [questionId, ageFrom, ageTo, gender,timeAnswered], function (err, ansByEthnicity) {
+            if (err) {
+                console.log("Error calling getAnswerByEthnicity(" + questionId + "," + ageFrom + "," + ageTo + "," + gender + "," + timeAnswered + "): " + err.message);
+                cb(err);
+            } else {
+                // ansByEthnicity is a list of 6 values
+                cb(null, ansByEthnicity); // call callback with no error
+            }
+        });
+    }
+
+    function getAnswerByGender(questionId,ethenicity,ageTo,ageFrom,timeAnswered, cb){
+
+        console.log("Calling getAnswerByGender(" + questionId + "," + ethenicity + "," + ageTo + "," + ageFrom + "," + timeAnswered + ")");
+        websocket.callRemoteMethod("getAnswerByGender", [questionId, ethenicity,ageTo, ageFrom, timeAnswered], function (err, ansByGender) {
+            if (err) {
+                console.log("Error calling getAnswerByEthnicity(" + questionId + "," + ethenicity + "," + ageTo + "," + ageFrom + timeAnswered + "): " + err.message);
+                cb(err);
+            } else {
+                // ansByGender is a list of 3 values
+                cb(null, ansByGender); // call callback with no error
+            }
+        });
+    }
+
+    function getUserAnswerByLanguage(questionId,ageFrom,ageTo,ethnicity,gender,timeAnswered,cb){
+
+        console.log("Calling getUserAnswerByLanguage(" + questionId + "," + gender + "," + ethnicity + "," + ageTo + "," + ageFrom + "," + timeAnswered + ")");
+        websocket.callRemoteMethod("getAnswerByLanguage", [questionId,ageFrom,ageTo,ethnicity,gender,timeAnswered], function (err, ansByLanguage) {
+            if (err) {
+                console.log("Error calling getAnswerByLanguage(" + questionId + "," + ethnicity + "," + ageTo + "," + ageFrom + timeAnswered + "): " + err.message);
+                cb(err);
+            } else {
+                // ansByGender is a list of 3 values
+                cb(null, ansByLanguage); // call callback with no error
+            }
+        });
+
+    }
+
+
 
     /**
      * Calls getAnswers.
