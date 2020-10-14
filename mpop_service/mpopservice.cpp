@@ -84,7 +84,7 @@ void MPopService::textMessageReceivedCb(const QString &message) {
     QWebSocket *pSender = qobject_cast<QWebSocket *>(sender());
     bool broadcastNotification = false;
 
-    QTextStream(stdout) << "got a request";
+    // QTextStream(stdout) << "got a request";
     try {
         QString response = this->handleJsonRpcTwoMethod(message, broadcastNotification);
 
@@ -106,7 +106,7 @@ void MPopService::textMessageReceivedCb(const QString &message) {
 
 void MPopService::socketDisconnectedCb() {
     QWebSocket *client = qobject_cast<QWebSocket*>(sender());
-    QTextStream(stdout) << getIdentifier(client) << " disconnected!\n";
+    QTextStream(stdout) << getIdentifier(client) << " disconnected!" << endl;
     if (client) {
         m_clients.removeAll(client);
         client->deleteLater();
@@ -118,45 +118,43 @@ QString MPopService::handleJsonRpcTwoMethod(const QString& message, bool &broadc
     //std::string str = message.toStdString();
     //QJsonDocument requestDocument = QJsonDocument::fromRawData(str.c_str(), str.size(), QJsonDocument::Validate);
     Request request = Request::fromString(message);
-    QTextStream(stdout) << "Request received: " << request.toString() << endl;
+    QTextStream(stdout) << "START - Request: " << request.toString() << endl;
     //if (document == nullptr) {
     //    qDebug << "Could not parse JSON from JSON-RPC 2.0 message.";
     //}
     Response response;
     response.copyIdFromRequest(request);
-    QTextStream(stdout) << "The ID of our response will be: " << response.intId << endl;
-    // response.method = request.method;
+    // QTextStream(stdout) << "ID of the request and our response: " << response.intId << endl;
     // bool sendResponse = true;
 
     if (request.method == "message") {
-        QTextStream(stdout) << "Got method message" << endl;
+        // QTextStream(stdout) << "Got method message" << endl;
         //response.result = QVariant::fromValue(QString("pong"));
-        QTextStream(stdout) << "Answer with pong" << endl;
+        // QTextStream(stdout) << "Answer with pong" << endl;
         // sendResponse = false;
         broadcastNotification = true;
         Notification notification;
         notification.method = "message";
         notification.paramsByPosition = request.paramsByPosition;
         QString ret = notification.toString();
-        QTextStream(stdout) << "Response: " << ret;
+        // QTextStream(stdout) << "Response: " << ret;
         return ret;
     } else if (request.method == "ping") {
-        QTextStream(stdout) << "Got method ping" << endl;
+        QTextStream(stdout) << "Got ping - answer with pong" << endl;
         response.result = QVariant::fromValue(QString("pong"));
-        QTextStream(stdout) << "Answer with pong" << endl;
     } else if (request.method == "echo") {
         QTextStream(stdout) << "Got method echo" << endl;
         response.result = QVariant(request.paramsByName);
-        QTextStream(stdout) << "Answer with echo" << endl;
+        // QTextStream(stdout) << "Answer with echo" << endl;
     } else if (this->handleFacadeMethod(request, response)) {
-        QTextStream(stdout) << "Successfully handled a facade method." << endl;
+        // QTextStream(stdout) << "Successfully handled a facade method." << endl;
         // success
     } else {
         QTextStream(stdout) << "unhandled request" << endl;
     }
 
     QString ret = response.toString(); // return string response (JSON)
-    QTextStream(stdout) << "Response: " << ret;
+    QTextStream(stdout) << "Response: " << ret << " - DONE" << endl;
     return ret;
 }
 
@@ -164,7 +162,7 @@ bool MPopService::handleFacadeMethod(const Request& request, Response& response)
     // write error message in case of exception
     QString msg;
 
-    QTextStream(stdout) << "Attempt to handle a facade method." << endl;
+    // QTextStream(stdout) << "Attempt to handle a facade method." << endl;
 
     qDebug() << "paramsByPosition: ";
     QVariantList paramsByPosition = request.paramsByPosition;
@@ -177,12 +175,12 @@ bool MPopService::handleFacadeMethod(const Request& request, Response& response)
     // Write to the response object.
     QString method = request.method;
     if (method == "getOrCreateUser") {
-        QTextStream(stdout) << "Method is: getOrCreateUser" << endl;
+        QTextStream(stdout) << "JSON-RPC method: getOrCreateUser" << endl;
         try {
-            QTextStream(stdout) << "getParamByPosition 0..." << endl;
+            // QTextStream(stdout) << "getParamByPosition 0..." << endl;
             QString rfidTag = request.getParamByPosition(0).toString();
-            QTextStream(stdout) << "getOrCreateUser: parsed rfidTag: " << rfidTag << endl;
-            QTextStream(stdout) << "getOrCreateUser: calling the Facade method with arg " << rfidTag << endl;
+            QTextStream(stdout) << "getOrCreateUser: rfidTag: " << rfidTag << endl;
+            // QTextStream(stdout) << "getOrCreateUser: calling the Facade method with arg " << rfidTag << endl;
             response.result = QVariant(this->_facade.getOrCreateUser(rfidTag));
             // If the result is -1, it didn't work!
             // FIXME: Properly respond with a JSON-RPC error response
@@ -195,7 +193,7 @@ bool MPopService::handleFacadeMethod(const Request& request, Response& response)
         }
     }
     else if (method == "getUserInfo") {
-        QTextStream(stdout) << "Method is: getUserInfo" << endl;
+        QTextStream(stdout) << "JSON-RPC method: getUserInfo" << endl;
         try {
             int userId = request.getParamByPosition(0).toInt();
             response.result = QVariant(this->_facade.getUserInfo(userId));
@@ -206,11 +204,10 @@ bool MPopService::handleFacadeMethod(const Request& request, Response& response)
             msg.append(e.what());
             response.error.message = msg;
         }
-
     }
 
     else if (method == "getUserAnswers") {
-        QTextStream(stdout) << "Method is: getUserAnswers" << endl;
+        QTextStream(stdout) << "JSON-RPC method: getUserAnswers" << endl;
         try {
             int userId = request.getParamByPosition(0).toInt();
             QMap<QString, int> answers = this->_facade.getUserAnswers(userId);
@@ -224,7 +221,7 @@ bool MPopService::handleFacadeMethod(const Request& request, Response& response)
         }
     }
     else if (method == "setUserAnswer") {
-        QTextStream(stdout) << "Method is: setUserAnswer" << endl;
+        QTextStream(stdout) << "JSON-RPC method: setUserAnswer" << endl;
         try {
             int userId = request.getParamByPosition(0).toInt();
             QString question= request.getParamByPosition(1).toString();
@@ -238,8 +235,8 @@ bool MPopService::handleFacadeMethod(const Request& request, Response& response)
             response.error.message = msg;
         }
     }
-    else if (method=="freeTag") {
-        QTextStream(stdout) << "Method is: freeTag" << endl;
+    else if (method == "freeTag") {
+        QTextStream(stdout) << "JSON-RPC method: freeTag" << endl;
         try {
             QString rfidTag = request.getParamByPosition(0).toString();
             this->_facade.freeTag(rfidTag);
@@ -252,7 +249,7 @@ bool MPopService::handleFacadeMethod(const Request& request, Response& response)
         }
     }
     else if (method == "freeUnusedTags") {
-        QTextStream(stdout) << "Method is: freeUnusedTags" << endl;
+        QTextStream(stdout) << "JSON-RPC method: freeUnusedTags" << endl;
         try {
             this->_facade.freeAllTags();
         } catch (MissingParameterError& e) {
@@ -264,7 +261,7 @@ bool MPopService::handleFacadeMethod(const Request& request, Response& response)
         }
     }
     else if (method == "setUserLanguage") {
-        QTextStream(stdout) << "Method is: setUserLanguage" << endl;
+        QTextStream(stdout) << "JSON-RPC method: setUserLanguage" << endl;
         try {
             int userId = request.getParamByPosition(0).toInt();
             QString language = request.getParamByPosition(1).toString();
@@ -278,7 +275,7 @@ bool MPopService::handleFacadeMethod(const Request& request, Response& response)
         }
     }
     else if (method == "setUserGender") {
-        QTextStream(stdout) << "Method is: setUserGender" << endl;
+        QTextStream(stdout) << "JSON-RPC method: setUserGender" << endl;
         try {
             int userId = request.getParamByPosition(0).toInt();
             QString gender = request.getParamByPosition(1).toString();
@@ -292,7 +289,7 @@ bool MPopService::handleFacadeMethod(const Request& request, Response& response)
         }
     }
     else if (method == "setUserEthnicity") {
-        QTextStream(stdout) << "Method is: setUserEthnicity" << endl;
+        QTextStream(stdout) << "JSON-RPC method: setUserEthnicity" << endl;
         try {
             int userId = request.getParamByPosition(0).toInt();
             QString ethnicity = request.getParamByPosition(1).toString();
@@ -306,7 +303,7 @@ bool MPopService::handleFacadeMethod(const Request& request, Response& response)
         }
     }
     else if (method == "setUserAge") {
-        QTextStream(stdout) << "Method is: setUserAge" << endl;
+        QTextStream(stdout) << "JSON-RPC method: setUserAge" << endl;
         try {
             int userId = request.getParamByPosition(0).toInt();
             int age = request.getParamByPosition(1).toInt();
@@ -321,9 +318,8 @@ bool MPopService::handleFacadeMethod(const Request& request, Response& response)
 
     }
     else if (method == "getAnswers") {
-        QTextStream(stdout) << "Method is: getAnswers" << endl;
+        QTextStream(stdout) << "JSON-RPC method: getAnswers" << endl;
         try {
-
             const QList<QString>& questionIds = request.getParamByPosition(0).toStringList();
             int ageFrom =  request.getParamByPosition(1).toInt();
             int ageTo = request.getParamByPosition(2).toInt() ;
@@ -341,7 +337,7 @@ bool MPopService::handleFacadeMethod(const Request& request, Response& response)
         }
     }
     else if (method == "getAnswerByAge") {
-        QTextStream(stdout) << "Method is: getAnswerByAge" << endl;
+        QTextStream(stdout) << "JSON-RPC method: getAnswerByAge" << endl;
         try {
             const QString& questionId = request.getParamByPosition(0).toString();
             const QString& ethnicity = request.getParamByPosition(1).toString();
@@ -359,7 +355,7 @@ bool MPopService::handleFacadeMethod(const Request& request, Response& response)
         }
     }
     else if (method == "getAnswerByGender") {
-        QTextStream(stdout) << "Method is: getAnswerByGender" << endl;
+        QTextStream(stdout) << "JSON-RPC method: getAnswerByGender" << endl;
         try {
             const QString& questionId = request.getParamByPosition(0).toString();
             const QString& ethnicity = request.getParamByPosition(1).toString().trimmed().length()==0 ? "all" :  request.getParamByPosition(1).toString();
@@ -378,7 +374,7 @@ bool MPopService::handleFacadeMethod(const Request& request, Response& response)
     }
     else if (method == "getAnswerByEthnicity") {
 
-        QTextStream(stdout) << "Method is: getAnswerByEthnicity" << endl;
+        QTextStream(stdout) << "JSON-RPC method: getAnswerByEthnicity" << endl;
         try {
             const QString& questionId = request.getParamByPosition(0).toString();
             int ageFrom =  request.getParamByPosition(1).toInt();
@@ -397,7 +393,7 @@ bool MPopService::handleFacadeMethod(const Request& request, Response& response)
     }  
     else if (method == "getAnswerByLanguage"){
 
-        QTextStream(stdout) << "Method is: getAnswerByLanguage" << endl;
+        QTextStream(stdout) << "JSON-RPC method: getAnswerByLanguage" << endl;
         try {
             const QString& questionId = request.getParamByPosition(0).toString();
             int ageFrom =  request.getParamByPosition(1).toInt();
@@ -417,7 +413,7 @@ bool MPopService::handleFacadeMethod(const Request& request, Response& response)
     }
     else if (method == "getAllAnswers") {
 
-        QTextStream(stdout) << "Method is: getAllAnswers" << endl;
+        QTextStream(stdout) << "JSON-RPC method: getAllAnswers" << endl;
         try {
             QMap<QString,int> ansByEthnicity = this->_facade.getAllAnswers();
             response.result = QVariant(MPopService::stringIntMapToQVariantMap(ansByEthnicity));
@@ -431,7 +427,7 @@ bool MPopService::handleFacadeMethod(const Request& request, Response& response)
     }
     else if (method == "getRandomValue") {
 
-        QTextStream(stdout) << "Method is: getRandomValue" ;
+        QTextStream(stdout) << "JSON-RPC method: getRandomValue" ;
         QString strkeyTotalAns = "total_num_answers";
         QString strkeyAnsLastHour = "num_answer_last_hour";
         QString strkeyAvgAns = "overall_average_answer";
@@ -465,7 +461,7 @@ bool MPopService::handleFacadeMethod(const Request& request, Response& response)
         }
     }
     else {
-        QTextStream(stdout) << "Method " << method << " is unknown" << endl;
+        QTextStream(stdout) << "ERROR: JSON-RPC method \"" << method << "\" is unknown" << endl;
         response.error.message = QString("No such method: %1").arg(method);
     }
 
@@ -477,7 +473,7 @@ bool MPopService::handleFacadeMethod(const Request& request, Response& response)
 
 void MPopService::timeWatcher(const Config& config){
 
-    QTextStream(stdout) << "Method is: timeWatcher";
+    QTextStream(stdout) << "timeWatcher";
     QDateTime local = QDateTime::currentDateTime();
     QString curTime = local.toString("hh:mm");
     QTextStream(stdout) << "Current time  is : " << curTime;
