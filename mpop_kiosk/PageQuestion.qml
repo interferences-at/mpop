@@ -388,6 +388,27 @@ Column {
                     break;
                 default: // in case this is a multiple question pageAge
                     // TODO window.userProfile. call get answers
+
+                    // TODO  window.userProfile. call get answer by lang
+                    var questionId = 'incidence_drogue'; // Fix me Multiple Que not Loading //model.identifier ;
+                    var ageFrom = -1; // FIXME load from widgets
+                    var ageTo= -1;
+                    var gender = "all";
+                    var ethnicity = "all"; // FIXME load from widgets
+                    var timeAnswered = "all"; // FIXME load from widgets
+
+                    window.userProfile.getAnswers(questionId,ageFrom,ageTo,ethnicity,gender,timeAnswered,function (err, answers) {
+                        if (err) {
+                            console.log("Error calling getAnswers(" + questionId +  "," + ethnicity + "," + ageTo + "," + ageFrom + "," + gender + "," + timeAnswered + "): " + err.message);
+                        } else {
+                            // Retrieve my answer and my age:
+                            var myAnswer = window.userProfile.answers[questionId];
+                            var myAge = window.userProfile.age; // FIXME: it might be -1
+                            // answerByAge is a list of 20 values
+                            console.log("show_one_answer(" + myAnswer + ", " + myAge + ", " + answers[questionId] + ")");
+                           // window.datavizManager.show_one_answer_by_age(myAnswer, myAge, answerByAge);
+                        }
+                    });
                     break;
                 }
             }

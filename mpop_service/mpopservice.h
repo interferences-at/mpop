@@ -112,6 +112,16 @@ public:
         return ret;
     }
 
+    static QVariantList intListToQvariantList(const QList<int>& value){
+
+        QVariantList ret;
+
+        foreach(int v, value){
+          ret << v;
+        }
+        return ret;
+    }
+
 private slots:
     void newConnectionCb();
     void textMessageReceivedCb(const QString &message);
