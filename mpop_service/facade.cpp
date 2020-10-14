@@ -552,117 +552,113 @@ bool Facade::deleteTagsVisitorsAndTheirAnswers(const QList<QString>& rfidTags) {
  * @return an associative list's the values are ints.
  */
 
-QList<int> Facade::getAnswerByAge(const QString& questionId,const QString& ethenicity="all",const QString& gender="all" ,const QString& timeAnswered="all") {
-
+QList<int> Facade::getAnswerByAge(const QString& questionId, const QString& ethenicity="all", const QString& gender="all", const QString& timeAnswered="all") {
     qDebug() << "GetAnswerByAge";
     QList<int> avgAnsByAge;
 
-    QString sqlQuery= "select  IFNULL(ROUND( AVG(CASE WHEN (v.age<=5 and v.age>0) THEN  a.answer_value ELSE -1 END ),2),'-1') AS '[0-5]',"
-                      " IFNULL(ROUND( AVG (CASE WHEN (v.age>5 and v.age <=10) THEN  a.answer_value ELSE -1 END),2),'-1') AS '[6-10]',"
-                      " IFNULL(ROUND(AVG (CASE WHEN (v.age>10 and v.age<=15) THEN a.answer_value ELSE -1 END),2),'-1') AS '[11-15]',"
-                      " IFNULL(ROUND( AVG (CASE WHEN (v.age>15 and v.age <=20) THEN a.answer_value ELSE -1 END),2),'-1') AS '[16-20]',"
-                      " IFNULL(ROUND( AVG (CASE WHEN (v.age>20 and v.age<=25) THEN a.answer_value ELSE -1 END),2),'-1') AS '[21-25]',"
-                      " IFNULL(ROUND( AVG (CASE WHEN (v.age>25 and v.age<=30) THEN a.answer_value ELSE -1 END),2),'-1') AS '[26-30]',"
-                      " IFNULL(ROUND(AVG (CASE WHEN (v.age>30 and v.age<=35) THEN a.answer_value ELSE -1 END),2),'-1') AS '[31-35]',"
-                      " IFNULL(ROUND(AVG (CASE WHEN (v.age>35 and v.age<=40) THEN a.answer_value ELSE -1 END),2),'-1') AS '[36-40]',"
-                      " IFNULL(ROUND( AVG (CASE WHEN (v.age>40 and v.age<=45) THEN a.answer_value ELSE -1 END),2),'-1') AS '[41-45]',"
-                      " IFNULL(ROUND( AVG (CASE WHEN (v.age>45 and v.age<=50) THEN a.answer_value ELSE -1 END),2),'-1') AS '[46-50]',"
-                      " IFNULL(ROUND(AVG (CASE WHEN (v.age>50 and v.age<=55) THEN a.answer_value ELSE -1 END),2),'-1') AS '[51-55]',"
-                      " IFNULL(ROUND(AVG (CASE WHEN (v.age>55 and v.age<=60) THEN a.answer_value ELSE -1 END),2),'-1') AS '[56-60]',"
-                      " IFNULL(ROUND(AVG (CASE WHEN (v.age>60 and v.age<=65) THEN a.answer_value ELSE -1 END),2),'-1') AS '[61-65]',"
-                      " IFNULL(ROUND(AVG (CASE WHEN (v.age>65 and v.age<=70) THEN a.answer_value ELSE -1 END),2),'-1') AS '[66-70]',"
-                      " IFNULL(ROUND(AVG (CASE WHEN (v.age>70 and v.age<=75) THEN a.answer_value ELSE -1 END),2),'-1') AS '[71-75]',"
-                      " IFNULL(ROUND(AVG (CASE WHEN (v.age>75 and v.age<=80) THEN a.answer_value ELSE -1 END),2),'-1') AS '[76-80]',"
-                      " IFNULL(ROUND(AVG (CASE WHEN (v.age>80 and v.age<=85) THEN a.answer_value ELSE -1 END),2),'-1') AS '[81-85]',"
-                      " IFNULL(ROUND(AVG (CASE WHEN (v.age>85 and v.age<=90) THEN a.answer_value ELSE -1 END),2),'-1') AS '[86-90]',"
-                      " IFNULL(ROUND(AVG (CASE WHEN (v.age>90 and v.age<=95) THEN a.answer_value ELSE -1 END),2),'-1') AS '[91-95]',"
-                      " IFNULL(ROUND(AVG (CASE WHEN (v.age>95 and v.age<=100) THEN a.answer_value ELSE -1 END),2),'-1') AS '[96-100]'"
-                      "FROM answer AS a "
-                      "JOIN  visitor AS v ON a.visitor_id=v.id JOIN question AS q ON a.question_id = q.id";
+    QString sqlQuery= "SELECT"
+                      " IFNULL( ROUND( AVG( CASE WHEN (v.age <= 5 AND v.age > 0) THEN a.answer_value ELSE -1 END), 2), '-1') AS '[0-5]',"
+                      " IFNULL( ROUND( AVG( CASE WHEN (v.age > 5 AND v.age <= 10) THEN a.answer_value ELSE -1 END), 2), '-1') AS '[6-10]',"
+                      " IFNULL( ROUND( AVG( CASE WHEN (v.age > 10 AND v.age <= 15) THEN a.answer_value ELSE -1 END), 2), '-1') AS '[11-15]',"
+                      " IFNULL( ROUND( AVG( CASE WHEN (v.age > 15 AND v.age <= 20) THEN a.answer_value ELSE -1 END), 2), '-1') AS '[16-20]',"
+                      " IFNULL( ROUND( AVG( CASE WHEN (v.age > 20 AND v.age <= 25) THEN a.answer_value ELSE -1 END), 2), '-1') AS '[21-25]',"
+                      " IFNULL( ROUND( AVG( CASE WHEN (v.age > 25 AND v.age <= 30) THEN a.answer_value ELSE -1 END), 2), '-1') AS '[26-30]',"
+                      " IFNULL( ROUND( AVG( CASE WHEN (v.age > 30 AND v.age <= 35) THEN a.answer_value ELSE -1 END), 2), '-1') AS '[31-35]',"
+                      " IFNULL( ROUND( AVG( CASE WHEN (v.age > 35 AND v.age <= 40) THEN a.answer_value ELSE -1 END), 2), '-1') AS '[36-40]',"
+                      " IFNULL( ROUND( AVG( CASE WHEN (v.age > 40 AND v.age <= 45) THEN a.answer_value ELSE -1 END), 2), '-1') AS '[41-45]',"
+                      " IFNULL( ROUND( AVG( CASE WHEN (v.age > 45 AND v.age <= 50) THEN a.answer_value ELSE -1 END), 2), '-1') AS '[46-50]',"
+                      " IFNULL( ROUND( AVG( CASE WHEN (v.age > 50 AND v.age <= 55) THEN a.answer_value ELSE -1 END), 2), '-1') AS '[51-55]',"
+                      " IFNULL( ROUND( AVG( CASE WHEN (v.age > 55 AND v.age <= 60) THEN a.answer_value ELSE -1 END), 2), '-1') AS '[56-60]',"
+                      " IFNULL( ROUND( AVG( CASE WHEN (v.age > 60 AND v.age <= 65) THEN a.answer_value ELSE -1 END), 2), '-1') AS '[61-65]',"
+                      " IFNULL( ROUND( AVG( CASE WHEN (v.age > 65 AND v.age <= 70) THEN a.answer_value ELSE -1 END), 2), '-1') AS '[66-70]',"
+                      " IFNULL( ROUND( AVG( CASE WHEN (v.age > 70 AND v.age <= 75) THEN a.answer_value ELSE -1 END), 2), '-1') AS '[71-75]',"
+                      " IFNULL( ROUND( AVG( CASE WHEN (v.age > 75 AND v.age <= 80) THEN a.answer_value ELSE -1 END), 2), '-1') AS '[76-80]',"
+                      " IFNULL( ROUND( AVG( CASE WHEN (v.age > 80 AND v.age <= 85) THEN a.answer_value ELSE -1 END), 2), '-1') AS '[81-85]',"
+                      " IFNULL( ROUND( AVG( CASE WHEN (v.age > 85 AND v.age <= 90) THEN a.answer_value ELSE -1 END), 2), '-1') AS '[86-90]',"
+                      " IFNULL( ROUND( AVG( CASE WHEN (v.age > 90 AND v.age <= 95) THEN a.answer_value ELSE -1 END), 2), '-1') AS '[91-95]',"
+                      " IFNULL( ROUND( AVG( CASE WHEN (v.age > 95 AND v.age <= 100) THEN a.answer_value ELSE -1 END), 2), '-1') AS '[96-100]'"
+                      " FROM answer AS a "
+                      " JOIN visitor AS v ON a.visitor_id = v.id JOIN question AS q ON a.question_id = q.id";
 
-    if(ethenicity != "all") {
-
+    if (ethenicity != "all") {
         sqlQuery += " JOIN ethnicity AS e ON v.ethnicity= e.id  WHERE q.identifier= ? and e.`identifier`= ? ";
-    }
-    else{
+    } else {
          sqlQuery += " WHERE q.identifier= ? ";
     }
 
     if (gender != "all"){
-        if(gender == "male"|| gender =="female" || gender == "other"){
-            sqlQuery += " and v.`gender`= ?";
+        if (gender == "male"|| gender =="female" || gender == "other"){
+            sqlQuery += " AND v.`gender` = ?";
         }
 
     }
-    if(timeAnswered != "all") {
 
+    if (timeAnswered != "all") {
         if(timeAnswered == "this_year"){
-            sqlQuery += " and YEAR(a.`created_at`)= ?";
+            sqlQuery += " AND YEAR(a.`created_at`) = ?";
         }
         else if (timeAnswered == "today"){
-            sqlQuery += " and date(a.`created_at`)= ?";
+            sqlQuery += " AND DATE(a.`created_at`) = ?";
         }
     }
+
     QSqlQuery query;
     query.prepare(sqlQuery);
 
-    // ? replaces the perameter in query
+    // ? replaces the parameter in query
     query.addBindValue(QVariant(questionId));
 
-    if(ethenicity!= "all") {
+    if (ethenicity != "all") {
         query.addBindValue(QVariant(ethenicity));
     }
 
-    if(gender != "all"){
+    if (gender != "all") {
         query.addBindValue(QVariant(gender));
     }
 
-    if(timeAnswered != "all")
-    {
+    if (timeAnswered != "all") {
         QString timeFilter;
-        if(timeAnswered =="this_year") {
-
+        if (timeAnswered =="this_year") {
             timeFilter = "YEAR(CURDATE())";
         }
-        else if (timeAnswered =="today") {
-
+        else if (timeAnswered == "today") {
             timeFilter = "date(CURRENT_TIMESTAMP())";
         }
         query.addBindValue(QVariant(timeFilter));
     }
-    qDebug() << "getAnswerByAge ::: Query ::" <<sqlQuery;
+    qDebug() << "getAnswerByAge ::: Query ::" << sqlQuery;
     bool ok = query.exec();
 
-    if(!ok) {
+    if (! ok) {
         qWarning()<<"ERROR :: "<< query.lastError().text();
         throw SQLError{query.lastError().text()};
     }
-    while (query.next()) {
 
+    while (query.next()) {
         //providers Question Identifier's List of avg answer_value by age range
-        avgAnsByAge.insert(1, static_cast<int>(query.value(0).toDouble())); //[0-5]
-        avgAnsByAge.insert(2, static_cast<int>(query.value(1).toDouble())); //[6-10]
-        avgAnsByAge.insert(3, static_cast<int>(query.value(2).toDouble())); //[11-15]
-        avgAnsByAge.insert(4, static_cast<int>(query.value(3).toDouble())); //[16-20]
-        avgAnsByAge.insert(5, static_cast<int>(query.value(4).toDouble())); //[21-25]
-        avgAnsByAge.insert(6, static_cast<int>(query.value(5).toDouble())); //[26-30]
-        avgAnsByAge.insert(7, static_cast<int>(query.value(6).toDouble())); //[31-35]
-        avgAnsByAge.insert(8, static_cast<int>(query.value(7).toDouble())); //[36-40]
-        avgAnsByAge.insert(9, static_cast<int>(query.value(8).toDouble()));// [41-45]
-        avgAnsByAge.insert(10, static_cast<int>(query.value(9).toDouble()));//[46-50]
+        avgAnsByAge.insert(1, static_cast<int>(query.value(0).toDouble())); // [0-5]
+        avgAnsByAge.insert(2, static_cast<int>(query.value(1).toDouble())); // [6-10]
+        avgAnsByAge.insert(3, static_cast<int>(query.value(2).toDouble())); // [11-15]
+        avgAnsByAge.insert(4, static_cast<int>(query.value(3).toDouble())); // [16-20]
+        avgAnsByAge.insert(5, static_cast<int>(query.value(4).toDouble())); // [21-25]
+        avgAnsByAge.insert(6, static_cast<int>(query.value(5).toDouble())); // [26-30]
+        avgAnsByAge.insert(7, static_cast<int>(query.value(6).toDouble())); // [31-35]
+        avgAnsByAge.insert(8, static_cast<int>(query.value(7).toDouble())); // [36-40]
+        avgAnsByAge.insert(9, static_cast<int>(query.value(8).toDouble())); // [41-45]
+        avgAnsByAge.insert(10, static_cast<int>(query.value(9).toDouble())); // [46-50]
         avgAnsByAge.insert(11, static_cast<int>(query.value(10).toDouble())); // [51-55]
-        avgAnsByAge.insert(12, static_cast<int>(query.value(11).toDouble())); //[56-60]
-        avgAnsByAge.insert(13, static_cast<int>(query.value(12).toDouble())); //[61-65]
-        avgAnsByAge.insert(14, static_cast<int>(query.value(13).toDouble())); //[66-70]
-        avgAnsByAge.insert(15, static_cast<int>(query.value(14).toDouble())); //[71-75]
-        avgAnsByAge.insert(16, static_cast<int>(query.value(15).toDouble())); //[76-80]
-        avgAnsByAge.insert(17, static_cast<int>(query.value(16).toDouble())); //[81-85]
-        avgAnsByAge.insert(18, static_cast<int>(query.value(17).toDouble())); //[86-90]
-        avgAnsByAge.insert(19, static_cast<int>(query.value(18).toDouble())); //[91-95]
+        avgAnsByAge.insert(12, static_cast<int>(query.value(11).toDouble())); // [56-60]
+        avgAnsByAge.insert(13, static_cast<int>(query.value(12).toDouble())); // [61-65]
+        avgAnsByAge.insert(14, static_cast<int>(query.value(13).toDouble())); // [66-70]
+        avgAnsByAge.insert(15, static_cast<int>(query.value(14).toDouble())); // [71-75]
+        avgAnsByAge.insert(16, static_cast<int>(query.value(15).toDouble())); // [76-80]
+        avgAnsByAge.insert(17, static_cast<int>(query.value(16).toDouble())); // [81-85]
+        avgAnsByAge.insert(18, static_cast<int>(query.value(17).toDouble())); // [86-90]
+        avgAnsByAge.insert(19, static_cast<int>(query.value(18).toDouble())); // [91-95]
         avgAnsByAge.insert(20, static_cast<int>(query.value(19).toDouble())); // [96-100]
     }
 
-    return  avgAnsByAge;
+    return avgAnsByAge;
 }
 
 /**

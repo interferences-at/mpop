@@ -298,7 +298,7 @@ TestCase {
                         0,
                     ];
                 // FIXME: The following check fails:
-                // compare(answerByAge, expectedAnswersByAge, "expected answersByAge match");
+                compare(answerByAge, expectedAnswersByAge, "expected answersByAge match");
             }
         });
 
@@ -325,7 +325,7 @@ TestCase {
             };
             console.log("Expected: " + JSON.stringify(expectedAnswers));
             // FIXME: The following check fails:
-            // compare(allAnswers, expectedAnswers, "check that expected allAnswers match");
+            compare(allAnswers, expectedAnswers, "check that expected allAnswers match");
         });
 
         // TODO: test getAnswerByGender
