@@ -2,7 +2,7 @@
 
 User interfaces for the MPOP project.
 
-![Build on Ubuntu](https://github.com/interferences-at/mpop/workflows/Build%20on%20Ubuntu/badge.svg) ![Build on Windows](https://github.com/interferences-at/mpop/workflows/Build%20on%20Windows/badge.svg) ![Build on macOS](https://github.com/interferences-at/mpop/workflows/Build%20on%20macOS/badge.svg) ![Test in Docker](https://github.com/interferences-at/mpop/workflows/Test%20in%20Docker/badge.svg)
+![Build on Ubuntu](https://github.com/interferences-at/mpop/workflows/Build%20on%20Ubuntu/badge.svg) ![Build on Windows](https://github.com/interferences-at/mpop/workflows/Build%20on%20Windows/badge.svg) ![Test in Docker](https://github.com/interferences-at/mpop/workflows/Test%20in%20Docker/badge.svg)
 
 ## License
 
