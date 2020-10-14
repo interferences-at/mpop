@@ -165,7 +165,7 @@ Item {
         console.log("Calling getAnswerByAge(" + questionId + "," + ethnicity + "," + gender + "," + timeAnswered + ")");
         websocket.callRemoteMethod("getAnswerByAge", [questionId, ethnicity, gender,timeAnswered], function (err, ansByAge) {
             if (err) {
-                console.log("Error calling setUserAnswer(" + user_id + "," + question_identifier + "," + value + "): " + err.message);
+                console.log("Error calling getAnswerByAge(" + questionId + "," + ethnicity + "," + gender + " ," + timeAnswered + "): " + err.message);
                 cb(err);
             } else {
                 // ansByAge is a list of 20 values
