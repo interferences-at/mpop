@@ -104,6 +104,7 @@ Column {
             Layout.fillWidth: true
             text: mainQuestionText.text
             font {
+
                 pixelSize: 45
                 capitalization: Font.AllUppercase
             }
@@ -323,12 +324,67 @@ Column {
                     break;
                 case filter_CULTURE:
                     // TODO window.userProfile. call get answer by culture
+                    var questionId = model.identifier;
+                    var ageFrom = -1; // FIXME load from widgets
+                    var ageTo= -1;
+                    var gender = "all"; // FIXME load from widgets
+                    var timeAnswered = "all"; // FIXME load from widgets
+
+                    window.userProfile.getAnswerByEthnicity(questionId,ageFrom,ageTo,gender,timeAnswered,function (err, answerByEthnicity) {
+                        if (err) {
+                            console.log("Error calling getAnswerByEthnicity(" + questionId + "," + ageFrom + "," + ageTo + "," + gender + "," + timeAnswered + "): " + err.message);
+                        } else {
+                            // Retrieve my answer and my age:
+                            var myAnswer = window.userProfile.answers[questionId];
+                            var myAge = window.userProfile.age; // FIXME: it might be -1
+                            // answerByAge is a list of 20 values
+                            console.log("show_one_answer_by_age(" + myAnswer + ", " + myAge + ", " + answerByEthnicity + ")");
+                            window.datavizManager.show_one_answer_by_age(myAnswer, myAge, answerByAge);
+                        }
+                    });
                     break;
                 case filter_GENDER:
                     // TODO window.userProfile. call get answer by gender
+                    var questionId = model.identifier;
+                    var ageFrom = -1; // FIXME load from widgets
+                    var ageTo= -1;
+                    var ethnicity = "all"; // FIXME load from widgets
+                    var timeAnswered = "all"; // FIXME load from widgets
+
+                    window.userProfile.getAnswerByGender(questionId,ethnicity,ageTo,ageFrom,timeAnswered,function (err, answerByGender) {
+                        if (err) {
+                            console.log("Error calling getAnswerByGender(" + questionId +  "," + ethnicity + "," + ageTo + "," + ageFrom + "," + timeAnswered + "): " + err.message);
+                        } else {
+                            // Retrieve my answer and my age:
+                            var myAnswer = window.userProfile.answers[questionId];
+                            var myAge = window.userProfile.age; // FIXME: it might be -1
+                            // answerByAge is a list of 20 values
+                            console.log("show_one_answer_by_age(" + myAnswer + ", " + myAge + ", " + answerByGender + ")");
+                           // window.datavizManager.show_one_answer_by_age(myAnswer, myAge, answerByAge);
+                        }
+                    });
                     break;
                 case filter_LANGUAGE:
-                    // TODO window.userProfile. call get answer by lang
+                    // TODO  window.userProfile. call get answer by lang
+                    var questionId = model.identifier;
+                    var ageFrom = -1; // FIXME load from widgets
+                    var ageTo= -1;
+                    var gender = "all";
+                    var ethnicity = "all"; // FIXME load from widgets
+                    var timeAnswered = "all"; // FIXME load from widgets
+
+                    window.userProfile.getUserAnswerByLanguage(questionId,ageFrom,ageTo,ethnicity,gender,timeAnswered,function (err, answerByLanguage) {
+                        if (err) {
+                            console.log("Error calling getUserAnswerByLanguage(" + questionId +  "," + ethnicity + "," + ageTo + "," + ageFrom + "," + gender + "," + timeAnswered + "): " + err.message);
+                        } else {
+                            // Retrieve my answer and my age:
+                            var myAnswer = window.userProfile.answers[questionId];
+                            var myAge = window.userProfile.age; // FIXME: it might be -1
+                            // answerByAge is a list of 20 values
+                            console.log("show_one_answer_by_language(" + myAnswer + ", " + myAge + ", " + answerByLanguage + ")");
+                           // window.datavizManager.show_one_answer_by_age(myAnswer, myAge, answerByAge);
+                        }
+                    });
                     break;
                 default: // in case this is a multiple question pageAge
                     // TODO window.userProfile. call get answers
@@ -482,7 +538,10 @@ Column {
                                     label: BilingualText { textEn: model.textEn; textFr: model.textFr }
 
                                     highlighted: index === subfilter.currentIndex
-                                    onClicked: subfilter.currentIndex = index
+                                    onClicked: {
+                                        subfilter.currentIndex = index;
+                                        sendDatavizViewBy();
+                                    }
                                 }
                             }
                         }

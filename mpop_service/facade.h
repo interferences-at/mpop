@@ -147,6 +147,19 @@ public:
 
 
    /**
+    * @brief Get user answers average by user Language.
+    * @param questionIds The List of question identifier
+    * @param ageFrom identifier default value -1 and start from 0
+    * @param ageTo identifier default value -1 and upto 100
+    * @param gender identifier default value 'all'
+    * @param timeAnswered identifier default value 'all'
+    * @param ethenicity The ethenicity identifier default value 'all'
+    * @param value is average of answers.
+    */
+   QMap<QString, int> getAnswerByLanguage(const QString& questionId, int ageFrom, int ageTo, const QString& ethnicity, const QString& gender, const QString& timeAnswered);
+
+
+   /**
     * @brief Get user's all answers average .
     * @param value is average answer of each Question.
     */

@@ -557,28 +557,28 @@ QList<int> Facade::getAnswerByAge(const QString& questionId,const QString& ethen
     qDebug() << "GetAnswerByAge";
     QList<int> avgAnsByAge;
 
-    QString sqlQuery= "select  IFNULL(ROUND( AVG(CASE WHEN (v.age<=5 and v.age>0) THEN  a.answer_value ELSE 0 END ),2),'-1') AS '[0-5]',"
-                      " IFNULL(ROUND( AVG (CASE WHEN (v.age>5 and v.age <=10) THEN  a.answer_value ELSE 0 END),2),'-1') AS '[6-10]',"
-                      " IFNULL(ROUND(AVG (CASE WHEN (v.age>10 and v.age<=15) THEN a.answer_value ELSE 0 END),2),'-1') AS '[11-15]',"
-                      " IFNULL(ROUND( AVG (CASE WHEN (v.age>15 and v.age <=20) THEN a.answer_value ELSE 0 END),2),'-1') AS '[16-20]',"
-                      " IFNULL(ROUND( AVG (CASE WHEN (v.age>20 and v.age<=25) THEN a.answer_value ELSE 0 END),2),'-1') AS '[21-25]',"
-                      " IFNULL(ROUND( AVG (CASE WHEN (v.age>25 and v.age<=30) THEN a.answer_value ELSE 0 END),2),'-1') AS '[26-30]',"
-                      " IFNULL(ROUND(AVG (CASE WHEN (v.age>30 and v.age<=35) THEN a.answer_value ELSE 0 END),2),'-1') AS '[31-35]',"
-                      " IFNULL(ROUND(AVG (CASE WHEN (v.age>35 and v.age<=40) THEN a.answer_value ELSE 0 END),2),'-1') AS '[36-40]',"
-                      " IFNULL(ROUND( AVG (CASE WHEN (v.age>40 and v.age<=45) THEN a.answer_value ELSE 0 END),2),'-1') AS '[41-45]',"
-                      " IFNULL(ROUND( AVG (CASE WHEN (v.age>45 and v.age<=50) THEN a.answer_value ELSE 0 END),2),'-1') AS '[46-50]',"
-                      " IFNULL(ROUND(AVG (CASE WHEN (v.age>50 and v.age<=55) THEN a.answer_value ELSE 0 END),2),'-1') AS '[51-55]',"
-                      " IFNULL(ROUND(AVG (CASE WHEN (v.age>55 and v.age<=60) THEN a.answer_value ELSE 0 END),2),'-1') AS '[56-60]',"
-                      " IFNULL(ROUND(AVG (CASE WHEN (v.age>60 and v.age<=65) THEN a.answer_value ELSE 0 END),2),'-1') AS '[61-65]',"
-                      " IFNULL(ROUND(AVG (CASE WHEN (v.age>65 and v.age<=70) THEN a.answer_value ELSE 0 END),2),'-1') AS '[66-70]',"
-                      " IFNULL(ROUND(AVG (CASE WHEN (v.age>70 and v.age<=75) THEN a.answer_value ELSE 0 END),2),'-1') AS '[71-75]',"
-                      " IFNULL(ROUND(AVG (CASE WHEN (v.age>75 and v.age<=80) THEN a.answer_value ELSE 0 END),2),'-1') AS '[76-80]',"
-                      " IFNULL(ROUND(AVG (CASE WHEN (v.age>80 and v.age<=85) THEN a.answer_value ELSE 0 END),2),'-1') AS '[81-85]',"
-                      " IFNULL(ROUND(AVG (CASE WHEN (v.age>85 and v.age<=90) THEN a.answer_value ELSE 0 END),2),'-1') AS '[86-90]',"
-                      " IFNULL(ROUND(AVG (CASE WHEN (v.age>90 and v.age<=95) THEN a.answer_value ELSE 0 END),2),'-1') AS '[91-95]',"
-                      " IFNULL(ROUND(AVG (CASE WHEN (v.age>95 and v.age<=100) THEN a.answer_value ELSE 0 END),2),'-1') AS '[96-100]'"
+    QString sqlQuery= "select  IFNULL(ROUND( AVG(CASE WHEN (v.age<=5 and v.age>0) THEN  a.answer_value ELSE -1 END ),2),'-1') AS '[0-5]',"
+                      " IFNULL(ROUND( AVG (CASE WHEN (v.age>5 and v.age <=10) THEN  a.answer_value ELSE -1 END),2),'-1') AS '[6-10]',"
+                      " IFNULL(ROUND(AVG (CASE WHEN (v.age>10 and v.age<=15) THEN a.answer_value ELSE -1 END),2),'-1') AS '[11-15]',"
+                      " IFNULL(ROUND( AVG (CASE WHEN (v.age>15 and v.age <=20) THEN a.answer_value ELSE -1 END),2),'-1') AS '[16-20]',"
+                      " IFNULL(ROUND( AVG (CASE WHEN (v.age>20 and v.age<=25) THEN a.answer_value ELSE -1 END),2),'-1') AS '[21-25]',"
+                      " IFNULL(ROUND( AVG (CASE WHEN (v.age>25 and v.age<=30) THEN a.answer_value ELSE -1 END),2),'-1') AS '[26-30]',"
+                      " IFNULL(ROUND(AVG (CASE WHEN (v.age>30 and v.age<=35) THEN a.answer_value ELSE -1 END),2),'-1') AS '[31-35]',"
+                      " IFNULL(ROUND(AVG (CASE WHEN (v.age>35 and v.age<=40) THEN a.answer_value ELSE -1 END),2),'-1') AS '[36-40]',"
+                      " IFNULL(ROUND( AVG (CASE WHEN (v.age>40 and v.age<=45) THEN a.answer_value ELSE -1 END),2),'-1') AS '[41-45]',"
+                      " IFNULL(ROUND( AVG (CASE WHEN (v.age>45 and v.age<=50) THEN a.answer_value ELSE -1 END),2),'-1') AS '[46-50]',"
+                      " IFNULL(ROUND(AVG (CASE WHEN (v.age>50 and v.age<=55) THEN a.answer_value ELSE -1 END),2),'-1') AS '[51-55]',"
+                      " IFNULL(ROUND(AVG (CASE WHEN (v.age>55 and v.age<=60) THEN a.answer_value ELSE -1 END),2),'-1') AS '[56-60]',"
+                      " IFNULL(ROUND(AVG (CASE WHEN (v.age>60 and v.age<=65) THEN a.answer_value ELSE -1 END),2),'-1') AS '[61-65]',"
+                      " IFNULL(ROUND(AVG (CASE WHEN (v.age>65 and v.age<=70) THEN a.answer_value ELSE -1 END),2),'-1') AS '[66-70]',"
+                      " IFNULL(ROUND(AVG (CASE WHEN (v.age>70 and v.age<=75) THEN a.answer_value ELSE -1 END),2),'-1') AS '[71-75]',"
+                      " IFNULL(ROUND(AVG (CASE WHEN (v.age>75 and v.age<=80) THEN a.answer_value ELSE -1 END),2),'-1') AS '[76-80]',"
+                      " IFNULL(ROUND(AVG (CASE WHEN (v.age>80 and v.age<=85) THEN a.answer_value ELSE -1 END),2),'-1') AS '[81-85]',"
+                      " IFNULL(ROUND(AVG (CASE WHEN (v.age>85 and v.age<=90) THEN a.answer_value ELSE -1 END),2),'-1') AS '[86-90]',"
+                      " IFNULL(ROUND(AVG (CASE WHEN (v.age>90 and v.age<=95) THEN a.answer_value ELSE -1 END),2),'-1') AS '[91-95]',"
+                      " IFNULL(ROUND(AVG (CASE WHEN (v.age>95 and v.age<=100) THEN a.answer_value ELSE -1 END),2),'-1') AS '[96-100]'"
                       "FROM answer AS a "
-                      "JOIN  visitor AS v ON a.visitor_id=v.id JOIN question AS q ON a.question_id = q.id ";
+                      "JOIN  visitor AS v ON a.visitor_id=v.id JOIN question AS q ON a.question_id = q.id";
 
     if(ethenicity != "all") {
 
@@ -895,6 +895,116 @@ QMap<QString, int> Facade::getAnswerByEthnicity(const QString& questionId,int ag
 
     return  AvgAnsByEthnicity;
 }
+
+
+QMap<QString,int> Facade::getAnswerByLanguage(const QString& questionId, int ageFrom=-1, int ageTo=-1, const QString& ethnicity="all", const QString& gender="all", const QString& timeAnswered="all")
+
+{
+
+    qDebug() << "GetAnswerByLanguage";
+    qDebug() << questionId;
+    QMap<QString, int> ansByLang;
+
+    QString sqlQuery="SELECT IFNULL(ROUND(AVG( CASE WHEN v.language='en' THEN a.answer_value ELSE 0 END ),2),'-1') as 'English',"
+                        "IFNULL( ROUND(AVG( CASE WHEN v.language='fr' THEN a.answer_value ELSE 0 END ),2),'-1') as 'French'"
+                        "from answer AS a JOIN visitor AS v ON a.visitor_id = v.id JOIN question AS q ON a.question_id = q.id";
+
+
+    if(ethnicity != "all") {
+
+        sqlQuery += " JOIN ethnicity AS e ON v.ethnicity= e.id WHERE q.identifier=? and e.`identifier`= ?";
+    } else {
+
+         sqlQuery += " WHERE q.identifier=? ";
+    }
+
+    if(ageTo != -1 && ageFrom != -1 ){
+
+        sqlQuery += " and v.age BETWEEN ? and ? ";
+    }
+    else if (ageTo != -1){
+
+        sqlQuery += " and v.age BETWEEN 0 and ? ";
+    }
+    else if (ageFrom != -1 ){
+
+        sqlQuery += " and v.age BETWEEN ? and  100 ";
+    }
+
+    if(gender != "all"){
+
+        sqlQuery += " and v.gender = ? ";
+    }
+
+    if(timeAnswered != "all"){
+
+        if(timeAnswered == "this_year"){
+            sqlQuery += " and YEAR(a.`created_at`) = ?";
+        }
+        else if (timeAnswered == "today"){
+            sqlQuery += " and date(a.`created_at`) = ?";
+        }
+    }
+
+    QSqlQuery query;
+
+    query.prepare(sqlQuery);
+
+    // ? replaces the perameter in query
+    query.addBindValue(QVariant(questionId));
+
+    if(ethnicity!= "all") {
+        query.addBindValue(QVariant(ethnicity));
+    }
+
+    if(ageTo != -1 and ageFrom != -1 ){
+        query.addBindValue(QVariant(ageFrom));
+        query.addBindValue(QVariant(ageTo));
+    }
+    else if (ageTo != -1){
+
+        query.addBindValue(QVariant(ageTo));
+    }
+    else if (ageFrom != -1 ){
+
+        query.addBindValue(QVariant(ageFrom));
+    }
+
+    if(gender!="all"){
+
+        query.addBindValue(QVariant(gender));
+    }
+
+    if(timeAnswered != "all")
+    {
+        QString timeFilter;
+        if(timeAnswered == "this_year"){
+
+            timeFilter = "YEAR(CURDATE())";
+        }
+        else if (timeAnswered == "today"){
+
+            timeFilter = "date(CURRENT_TIMESTAMP())";
+        }
+        query.addBindValue(QVariant(timeFilter));
+    }
+
+    bool ok = query.exec();
+
+    if(!ok){
+        qWarning()<<"ERROR :: "<< query.lastError().text();
+        throw SQLError{query.lastError().text()};
+    }
+
+    while (query.next()) {
+        //providers Question Identifier's  avg answer_value by Language
+        ansByLang.insert("en", static_cast<int>(query.value(0).toDouble()));
+        ansByLang.insert("fr", static_cast<int>(query.value(1).toDouble()));
+    }
+
+    return  ansByLang;
+}
+
 
 QMap<QString, int > Facade:: getAllAnswers(){
 
