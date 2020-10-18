@@ -31,6 +31,7 @@ Column {
         return ret;
     }
 
+
     function resetToDefaultAnswer() {
         for (var i = 0; i < numberOfQuestions; i ++) {
             var value = 50; // default
@@ -399,7 +400,7 @@ Column {
                     // TODO window.userProfile. call get answers
 
                     // TODO  window.userProfile. call get answer by lang
-                    var questionId = 'incidence_drogue'; // Fix me Multiple Que not Loading //model.identifier ;
+                    var questionId = getQuestionIdentifiers();
                     var ageFrom = -1; // FIXME load from widgets
                     var ageTo= -1;
                     var gender = "all";
@@ -412,10 +413,10 @@ Column {
                         } else {
                             // Retrieve my answer and my age:
                             var myAnswer = window.userProfile.answers[questionId];
-                            var myAge = window.userProfile.age; // FIXME: it might be -1
                             // answerByAge is a list of 20 values
-                            console.log("show_one_answer(" + myAnswer + ", " + myAge + ", " + answers[questionId] + ")");
-                           // window.datavizManager.show_one_answer_by_age(myAnswer, myAge, answerByAge);
+                            console.log("show_one_answer(" + myAnswer + "," + answers[questionId] + "");
+                            var answersTitles=  window.datavizManager.makeTitleMineTheirs(questionId,myAnswer,answers)
+                            window.datavizManager.view_answers(answersTitles);
                         }
                     });
                     break;
