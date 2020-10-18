@@ -44,6 +44,8 @@ private:
     QList<int> _rowsValues;
     QSharedPointer<GroupTweenAnimator> _groupTweenAnimator;
 
+    QVector<PrisonerLine::ptr> _horizontalLines;
+
     bool _centered = false;
 
     qreal _x, _y = 0.0;
