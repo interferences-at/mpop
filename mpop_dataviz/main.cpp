@@ -75,6 +75,8 @@ int main(int argc, char* argv[]) {
     const QCommandLineOption windowIdOffsetOption({"i", "window-id-offset"}, "Window ID offset", "windowIdOffsetOption","0");
     parser.addOption(windowIdOffsetOption);
 
+    parser.addOption({"align-right", "Align Dataviz (inner widget) to right"});
+
     // parser.process(app); // parse for --help and --version options.
     // Parse our custom options:
     if (! parser.parse(QApplication::arguments())) {
@@ -105,6 +107,7 @@ int main(int argc, char* argv[]) {
     options.window_offset_id = parser.value(windowIdOffsetOption).toUInt();
     options.window_x = parser.value(xWindowPositionOption).toInt();
     options.window_y = parser.value(yWindowPositionOption).toInt();
+    bool alignRight = parser.isSet("align-right");
 
     if (options.verbose) {
 //        for (int i = 0; i < argc; ++ i) {
@@ -142,20 +145,20 @@ int main(int argc, char* argv[]) {
         }
         // Create a window container to embed window into a QWidget
         QWidget *windowContainer = QWidget::createWindowContainer(window.data());
-        windowContainer->setFixedSize(options.window_width, options.window_height - y);
+        windowContainer->setFixedSize(options.window_width, options.window_height);
         windowContainer->setFocusPolicy(Qt::StrongFocus);
         // Create a layout and set margin
         QHBoxLayout *windowLayout = new QHBoxLayout;
         // Important! remove all the content margins
-        windowLayout->setContentsMargins(qMin(x, screenWidth - options.window_width), y, 0, 0);
+        windowLayout->setContentsMargins(0, 0, 0, 0);
         // Align inner wiindow to the left side
-        windowLayout->setAlignment(Qt::AlignLeft);
+        windowLayout->setAlignment(alignRight ? Qt::AlignRight : Qt::AlignLeft);
         // Add dataviz widget to layout
         windowLayout->addWidget(windowContainer);
         // Create mainWindow and keep everything inside
         QWidget *mainWindow = new QWidget;
         mainWindow->setLayout(windowLayout);
-        mainWindow->setGeometry(0, 0, screenWidth, options.window_height);
+        mainWindow->setGeometry(x, y, screenWidth, options.window_height);
         // Set background color palette
         QPalette palette;
         palette.setColor(QPalette::Background, Qt::black);
