@@ -36,6 +36,10 @@ void BarChartLayout::showSceneObject(qint64 currentTime)
             line->draw(currentTime);
         }
     }
+
+    for (auto line : _horizontalLines) {
+        line->draw(currentTime);
+    }
 }
 
 void BarChartLayout::setStartPosition(const QPointF &pos)
@@ -61,6 +65,8 @@ void BarChartLayout::moveObjectsToLayout(qint64 currentTime) {
     this->_groupTweenAnimator.reset(new GroupTweenAnimator());
     this->_groupTweenAnimator->setDuration(animationMS);
     this->_groupTweenAnimator->setEasingType(easingCurveType);
+
+    _horizontalLines = QVector<PrisonerLine::ptr>();
 
     int lineIndex = 0;
 
@@ -113,6 +119,24 @@ void BarChartLayout::moveObjectsToLayout(qint64 currentTime) {
             }
 
             _groupTweenAnimator->addSceneObjectToAnimate(sceneObject, x, y, rotation);
+        }
+
+        if (_rowsValues.at(rowIndex) == 0) {
+            for (int i = 0; i < 5; i++) {
+                PrisonerLine::ptr line = PrisonerLine::ptr::create();
+
+                line->setSize(_barsWidth + DISTANCE_BETWEEN_COLUMN, _barsWidth);
+                line->setColor("#FFFFFF");
+
+                qreal x = i * (DISTANCE_BETWEEN_BARS + _barsWidth);
+                qreal y = -rowIndex * (DISTANCE_BETWEEN_ROW + (_barsHeight));
+                x += _x;
+                y -= _y;
+
+                _groupTweenAnimator->addSceneObjectToAnimate(line, x, y, 0);
+                _horizontalLines.append(line);
+            }
+
         }
     }
 
