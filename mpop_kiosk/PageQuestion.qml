@@ -22,6 +22,15 @@ Column {
         }
     }
 
+    function getQuestionIdentifiers() {
+        var ret = [];
+        for (var i = 0; i < numberOfQuestions; i ++) {
+            var key = model.subquestions ? model.subquestions.get(i).identifier : model.identifier;
+            ret.push(key);
+        }
+        return ret;
+    }
+
     function resetToDefaultAnswer() {
         for (var i = 0; i < numberOfQuestions; i ++) {
             var value = 50; // default
@@ -53,8 +62,9 @@ Column {
      * Show/hide the dataviz section.
      */
     function toggleDataviz() {
-        if (datavizIndex !== index_QUESTIONS) datavizIndex = index_QUESTIONS;
-        else {
+        if (datavizIndex !== index_QUESTIONS) {
+            datavizIndex = index_QUESTIONS;
+        } else {
             // change index depending on quantity of questions
             if (hasMultipleQuestions) datavizIndex = index_CHOOSE_MULTIPLE;
             else datavizIndex = index_CHOOSE_SINGLE
