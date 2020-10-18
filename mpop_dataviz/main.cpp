@@ -133,21 +133,6 @@ int main(int argc, char* argv[]) {
             y = (i / 2) * options.window_height;
         }
         QSharedPointer<DatavizWindow> window(new DatavizWindow());
-        // Create a window container to embed window into a QWidget
-        QWidget *windowContainer = QWidget::createWindowContainer(window.data());
-        windowContainer->setFixedSize(options.window_width, options.window_height);
-        windowContainer->setFocusPolicy(Qt::StrongFocus);
-        // Create a layout and set margin
-        QHBoxLayout *windowLayout = new QHBoxLayout;
-        // Important! remove all the content margins
-        windowLayout->setContentsMargins(0, 0, 0, 0);
-        // Align inner wiindow to the left side
-        windowLayout->setAlignment(Qt::AlignLeft);
-        // Add dataviz widget to layout
-        windowLayout->addWidget(windowContainer);
-        // Create mainWindow and keep everything inside
-        QWidget *mainWindow = new QWidget;
-        mainWindow->setLayout(windowLayout);
         // Set the screen width from the main screen width
         int screenWidth = QApplication::primaryScreen()->geometry().width();
         // If any case we have multiple screen with different width
@@ -155,7 +140,22 @@ int main(int argc, char* argv[]) {
             // We set different screen width from each screen
             screenWidth = QApplication::screens().at(i)->geometry().width();
         }
-        mainWindow->setGeometry(x, y, screenWidth, options.window_height);
+        // Create a window container to embed window into a QWidget
+        QWidget *windowContainer = QWidget::createWindowContainer(window.data());
+        windowContainer->setFixedSize(options.window_width, options.window_height - y);
+        windowContainer->setFocusPolicy(Qt::StrongFocus);
+        // Create a layout and set margin
+        QHBoxLayout *windowLayout = new QHBoxLayout;
+        // Important! remove all the content margins
+        windowLayout->setContentsMargins(qMin(x, screenWidth - options.window_width), y, 0, 0);
+        // Align inner wiindow to the left side
+        windowLayout->setAlignment(Qt::AlignLeft);
+        // Add dataviz widget to layout
+        windowLayout->addWidget(windowContainer);
+        // Create mainWindow and keep everything inside
+        QWidget *mainWindow = new QWidget;
+        mainWindow->setLayout(windowLayout);
+        mainWindow->setGeometry(0, 0, screenWidth, options.window_height);
         // Set background color palette
         QPalette palette;
         palette.setColor(QPalette::Background, Qt::black);
