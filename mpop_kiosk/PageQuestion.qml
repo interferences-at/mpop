@@ -346,10 +346,9 @@ Column {
                         } else {
                             // Retrieve my answer and my age:
                             var myAnswer = window.userProfile.answers[questionId];
-                            var myAge = window.userProfile.age; // FIXME: it might be -1
-                            // answerByAge is a list of 20 values
-                            console.log("show_one_answer_by_age(" + myAnswer + ", " + myAge + ", " + answerByEthnicity + ")");
-                            window.datavizManager.show_one_answer_by_age(myAnswer, myAge, answerByAge);
+                            var myEthnicity = window.userProfile.ethnicity; // FIXME: it might be -1
+                            console.log("show_one_answer_by_age(" + myAnswer + ", " + myEthnicity + ", " + answerByEthnicity + ")");
+                            window.datavizManager.show_one_answer_by_ethnicity(myAnswer, myEthnicity, answerByEthnicity);
                         }
                     });
                     break;
@@ -367,10 +366,10 @@ Column {
                         } else {
                             // Retrieve my answer and my age:
                             var myAnswer = window.userProfile.answers[questionId];
-                            var myAge = window.userProfile.age; // FIXME: it might be -1
+                            var myGender = window.userProfile.gender; // FIXME: it might be -1
                             // answerByAge is a list of 20 values
-                            console.log("show_one_answer_by_age(" + myAnswer + ", " + myAge + ", " + answerByGender + ")");
-                           // window.datavizManager.show_one_answer_by_age(myAnswer, myAge, answerByAge);
+                            console.log("show_one_answer_by_age(" + myAnswer + ", " + myGender + ", " + answerByGender + ")");
+                            window.datavizManager.show_one_answer_by_gender(myAnswer, myGender, answerByGender);
                         }
                     });
                     break;
@@ -389,10 +388,10 @@ Column {
                         } else {
                             // Retrieve my answer and my age:
                             var myAnswer = window.userProfile.answers[questionId];
-                            var myAge = window.userProfile.age; // FIXME: it might be -1
+                            var myLanguage = window.userProfile.language; // FIXME: it might be -1
                             // answerByAge is a list of 20 values
-                            console.log("show_one_answer_by_language(" + myAnswer + ", " + myAge + ", " + answerByLanguage + ")");
-                           // window.datavizManager.show_one_answer_by_age(myAnswer, myAge, answerByAge);
+                            console.log("show_one_answer_by_language(" + myAnswer + ", " + myLanguage + ", " + answerByLanguage + ")");
+                            window.datavizManager.show_one_answer_by_language(myAnswer, myLanguage, answerByLanguage);
                         }
                     });
                     break;
