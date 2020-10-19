@@ -45,7 +45,7 @@ void OscReceiver::byteArrayToVariantList(QVariantList& outputVariantList, QStrin
                 // For some windows system this can prevent from compilation error
                 outputVariantList.append(QVariant(qulonglong(argument.AsInt32())));
 #else
-              outputVariantList.append(QVariant(argument.AsInt32()));
+              outputVariantList.append(QVariant(static_cast<int>(argument.AsInt32())));
 #endif
             } else if (argument.IsFloat()) {
                 outputVariantList.append(QVariant(argument.AsFloat()));
