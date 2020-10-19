@@ -37,7 +37,6 @@ private:
     QString getLastRfidRead() const;
 
 signals:
-    void tagRead(QString tag);
     void lastRfidChanged(QString);
 
 };

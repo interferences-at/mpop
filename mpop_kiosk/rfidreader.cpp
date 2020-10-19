@@ -156,8 +156,8 @@ void RFIDReader::handleReadyRead() {
 
         qDebug() << "Read" << tag;
 
-        emit tagRead(tag); // FIXME
         this->_lastRfidRead = tag;
+        emit lastRfidChanged(tag);
     }
 }
 
