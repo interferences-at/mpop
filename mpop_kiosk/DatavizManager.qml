@@ -77,6 +77,28 @@ Item {
     }
 
 
+
+
+    /**
+     * View an answer to a single question by language.
+     *
+     * @param myRow int My row index.
+     * @param myAnswer int Value for my answer.
+     * @param titleTheirs Array List of objects created using makeTitleTheirs.
+     * @see makeTitleTheirs
+     */
+    function show_one_answer_by_language(myRow, myAnswer, titleTheirs) {
+        var rowCount = titleTheirs.length;
+        var args = [rowCount, myRow, myAnswer];
+        for (var i = 0; i < rowCount; i ++) {
+            var answer = titleTheirs[i];
+            args.push(answer.title);
+            args.push(answer.theirs);
+        }
+        oscMessageSender.send(_makePath("view_answer_by_language"), args);
+    }
+
+
     /**
      * Sets a screensaver parameter.
      *

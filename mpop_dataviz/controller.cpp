@@ -13,6 +13,7 @@ static const QString SCREENSAVER_SET_PARAM_METHOD = "screensaver_set_param";
 static const QString VIEW_ANSWER_BY_CULTURE_METHOD = "view_answer_by_culture";
 static const QString VIEW_ANSWER_BY_GENDER_METHOD = "view_answer_by_gender";
 static const QString VIEW_ANSWER_BY_AGE_METHOD = "view_answer_by_age";
+static const QString VIEW_ANSWER_BY_LANGUAGE_METHOD = "view_answer_by_language";
 static const QString VIEW_ALL_ANSWERS_METHOD = "all_results";
 static const int INDEX_NAMESPACE_PREFIX = 0;
 static const int INDEX_WINDOW_NUMBER = 1;
@@ -256,6 +257,14 @@ void Controller::messageReceivedCb(const QString& oscAddress, const QVariantList
             bool ok = parseViewAnswerByAge(arguments, myAnswer, myRowIndex, values);
             if (ok) {
                 this->showSingleAnswerByAge(windowIndex, myAnswer, myRowIndex, values);
+            }
+        } else if (methodName == VIEW_ANSWER_BY_LANGUAGE_METHOD) {
+            int myAnswer = 0;
+            int myRow = 0;
+            QList<ViewModeManager::TitleAndValuePtr> toPopulate;
+            bool ok = parseViewAnswerRows(arguments, myAnswer, myRow, toPopulate);
+            if (ok) {
+                this->showSingleAnswer(windowIndex, myRow, myAnswer, toPopulate);
             }
         } else if (methodName == VIEW_ALL_ANSWERS_METHOD) {
             /* /all_results iiiiiiiiiiiiiiiiiiiiiiiii
