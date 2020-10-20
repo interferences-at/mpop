@@ -155,9 +155,6 @@ ApplicationWindow {
                 }
             });
         }
-        onTagRead: {
-            console.log("(QML) RFID read: " + tag);
-        }
     }
 
     /**
