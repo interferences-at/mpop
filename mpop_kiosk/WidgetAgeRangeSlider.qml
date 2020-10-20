@@ -12,10 +12,10 @@ ColumnLayout {
     property string textLeft: ""
     property string textRight: ""
     property bool showNumbers: false
-    property real valueFrom: 0 // Minimum possible value
-    property real valueTo: 120 // Maximum possible value
-    property real sliderFrom: 0 // Position of the slider
-    property real sliderTo: 120 // Position of the slider
+    property real valueFrom: 0 // Current value
+    property real valueTo: 120 // Current value
+    property real sliderFrom: 0 // Min for this slider
+    property real sliderTo: 120 // Max for this slider
     property real sliderStepSize: 1
     property bool fullWidth: false
     property color colorPressed: window.invertedTheme ? Palette.white : Palette.lightBlack
