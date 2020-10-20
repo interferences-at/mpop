@@ -22,6 +22,12 @@ Column {
         }
     }
 
+
+    /**
+     * Retrieves the question identifiers.
+     *
+     * @ret the question identifire if its single type or list of identifires  for mutiple type.
+     */
     function getQuestionIdentifiers() {
         var ret = [];
         for (var i = 0; i < numberOfQuestions; i ++) {
@@ -31,30 +37,64 @@ Column {
         return ret;
     }
 
+    /**
+     * Retrieves the list of questions answers.
+     *
+     * @param questionsIds is List of question ids.
+     * @ret the answers of question identifires and set -1 in case user not answered the question.
+     */
     function getQuestionsAnswers(questionsIds) {
         var ret = [];
-        for (var i = 0; i < questionsIds.length; i ++) {
-             var answer= window.userProfile.answers[questionsIds[i]];
-             if(answer===undefined){
+        var answer ;
+        for (var i = 0; i < questionsIds.length; i ++){
+            if(window.userProfile.answers.hasOwnProperty(questionsIds[i])){
+                answer = window.userProfile.answers[questionsIds[i]];
+            }
+            else{
                  answer=-1;
              }
-
             ret.push(answer);
         }
         return ret;
-
     }
 
-    function makeMultipleQuestionTitle(questionIds,myAnswers,answers){
+    /**
+     * Retrieves the object list of titles, myanswers and their answers avg.
+     *
+     * @param myAnswers is List of user answers.
+     * @param answers is list of users answers average.
+     * @ret is object of titles, myanswer and their answers.
+     */
+    function makeMultipleQuestionTitle(myAnswers, answers){
         var ret = [];
-        for (var i = 0; i < questionIds.length; i ++) {
-           var answerTitle = window.datavizManager.makeTitleMineTheirs(questionIds[i],myAnswers[i],answers[i])
-           ret.push(answerTitle);
+
+        var titleSize= window.userProfile.getObjectLength(answers);
+        var objectPropertiesNames = Object.getOwnPropertyNames(answers);
+        for (var i = 0; i < titleSize; i ++) {
+            var answerTitle = window.datavizManager.makeTitleMineTheirs(objectPropertiesNames[i],myAnswers[i],answers[objectPropertiesNames[i]]);
+            ret.push(answerTitle);
         }
         return ret;
-
     }
 
+    /**
+     * Retrieves the object list of titles and their answers avg.
+     *
+     * @param titleAnswers is list of users answers average.
+     * @ret is object of titles and their answers.
+     */
+    function packAnswersTitle(titleAnswers){
+        var ret = [];
+
+        var titleSize= window.userProfile.getObjectLength(titleAnswers);
+        var objectPropertiesNames = Object.getOwnPropertyNames(titleAnswers);
+        for (var i = 0; i < titleSize; i ++) {
+           var answerTitle = window.datavizManager.makeTitleTheirs(objectPropertiesNames[i],titleAnswers[objectPropertiesNames[i]])
+           ret.push(answerTitle);
+        }
+
+        return ret;
+    }
 
     function resetToDefaultAnswer() {
         for (var i = 0; i < numberOfQuestions; i ++) {
@@ -374,7 +414,9 @@ Column {
                             var myAnswer = window.userProfile.getMyAnswer(questionId);
                             var myEthnicity = window.userProfile.getMyEthnicity(answerByEthnicity);
                             console.log("show_one_answer_by_ethnicity(" + myAnswer + ", " + myEthnicity + ", " + answerByEthnicity + ")");
-                            window.datavizManager.show_one_answer_by_ethnicity(myEthnicity,myAnswer , answerByEthnicity);
+                            // pack the title and their answers.
+                            var theirTitles= packAnswersTitle(answerByEthnicity);
+                            window.datavizManager.show_one_answer_by_ethnicity(myEthnicity,myAnswer , theirTitles);
                         }
                     });
                     break;
@@ -395,8 +437,11 @@ Column {
                             var myGender = window.userProfile.getMyGender(answerByGender);
                             // answerByGender is a list of 3 values
                             console.log("show_one_answer_by_Gender(" + myAnswer + ", " + myGender + ", " + answerByGender + ")");
-                            window.datavizManager.show_one_answer_by_gender(myGender, myAnswer, answerByGender);
-                        }                    });
+                            // pack the title and their answers.
+                            var theirTitles= packAnswersTitle(answerByGender);
+                            window.datavizManager.show_one_answer_by_gender(myGender, myAnswer, theirTitles);
+                        }
+                    });
                     break;
                 case filter_LANGUAGE:
                     // TODO  window.userProfile. call get answer by lang
@@ -414,9 +459,11 @@ Column {
                             // Retrieve my answer and my age:
                             var myAnswer = window.userProfile.getMyAnswer(questionId);
                             var myLanguage = window.userProfile.getMyLanguage(answerByLanguage);
-                            // answerByLanguage is a list of 20 values
+                            // answerByLanguage is a list of 2 values
                             console.log("show_one_answer_by_language(" + myAnswer + ", " + myLanguage + ", " + answerByLanguage + ")");
-                            window.datavizManager.show_one_answer_by_language(myLanguage, myAnswer, answerByLanguage);
+                            // pack the title and their answers.
+                            var theirTitles= packAnswersTitle(answerByLanguage);
+                            window.datavizManager.show_one_answer_by_language(myLanguage, myAnswer, theirTitles);
                         }
                     });
                     break;
@@ -436,7 +483,8 @@ Column {
                             // Retrieve my answer
                             var myAnswers = getQuestionsAnswers(questionIds);
                             console.log("show_one_answer(" + myAnswers + "," + answers + "");
-                            var answersTitles=  makeMultipleQuestionTitle(questionIds,myAnswers,answers)
+                            // pack the title, my answers and their answers.
+                            var answersTitles=  makeMultipleQuestionTitle(myAnswers,answers)
                             window.datavizManager.view_answers(answersTitles);
                         }
                     });
