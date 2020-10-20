@@ -66,7 +66,7 @@ Item {
      * @see makeTitleTheirs
      */
     function show_one_answer_by_ethnicity(myRow, myAnswer, titleTheirs) {
-        var rowCount = titleTheirs.length;
+        var rowCount = window.userProfile.getObjectLength(titleTheirs);
         var args = [rowCount, myRow, myAnswer];
         for (var i = 0; i < rowCount; i ++) {
             var answer = titleTheirs[i];
@@ -75,8 +75,6 @@ Item {
         }
         oscMessageSender.send(_makePath("view_answer_by_culture"), args);
     }
-
-
 
 
     /**
@@ -136,7 +134,7 @@ Item {
      * @param value Array List of ints for my current answers. There should be between 2 and 5 answers.
      */
     function my_answers(values) {
-        var path = _makePath("my_answer");
+        var path = _makePath("my_answers");
         _verb(path, values);
         oscMessageSender.send(path, values);
     }

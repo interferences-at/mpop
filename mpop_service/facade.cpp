@@ -678,11 +678,11 @@ QMap<QString,int> Facade::getAnswerByGender(const QString& questionId, const QSt
     QMap<QString,int> AvgAnsByGender;
     
     QString sqlQuery= "SELECT IFNULL(ROUND(AVG( CASE WHEN v.gender='male' "
-                      "THEN a.answer_value ELSE 0 END ),2),'-1') as 'Male', "
+                      "THEN a.answer_value ELSE -1 END ),2),'-1') as 'Male', "
                       "IFNULL(ROUND(AVG( CASE WHEN v.gender='female' THEN "
-                      " a.answer_value ELSE 0 END ),2),'-1') as 'Female',"
+                      " a.answer_value ELSE -1 END ),2),'-1') as 'Female',"
                       "IFNULL(ROUND(AVG(CASE WHEN v.gender='other' THEN a.answer_value"
-                      " ELSE 0 END ),2) ,'-1')as 'Other' "
+                      " ELSE -1 END ),2) ,'-1')as 'Other' "
                       "FROM answer AS a JOIN visitor AS v ON a.visitor_id = v.id JOIN"
                       " question AS q ON a.question_id = q.id " ;
 
@@ -792,12 +792,12 @@ QMap<QString, int> Facade::getAnswerByEthnicity(const QString& questionId,int ag
     qDebug() << questionId;
     QMap<QString, int> AvgAnsByEthnicity;
 
-    QString sqlQuery="SELECT IFNULL(ROUND(AVG( CASE WHEN e.identifier='quebecer' THEN a.answer_value ELSE 0 END ),2),'-1') as 'Quebecer',"
-                        "IFNULL( ROUND(AVG( CASE WHEN e.identifier='canadian' THEN a.answer_value ELSE 0 END ),2),'-1') as 'Canadian',"
-                        "IFNULL( ROUND(AVG( CASE WHEN e.identifier='american' THEN a.answer_value ELSE 0 END ),2),'-1') as 'American', "
-                        "IFNULL( ROUND(AVG( CASE WHEN e.identifier='european' THEN a.answer_value ELSE 0 END ),2),'-1') as 'European' ,"
-                        "IFNULL( ROUND(AVG( CASE WHEN e.identifier='native' THEN a.answer_value ELSE 0 END ),2),'-1') as 'Native' ,"
-                        "IFNULL( ROUND(AVG( CASE WHEN e.identifier='other' THEN a.answer_value ELSE 0 END ),2),'-1') as 'other' "
+    QString sqlQuery="SELECT IFNULL(ROUND(AVG( CASE WHEN e.identifier='quebecer' THEN a.answer_value ELSE -1 END ),2),'-1') as 'Quebecer',"
+                        "IFNULL( ROUND(AVG( CASE WHEN e.identifier='canadian' THEN a.answer_value ELSE -1 END ),2),'-1') as 'Canadian',"
+                        "IFNULL( ROUND(AVG( CASE WHEN e.identifier='american' THEN a.answer_value ELSE -1 END ),2),'-1') as 'American', "
+                        "IFNULL( ROUND(AVG( CASE WHEN e.identifier='european' THEN a.answer_value ELSE -1 END ),2),'-1') as 'European' ,"
+                        "IFNULL( ROUND(AVG( CASE WHEN e.identifier='native' THEN a.answer_value ELSE -1 END ),2),'-1') as 'Native' ,"
+                        "IFNULL( ROUND(AVG( CASE WHEN e.identifier='other' THEN a.answer_value ELSE -1 END ),2),'-1') as 'other' "
                         "from answer AS a JOIN visitor AS v ON a.visitor_id = v.id JOIN question AS q ON a.question_id = q.id"
                         " JOIN ethnicity AS e on v.ethnicity = e.id WHERE q.identifier = ? ";
 
@@ -901,8 +901,8 @@ QMap<QString,int> Facade::getAnswerByLanguage(const QString& questionId, int age
     qDebug() << questionId;
     QMap<QString, int> ansByLang;
 
-    QString sqlQuery="SELECT IFNULL(ROUND(AVG( CASE WHEN v.language='en' THEN a.answer_value ELSE 0 END ),2),'-1') as 'English',"
-                        "IFNULL( ROUND(AVG( CASE WHEN v.language='fr' THEN a.answer_value ELSE 0 END ),2),'-1') as 'French'"
+    QString sqlQuery="SELECT IFNULL(ROUND(AVG( CASE WHEN v.language='en' THEN a.answer_value ELSE -1 END ),2),'-1') as 'English',"
+                        "IFNULL( ROUND(AVG( CASE WHEN v.language='fr' THEN a.answer_value ELSE -1 END ),2),'-1') as 'French'"
                         "from answer AS a JOIN visitor AS v ON a.visitor_id = v.id JOIN question AS q ON a.question_id = q.id";
 
 
@@ -1006,7 +1006,7 @@ QMap<QString, int > Facade:: getAllAnswers(){
 
     QMap<QString,int> avgQueAns ;
 
-    QString sqlQuery="select q.identifier as 'Question', avg(a.answer_value) as 'Average' "
+    QString sqlQuery="select q.identifier as 'Question', IFNULL(avg(a.answer_value),-1) as 'Average' "
                      "from answer as a join question as q on a.question_id = q.id group by q.id";
 
     QSqlQuery query;
@@ -1048,7 +1048,7 @@ QMap<QString, int> Facade:: getAnswers(const QList<QString>& questionIds, int ag
         //retrive each Question Id from the List to calculate the avg ans.
         auto questionId = (*iter);
 
-        QString sqlQuery=" SELECT q.identifier AS 'Question', AVG(a.answer_value) AS 'Average' "
+        QString sqlQuery=" SELECT q.identifier AS 'Question', IFNULL(AVG(a.answer_value),-1) AS 'Average' "
                          " FROM answer AS a JOIN visitor AS v ON a.visitor_id = v.id  JOIN question AS q ON a.question_id = q.id ";
 
 

@@ -174,6 +174,16 @@ Item {
         });
     }
 
+    /**
+     * Calls getAnswerByEthnicity.
+     * @param questionId string.
+     * @param ageTo int. (default: -1)
+     * @param ageFrom int. (default: -1)
+     * @param gender string. (default: all)
+     * @param timeAnswered string. (default: all)
+     * @see Facade.cpp
+     */
+
     function getAnswerByEthnicity(questionId, ageFrom, ageTo, gender, timeAnswered, cb){
         // TODO: validate arguments
         console.log("Calling getAnswerByEthnicity(" + questionId + "," + ageFrom + "," + ageTo + "," + gender + "," + timeAnswered + ")");
@@ -188,6 +198,15 @@ Item {
         });
     }
 
+    /**
+     * Calls getAnswerByGender.
+     * @param questionId string.
+     * @param ethenicity string (default: all)
+     * @param ageTo int. (default: -1)
+     * @param ageFrom int. (default: -1)
+     * @param timeAnswered string. (default: all)
+     * @see Facade.cpp
+     */
     function getAnswerByGender(questionId,ethenicity,ageTo,ageFrom,timeAnswered, cb){
 
         console.log("Calling getAnswerByGender(" + questionId + "," + ethenicity + "," + ageTo + "," + ageFrom + "," + timeAnswered + ")");
@@ -202,6 +221,16 @@ Item {
         });
     }
 
+    /**
+     * Calls getUserAnswerByLanguage.
+     * @param questionId string.
+     * @param ethenicity string (default: all)
+     * @param ageTo int. (default: -1)
+     * @param ageFrom int. (default: -1)
+     * @param gender string. (default: all)
+     * @param timeAnswered string. (default: all)
+     * @see Facade.cpp
+     */
     function getUserAnswerByLanguage(questionId,ageFrom,ageTo,ethnicity,gender,timeAnswered,cb){
 
         console.log("Calling getUserAnswerByLanguage(" + questionId + "," + gender + "," + ethnicity + "," + ageTo + "," + ageFrom + "," + timeAnswered + ")");
@@ -484,6 +513,123 @@ Item {
     function ping(cb) {
         websocket.sendPing(cb);
     }
+
+    /**
+     * Retrieves the current user answer for specific question.
+     *
+     * @param questionId which use to filter from answer for current user.
+     * @ret user answer or -1 if not answered yet.
+     */
+    function getMyAnswer(questionId){
+
+        var myAnswer =-1;
+
+        if(window.userProfile.answers.hasOwnProperty(questionId)) {
+            myAnswer= window.userProfile.answers[questionId];
+        }
+        return myAnswer;
+    }
+
+
+    /**
+     * Retrieves the current user ethnicity row index.
+     *
+     * @param ethnicities list to filter current user ethnicity row index.
+     * @ret ethnicity index or -1 if not answered.
+     */
+    function getMyEthnicity(ethnicities){
+
+        var rawId =-1;
+        var myEthnicity = ethnicity ;
+
+        if(myEthnicity===const_INVALID_STRING) {
+            rawId=-1;
+        }
+        else
+        {
+            var i=0 ;
+            for(var key in  ethnicities)
+            {
+                if(key===myEthnicity){
+                    rawId = i;
+                }
+                i++;
+            }
+        }
+        return rawId;
+    }
+
+    /**
+     * Retrieves the current user gender row index.
+     *
+     * @param genders list to filter current user gender row index.
+     * @ret gender index or -1 if not answered.
+     */
+    function getMyGender(genders){
+
+        var rawId =-1;
+        var myGender = gender ;
+
+        if(myGender===const_INVALID_STRING) {
+            rawId=-1;
+        }
+        else
+        {
+            var i=0 ;
+            for(var key in  genders)
+            {
+                if(key===myGender){
+                    rawId = i;
+                }
+                i++;
+            }
+        }
+        return rawId;
+    }
+
+    /**
+     * Retrieves the current user language row index.
+     *
+     * @param languages list to filter current user language row index.
+     * @ret language index or -1 if not answered.
+     */
+    function getMyLanguage(languages){
+
+        var rawId =-1;
+        var myLanguage = language ;
+
+        if(myLanguage===const_INVALID_STRING) {
+            rawId=-1;
+        }
+        else
+        {
+            var i=0 ;
+            for(var key in  languages)
+            {
+                if(key===myLanguage){
+                    rawId = i;
+                }
+                i++;
+            }
+        }
+        return rawId;
+    }
+
+    /**
+     * Retrieves the object list length.
+     *
+     * @param object list of key and value pair.
+     * @ret length of object.
+     */
+    function getObjectLength(object){
+        var i=0 ;
+        for(var key in  object)
+        {
+            i++;
+        }
+        return i;
+    }
+
 
     /**
      * Makes the client periodically reconnect with the weboscket server, if necessary.
