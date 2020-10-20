@@ -485,6 +485,45 @@ Item {
         websocket.sendPing(cb);
     }
 
+
+    function getMyAnswer(questionId){
+        var myAnswer= window.userProfile.answers[questionId];
+        if(myAnswer==="undefined") {
+            myAnswer=-1;
+        }
+        return myAnswer;
+    }
+
+    function getMyEthnicity(){
+
+        var myEthnicity =  window.userProfile.ethnicity ;
+        if(myEthnicity==="") {
+            myEthnicity=-1;
+        }
+        return myEthnicity;
+    }
+
+    function getMyGender(){
+
+        var myGender =  window.userProfile.gender ;
+        if(myGender==="") {
+            myGender=-1;
+        }
+        return myGender;
+    }
+
+
+    function getMyLanguage(){
+
+        var myLanguage =  window.userProfile.language;
+        if(myLanguage==="") {
+            myLanguage=-1;
+        }
+        return myLanguage;
+    }
+
+
+
     /**
      * Makes the client periodically reconnect with the weboscket server, if necessary.
      */
