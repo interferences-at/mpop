@@ -146,7 +146,17 @@ Column {
     property int filterHighlighted: -1
     property bool buttonTextHighlight: true
 
+    // properties so that we can read what are the current values for each filter
+    property string currentFilterValueForEthnicity: "all"
+    property string currentFilterValueForGender: "all"
+    property string currentFilterValueForTime: "all"
+    property int currentFilterValueAgeFrom: 0
+    property int currentFilterValueAgeTo: 100
+
+    // Current sub-page index in the dataviz for this question page
     property alias datavizIndex: questionDatavizStackLayout.currentIndex
+
+    // Index of each sub-page:
     readonly property int index_QUESTIONS: 0
     readonly property int index_CHOOSE_SINGLE: 1
     readonly property int index_CHOOSE_MULTIPLE: 2
@@ -161,6 +171,7 @@ Column {
 
     BilingualText {
         id: textDataVisualization
+
         textFr: "Visualisation de données"
         textEn: "Data visualization"
     }
@@ -168,6 +179,7 @@ Column {
     // The main question text:
     ColumnLayout {
         id: mainQuestion
+
         width: parent.width
 
         Label {
@@ -202,6 +214,7 @@ Column {
 
         StackLayout {
             id: questionDatavizStackLayout
+
             visible: false
             Layout.fillWidth: true
             currentIndex: 0
@@ -234,6 +247,7 @@ Column {
 
                 Repeater {
                     id: sliderRepeater
+
                     model: subquestions || 1
 
                     ColumnLayout {
@@ -378,13 +392,17 @@ Column {
              * Triggers sending OSC to the dataviz.
              */
             function sendDatavizViewBy() {
+
+                var questionId = model.identifier;
+                var ageFrom = currentFilterValueAgeFrom;
+                var ageTo = currentFilterValueAgeTo;
+                var gender = currentFilterValueForGender;
+                var ethnicity = currentFilterValueForEthnicity;
+                var timeAnswered = currentFilterValueForTime;
+
                 switch (filterHighlighted) {
                 case filter_AGE:
                     // call get answer by age
-                    var questionId = model.identifier;
-                    var ethnicity = "all"; // FIXME load from widgets
-                    var gender = "all"; // FIXME load from widgets
-                    var timeAnswered = "all"; // FIXME load from widgets
                     window.userProfile.getAnswerByAge(questionId, ethnicity, gender, timeAnswered, function (err, answerByAge) {
                         if (err) {
                             console.log("Error calling getAnswerByAge(" + questionId + "," + ethnicity + "," + gender + "," + timeAnswered + "): " + err.message);
@@ -399,14 +417,8 @@ Column {
                     });
                     break;
                 case filter_CULTURE:
-                    // TODO window.userProfile. call get answer by culture
-                    var questionId = model.identifier;
-                    var ageFrom = -1; // FIXME load from widgets
-                    var ageTo= -1;
-                    var gender = "all"; // FIXME load from widgets
-                    var timeAnswered = "all"; // FIXME load from widgets
-
-                    window.userProfile.getAnswerByEthnicity(questionId,ageFrom,ageTo,gender,timeAnswered,function (err, answerByEthnicity) {
+                    // call get answer by culture
+                    window.userProfile.getAnswerByEthnicity(questionId, ageFrom, ageTo, gender, timeAnswered, function (err, answerByEthnicity) {
                         if (err) {
                             console.log("Error calling getAnswerByEthnicity(" + questionId + "," + ageFrom + "," + ageTo + "," + gender + "," + timeAnswered + "): " + err.message);
                         } else {
@@ -416,18 +428,12 @@ Column {
                             console.log("show_one_answer_by_ethnicity(" + myAnswer + ", " + myEthnicity + ", " + answerByEthnicity + ")");
                             // pack the title and their answers.
                             var theirTitles= packAnswersTitle(answerByEthnicity);
-                            window.datavizManager.show_one_answer_by_ethnicity(myEthnicity,myAnswer , theirTitles);
+                            window.datavizManager.show_one_answer_by_ethnicity(myEthnicity, myAnswer, theirTitles);
                         }
                     });
                     break;
                 case filter_GENDER:
-                    // TODO window.userProfile. call get answer by gender
-                    var questionId = model.identifier;
-                    var ageFrom = -1; // FIXME load from widgets
-                    var ageTo= -1;
-                    var ethnicity = "all"; // FIXME load from widgets
-                    var timeAnswered = "all"; // FIXME load from widgets
-
+                    // call get answer by gender
                     window.userProfile.getAnswerByGender(questionId,ethnicity,ageTo,ageFrom,timeAnswered,function (err, answerByGender) {
                         if (err) {
                             console.log("Error calling getAnswerByGender(" + questionId +  "," + ethnicity + "," + ageTo + "," + ageFrom + "," + timeAnswered + "): " + err.message);
@@ -444,14 +450,7 @@ Column {
                     });
                     break;
                 case filter_LANGUAGE:
-                    // TODO  window.userProfile. call get answer by lang
-                    var questionId = model.identifier;
-                    var ageFrom = -1; // FIXME load from widgets
-                    var ageTo= -1;
-                    var gender = "all";
-                    var ethnicity = "all"; // FIXME load from widgets
-                    var timeAnswered = "all"; // FIXME load from widgets
-
+                    // call get answer by language
                     window.userProfile.getUserAnswerByLanguage(questionId,ageFrom,ageTo,ethnicity,gender,timeAnswered,function (err, answerByLanguage) {
                         if (err) {
                             console.log("Error calling getUserAnswerByLanguage(" + questionId +  "," + ethnicity + "," + ageTo + "," + ageFrom + "," + gender + "," + timeAnswered + "): " + err.message);
@@ -468,23 +467,17 @@ Column {
                     });
                     break;
                 default: // in case this is a multiple question pageAge
-                    // TODO window.userProfile. call get answers
                     var questionIds = getQuestionIdentifiers();
-                    var ageFrom = -1; // FIXME load from widgets
-                    var ageTo= -1;
-                    var gender = "all";
-                    var ethnicity = "all"; // FIXME load from widgets
-                    var timeAnswered = "all"; // FIXME load from widgets
-
-                    window.userProfile.getAnswers(questionIds,ageFrom,ageTo,ethnicity,gender,timeAnswered,function (err, answers) {
+                    // call get answers
+                    window.userProfile.getAnswers(questionIds, ageFrom, ageTo, ethnicity, gender, timeAnswered, function (err, answers) {
                         if (err) {
                             console.log("Error calling getAnswers(" + questionIds +  "," + ethnicity + "," + ageTo + "," + ageFrom + "," + gender + "," + timeAnswered + "): " + err.message);
                         } else {
                             // Retrieve my answer
                             var myAnswers = getQuestionsAnswers(questionIds);
-                            console.log("show_one_answer(" + myAnswers + "," + answers + "");
+                            console.log("view_answers(" + myAnswers + "," + answers + "");
                             // pack the title, my answers and their answers.
-                            var answersTitles=  makeMultipleQuestionTitle(myAnswers,answers)
+                            var answersTitles = makeMultipleQuestionTitle(myAnswers, answers)
                             window.datavizManager.view_answers(answersTitles);
                         }
                     });
@@ -539,73 +532,84 @@ Column {
                         fullWidth: true
 
                         onValueFromChanged: {
-                            // TODO
+                            currentFilterValueAgeFrom = valueFrom;
                             sendDatavizViewBy();
                         }
                         onValueToChanged: {
-                            // TODO
+                            currentFilterValueAgeTo = valueTo;
                             sendDatavizViewBy();
                         }
                     }
                 }
 
+                /**
+                 * We use a repeater for the filter buttons.
+                 *
+                 * There is a model, and we repeat
+                 */
                 Repeater {
                     id: filterRepeater
 
-                    // model
+                    // Model for the filter buttons. (choose culture, gender, time, etc.)
                     model: ListModel {
                         ListElement {
                             sectionTitleEn: "Culture"
                             sectionTitleFr: "Culture"
+                            sectionId: "culture"
                             // TODO: Whenever the current selection changes, call sendDatavizViewBy();
                             filters: [
-                                ListElement { textEn: "All"; textFr: "Tous" },
-                                ListElement { textEn: "Quebecois"; textFr: "Québécoise" },
-                                ListElement { textEn: "Canadian"; textFr: "Canadienne" },
-                                ListElement { textEn: "Native"; textFr: "Autochtone" },
-                                ListElement { textEn: "American"; textFr: "Américaine" },
-                                ListElement { textEn: "European"; textFr: "Européenne" },
-                                ListElement { textEn: "Other"; textFr: "Autre" }
+                                // FIXME: This model might be a duplicate
+                                ListElement { textEn: "All"; textFr: "Tous"; filterValue: "all"  },
+                                ListElement { textEn: "Quebecois"; textFr: "Québécoise"; filterValue: "quebecer" },
+                                ListElement { textEn: "Canadian"; textFr: "Canadienne"; filterValue: "canadian" },
+                                ListElement { textEn: "Native"; textFr: "Autochtone"; filterValue: "native" },
+                                ListElement { textEn: "American"; textFr: "Américaine"; filterValue: "american" },
+                                ListElement { textEn: "European"; textFr: "Européenne"; filterValue: "european" },
+                                ListElement { textEn: "Other"; textFr: "Autre"; filterValue: "other" }
                             ]
                         }
 
                         ListElement {
                             sectionTitleEn: "Gender"
                             sectionTitleFr: "Genre"
+                            sectionId: "gender"
                             // TODO: Whenever the current selection changes, call sendDatavizViewBy();
                             filters: [
-                                ListElement { textEn: "All"; textFr: "Tous" },
-                                ListElement { textEn: "Male"; textFr: "Homme" },
-                                ListElement { textEn: "Female"; textFr: "Femme" },
-                                ListElement { textEn: "Other"; textFr: "Autre" }
+                                // FIXME: This model might be a duplicate
+                                ListElement { textEn: "All"; textFr: "Tous"; filterValue: "all" },
+                                ListElement { textEn: "Male"; textFr: "Homme"; filterValue: "male" },
+                                ListElement { textEn: "Female"; textFr: "Femme"; filterValue: "female" },
+                                ListElement { textEn: "Other"; textFr: "Autre"; filterValue: "other" }
                             ]
                         }
 
                         ListElement {
                             sectionTitleEn: "Time"
                             sectionTitleFr: "Temps"
+                            sectionId: "time"
                             // TODO: Whenever the current selection changes, call sendDatavizViewBy();
                             filters: [
-                                ListElement { textEn: "All"; textFr: "Tous" },
-                                ListElement { textEn: "Today"; textFr: "Aujourd'hui" },
-                                ListElement { textEn: "This year"; textFr: "Cette année" },
-                                ListElement { textEn: "From the beginning"; textFr: "Depuis le début" }
+                                // FIXME: This model might be a duplicate
+                                ListElement { textEn: "All"; textFr: "Tous"; filterValue: "all" },
+                                ListElement { textEn: "Today"; textFr: "Aujourd'hui"; filterValue: "today" },
+                                ListElement { textEn: "This year"; textFr: "Cette année"; filterValue: "this_year" },
+                                ListElement { textEn: "From the beginning"; textFr: "Depuis le début"; filterValue: "all" } // FIXME: This button is a duplicate of "All"
                             ]
                         }
                     }
 
-                    // display
+                    // Layout for each row of filter buttons.
                     ColumnLayout {
                         id: subfilter
 
-                        property int currentIndex: 0
+                        property int currentIndex: 0 // To highlight the currently selected button.
                         // reset index when RFID tag changes
                         property variant resetter: window.rfidTag
                         onResetterChanged: currentIndex = 0
 
                         Layout.fillWidth: true
                         spacing: 15
-                        visible: filterHighlighted !== model.index + 1 || model.index === filterRepeater.count - 1
+                        visible: filterHighlighted !== (model.index + 1) || model.index === (filterRepeater.count - 1)
 
                         // section title
                         Label {
@@ -639,7 +643,19 @@ Column {
 
                                     highlighted: index === subfilter.currentIndex
                                     onClicked: {
-                                        subfilter.currentIndex = index;
+                                        switch (sectionId) {
+                                        case "time":
+                                            currentFilterValueForTime = model.filterValue;
+                                            break;
+                                        case "gender":
+                                            currentFilterValueForGender = model.filterValue;
+                                            break;
+                                        case "culture":
+                                            currentFilterValueForEthnicity = model.filterValue;
+                                            break;
+                                        }
+
+                                        subfilter.currentIndex = index; // Sets this button as highlighted.
                                         sendDatavizViewBy();
                                     }
                                 }
@@ -655,6 +671,7 @@ Column {
             Layout.fillWidth: true
             visible: datavizIndex > 0
 
+            // Button to go back to the question main question page.
             WidgetIconButton {
                 Layout.leftMargin: 30
                 Layout.topMargin: 50
@@ -662,6 +679,7 @@ Column {
 
                 BilingualText {
                     id: goBackLabel
+
                     textEn: "Back"
                     textFr: "Retour"
                 }
@@ -670,8 +688,11 @@ Column {
                 iconRotation: -90
                 labelText: goBackLabel.text
                 onClicked: {
-                    if (hasMultipleQuestions) datavizIndex = index_QUESTIONS;
-                    else datavizIndex--;
+                    if (hasMultipleQuestions) {
+                        datavizIndex = index_QUESTIONS;
+                    } else {
+                        datavizIndex --;
+                    }
                 }
             }
         }
