@@ -103,6 +103,9 @@ Column {
         }
     }
 
+    /**
+     * Called when the answer changes their answer for a question using a slider.
+     */
     function handleSliderMoved(sliderIndex, value) {
         console.log("handleSliderMoved(" + sliderIndex + "," + value + ")");
         var identifier = model.identifier || model.subquestions.get(sliderIndex).identifier;
@@ -116,11 +119,21 @@ Column {
             }
         });
 
-        sendDatavizShowQuestion(value);
+        currentAnswers[sliderIndex] = value;
+
+        if (hasMultipleQuestions) {
+            sendDatavizShowMyAnswer(value);
+        } else {
+            sendDatavizShowMyAnswers(currentAnswers);
+        }
     }
 
-    function sendDatavizShowQuestion(currentValue) {
+    function sendDatavizShowMyAnswer(currentValue) {
         window.datavizManager.my_answer(currentValue);
+    }
+
+    function sendDatavizShowMyAnswers(currentValues) {
+        window.datavizManager.my_answers(currentValues);
     }
 
     /**
@@ -143,6 +156,7 @@ Column {
     property int numberOfQuestions: subquestions ? subquestions.rowCount() : 1 // [1,5]
     property bool hasMultipleQuestions: numberOfQuestions > 1
     property var questionIdentifiers: []
+    property var currentAnswers: []
     property int filterHighlighted: -1
     property bool buttonTextHighlight: true
 
@@ -166,7 +180,11 @@ Column {
 
     Component.onCompleted: {
         loadAnswersForCurrentVisitor();
-        // TODO: Retrieve value for user from service and populate the slider, if set.
+
+        for (var i = 0; i < numberOfQuestions; i ++) {
+            var default_value_for_sliders = 50;
+            currentAnswers.push(default_value_for_sliders);
+        }
     }
 
     BilingualText {

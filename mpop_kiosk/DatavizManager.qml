@@ -77,8 +77,6 @@ Item {
     }
 
 
-
-
     /**
      * View an answer to a single question by language.
      *
@@ -136,7 +134,7 @@ Item {
      * @param value Array List of ints for my current answers. There should be between 2 and 5 answers.
      */
     function my_answers(values) {
-        var path = _makePath("my_answer");
+        var path = _makePath("my_answers");
         _verb(path, values);
         oscMessageSender.send(path, values);
     }
