@@ -35,7 +35,7 @@ Column {
         var ret = [];
         for (var i = 0; i < questionsIds.length; i ++) {
              var answer= window.userProfile.answers[questionsIds[i]];
-             if(answer==="undefined"){
+             if(answer===undefined){
                  answer=-1;
              }
 
@@ -95,6 +95,7 @@ Column {
             else datavizIndex = index_CHOOSE_SINGLE
         }
     }
+
 
     // property var modelQuestions: null
     property var questionModel: model
@@ -349,7 +350,7 @@ Column {
                             console.log("Error calling getAnswerByAge(" + questionId + "," + ethnicity + "," + gender + "," + timeAnswered + "): " + err.message);
                         } else {
                             // Retrieve my answer and my age:
-                            var myAnswer = window.userProfile.answers[questionId];
+                            var myAnswer = window.userProfile.getMyAnswer(questionId);
                             var myAge = window.userProfile.age;
                             // answerByAge is a list of 20 values
                             console.log("show_one_answer_by_age(" + myAnswer + ", " + myAge + ", " + answerByAge + ")");
@@ -371,9 +372,9 @@ Column {
                         } else {
                             // Retrieve my answer and my Ethnicity:
                             var myAnswer = window.userProfile.getMyAnswer(questionId);
-                            var myEthnicity = window.userProfile.getMyEthnicity();
+                            var myEthnicity = window.userProfile.getMyEthnicity(answerByEthnicity);
                             console.log("show_one_answer_by_ethnicity(" + myAnswer + ", " + myEthnicity + ", " + answerByEthnicity + ")");
-                            window.datavizManager.show_one_answer_by_ethnicity(myAnswer, myEthnicity, answerByEthnicity);
+                            window.datavizManager.show_one_answer_by_ethnicity(myEthnicity,myAnswer , answerByEthnicity);
                         }
                     });
                     break;
@@ -391,12 +392,11 @@ Column {
                         } else {
                             // Retrieve my answer and my age:
                             var myAnswer = window.userProfile.getMyAnswer(questionId);
-                            var myGender = window.userProfile.getMyGender();
+                            var myGender = window.userProfile.getMyGender(answerByGender);
                             // answerByGender is a list of 3 values
                             console.log("show_one_answer_by_Gender(" + myAnswer + ", " + myGender + ", " + answerByGender + ")");
-                            window.datavizManager.show_one_answer_by_gender(myAnswer, myGender, answerByGender);
-                        }
-                    });
+                            window.datavizManager.show_one_answer_by_gender(myGender, myAnswer, answerByGender);
+                        }                    });
                     break;
                 case filter_LANGUAGE:
                     // TODO  window.userProfile. call get answer by lang
@@ -413,10 +413,10 @@ Column {
                         } else {
                             // Retrieve my answer and my age:
                             var myAnswer = window.userProfile.getMyAnswer(questionId);
-                            var myLanguage = window.userProfile.getMyLanguage();
+                            var myLanguage = window.userProfile.getMyLanguage(answerByLanguage);
                             // answerByLanguage is a list of 20 values
                             console.log("show_one_answer_by_language(" + myAnswer + ", " + myLanguage + ", " + answerByLanguage + ")");
-                            window.datavizManager.show_one_answer_by_language(myAnswer, myLanguage, answerByLanguage);
+                            window.datavizManager.show_one_answer_by_language(myLanguage, myAnswer, answerByLanguage);
                         }
                     });
                     break;

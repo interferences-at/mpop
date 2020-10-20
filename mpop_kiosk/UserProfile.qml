@@ -487,41 +487,90 @@ Item {
 
 
     function getMyAnswer(questionId){
-        var myAnswer= window.userProfile.answers[questionId];
-        if(myAnswer==="undefined") {
-            myAnswer=-1;
+
+        var myAnswer =-1;
+
+        if(window.userProfile.answers.hasOwnProperty(questionId)) {
+            myAnswer= window.userProfile.answers[questionId];;
         }
         return myAnswer;
     }
 
-    function getMyEthnicity(){
+    function getMyEthnicity(ethnicities){
 
-        var myEthnicity =  window.userProfile.ethnicity ;
-        if(myEthnicity==="") {
-            myEthnicity=-1;
+        var rawId =-1;
+        var myEthnicity  = ethnicity ;
+
+        if(myEthnicity===const_INVALID_STRING) {
+            rawId=-1;
         }
-        return myEthnicity;
+        else
+        {
+            var i=0 ;
+            for(var key in  ethnicities)
+            {
+                if(key===myEthnicity){
+                    rawId = i;
+                }
+                i++;
+            }
+        }
+        return rawId;
     }
 
-    function getMyGender(){
+    function getMyGender(genders){
 
-        var myGender =  window.userProfile.gender ;
-        if(myGender==="") {
-            myGender=-1;
+        var rawId =-1;
+        var myGender  = gender ;
+
+        if(myGender===const_INVALID_STRING) {
+            rawId=-1;
         }
-        return myGender;
+        else
+        {
+            var i=0 ;
+            for(var key in  genders)
+            {
+                if(key===myGender){
+                    rawId = i;
+                }
+                i++;
+            }
+        }
+        return rawId;
     }
 
 
-    function getMyLanguage(){
+    function getMyLanguage(languages){
 
-        var myLanguage =  window.userProfile.language;
-        if(myLanguage==="") {
-            myLanguage=-1;
+        var rawId =-1;
+        var myLanguage  = language ;
+
+        if(myLanguage===const_INVALID_STRING) {
+            rawId=-1;
         }
-        return myLanguage;
+        else
+        {
+            var i=0 ;
+            for(var key in  languages)
+            {
+                if(key===myLanguage){
+                    rawId = i;
+                }
+                i++;
+            }
+        }
+        return rawId;
     }
 
+    function getObjectLength(object){
+        var i=0 ;
+        for(var key in  object)
+        {
+            i++;
+        }
+        return i;
+    }
 
 
     /**
