@@ -44,7 +44,7 @@ void MPopService::load_config_from_env_vars(Config& config) {
     }
 }
 
-/**
+/**time_at_free_all_tag
  * @brief Returns an identifier for a given Websocket client.
  * @param peer Websocket client.
  * @return Host and port, concatenated.
@@ -478,13 +478,13 @@ void MPopService::timeWatcher(const Config& config){
     QTextStream(stdout) << "Current time  is : " << curTime;
     if(curTime == config.time_at_free_all_tag) {
 
-        //TODO: Exception Handling should be Uncommented when PR with SQLError.h Merge
-//       try {
-           Facade::freeAllTags();
-//       } catch(SQLError& e){
-//             qWarning() << "Internal Server Error :: " << e.what();
 
-//       }
+       try {
+          Facade::freeAllTags();
+       } catch(SQLError& e){
+             qWarning() << "Internal Server Error :: " << e.what();
+
+       }
    }
 
 }

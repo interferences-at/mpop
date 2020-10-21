@@ -554,6 +554,9 @@ bool Facade::deleteTagsVisitorsAndTheirAnswers(const QList<QString>& rfidTags) {
 
 QList<int> Facade::getAnswerByAge(const QString& questionId, const QString& ethenicity="all", const QString& gender="all", const QString& timeAnswered="all") {
     qDebug() << "GetAnswerByAge";
+    bool retrieveResult = false ; // to check weather result set is null.
+    int numOfAns= 20 ; // total num of ans by age group
+    int DEFAULT_ANSWER = -1;
     QList<int> avgAnsByAge;
 
     QString sqlQuery= "SELECT"
@@ -635,7 +638,9 @@ QList<int> Facade::getAnswerByAge(const QString& questionId, const QString& ethe
     }
 
     while (query.next()) {
+
         //providers Question Identifier's List of avg answer_value by age range
+        retrieveResult = true;
         avgAnsByAge.insert(1, static_cast<int>(query.value(0).toDouble())); // [0-5]
         avgAnsByAge.insert(2, static_cast<int>(query.value(1).toDouble())); // [6-10]
         avgAnsByAge.insert(3, static_cast<int>(query.value(2).toDouble())); // [11-15]
@@ -657,7 +662,12 @@ QList<int> Facade::getAnswerByAge(const QString& questionId, const QString& ethe
         avgAnsByAge.insert(19, static_cast<int>(query.value(18).toDouble())); // [91-95]
         avgAnsByAge.insert(20, static_cast<int>(query.value(19).toDouble())); // [96-100]
     }
-
+    if(retrieveResult == false){
+        // stores default value when null resultset.
+        for (int i = 1  ; i <= numOfAns ; i++ ){
+            avgAnsByAge.insert(i, DEFAULT_ANSWER);
+        }
+    }
     return avgAnsByAge;
 }
 
@@ -675,6 +685,7 @@ QMap<QString,int> Facade::getAnswerByGender(const QString& questionId, const QSt
 {
 
     qDebug() << "getAnswerByGender";
+    int ansMale = -1 , ansFemale = -1, ansOther = -1;
     QMap<QString,int> AvgAnsByGender;
     
     QString sqlQuery= "SELECT IFNULL(ROUND(AVG( CASE WHEN v.gender='male' "
@@ -766,10 +777,18 @@ QMap<QString,int> Facade::getAnswerByGender(const QString& questionId, const QSt
     while (query.next()){
 
         //providers Question Identifier's  avg answer_value by Gender
-        AvgAnsByGender.insert("male", static_cast<int>(query.value(0).toDouble())); //male
-        AvgAnsByGender.insert("female", static_cast<int>(query.value(1).toDouble())); //female
-        AvgAnsByGender.insert("other", static_cast<int>(query.value(2).toDouble()));//other
+        ansMale = static_cast<int>(query.value(0).toDouble());
+        ansFemale = static_cast<int>(query.value(1).toDouble());
+        ansOther = static_cast<int>(query.value(2).toDouble());
+        AvgAnsByGender.insert("male", ansMale); //male
+        AvgAnsByGender.insert("female", ansFemale); //female
+        AvgAnsByGender.insert("other", ansOther);//other
+    }
 
+    if(ansMale == -1){
+        AvgAnsByGender.insert("male", ansMale); //male
+        AvgAnsByGender.insert("female", ansFemale); //female
+        AvgAnsByGender.insert("other", ansOther);//other
     }
 
     return  AvgAnsByGender;
@@ -790,6 +809,7 @@ QMap<QString, int> Facade::getAnswerByEthnicity(const QString& questionId,int ag
 
     qDebug() << "GetAnswerByEthnicity";
     qDebug() << questionId;
+    int ansQc=-1, ansCad=-1, ansAme=-1, ansEur=-1, ansNativ=-1, ansOth=-1;
     QMap<QString, int> AvgAnsByEthnicity;
 
     QString sqlQuery="SELECT IFNULL(ROUND(AVG( CASE WHEN e.identifier='quebecer' THEN a.answer_value ELSE -1 END ),2),'-1') as 'Quebecer',"
@@ -881,12 +901,27 @@ QMap<QString, int> Facade::getAnswerByEthnicity(const QString& questionId,int ag
 
     while (query.next()) {
         //providers Question Identifier's  avg answer_value by Ethnicity
-        AvgAnsByEthnicity.insert("quebecer", static_cast<int>(query.value(0).toDouble()));
-        AvgAnsByEthnicity.insert("canadian", static_cast<int>(query.value(1).toDouble()));
-        AvgAnsByEthnicity.insert("american", static_cast<int>(query.value(2).toDouble()));
-        AvgAnsByEthnicity.insert("european", static_cast<int>(query.value(3).toDouble()));
-        AvgAnsByEthnicity.insert("native", static_cast<int>(query.value(4).toDouble()));
-        AvgAnsByEthnicity.insert("other", static_cast<int>(query.value(5).toDouble()));
+        ansQc = static_cast<int>(query.value(0).toDouble());
+        ansCad = static_cast<int>(query.value(1).toDouble());
+        ansAme = static_cast<int>(query.value(2).toDouble());
+        ansEur = static_cast<int>(query.value(3).toDouble());
+        ansNativ = static_cast<int>(query.value(4).toDouble());
+        ansOth = static_cast<int>(query.value(5).toDouble());
+        AvgAnsByEthnicity.insert("quebecer", ansQc);
+        AvgAnsByEthnicity.insert("canadian", ansCad);
+        AvgAnsByEthnicity.insert("american", ansAme);
+        AvgAnsByEthnicity.insert("european", ansEur);
+        AvgAnsByEthnicity.insert("native", ansNativ);
+        AvgAnsByEthnicity.insert("other", ansOth);
+    }
+
+    if(ansQc == -1){
+        AvgAnsByEthnicity.insert("quebecer", ansQc);
+        AvgAnsByEthnicity.insert("canadian", ansCad);
+        AvgAnsByEthnicity.insert("american", ansAme);
+        AvgAnsByEthnicity.insert("european", ansEur);
+        AvgAnsByEthnicity.insert("native", ansNativ);
+        AvgAnsByEthnicity.insert("other", ansOth);
     }
 
     return  AvgAnsByEthnicity;
@@ -899,6 +934,8 @@ QMap<QString,int> Facade::getAnswerByLanguage(const QString& questionId, int age
 
     qDebug() << "GetAnswerByLanguage";
     qDebug() << questionId;
+    int ansEn=-1;
+    int ansFr=-1;
     QMap<QString, int> ansByLang;
 
     QString sqlQuery="SELECT IFNULL(ROUND(AVG( CASE WHEN v.language='en' THEN a.answer_value ELSE -1 END ),2),'-1') as 'English',"
@@ -952,7 +989,6 @@ QMap<QString,int> Facade::getAnswerByLanguage(const QString& questionId, int age
     if(ethnicity!= "all") {
         query.addBindValue(QVariant(ethnicity));
     }
-
     if(ageTo != -1 and ageFrom != -1 ){
         query.addBindValue(QVariant(ageFrom));
         query.addBindValue(QVariant(ageTo));
@@ -994,8 +1030,15 @@ QMap<QString,int> Facade::getAnswerByLanguage(const QString& questionId, int age
 
     while (query.next()) {
         //providers Question Identifier's  avg answer_value by Language
-        ansByLang.insert("en", static_cast<int>(query.value(0).toDouble()));
-        ansByLang.insert("fr", static_cast<int>(query.value(1).toDouble()));
+        ansEn = static_cast<int>(query.value(0).toDouble());
+        ansFr = static_cast<int>(query.value(1).toDouble());
+        ansByLang.insert("en", ansEn);
+        ansByLang.insert("fr", ansFr);
+    }
+
+    if(ansEn==-1){
+        ansByLang.insert("en", ansEn);
+        ansByLang.insert("fr", ansFr);
     }
 
     return  ansByLang;
@@ -1005,7 +1048,6 @@ QMap<QString,int> Facade::getAnswerByLanguage(const QString& questionId, int age
 QMap<QString, int > Facade:: getAllAnswers(){
 
     QMap<QString,int> avgQueAns ;
-
     QString sqlQuery="select q.identifier as 'Question', IFNULL(avg(a.answer_value),-1) as 'Average' "
                      "from answer as a join question as q on a.question_id = q.id group by q.id";
 
@@ -1045,6 +1087,7 @@ QMap<QString, int> Facade:: getAnswers(const QList<QString>& questionIds, int ag
 
     for (auto iter = questionIds.begin(); iter != questionIds.end(); ++ iter) {
 
+        int answerValue = -1;
         //retrive each Question Id from the List to calculate the avg ans.
         auto questionId = (*iter);
 
@@ -1159,8 +1202,12 @@ QMap<QString, int> Facade:: getAnswers(const QList<QString>& questionIds, int ag
 
             //providers Question Identifier's  avg answer_value with optional filters.
             QString questionId = query.value(0).toString();
-            int answerValue = static_cast<int>(query.value(1).toDouble());
+            answerValue = static_cast<int>(query.value(1).toDouble());
             avgAnsQueList.insert(questionId, answerValue);
+        }
+
+        if(answerValue == -1){
+            avgAnsQueList.insert(questionId, -1);
         }
 
     }

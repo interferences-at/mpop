@@ -396,6 +396,7 @@ Column {
         // Index 2: multi-filter selection
         // filter rows are selectively hidden depending on first-axis selection
         ColumnLayout {
+            id: multiFilterSelection
             spacing: 0
             visible: datavizIndex === index_CHOOSE_MULTIPLE
 
@@ -493,7 +494,7 @@ Column {
                         } else {
                             // Retrieve my answer
                             var myAnswers = getQuestionsAnswers(questionIds);
-                            console.log("view_answers(" + myAnswers + "," + answers + "");
+                            console.log("view_answers(" + myAnswers + "," + JSON.stringify(answers)  + "");
                             // pack the title, my answers and their answers.
                             var answersTitles = makeMultipleQuestionTitle(myAnswers, answers)
                             window.datavizManager.view_answers(answersTitles);
@@ -674,7 +675,7 @@ Column {
                                         }
 
                                         subfilter.currentIndex = index; // Sets this button as highlighted.
-                                        sendDatavizViewBy();
+                                        multiFilterSelection.sendDatavizViewBy();
                                     }
                                 }
                             }

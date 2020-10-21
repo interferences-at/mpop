@@ -150,8 +150,6 @@ ApplicationWindow {
             userProfile.setRfidTag(lastRfidRead, function (err, result) {
                 if (err) {
                     console.log("Error calling setRfidTag: " + err.message);
-                } else {
-                    console.log("Success calling setRfidTag: " + result);
                 }
             });
         }
