@@ -5,9 +5,11 @@ TextObjectPainter::TextObjectPainter()
 {
     _linePen = QPen(Qt::white, 2); // Line style
 
-    // Add a custom font
-    int id = QFontDatabase::addApplicationFont(":/base-font");
-    QString fontFamily = QFontDatabase::applicationFontFamilies(id).at(0);
+    /* This font family needs to be install
+     * sh_install_trim_font_linux.sh for Linux
+     * ps_install_trim_font_windows.ps1 for Windows 10
+     */
+    QString fontFamily = "Trim SemiBold";
 
     _fpsTextFont = QFont(fontFamily, 12, QFont::DemiBold);
     _answersTitlesFont = QFont(fontFamily, 14, QFont::DemiBold);
