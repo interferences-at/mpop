@@ -70,11 +70,11 @@ CONFIG(release, debug|release): DEFINES += NDEBUG
 
 # copy static files to build folder
 
-copydata.commands = $(COPY_DIR) \"$$shell_path($$PWD/resources)\" \"$$shell_path($$OUT_PWD)/static\"
-first.depends = $(first) copydata
-export(first.depends)
-export(copydata.commands)
-QMAKE_EXTRA_TARGETS += first copydata
+#copydata.commands = $(COPY_DIR) \"$$shell_path($$PWD/resources)\" \"$$shell_path($$OUT_PWD)/static\"
+#first.depends = $(first) copydata
+#export(first.depends)
+#export(copydata.commands)
+#QMAKE_EXTRA_TARGETS += first copydata
 
 # # Add the qosc library:
 # win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../qosc/release/ -lqosc_release_binary

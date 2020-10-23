@@ -1048,6 +1048,8 @@ QMap<QString,int> Facade::getAnswerByLanguage(const QString& questionId, int age
 QMap<QString, int > Facade:: getAllAnswers(){
 
     QMap<QString,int> avgQueAns ;
+    int DEFAULT_VALUE = -1 ;
+    bool isResultRetrive = false;
     QString sqlQuery="select q.identifier as 'Question', IFNULL(avg(a.answer_value),-1) as 'Average' "
                      "from answer as a join question as q on a.question_id = q.id group by q.id";
 
@@ -1059,9 +1061,31 @@ QMap<QString, int > Facade:: getAllAnswers(){
         throw SQLError{query.lastError().text()};
     }
     while (query.next()) {
+        isResultRetrive = true ;
         QString questionId = query.value(0).toString();
         int answerValue = static_cast<int>(query.value(1).toDouble());
         avgQueAns.insert(questionId, answerValue);
+    }
+
+    // retrive question identifire and set default answer.
+    if(isResultRetrive == false) {
+
+        QString sqlQuery1="select identifier from question " ;
+
+
+        QSqlQuery query1;
+
+        bool ok = query1.exec(sqlQuery1);
+        if (! ok) {
+            qWarning() << "ERROR: " << query.lastError().text();
+            throw SQLError{query.lastError().text()};
+        }
+        while (query.next()) {
+            QString questionId = query.value(0).toString();
+            int answerValue = DEFAULT_VALUE; // assign default value.
+            avgQueAns.insert(questionId, answerValue);
+        }
+
     }
 
     return avgQueAns;
@@ -1119,12 +1143,6 @@ QMap<QString, int> Facade:: getAnswers(const QList<QString>& questionIds, int ag
         else if (ageFrom != DEFAULT_AGE){
 
             sqlQuery += " and v.age BETWEEN ? AND  100 ";
-        }
-
-
-        if(ethnicity != DEFAULT_FILTER) {
-
-            sqlQuery += " AND e.`identifier`= ?";
         }
 
         //filter by gender
