@@ -131,21 +131,29 @@ int main(int argc, char* argv[]) {
         int x = options.window_x;
         int y = options.window_y;
 
-        if (options.num_windows > 1) {
-            x = (i % 2) * options.window_width;
-            y = (i / 2) * options.window_height;
-        }
+//        if (options.num_windows > 1) {
+//            x = (i % 2) * options.window_width;
+//            y = (i / 2) * options.window_height;
+//        }
         QSharedPointer<DatavizWindow> window(new DatavizWindow());
         // Set the screen width from the main screen width
         int screenWidth = QApplication::primaryScreen()->geometry().width();
+        int screenHeight = QApplication::primaryScreen()->geometry().height();
         // If any case we have multiple screen with different width
         if (i < QApplication::screens().size()) {
             // We set different screen width from each screen
             screenWidth = QApplication::screens().at(i)->geometry().width();
+            screenHeight = QApplication::screens().at(i)->geometry().height();
+
+            if (i > 0) {
+                x += QApplication::screens().at(i - 1)->geometry().width();
+            }
         }
+
         // Create a window container to embed window into a QWidget
         QWidget *windowContainer = QWidget::createWindowContainer(window.data());
-        windowContainer->setFixedSize(options.window_width, options.window_height);
+        windowContainer->setFixedSize(qMin(options.window_width, screenWidth),
+                                      qMin(options.window_height, screenHeight));
         windowContainer->setFocusPolicy(Qt::StrongFocus);
         // Create a layout and set margin
         QHBoxLayout *windowLayout = new QHBoxLayout;
@@ -158,7 +166,6 @@ int main(int argc, char* argv[]) {
         // Create mainWindow and keep everything inside
         QWidget *mainWindow = new QWidget;
         mainWindow->setLayout(windowLayout);
-        mainWindow->setGeometry(x, y, screenWidth, options.window_height);
         // Set background color palette
         QPalette palette;
         palette.setColor(QPalette::Background, Qt::black);
@@ -182,6 +189,8 @@ int main(int argc, char* argv[]) {
             mainWindow->setWindowFlags(mainWindow->windowFlags() | Qt::Window);
         } else {
             mainWindow->setWindowFlags(mainWindow->windowFlags() | Qt::Window | Qt::FramelessWindowHint);
+            mainWindow->setFixedSize(screenWidth, screenHeight);
+            mainWindow->move(x, y);
         }
         QObject::connect(window.data(), &DatavizWindow::closed, mainWindow, &QWidget::close);
         // Show main window
