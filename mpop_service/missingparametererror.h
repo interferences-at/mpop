@@ -12,6 +12,8 @@ class MissingParameterError : public QException
 public:
     MissingParameterError(const QString& methodName) {
         this->methodName = methodName;
+        this->message = QString("A parameter is missing from request %1.");
+        message = message.arg(this->methodName);
     }
     void raise() const override {
         throw *this;
@@ -21,12 +23,11 @@ public:
     }
 
     virtual const char* what() const noexcept override {
-        QString message("A parameter is missing from request %1.");
-        message = message.arg(this->methodName);
-        return message.toStdString().c_str();
+        return qPrintable(message);
     }
 protected:
     QString methodName;
+    QString message;
 };
 
 /**
@@ -37,6 +38,8 @@ class MissingParamemeterByName : public MissingParameterError
 public:
     MissingParamemeterByName(const QString& methodName, const QString& parameterName) : MissingParameterError(methodName) {
         this->parameterName = parameterName;
+        this->message = QString("Parameter %1 is missing from request %2.");
+        message = message.arg(this->parameterName).arg(this->methodName);
     }
     void raise() const override {
         throw *this;
@@ -45,9 +48,7 @@ public:
         return new MissingParamemeterByName(*this);
     }
     virtual const char* what() const noexcept override {
-        QString message("Parameter %1 is missing from request %2.");
-        message = message.arg(this->parameterName).arg(this->methodName);
-        return message.toStdString().c_str();
+        return  qPrintable(message);
     }
 private:
     QString parameterName;
@@ -61,6 +62,8 @@ class MissingParamemeterByPosition : public MissingParameterError
 public:
     MissingParamemeterByPosition(const QString& methodName, int parameterPosition) : MissingParameterError(methodName) {
         this->parameterPosition = parameterPosition;
+        this->message = QString("Parameter %1 is missing from request %2.");
+        message =  message.arg(this->parameterPosition).arg(this->methodName);
     }
     void raise() const override {
         throw *this;
@@ -70,9 +73,7 @@ public:
     }
 
     virtual const char* what() const noexcept override {
-        QString message("Parameter %1 is missing from request %2.");
-        message = message.arg(this->parameterPosition).arg(this->methodName);
-        return message.toStdString().c_str();
+        return  qPrintable(message);
     }
 private:
     int parameterPosition;
