@@ -105,8 +105,14 @@ ColumnLayout {
         // On Qt 5.11:
         // first.onMoved: resetIdleTimer()
         // second.onMoved: resetIdleTimer()
-        first.onValueChanged: resetIdleTimer()
-        second.onValueChanged: resetIdleTimer()
+        first.onValueChanged: {
+            resetIdleTimer();
+            valueFrom = first.value;
+        }
+        second.onValueChanged: {
+            resetIdleTimer();
+            valueTo = second.value;
+        }
     }
 
     RowLayout {
