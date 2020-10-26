@@ -11,6 +11,8 @@ class SQLError : public QException
 public:
     SQLError(const QString& errorMsg) {
         this->errorMsg = errorMsg;
+        this->message = QString("Internal Server Error : %1.");
+        message = message.arg(this->errorMsg);
     }
     void raise() const override {
         throw *this;
@@ -20,11 +22,11 @@ public:
     }
 
     virtual const char* what() const noexcept override {
-        QString message("Internal Server Error : %1.");
-        message = message.arg(this->errorMsg);
-        return message.toStdString().c_str();
+
+        return qPrintable(message);
     }
 protected:
     QString errorMsg;
+    QString message;
 };
 
