@@ -444,7 +444,7 @@ Column {
                             // Retrieve my answer and my Ethnicity:
                             var myAnswer = window.userProfile.getMyAnswer(questionId);
                             var myEthnicity = window.userProfile.getMyEthnicity(answerByEthnicity);
-                            console.log("show_one_answer_by_ethnicity(" + myAnswer + ", " + myEthnicity + ", " + answerByEthnicity + ")");
+                            console.log("show_one_answer_by_ethnicity(" + myAnswer + ", " + myEthnicity + ", " +  JSON.stringify(answerByEthnicity)  + ")");
                             // pack the title and their answers.
                             var theirTitles= packAnswersTitle(answerByEthnicity);
                             window.datavizManager.show_one_answer_by_ethnicity(myEthnicity, myAnswer, theirTitles);
@@ -552,11 +552,11 @@ Column {
 
                         onValueFromChanged: {
                             currentFilterValueAgeFrom = valueFrom;
-                            sendDatavizViewBy();
+                            multiFilterSelection.sendDatavizViewBy();
                         }
                         onValueToChanged: {
                             currentFilterValueAgeTo = valueTo;
-                            sendDatavizViewBy();
+                            multiFilterSelection.sendDatavizViewBy();
                         }
                     }
                 }
