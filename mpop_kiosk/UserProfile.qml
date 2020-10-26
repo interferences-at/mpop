@@ -630,6 +630,15 @@ Item {
         return i;
     }
 
+    /**
+     * Calls when user is ideal and remove all callback ids.
+     *
+     */
+    function clearAllCallbackIds(){
+       websocket.clearAllCallback();
+
+    }
+
 
     /**
      * Makes the client periodically reconnect with the weboscket server, if necessary.

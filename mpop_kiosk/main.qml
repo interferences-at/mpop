@@ -80,9 +80,13 @@ ApplicationWindow {
         idleTimer.restart();
     }
 
+    /**
+     * Goto ScreenSaver when user is idea and clear all callback ids.
+     */
     function goToScreenSaver() {
         mainStackLayout.currentIndex = mainStackLayout.index_SCREENSAVER;
         userProfile.userId = -1;
+        window.userProfile.clearAllCallbackIds();
         datavizManager.goto_screensaver();
     }
 
