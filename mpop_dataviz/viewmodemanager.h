@@ -52,6 +52,8 @@ public:
     void setViewActiveMode(ViewMode mode);
     ViewMode getViewActiveMode() const { return _viewActiveMode; }
 
+    ScreensaverLayout *getScreensaver() { return &_screensaver; }
+
     void moveBarsToLayouts(ViewMode viewIndex);
 
     void setViewBarsQuantity(int number, ViewMode viewIndex);
@@ -77,13 +79,6 @@ public:
     qreal mapValue(qreal value, qreal istart, qreal istop, qreal ostart, qreal ostop) const;
 
     qint64 currentTime() { return _timer.elapsed(); }
-
-    // View mode manager singleton
-    static ViewModeManager *viewManager() {
-        if (viewModeManager == nullptr)
-            viewModeManager = new ViewModeManager;
-        return viewModeManager;
-    }
 
 private:
     ViewMode _viewActiveMode;

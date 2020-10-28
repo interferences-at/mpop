@@ -136,6 +136,10 @@ int main(int argc, char* argv[]) {
 //            y = (i / 2) * options.window_height;
 //        }
         QSharedPointer<DatavizWindow> window(new DatavizWindow());
+        QSurfaceFormat format;
+        format.setSamples(16);
+        window->setFormat(format);
+
         // Set the screen width from the main screen width
         int screenWidth = QApplication::primaryScreen()->geometry().width();
         int screenHeight = QApplication::primaryScreen()->geometry().height();
@@ -166,6 +170,8 @@ int main(int argc, char* argv[]) {
         // Create mainWindow and keep everything inside
         QWidget *mainWindow = new QWidget;
         mainWindow->setLayout(windowLayout);
+        mainWindow->setFixedSize(screenWidth, screenHeight);
+        mainWindow->move(x, y);
         // Set background color palette
         QPalette palette;
         palette.setColor(QPalette::Background, Qt::black);
@@ -176,9 +182,6 @@ int main(int argc, char* argv[]) {
         if (options.hide_cursor) {
             window->setCursor(Qt::BlankCursor);
         }
-        QSurfaceFormat format;
-        format.setSamples(16);
-        window->setFormat(format);
         window->setWindowId(i); // The index use to be the ID
         window->setOffsetId(options.window_offset_id); // Set window ID offset
         qDebug() << "Window" << i << "of size:" <<
@@ -189,8 +192,6 @@ int main(int argc, char* argv[]) {
             mainWindow->setWindowFlags(mainWindow->windowFlags() | Qt::Window);
         } else {
             mainWindow->setWindowFlags(mainWindow->windowFlags() | Qt::Window | Qt::FramelessWindowHint);
-            mainWindow->setFixedSize(screenWidth, screenHeight);
-            mainWindow->move(x, y);
         }
         QObject::connect(window.data(), &DatavizWindow::closed, mainWindow, &QWidget::close);
         // Show main window
