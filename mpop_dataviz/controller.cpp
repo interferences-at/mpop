@@ -289,8 +289,7 @@ void Controller::messageReceivedCb(const QString& oscAddress, const QVariantList
 void Controller::setScreenSaverParam(int windowIndex, const QString& paramName, float paramValue) {
     DatavizWindow::ptr window = getWindowById(windowIndex);
     if (window) {
-        auto screensaver = window->getScreensaver();
-        screensaver->setParam(paramName, paramValue);
+        window->viewManager()->getScreensaver()->setParam(paramName, paramValue);
     }
 }
 

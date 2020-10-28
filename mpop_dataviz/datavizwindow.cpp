@@ -12,7 +12,7 @@ DatavizWindow::DatavizWindow() {
     _elapsedTimer.start();
 
     // Allocate all the bars to screen saver
-    _viewModeManager = viewManager();
+    _viewModeManager = new ViewModeManager();
     _viewModeManager->setViewBarsQuantity(100, ViewModeManager::ScreenSaverMode);
 
     connect(&_updateIntervalTimer, SIGNAL(timeout()), this, SLOT(updateFramePerSecond()));
@@ -53,16 +53,6 @@ void DatavizWindow::updateFramePerSecond()
     // Reset frame counter
     _framesCount = 0;
 }
-
-
-void DatavizWindow::showBarChartBars(const QList<int>& bars) {
-    Q_UNUSED(bars);
-//    _barChartLayout.setBars(bars);
-//    _barChartLayout.moveObjectsToLayout(this->elapsed()); // Important: do it after you called setBars
-//    _screensaverLayout.setResponsesBars(bars);
-//    _screensaverLayout.moveObjectsToLayout(elapsed());
-}
-
 
 void DatavizWindow::initializeGL() {
     // setSwapInterval(1);
@@ -146,20 +136,3 @@ void DatavizWindow::paintGL() {
     this->update(); // ask for a new render next time the screen refreshes.
 }
 
-
-DatavizWindow::~DatavizWindow()
-{
-    qDebug() << "~DatavizWindow";
-    for (auto iter = _sceneObjects.begin(); iter != _sceneObjects.end(); ++ iter) {
-        iter->clear();
-    }
-}
-
-/*
-void DatavizWindow::setAnimating(bool animating) {
-    _is_animating = animating;
-    if (animating) {
-        // renderLater();
-    }
-}
-*/

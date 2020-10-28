@@ -21,15 +21,10 @@ class DatavizWindow : public QOpenGLWindow {
     Q_OBJECT
 public:
     DatavizWindow();
-    ~DatavizWindow() override;
+    ~DatavizWindow() override {};
     void initializeGL() override;
     void resizeGL(int w, int h) override;
     void paintGL() override;
-    /**
-     * @brief Shows a bar chart with the given values.
-     * @param bars List of number values for each column.
-     */
-    void showBarChartBars(const QList<int>& bars);
 
     qint64 elapsed() const;
     // Set Offset ID
@@ -37,12 +32,10 @@ public:
     void setWindowId(uint id) { windowId = id; }
     uint getWindowId() const { return windowId; }
 
-    ViewModeManager *viewManager() { return ViewModeManager::viewManager(); }
+    ViewModeManager *viewManager() { return _viewModeManager; }
 
     // Alias for shared pointer of this class
     typedef QSharedPointer<DatavizWindow> ptr;
-
-    ScreensaverLayout* getScreensaver() { return &(this->_screensaverLayout); }
 
 signals:
     bool closed();
@@ -56,8 +49,6 @@ private slots:
 private:
     QElapsedTimer _elapsedTimer;
     QVector<SceneObject::ptr> _sceneObjects;
-    BarChartLayout _barChartLayout;
-    ScreensaverLayout _screensaverLayout;
 
     ViewModeManager *_viewModeManager;
 

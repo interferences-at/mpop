@@ -1,7 +1,5 @@
 #include "viewmodemanager.h"
 
-ViewModeManager *ViewModeManager::viewModeManager = nullptr;
-
 ViewModeManager::ViewModeManager() :
     _viewActiveMode(ScreenSaverMode),
     _left(-1.0), _right(1.0),
@@ -96,7 +94,7 @@ void ViewModeManager::setViewActiveMode(ViewMode mode)
 }
 
 void ViewModeManager::moveBarsToLayouts(ViewMode viewIndex)
-{   
+{
     // Setup screensaver behavior
     setupScreensaverLayout(viewIndex);
 
@@ -338,7 +336,7 @@ void ViewModeManager::setupScreensaverLayout(ViewModeManager::ViewMode activeVie
 {
     // Add object
     _screensaver.addBarObjects(_viewBars[ScreenSaverMode]);
-    
+
     switch (activeView) {
     case ScreenSaverMode:
         _screensaver.setBarsSize(sizeFromPixel(3.5, 35));
@@ -353,7 +351,7 @@ void ViewModeManager::setupScreensaverLayout(ViewModeManager::ViewMode activeVie
         _screensaver.setBarsColor("#3D3D3D");
         break;
     }
-    
+
     _screensaver.moveObjectsToLayout(currentTime());
 }
 
