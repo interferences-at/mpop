@@ -30,3 +30,6 @@ lib*.prl
 lib*.a
 lib*.prl
 
+# FIXME: Why are these files created?
+\\
+*/target_wrapper.sh

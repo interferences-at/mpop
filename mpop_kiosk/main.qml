@@ -31,14 +31,6 @@ ApplicationWindow {
     property bool showCursor: true // Show cursor by default
 
     /**
-     * Handles the incoming OSC messages.
-     */
-    function handleMessageReceived(oscPath, oscArguments) {
-        console.log("(QML) Received OSC: " + oscPath + " " + oscArguments);
-        lastMessageReceived = oscPath + " " + oscArguments;
-    }
-
-    /**
      * Toggles the fullscreen state of the main window.
      */
     function toggleFullscreen() {
@@ -64,13 +56,6 @@ ApplicationWindow {
         } else {
             console.log("Got a successful response for setFakeRfidTag.");
         }
-    }
-
-    /**
-     * Shows or hides the debug view.
-     */
-    function toggleDebugView() {
-        mainStackLayout.currentIndex = mainStackLayout.index_OSC_DEBUG;;
     }
 
     /**
@@ -159,15 +144,6 @@ ApplicationWindow {
         }
     }
 
-    /**
-     * Handles the signals from the OSC receiver.
-     */
-    Connections {
-        target: oscReceiver
-        onMessageReceived: {
-            handleMessageReceived(oscAddress, message);
-        }
-    }
 
     Timer {
         id: idleTimer
@@ -278,7 +254,6 @@ ApplicationWindow {
     Shortcut {
         sequence: "Tab"
         onActivated: showCursor = !showCursor; // Toggle
-//        onActivated: toggleDebugView()
     }
 
     Shortcut {
@@ -373,7 +348,6 @@ ApplicationWindow {
         readonly property int index_DEMOGRAPHIC_QUESTIONS: 1
         readonly property int index_SURVEY_QUESTIONS: 2
         readonly property int index_EXIT_SECTION: 3
-        readonly property int index_OSC_DEBUG: 4
 
         property alias currentQuestion: questionsStackLayout.currentIndex
         property bool invertedTheme: currentIndex === index_SURVEY_QUESTIONS && questionsStackLayout.children[currentQuestion].datavizIndex < 1
@@ -1010,45 +984,6 @@ ApplicationWindow {
                         }
                         color: Palette.lightBlack
                     }
-                }
-            }
-        }
-
-        // OSC debug layout:
-        ColumnLayout {
-            RowLayout {
-                SpinBox {
-                    id: someInt
-                    value: 2
-                }
-
-                Slider {
-                    id: someDouble
-                    value: 3.14159
-                    from: 0.0
-                    to: 5.0
-                }
-
-                TextField {
-                    id: someText
-                    text: "hello"
-                }
-            }
-
-            Button {
-                text: "Send OSC"
-                onClicked: {
-                    oscSender.send("/hello", [someInt.value, someDouble.value, someText.text]);
-                }
-            }
-
-            RowLayout {
-                Label {
-                    text: "Received:"
-                }
-
-                Label {
-                    text: lastMessageReceived
                 }
             }
         }
