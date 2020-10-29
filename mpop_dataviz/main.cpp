@@ -70,7 +70,7 @@ int main(int argc, char* argv[]) {
     parser.addOption(yWindowPositionOption);
 
     const QCommandLineOption alignRightOption({"r", "align-right"}, "Align the contents of the window to the right"); // bool
-    parser.addOption(yWindowPositionOption);
+    parser.addOption(alignRightOption);
 
     // parser.process(app); // parse for --help and --version options.
     // Parse our custom options:
