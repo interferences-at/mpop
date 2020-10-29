@@ -56,6 +56,9 @@ int main(int argc, char* argv[]) {
     const QCommandLineOption widthOption({"w", "width"}, "Window width", "width", "1920");
     parser.addOption(widthOption);
 
+    const QCommandLineOption screenOption({"S", "screen"}, "Display index", "screen", "-1");
+    parser.addOption(screenOption);
+
     const QCommandLineOption heightOption({"H", "height"}, "Window height", "height", "1080");
     parser.addOption(heightOption);
 
@@ -99,6 +102,7 @@ int main(int argc, char* argv[]) {
     options.osc_receive_port = static_cast<quint16>(parser.value(oscReceivePortOption).toInt());
     options.window_x = parser.value(xWindowPositionOption).toInt();
     options.window_y = parser.value(yWindowPositionOption).toInt();
+    options.screen = parser.value(screenOption).toInt();
 
     if (options.verbose) {
         //        for (int i = 0; i < argc; ++ i) {
@@ -148,12 +152,25 @@ int main(int argc, char* argv[]) {
     mainWindow->setLayout(windowLayout);
     mainWindow->setFixedSize(options.window_width,
                              options.window_height);
-    mainWindow->move(x, y);
+
     // Set background color palette
     QPalette palette;
     palette.setColor(QPalette::Background, Qt::black);
     mainWindow->setAutoFillBackground(true);
     mainWindow->setPalette(palette);
+
+    if (options.screen != -1) {
+        auto screens = qApp->screens();
+        if (screens.size() >= options.screen) {
+            auto screen = qApp->screens()[options.screen];
+            mainWindow->windowHandle()->setScreen(screen);
+            mainWindow->showFullScreen();
+        } else {
+            qDebug() << "Invalid screen index!";
+        }
+    } else {
+        mainWindow->move(x, y);
+    }
 
     if (options.show_cursor == false) {
         window->setCursor(Qt::BlankCursor);
