@@ -1,0 +1,25 @@
+# Copy this file to ~/.ssh/config
+
+Host central-1
+    User odroid
+    HostName 192.200.200.66
+Host central-2
+    User odroid
+    HostName 192.200.200.65
+Host central-3
+    User odroid
+    HostName 192.200.200.61
+Host central-4
+    User odroid 192.200.200.1
+Host entrance
+    User odroid
+    HostName 192.200.200.68
+Host exit
+    User odroid
+    HostName 192.200.200.68
+Host dataviz-a
+    User utilisateur
+    HostName 192.168.0.245
+Host dataviz-b
+    User utilisateur
+    HostName 192.168.0.246
