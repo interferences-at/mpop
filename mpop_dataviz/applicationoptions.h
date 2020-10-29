@@ -9,14 +9,13 @@ struct ApplicationOptions {
 public: // public data members
     bool verbose = false;
     bool show_window_frame = false;
+    bool align_right = false;
     int window_width = 1920;
     int window_height = 1080;
     int window_x = 0;
     int window_y = 0;
-    int num_windows = 1;
-    uint window_offset_id = 0;
     quint16 osc_receive_port = 31337;
-    bool hide_cursor = false;
+    bool show_cursor = false;
 
 public: // methods
     void printAll() {
@@ -27,8 +26,7 @@ public: // methods
                     "window_width" << window_width <<
                     "window_x" << window_x <<
                     "window_y" << window_y <<
-                    "num_windows" << num_windows <<
                     "osc_receive_port" << osc_receive_port <<
-                    "hide_cursor" << hide_cursor;
+                    "show_cursor" << show_cursor;
     }
 };

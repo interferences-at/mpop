@@ -47,8 +47,8 @@ int main(int argc, char* argv[]) {
     const QCommandLineOption verboseOption({"V", "verbose"}, "Enable a verbose output."); // bool
     parser.addOption(verboseOption);
 
-    const QCommandLineOption hideCursorOption({"c", "hide-cursor"}, "Hide the mouse cursor."); // bool
-    parser.addOption(hideCursorOption);
+    const QCommandLineOption showCursorOption({"s", "show-cursor"}, "Show the mouse cursor."); // bool
+    parser.addOption(showCursorOption);
 
     const QCommandLineOption showWindowFrameOption({"F", "show-window-frame"}, "Show the window frame."); // bool
     parser.addOption(showWindowFrameOption);
@@ -60,9 +60,6 @@ int main(int argc, char* argv[]) {
     const QCommandLineOption heightOption({"H", "height"}, "Window height", "height", "1080");
     parser.addOption(heightOption);
 
-    const QCommandLineOption numWindowsOption({"n", "windows"}, "Number of windows", "windows", "1");
-    parser.addOption(numWindowsOption);
-
     const QCommandLineOption oscReceivePortOption({"p", "port"}, "OSC receive port number", "port", "31337");
     parser.addOption(oscReceivePortOption);
 
@@ -72,10 +69,8 @@ int main(int argc, char* argv[]) {
     const QCommandLineOption yWindowPositionOption({"y", "y-position"}, "Window Y position", "y-position", "0");
     parser.addOption(yWindowPositionOption);
 
-    const QCommandLineOption windowIdOffsetOption({"i", "window-id-offset"}, "Window ID offset", "windowIdOffsetOption","0");
-    parser.addOption(windowIdOffsetOption);
-
-    parser.addOption({"align-right", "Align Dataviz (inner widget) to right"});
+    const QCommandLineOption alignRightOption({"r", "align-right"}, "Align the contents of the window to the right"); // bool
+    parser.addOption(yWindowPositionOption);
 
     // parser.process(app); // parse for --help and --version options.
     // Parse our custom options:
@@ -94,132 +89,108 @@ int main(int argc, char* argv[]) {
 
     // bool options:
     options.verbose = parser.isSet(verboseOption);
-    options.hide_cursor = parser.isSet(hideCursorOption);
+    options.show_cursor = parser.isSet(showCursorOption);
     options.show_window_frame = parser.isSet(showWindowFrameOption);
-
+    options.align_right = parser.isSet(alignRightOption);
 
     // int options:
     // FIXME: check the parsing of int command-line options.
-    options.num_windows = parser.value(numWindowsOption).toInt();
     options.window_width = parser.value(widthOption).toInt();
     options.window_height = parser.value(heightOption).toInt();
     options.osc_receive_port = static_cast<quint16>(parser.value(oscReceivePortOption).toInt());
-    options.window_offset_id = parser.value(windowIdOffsetOption).toUInt();
     options.window_x = parser.value(xWindowPositionOption).toInt();
     options.window_y = parser.value(yWindowPositionOption).toInt();
-    bool alignRight = parser.isSet("align-right");
 
     if (options.verbose) {
-//        for (int i = 0; i < argc; ++ i) {
-//            qDebug() << argv[i];
-//        }
+        //        for (int i = 0; i < argc; ++ i) {
+        //            qDebug() << argv[i];
+        //        }
         options.printAll();
     }
 
+    // Create window
+    // We use one (1) instance of mpop_dataviz for each window.
+    // Make sure to use a different OSC port for each.
 
-    // Create window(s)
-    // Note: it's possible to either show a single window (and be able to specify its (x,y) position)
-    // or to show more than one window.
-    // If you show more than one window, their position will be computed below.
-    // Note that all the windows currently are running in the same thread, so it sounds like a better
-    // idea to launch four instance of this application, rather than one instance with four windows.
-    // Simply use a different OSC receive port for each of them.
+    int x = options.window_x;
+    int y = options.window_y;
 
-    QVector<QSharedPointer<DatavizWindow>> windows;
+    QSharedPointer<DatavizWindow> window(new DatavizWindow());
+    QSurfaceFormat format;
+    format.setSamples(16);
+    window->setFormat(format);
 
-    for (int i = 0; i < options.num_windows; i ++) {
-        int x = options.window_x;
-        int y = options.window_y;
+    // Create a window container to embed window into a QWidget
+    QWidget *windowContainer = QWidget::createWindowContainer(window.data());
+    windowContainer->setFixedSize(options.window_width,
+                                  options.window_height);
+    windowContainer->setFocusPolicy(Qt::StrongFocus);
+    // Create a layout and set margin
+    QHBoxLayout *windowLayout = new QHBoxLayout;
+    // Important! remove all the content margins
+    windowLayout->setContentsMargins(0, 0, 0, 0);
+    // Align inner wiindow to the left side
+    windowLayout->setAlignment(options.align_right ? Qt::AlignRight : Qt::AlignLeft);
+    // Add dataviz widget to layout
+    windowLayout->addWidget(windowContainer);
+    // Create mainWindow and keep everything inside
+    QWidget *mainWindow = new QWidget;
+    mainWindow->setLayout(windowLayout);
+    mainWindow->setFixedSize(options.window_width,
+                             options.window_height);
+    mainWindow->move(x, y);
+    // Set background color palette
+    QPalette palette;
+    palette.setColor(QPalette::Background, Qt::black);
+    mainWindow->setAutoFillBackground(true);
+    mainWindow->setPalette(palette);
 
-//        if (options.num_windows > 1) {
-//            x = (i % 2) * options.window_width;
-//            y = (i / 2) * options.window_height;
-//        }
-        QSharedPointer<DatavizWindow> window(new DatavizWindow());
-        QSurfaceFormat format;
-        format.setSamples(16);
-        window->setFormat(format);
+    if (options.show_cursor == false) {
+        window->setCursor(Qt::BlankCursor);
+    }
+    static const int WINDOW_ID = 0;
+    window->setWindowId(WINDOW_ID); // Deprecated
+    window->setOffsetId(WINDOW_ID); // Set window ID offset
+    qDebug() << "Window" << WINDOW_ID << "of size:" <<
+                options.window_width << "x" << options.window_height <<
+                "at position" << x << "," << y;
+    qDebug() << "Window ID: " << window->getWindowId();
+    if (options.show_window_frame) {
+        mainWindow->setWindowFlags(mainWindow->windowFlags() | Qt::Window);
+    } else {
+        mainWindow->setWindowFlags(mainWindow->windowFlags() | Qt::Window | Qt::FramelessWindowHint);
+    }
+    QObject::connect(window.data(), &DatavizWindow::closed, mainWindow, &QWidget::close);
+    // Show main window
+    mainWindow->show();
+    // Take a little time to check port availability
+    QUdpSocket *socket = new QUdpSocket(window.data());
+    if (!socket->bind(options.osc_receive_port)) {
+        qDebug() << "The OSC port" << options.osc_receive_port << "is already in use!";
+        qDebug() << "Please make sure no other instance is running";
 
-        // Set the screen width from the main screen width
-        int screenWidth = QApplication::primaryScreen()->geometry().width();
-        int screenHeight = QApplication::primaryScreen()->geometry().height();
-        // If any case we have multiple screen with different width
-        if (i < QApplication::screens().size()) {
-            // We set different screen width from each screen
-            screenWidth = QApplication::screens().at(i)->geometry().width();
-            screenHeight = QApplication::screens().at(i)->geometry().height();
+        QMessageBox::critical(mainWindow, QObject::tr("OSC Server Error"),
+                              QObject::tr("The OSC port %1 is already in use!\n"
+                                          "Please make sure no other instance is running").arg(options.osc_receive_port),
+                              QMessageBox::Close);
 
-            if (i > 0) {
-                x += QApplication::screens().at(i - 1)->geometry().width();
-            }
-        }
-
-        // Create a window container to embed window into a QWidget
-        QWidget *windowContainer = QWidget::createWindowContainer(window.data());
-        windowContainer->setFixedSize(qMin(options.window_width, screenWidth),
-                                      qMin(options.window_height, screenHeight));
-        windowContainer->setFocusPolicy(Qt::StrongFocus);
-        // Create a layout and set margin
-        QHBoxLayout *windowLayout = new QHBoxLayout;
-        // Important! remove all the content margins
-        windowLayout->setContentsMargins(0, 0, 0, 0);
-        // Align inner wiindow to the left side
-        windowLayout->setAlignment(alignRight ? Qt::AlignRight : Qt::AlignLeft);
-        // Add dataviz widget to layout
-        windowLayout->addWidget(windowContainer);
-        // Create mainWindow and keep everything inside
-        QWidget *mainWindow = new QWidget;
-        mainWindow->setLayout(windowLayout);
-        mainWindow->setFixedSize(screenWidth, screenHeight);
-        mainWindow->move(x, y);
-        // Set background color palette
-        QPalette palette;
-        palette.setColor(QPalette::Background, Qt::black);
-        mainWindow->setAutoFillBackground(true);
-        mainWindow->setPalette(palette);
-
-        windows.append(window);
-        if (options.hide_cursor) {
-            window->setCursor(Qt::BlankCursor);
-        }
-        window->setWindowId(i); // The index use to be the ID
-        window->setOffsetId(options.window_offset_id); // Set window ID offset
-        qDebug() << "Window" << i << "of size:" <<
-            options.window_width << "x" << options.window_height <<
-            "at position" << x << "," << y;
-        qDebug() << "Window ID: " << window->getWindowId();
-        if (options.show_window_frame) {
-            mainWindow->setWindowFlags(mainWindow->windowFlags() | Qt::Window);
-        } else {
-            mainWindow->setWindowFlags(mainWindow->windowFlags() | Qt::Window | Qt::FramelessWindowHint);
-        }
-        QObject::connect(window.data(), &DatavizWindow::closed, mainWindow, &QWidget::close);
-        // Show main window
-        mainWindow->show();
-        // Take a little time to check port availability
-        QUdpSocket *socket = new QUdpSocket(window.data());
-        if (!socket->bind(options.osc_receive_port)) {
-            qDebug() << "The OSC port" << options.osc_receive_port << "is already in use!";
-            qDebug() << "Please make sure no other instance is running";
-
-            QMessageBox::critical(mainWindow, QObject::tr("OSC Server Error"),
-                        QObject::tr("The OSC port %1 is already in use!\n"
-                                    "Please make sure no other instance is running").arg(options.osc_receive_port),
-                        QMessageBox::Close);
-
-            // Brutal way of leave program
-            // Maybe mainWindow.close()
-            return 1;
-        } else {
-            // Get out
-            socket->disconnectFromHost();
-            delete socket;
-        }
+        // Brutal way of leave program
+        // Maybe mainWindow.close()
+        return 1;
+    } else {
+        // Get out
+        socket->disconnectFromHost();
+        delete socket;
     }
 
     // Connect the window(s) to the OSC receiver, via a controller
     // that takes care of the logic of the application.
     OscReceiver oscReceiver(options.osc_receive_port);
+
+    // XXX Deprecated: we used to have a vector of windows.
+    // We still use it here.
+    QVector<QSharedPointer<DatavizWindow>> windows;
+    windows.append(window);
     Controller controller(&oscReceiver, windows);
 
     // Run the application.
