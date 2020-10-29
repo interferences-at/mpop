@@ -11,7 +11,6 @@
 #include <QMessageBox>
 #include <QScreen>
 
-
 // Constants:
 static const QString APPLICATION_VERSION = "0.1.0-SNAPSHOT";
 static const QString APPLICATION_NAME = "mpop_dataviz";
@@ -54,7 +53,7 @@ int main(int argc, char* argv[]) {
     parser.addOption(showWindowFrameOption);
 
     // int options:
-    const QCommandLineOption widthOption({"w", "width"}, "Window width", "width", "1260");
+    const QCommandLineOption widthOption({"w", "width"}, "Window width", "width", "1920");
     parser.addOption(widthOption);
 
     const QCommandLineOption heightOption({"H", "height"}, "Window height", "height", "1080");
@@ -120,19 +119,30 @@ int main(int argc, char* argv[]) {
     format.setSamples(16);
     window->setFormat(format);
 
-    // Create a window container to embed window into a QWidget
+    static const int SPACING_WIDTH = 660;
+    // The window container allows to embed our Qt OpenGL window into a QWidget.
+    // Then, we put that in our windowLayout
+    // and we put that windowLayout into the mainWindow - which is the actual window.
     QWidget *windowContainer = QWidget::createWindowContainer(window.data());
-    windowContainer->setFixedSize(options.window_width,
+    windowContainer->setFixedSize(options.contents_width,
                                   options.window_height);
     windowContainer->setFocusPolicy(Qt::StrongFocus);
     // Create a layout and set margin
     QHBoxLayout *windowLayout = new QHBoxLayout;
     // Important! remove all the content margins
     windowLayout->setContentsMargins(0, 0, 0, 0);
-    // Align inner wiindow to the left side
-    windowLayout->setAlignment(options.align_right ? Qt::AlignRight : Qt::AlignLeft);
+    // Align inner window to the left side
+    // windowLayout->setAlignment(options.align_right ? Qt::AlignRight : Qt::AlignLeft);
     // Add dataviz widget to layout
+    if (options.align_right) {
+        windowLayout->addSpacing(SPACING_WIDTH);
+    }
     windowLayout->addWidget(windowContainer);
+
+    if (! options.align_right) {
+        windowLayout->addSpacing(SPACING_WIDTH);
+    }
+
     // Create mainWindow and keep everything inside
     QWidget *mainWindow = new QWidget;
     mainWindow->setLayout(windowLayout);
@@ -196,7 +206,6 @@ int main(int argc, char* argv[]) {
     // Run the application.
     int ret = app.exec();
 
-    // Once done, clear the memory and exit.
     windows.clear();
     qDebug() << "Exitting.";
     return ret;

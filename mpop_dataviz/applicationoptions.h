@@ -12,6 +12,7 @@ public: // public data members
     bool align_right = false;
     int window_width = 1920;
     int window_height = 1080;
+    int contents_width = 1260;
     int window_x = 0;
     int window_y = 0;
     quint16 osc_receive_port = 31337;
