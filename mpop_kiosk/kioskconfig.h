@@ -17,6 +17,7 @@ class KioskConfig : public QObject
     Q_PROPERTY(bool is_verbose READ get_is_verbose CONSTANT)
     Q_PROPERTY(QString kiosk_mode READ get_kiosk_mode CONSTANT)
     Q_PROPERTY(bool is_fullscreen READ get_is_fullscreen CONSTANT)
+    Q_PROPERTY(bool show_cursor READ get_show_cursor CONSTANT)
 public:
     KioskConfig();
 
@@ -29,6 +30,7 @@ public: // attributes
     QString kiosk_mode; // either "entrance", "central" or "exit"
     bool is_fullscreen;
     bool is_verbose; // if true, print a lot of info
+    bool show_cursor = false;
 
 public: // static methods:
     static bool toBoolean(const QString& value) {
@@ -60,6 +62,10 @@ public: // methods
 
     bool get_is_fullscreen() const {
         return this->is_fullscreen;
+    }
+
+    bool get_show_cursor() const {
+        return this->show_cursor;
     }
 };
 
