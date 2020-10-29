@@ -56,8 +56,8 @@ void load_kiosk_config_from_command_line(KioskConfig& config) {
     const QCommandLineOption verboseOption({"V", "verbose"}, "Enable a verbose output."); // bool
     parser.addOption(verboseOption);
 
-    // const QCommandLineOption hideCursorOption({"c", "hide-cursor"}, "Hide the mouse cursor."); // bool
-    // parser.addOption(hideCursorOption);
+    const QCommandLineOption showCursorOption({"c", "show-cursor"}, "Show the mouse cursor."); // bool
+    parser.addOption(showCursorOption);
 
     const QCommandLineOption fullscreenOption({"f", "fullscreen"}, "Fullscreen window"); // bool
     parser.addOption(fullscreenOption);
@@ -95,6 +95,9 @@ void load_kiosk_config_from_command_line(KioskConfig& config) {
     }
     if (parser.isSet(verboseOption)) {
         config.is_verbose = true;
+    }
+    if (parser.isSet(showCursorOption)) {
+        config.show_cursor = true;
     }
     if (parser.isSet(sendOscDatavizPort)) {
         config.send_osc_dataviz_port = parser.value(sendOscDatavizPort).toInt();;

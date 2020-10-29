@@ -28,7 +28,7 @@ ApplicationWindow {
     readonly property string const_KIOSK_MODE_CENTRAL: "central"
     readonly property string const_KIOSK_MODE_EXIT: "exit"
 
-    property bool showCursor: true // Show cursor by default
+    property bool showCursor: false
 
     /**
      * Toggles the fullscreen state of the main window.
@@ -116,6 +116,10 @@ ApplicationWindow {
         if (kioskConfig.is_fullscreen) {
             console.log("Turning on fullscreen mode");
             visibility = Window.FullScreen;
+        }
+
+        if (kioskConfig.show_cursor) {
+            showCursor = true;
         }
 
         // TODO: Show/hide sections according the kiosk_mode we are in.
