@@ -25,8 +25,8 @@ sudo apt-get install -y libqt5sql5-mysql qt5-default libqt5opengl5-dev libqt5ser
 
 ### Download VirtualBox and Xubuntu 
 - https://download.virtualbox.org/virtualbox/6.1.12/VirtualBox-6.1.12-139181-Win.exe - http://mirror.csclub.uwaterloo.ca/xubuntu-releases/20.04/release/xubuntu-20.04.1-desktop-amd64.iso 
-## Install Ubuntu (or Xubuntu) on VirtualBox machine
 
+## Install Ubuntu (or Xubuntu) on VirtualBox machine
 
 - 4 Gb of RAM
 - Extensible hard drive (20 Gb)
@@ -89,7 +89,7 @@ mpop\_dataviz/mpop\_dataviz - that is the executable for the kiosk. `cd` into th
 
 ## Deployment on Windows
 
-To use the mpop_dataviz program in production on Windows, you should run the 
+To use the mpop\_dataviz program in production on Windows, you should run the 
 window-deploy-qt-app.ps1 script. It copies the required DLL files in the current directory.
 
 Right-click on the scripts/window-deploy-qt-app.ps1 Powershell script and choose to run it with Powershell.
@@ -150,7 +150,7 @@ The layout of the kiosk - in QML - looks like something like this:
 
 ## System tests
 
-In test_mpop_kiosk, we check that some JSON-RPC methods return the
+In `test_mpop_kiosk`, we check that some JSON-RPC methods return the
 expected results.
 
 It requires the Docker Compose services to be running, so that you

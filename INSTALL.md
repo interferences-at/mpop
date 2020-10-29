@@ -43,19 +43,7 @@ There are three (3) flavours of MPOP kiosk:
 - central: Asks demographic questions, if not answered, and then allows visitors to answer all question and control the dataviz.
 - exit: Frees the RFID tag, so that other users can use it. (they also all expire at midnight)
 
-The mpop\_kiosk is configured mainly via environment variables. Here is the list of variables with their default value:
-(see in KioskConfig.h and main.cpp for the most up-to-date list)
-
-```
-SEND_OSC_DATAVIZ_PORT=14444
-SEND_OSC_DATAVIZ_HOST=127.0.0.1
-MPOP_SERVICE_HOST=0.0.0.0
-MPOP_SERVICE_PORT_NUMBER=3333
-RECEIVE_OSC_PORT=15555
-CONFIG_IS_VERBOSE=true
-CONFIG_IS_FULLSCREEN=false
-MPOP_KIOSK_MODE=central
-```
+The mpop\_kiosk is configured mainly via command-line options. Run it with the --help option to view the command-line arguments you can provide it.
 
 The MPOP Kiosk should know on which host to find the MPOP Service and the MPOP Dataviz.
 The devops engineer who deploys it must make sure that its configuration options are set properly.

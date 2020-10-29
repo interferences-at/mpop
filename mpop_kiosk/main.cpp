@@ -4,7 +4,6 @@
 #include <QFontDatabase>
 #include <QApplication>
 #include "rfidreader.h"
-#include "oscreceiver.h"
 #include "oscsender.h"
 #include "screensaver.h"
 #include "kioskconfig.h"
@@ -67,10 +66,10 @@ void load_kiosk_config_from_command_line(KioskConfig& config) {
     // parser.addOption(showWindowFrameOption);
 
     // int options:
-    const QCommandLineOption sendOscDatavizPort({"d", "send-osc-dataviz-port"}, "Send OSC Dataviz port number", "send-osc-dataviz-port");
+    const QCommandLineOption sendOscDatavizPort({"d", "dataviz-port"}, "Send OSC Dataviz port number", "send-osc-dataviz-port");
     parser.addOption(sendOscDatavizPort);
 
-    const QCommandLineOption sendOscDatavizHost({"D", "send-osc-dataviz-host"}, "Send OSC Dataviz host", "send-osc-dataviz-host");
+    const QCommandLineOption sendOscDatavizHost({"D", "dataviz-host"}, "Send OSC Dataviz host", "send-osc-dataviz-host");
     parser.addOption(sendOscDatavizHost);
 
     const QCommandLineOption serviceHostOption({"S", "service-host"}, "Service host", "service-host");
@@ -78,9 +77,6 @@ void load_kiosk_config_from_command_line(KioskConfig& config) {
 
     const QCommandLineOption servicePortOption({"s", "service-port"}, "Service port", "service-port");
     parser.addOption(servicePortOption);
-
-    const QCommandLineOption receiveOscPortOptions({"p", "receive-osc-port"}, "Receive OSC port", "receive-osc-port");
-    parser.addOption(receiveOscPortOptions);
 
     // String options:
     const QCommandLineOption kioskModeOption({"m", "kiosk-mode"}, "Kiosk mode (entry,central,exit)", "kiosk-mode");
@@ -112,9 +108,6 @@ void load_kiosk_config_from_command_line(KioskConfig& config) {
     if (parser.isSet(servicePortOption)) {
         config.service_port_number = parser.value(servicePortOption).toInt();
     }
-    if (parser.isSet(receiveOscPortOptions)) {
-        config.receive_osc_port = parser.value(receiveOscPortOptions).toInt();
-    }
     if (parser.isSet(fullscreenOption)) {
         config.is_fullscreen = true;
     }
@@ -129,8 +122,8 @@ void load_kiosk_config_from_command_line(KioskConfig& config) {
  */
 void print_kiosk_options_if_verbose(const KioskConfig& config) {
     if (config.is_verbose) {
-        qDebug() << "send_osc_dataviz_port:" << config.send_osc_dataviz_port;
-        qDebug() << "send_osc_dataviz_host:" << config.send_osc_dataviz_host;
+        qDebug() << "dataviz_port:" << config.send_osc_dataviz_port;
+        qDebug() << "dataviz_host:" << config.send_osc_dataviz_host;
         qDebug() << "service_host:" << config.service_host;
         qDebug() << "service_port_number:" << config.service_port_number;
         qDebug() << "receive_osc_port:" << config.receive_osc_port;
@@ -190,13 +183,11 @@ int main(int argc, char *argv[])
 
     // Instanciate important business logic elements:
     RFIDReader rfidReader;
-    OscReceiver oscReceiver(kioskConfig.receive_osc_port);
     OscSender oscSender(kioskConfig.send_osc_dataviz_host, kioskConfig.send_osc_dataviz_port);
 
     // Pass C++ objects to QML.
     engine.rootContext()->setContextProperty("rfidReader", &rfidReader);
     engine.rootContext()->setContextProperty("oscSender", &oscSender);
-    engine.rootContext()->setContextProperty("oscReceiver", &oscReceiver);
     engine.rootContext()->setContextProperty("kioskConfig", &kioskConfig);
 
     // Load main QML file
