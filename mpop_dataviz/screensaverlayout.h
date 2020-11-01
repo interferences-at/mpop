@@ -25,5 +25,7 @@ private:
     std::uniform_real_distribution<qreal> randomFrequency, randomRatioRotation;
 
     QSharedPointer<GroupTweenAnimator> _groupTweenAnimator;
+
+    qreal _speedRatio = 1;
 };
 
