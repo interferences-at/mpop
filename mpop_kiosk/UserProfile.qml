@@ -272,6 +272,21 @@ Item {
     }
 
     /**
+     * Call getRandomValue method
+     */
+    function getRandomValues(callback) {
+        console.log("Calling getRandomValue()");
+        websocket.callRemoteMethod("getRandomValue", [], function(error, randomValues) {
+            if (error) {
+                console.log("Error calling getRandomValue()");
+                callback(error);
+            } else {
+                callback(null, randomValues);
+            }
+        });
+    }
+
+    /**
      * Sets the RFID tag.
      * Reads the info from the service, if any.
      * Populate the info here.

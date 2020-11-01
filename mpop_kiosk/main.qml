@@ -481,6 +481,30 @@ ApplicationWindow {
                                 // The userProfile.language property should be updated.
                             }
                         });
+
+                        userProfile.getRandomValues(function(error, randomValues) {
+                            if (error) {
+                                console.log(error);
+                            } else {
+                                const map = function(value, i1, i2, o1, o2) { return o1 + (o2 - o1) * ((value - i1) / (i2 - i1)) };
+
+                                var lastHourAnswers = randomValues.num_answer_last_hour;
+                                var averageAnswers = randomValues.overall_average_answer;
+                                var totalAnswers = randomValues.total_num_answers;
+                                var totalVisitors = randomValues.total_num_visitors;
+                                var dailyVisitors = randomValues.visitors_today;
+
+                                var speedRatio = map(Math.max(lastHourAnswers, averageAnswers), Math.min(lastHourAnswers, averageAnswers), totalAnswers, 1, 2);
+
+                                if (Number.isNaN(speedRatio)) {
+                                    speedRatio = 1;
+                                }
+
+                                window.datavizManager.screensaver_set_param("speed", speedRatio);
+                            }
+                        });
+
+
                     }
                 }
 

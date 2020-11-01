@@ -48,8 +48,8 @@ void ScreensaverLayout::updateBarsPosition(qint64 currentTime)
         qreal centerX = randomX(generator);
         qreal centerY = randomY(generator);
         qreal radius = randomRadius(generator);
-        qreal frequency = randomFrequency(generator);
-        qreal ratioRotation = randomRatioRotation(generator);
+        qreal frequency = randomFrequency(generator) * _speedRatio;
+        qreal ratioRotation = randomRatioRotation(generator) * _speedRatio;
 
         qreal timeNow = currentTime / 1000.0;
 
@@ -94,7 +94,7 @@ QSharedPointer<QVector<PrisonerLine::ptr> > ScreensaverLayout::getClosestBars(co
 }
 
 void ScreensaverLayout::setParam(const QString& paramName, float value) {
-    qDebug() << "TODO: implement setParam" << paramName << value;
+    if (paramName == "speed") { _speedRatio = value; }
 }
 
 ScreensaverLayout::~ScreensaverLayout()
