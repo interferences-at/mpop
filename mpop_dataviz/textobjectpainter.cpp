@@ -14,6 +14,22 @@ TextObjectPainter::TextObjectPainter()
     _fpsTextFont = QFont(fontFamily, 12, QFont::DemiBold);
     _answersTitlesFont = QFont(fontFamily, 14, QFont::DemiBold);
     _smallFont = QFont(fontFamily, 11, QFont::DemiBold);
+
+    // Moyenne text
+    _texts["average"].insert("en", "AVERAGE");
+    _texts["average"].insert("fr", "MOYENNES");
+    // Ma reponse text
+    _texts["my_answer"].insert("en", "MY ANSWER");
+    _texts["my_answer"].insert("fr", "MA RÉPONSE");
+    // Pas du tout text
+    _texts["not_at_all"].insert("en", "Not at all");
+    _texts["not_at_all"].insert("fr", "Pas du tout");
+    // Moyenne text
+    _texts["absolutely"].insert("en", "Absolutely");
+    _texts["absolutely"].insert("fr", "Tout à fait");
+    // Age text
+    _texts["age"].insert("en", "Age");
+    _texts["age"].insert("fr", "Âge");
 }
 
 TextObjectPainter::~TextObjectPainter()
@@ -85,13 +101,13 @@ void TextObjectPainter::drawTopRightInfos()
     _painter.setPen(QPen(Qt::white, 3.5));
     _painter.drawLine(barStick.x() + barStick.width() / 2, barStick.y(),
                       barStick.x() + barStick.width() / 2, barStick.y() + 35);
-    _painter.drawText(textRect, Qt::AlignCenter | Qt::AlignBottom, "MOYENNES");
+    _painter.drawText(textRect, Qt::AlignCenter | Qt::AlignBottom, _texts["average"][_lang]);
 
     _painter.translate(0, 95);
     _painter.setPen(QPen(QColor("#80E2A7"), 3.5));
     _painter.drawLine(barStick.x() + barStick.width() / 2, barStick.y(),
                       barStick.x() + barStick.width() / 2, barStick.y() + 35);
-    _painter.drawText(textRect, Qt::AlignCenter | Qt::AlignBottom, "MA RÉPONSE");
+    _painter.drawText(textRect, Qt::AlignCenter | Qt::AlignBottom, _texts["my_answer"][_lang]);
     _painter.restore();
 }
 
@@ -119,8 +135,8 @@ void TextObjectPainter::drawViewElements(ViewModeManager::ViewMode view, const Q
     auto drawRangeBottomText = [&]() {
         _painter.setFont(_smallFont);
         qreal bottomTitlePosY = _height - fitToScreenHeight(hLineMrgBottom - 32);
-        _painter.drawText(97, bottomTitlePosY, QString("Pas du tout").toUpper());
-        _painter.drawText(_width - (hLineMrgRight + 75), bottomTitlePosY, QString("Tout à fait").toUpper());
+        _painter.drawText(97, bottomTitlePosY, _texts["not_at_all"][_lang].toUpper());
+        _painter.drawText(_width - (hLineMrgRight + 75), bottomTitlePosY, _texts["absolutely"][_lang].toUpper());
     };
 
     auto drawResponseBottomText = [&]() {
@@ -150,7 +166,7 @@ void TextObjectPainter::drawViewElements(ViewModeManager::ViewMode view, const Q
     {
         QRect ageTextRect(0, 0, Y_AXIS_WIDTH, Y_LINE_TOP_MARGIN);
         _painter.setFont(_smallFont);
-        _painter.drawText(ageTextRect, Qt::AlignTop | Qt::AlignCenter, "Âge");
+        _painter.drawText(ageTextRect, Qt::AlignTop | Qt::AlignCenter, _texts["age"][_lang]);
         drawVerticalNumbers();
         drawHorizontalNumbers();
         drawResponseBottomText();
