@@ -32,6 +32,8 @@ public:
     void setWindowId(uint id) { windowId = id; }
     uint getWindowId() const { return windowId; }
 
+    void setTextPainterLanguage(const QString &lang) { _painter->setTextLanguage(lang); }
+
     ViewModeManager *viewManager() { return _viewModeManager; }
 
     // Alias for shared pointer of this class

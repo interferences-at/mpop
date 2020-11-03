@@ -192,6 +192,14 @@ Item {
         oscMessageSender.send(_makePath("all_results"), values);
     }
 
+    /**
+     * Set Davaviz language
+     * @param language identifier
+     */
+    function set_dataviz_language(lang) {
+        oscMessageSender.send(_makePath("language"), [lang]);
+    }
+
 
     /**
      * Prepares a OSC path.

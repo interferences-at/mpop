@@ -481,6 +481,8 @@ ApplicationWindow {
                                 // The userProfile.language property should be updated.
                             }
                         });
+                        // Set also the dataviz language
+                        window.datavizManager.set_dataviz_language(model.get(index).language_identifier);
 
                         userProfile.getRandomValues(function(error, randomValues) {
                             if (error) {
