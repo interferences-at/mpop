@@ -26,6 +26,11 @@ public:
     void showSingleAnswer(int windowIndex, int myRow, int myAnswer, const QList<ViewModeManager::TitleAndValuePtr>& titlesAndValues);
     void showSingleAnswerByAge(int windowIndex, int myAnswer, int myRowIndex, const QList<int>& values);
     void showAllAnswers(int windowIndex, const QList<int> &values);
+    void setDatavizLanguage(int windowIndex, const QString &lang);
+    // Show/Hide test card via OSC
+    void showTestCard(int windowIndex, bool visible);
+    void setDatavizLanguage(int windowIndex, const QString &lang);
+
 private:
     // data members
     OscReceiver* _oscReceiver;
