@@ -1,23 +1,25 @@
 #!/usr/bin/env python3
 
 """
-Lunch script for the kiosk
+Lunch script for every computer
 """
 
 import socket
 
 # Global configuration:
-DATAVIZ_HOST_A = '127.0.0.1'
-DATAVIZ_HOST_B = '127.0.0.1'
+DATAVIZ_HOST_A = '192.200.200.59'
+DATAVIZ_HOST_B = '192.200.200.73'
 DATAVIZ_PORT_LEFT = 31337
 DATAVIZ_PORT_RIGHT = 31338
-SERVICE_HOST = "192.200.200.66"
+SERVICE_HOST = DATAVIZ_HOST_A
 
 
 # Configuration for this instance only:
 KIOSK_MODE = "central"
 DATAVIZ_HOST = DATAVIZ_HOST_A # default
 DATAVIZ_PORT = DATAVIZ_PORT_LEFT # default
+start_kiosk = True
+start_service = False
 
 
 def get_hostname():
@@ -37,8 +39,6 @@ elif my_hostname == 'kiosk-central-1':
     KIOSK_MODE = 'central'
     DATAVIZ_HOST = DATAVIZ_HOST_A
     DATAVIZ_PORT = DATAVIZ_PORT_LEFT
-    # We run the MPOP Service on host central-1
-    add_command("docker-compose --file ~/src/mpop/docker-compose.yml up")
 
 elif my_hostname == 'kiosk-central-2':
     KIOSK_MODE = 'central'
@@ -55,11 +55,26 @@ elif my_hostname == 'kiosk-central-4':
     DATAVIZ_HOST = DATAVIZ_HOST_B
     DATAVIZ_PORT = DATAVIZ_PORT_RIGHT
 
+elif my_hostname == 'dataviz-a':
+    start_kiosk = False
+    start_service = True
 
-# Add the command to Lunch
-add_command("~/src/mpop/mpop_kiosk/mpop_kiosk --kiosk-mode {kiosk_mode} --service-host {service_host} --dataviz-host {dataviz_host} --dataviz-port {dataviz_port} --fullscreen".format(
+elif my_hostname == 'dataviz-b':
+    start_kiosk = False
+
+
+# Add the commands to Lunch
+if start_kiosk: # Kiosk:
+    add_command("~/src/mpop/mpop_kiosk/mpop_kiosk --kiosk-mode {kiosk_mode} --service-host {service_host} --dataviz-host {dataviz_host} --dataviz-port {dataviz_port} --fullscreen".format(
         kiosk_mode=KIOSK_MODE,
         service_host=SERVICE_HOST,
         dataviz_host=DATAVIZ_HOST,
         dataviz_port=DATAVIZ_PORT))
+else: # Dataviz:
+    add_command("~/src/mpop/mpop_dataviz/mpop_dataviz --port 31337 --x-position 1280 --align-right")
+    add_command("~/src/mpop/mpop_dataviz/mpop_dataviz --port 31338 --x-position 3200")
+
+# Service:
+if start_service:
+    add_command("docker-compose --file ~/src/mpop/docker-compose.yml up")
 
