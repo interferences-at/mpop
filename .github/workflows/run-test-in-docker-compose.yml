@@ -30,4 +30,4 @@ jobs:
       - name: Run a multi-line script
         run: |
           docker-compose build
-          docker-compose run mpop-service ./test_mpop_service/test_mpop_service
+          docker-compose run mpop_service ./test_mpop_service/test_mpop_service
