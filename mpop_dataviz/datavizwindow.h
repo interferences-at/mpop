@@ -34,6 +34,11 @@ public:
 
     ViewModeManager *viewManager() { return _viewModeManager; }
 
+    // Show/Hide test card
+    void toggleTestCard();
+    void setTestCardVisibility(bool visible);
+    void restartTestCardTimer();
+
     // Alias for shared pointer of this class
     typedef QSharedPointer<DatavizWindow> ptr;
 
@@ -62,9 +67,13 @@ private:
 
     // Show/Hide FPS
     bool _showHUD = false;
+    // Show/Hide test card
+    bool _showTestCard = false;
 
     QElapsedTimer _frameTimer;
     QTimer _updateIntervalTimer;
     int _framesCount = 0;
     int _framePerSecond = 0;
+
+    QElapsedTimer _testCardTimer;
 };

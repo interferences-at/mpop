@@ -26,6 +26,27 @@ qint64 DatavizWindow::elapsed() const {
     return this->_elapsedTimer.elapsed();
 }
 
+void DatavizWindow::toggleTestCard()
+{
+    _showTestCard = !_showTestCard;
+
+    restartTestCardTimer();
+}
+
+void DatavizWindow::setTestCardVisibility(bool visible)
+{
+    _showTestCard = visible;
+
+    restartTestCardTimer();
+}
+
+void DatavizWindow::restartTestCardTimer()
+{
+    if (_showTestCard) {
+        _testCardTimer.restart();
+    }
+}
+
 void DatavizWindow::keyPressEvent(QKeyEvent *event)
 {
     if (event->modifiers() & Qt::ControlModifier) {
@@ -39,6 +60,8 @@ void DatavizWindow::keyPressEvent(QKeyEvent *event)
         switch (event->key()) {
         case Qt::Key_Tab:
             _showHUD = !_showHUD; // Show/Hide FPS text with TAB
+
+            toggleTestCard();
             break;
         }
     }
@@ -120,6 +143,15 @@ void DatavizWindow::paintGL() {
         viewActiveMode <= ViewModeManager::AnswerByCultureMode) {
         _painter->drawViewElements(viewActiveMode,
                                    _viewModeManager->getViewTitles(viewActiveMode));
+    }
+
+    // Draw test card
+    if (_showTestCard) {
+        _painter->drawTestCard();
+
+        if (_testCardTimer.elapsed() >= 1000 * 60 * 30) {
+            _showTestCard = false;
+        }
     }
 
     if (_showHUD) {

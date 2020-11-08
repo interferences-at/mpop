@@ -15,6 +15,8 @@ static const QString VIEW_ANSWER_BY_GENDER_METHOD = "view_answer_by_gender";
 static const QString VIEW_ANSWER_BY_AGE_METHOD = "view_answer_by_age";
 static const QString VIEW_ANSWER_BY_LANGUAGE_METHOD = "view_answer_by_language";
 static const QString VIEW_ALL_ANSWERS_METHOD = "all_results";
+static const QString SHOW_TEST_CARD = "show_testcard";
+static const QString HIDE_TEST_CARD = "hide_testcard";
 static const int INDEX_NAMESPACE_PREFIX = 0;
 static const int INDEX_WINDOW_NUMBER = 1;
 static const int INDEX_METHOD = 2;
@@ -277,6 +279,10 @@ void Controller::messageReceivedCb(const QString& oscAddress, const QVariantList
             } else {
                 showAllAnswers(windowIndex, answersValues);
             }
+        } else if (methodName == SHOW_TEST_CARD) {
+            showTestCard(windowIndex, true);
+        } else if (methodName == HIDE_TEST_CARD) {
+            showTestCard(windowIndex, false);
         } else {
             qDebug() << "Unhandled OSC method" << methodName;
         }
@@ -322,6 +328,14 @@ void Controller::showAllAnswers(int windowIndex, const QList<int> &values)
     DatavizWindow::ptr window = getWindowById(windowIndex);
     if (window) {
         window->viewManager()->setAllAnswersBars(values);
+    }
+}
+
+void Controller::showTestCard(int windowIndex, bool visible)
+{
+    DatavizWindow::ptr window = getWindowById(windowIndex);
+    if (window) {
+        window->setTestCardVisibility(visible);
     }
 }
 
