@@ -1,3 +1,5 @@
 <RCC>
-    <qresource prefix="/"/>
+    <qresource prefix="/">
+        <file alias="test-card">resources/images/SMPTE_Color_Bars.svg</file>
+    </qresource>
 </RCC>
