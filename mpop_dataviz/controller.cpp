@@ -288,7 +288,6 @@ void Controller::messageReceivedCb(const QString& oscAddress, const QVariantList
             showTestCard(windowIndex, true);
         } else if (methodName == HIDE_TEST_CARD) {
             showTestCard(windowIndex, false);
-
         } else if (methodName == DATAVIZ_LANGUAGE_METHOD) {
             setDatavizLanguage(windowIndex, arguments.at(0).toString());
         } else {
@@ -338,6 +337,7 @@ void Controller::showAllAnswers(int windowIndex, const QList<int> &values)
         window->viewManager()->setAllAnswersBars(values);
     }
 }
+
 
 void Controller::setDatavizLanguage(int windowIndex, const QString &lang)
 {

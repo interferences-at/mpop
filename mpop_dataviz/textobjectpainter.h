@@ -29,6 +29,8 @@ public:
     void drawFramePerSecond(const int &framePerSecond);
     // Draw view answer element
     void drawViewElements(ViewModeManager::ViewMode view, const QList<QString> &title = {});
+    // Draw test card
+    void drawTestCard();
 
     void beginOpenGLPainting(); // QPainter beginNativePainting wrapper
     void endOpenGLPainting();  // QPainter endNativePainting wrapper

@@ -206,6 +206,11 @@ void TextObjectPainter::drawViewElements(ViewModeManager::ViewMode view, const Q
     _painter.restore();
 }
 
+void TextObjectPainter::drawTestCard()
+{
+    _painter.drawPixmap(0, 0, _width, _height, QPixmap(":/test-card"));
+}
+
 void TextObjectPainter::beginOpenGLPainting()
 {
     // It seems like beginNativePainting makes all
