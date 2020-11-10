@@ -9,12 +9,9 @@ import socket
 # Global configuration:
 DATAVIZ_HOST_A = '192.200.200.57' # over wifi
 DATAVIZ_HOST_B = '192.200.200.58' # over wifi
-# DATAVIZ_HOST_A = '192.200.200.xx' # over cable
-# DATAVIZ_HOST_B = '192.200.200.xx' # over cable
 DATAVIZ_PORT_LEFT = 31337
 DATAVIZ_PORT_RIGHT = 31338
 SERVICE_HOST = DATAVIZ_HOST_A
-# START_SERVICE_ON_DATAVIZ_A = False
 START_SERVICE_ON_DATAVIZ_A = True
 
 
