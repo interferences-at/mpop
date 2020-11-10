@@ -29,7 +29,6 @@ public:
     void setDatavizLanguage(int windowIndex, const QString &lang);
     // Show/Hide test card via OSC
     void showTestCard(int windowIndex, bool visible);
-    void setDatavizLanguage(int windowIndex, const QString &lang);
 
 private:
     // data members
