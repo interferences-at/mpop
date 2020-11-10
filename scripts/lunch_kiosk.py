@@ -7,8 +7,8 @@ Lunch script for every computer
 import socket
 
 # Global configuration:
-DATAVIZ_HOST_A = '192.200.200.57' # over wifi
-DATAVIZ_HOST_B = '192.200.200.58' # over wifi
+DATAVIZ_HOST_A = '192.200.200.57'
+DATAVIZ_HOST_B = '192.200.200.58'
 DATAVIZ_PORT_LEFT = 31337
 DATAVIZ_PORT_RIGHT = 31338
 SERVICE_HOST = DATAVIZ_HOST_A

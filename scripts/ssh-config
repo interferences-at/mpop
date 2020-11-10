@@ -25,10 +25,10 @@ Host entrance
     HostName 192.200.200.56
 
 Host dataviz-a
-    User utilisateur
+    User odroid
     HostName 192.200.200.57
 
 Host dataviz-b
-    User utilisateur
+    User odroid
     HostName 192.200.200.58
 
