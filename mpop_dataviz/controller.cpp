@@ -18,7 +18,6 @@ static const QString VIEW_ALL_ANSWERS_METHOD = "all_results";
 static const QString DATAVIZ_LANGUAGE_METHOD = "language";
 static const QString SHOW_TEST_CARD = "show_testcard";
 static const QString HIDE_TEST_CARD = "hide_testcard";
-static const QString DATAVIZ_LANGUAGE_METHOD = "language";
 
 static const int INDEX_NAMESPACE_PREFIX = 0;
 static const int INDEX_WINDOW_NUMBER = 1;
@@ -355,13 +354,6 @@ void Controller::showTestCard(int windowIndex, bool visible)
     }
 }
 
-void Controller::setDatavizLanguage(int windowIndex, const QString &lang)
-{
-    DatavizWindow::ptr window = getWindowById(windowIndex);
-    if (window) {
-        window->setTextPainterLanguage(lang);
-    }
-}
 
 void Controller::showUserAnswer(int windowIndex, const QList<int>& values) {
     DatavizWindow::ptr window = getWindowById(windowIndex);
