@@ -16,11 +16,11 @@ Host central-4
     User odroid
     HostName 192.200.200.54
 
-Host entrance
+Host sortie
     User odroid
     HostName 192.200.200.55
 
-Host exit
+Host entrance
     User odroid
     HostName 192.200.200.56
 

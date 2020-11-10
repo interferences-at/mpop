@@ -1,5 +1,5 @@
 #!/bin/bash
-cssh
+cssh \
     central-1 \
     central-2 \
     central-3 \
