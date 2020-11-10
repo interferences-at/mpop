@@ -13,7 +13,7 @@
 # {"jsonrpc":"2.0", "method":"ping", "params":[], "id": 1}
 #
 
-SERVICE_HOST=192.200.200.66
+SERVICE_HOST=192.200.200.57
 
 wscat --connect ${SERVICE_HOST}:3333 --execute '{"jsonrpc":"2.0", "method":"ping", "params":[], "id": 1}'
 
