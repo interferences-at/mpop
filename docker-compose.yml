@@ -4,26 +4,6 @@
 version: '3'
 
 services:
-  service:
-    build: .
-    image: mpop_service:latest
-    depends_on:
-      - db
-      - flyway
-      - phpmyadmin
-    ports:
-      - "3333:3333"
-    labels:
-      ca.interferences.mpop.description: "Provides the API to read/write from/to the database for the project."
-    environment:
-      CONFIG_MYSQL_HOST: 'db'
-      CONFIG_MYSQL_USER: 'admin'
-      CONFIG_MYSQL_PASSWORD: 'secret'
-      CONFIG_MYSQL_DATABASE: 'mpop_database'
-      CONFIG_IS_VERBOSE: 'true'
-      CONFIG_MYSQL_PORT: '3306'
-      CONFIG_USE_SQLITE: 'false'
-      MPOP_SERVICE_PORT_NUMBER: '3333'
 
   phpmyadmin:
     image: phpmyadmin/phpmyadmin
