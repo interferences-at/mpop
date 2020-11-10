@@ -28,6 +28,8 @@ public:
     void showAllAnswers(int windowIndex, const QList<int> &values);
     // Show/Hide test card via OSC
     void showTestCard(int windowIndex, bool visible);
+    void setDatavizLanguage(int windowIndex, const QString &lang);
+
 private:
     // data members
     OscReceiver* _oscReceiver;

@@ -28,7 +28,7 @@ ApplicationWindow {
     readonly property string const_KIOSK_MODE_CENTRAL: "central"
     readonly property string const_KIOSK_MODE_EXIT: "exit"
 
-    property bool showCursor: true // Show cursor by default
+    property bool showCursor: false
 
     /**
      * Toggles the fullscreen state of the main window.
@@ -116,6 +116,10 @@ ApplicationWindow {
         if (kioskConfig.is_fullscreen) {
             console.log("Turning on fullscreen mode");
             visibility = Window.FullScreen;
+        }
+
+        if (kioskConfig.show_cursor) {
+            showCursor = true;
         }
 
         // TODO: Show/hide sections according the kiosk_mode we are in.
@@ -481,6 +485,32 @@ ApplicationWindow {
                                 // The userProfile.language property should be updated.
                             }
                         });
+                        // Set also the dataviz language
+                        window.datavizManager.set_dataviz_language(model.get(index).language_identifier);
+
+                        userProfile.getRandomValues(function(error, randomValues) {
+                            if (error) {
+                                console.log(error);
+                            } else {
+                                const map = function(value, i1, i2, o1, o2) { return o1 + (o2 - o1) * ((value - i1) / (i2 - i1)) };
+
+                                var lastHourAnswers = randomValues.num_answer_last_hour;
+                                var averageAnswers = randomValues.overall_average_answer;
+                                var totalAnswers = randomValues.total_num_answers;
+                                var totalVisitors = randomValues.total_num_visitors;
+                                var dailyVisitors = randomValues.visitors_today;
+
+                                var speedRatio = map(Math.max(lastHourAnswers, averageAnswers), Math.min(lastHourAnswers, averageAnswers), totalAnswers, 1, 2);
+
+                                if (Number.isNaN(speedRatio)) {
+                                    speedRatio = 1;
+                                }
+
+                                window.datavizManager.screensaver_set_param("speed", speedRatio);
+                            }
+                        });
+
+
                     }
                 }
 

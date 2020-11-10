@@ -56,6 +56,9 @@ int main(int argc, char* argv[]) {
     const QCommandLineOption widthOption({"w", "width"}, "Window width", "width", "1920");
     parser.addOption(widthOption);
 
+    const QCommandLineOption screenOption({"S", "screen"}, "Display index", "screen", "-1");
+    parser.addOption(screenOption);
+
     const QCommandLineOption heightOption({"H", "height"}, "Window height", "height", "1080");
     parser.addOption(heightOption);
 
@@ -99,6 +102,7 @@ int main(int argc, char* argv[]) {
     options.osc_receive_port = static_cast<quint16>(parser.value(oscReceivePortOption).toInt());
     options.window_x = parser.value(xWindowPositionOption).toInt();
     options.window_y = parser.value(yWindowPositionOption).toInt();
+    options.screen = parser.value(screenOption).toInt();
 
     if (options.verbose) {
         //        for (int i = 0; i < argc; ++ i) {
@@ -110,9 +114,6 @@ int main(int argc, char* argv[]) {
     // Create window
     // We use one (1) instance of mpop_dataviz for each window.
     // Make sure to use a different OSC port for each.
-
-    int x = options.window_x;
-    int y = options.window_y;
 
     QSharedPointer<DatavizWindow> window(new DatavizWindow());
     QSurfaceFormat format;
@@ -133,6 +134,7 @@ int main(int argc, char* argv[]) {
     windowLayout->setContentsMargins(0, 0, 0, 0);
     // Align inner window to the left side
     // windowLayout->setAlignment(options.align_right ? Qt::AlignRight : Qt::AlignLeft);
+
     // Add dataviz widget to layout
     if (options.align_right) {
         windowLayout->addSpacing(SPACING_WIDTH);
@@ -144,27 +146,45 @@ int main(int argc, char* argv[]) {
     }
 
     // Create mainWindow and keep everything inside
-    QWidget *mainWindow = new QWidget;
+    QWidget* mainWindow = new QWidget;
     mainWindow->setLayout(windowLayout);
     mainWindow->setFixedSize(options.window_width,
                              options.window_height);
-    mainWindow->move(x, y);
+
+    mainWindow->move(options.window_x, options.window_y);
+
     // Set background color palette
     QPalette palette;
     palette.setColor(QPalette::Background, Qt::black);
     mainWindow->setAutoFillBackground(true);
     mainWindow->setPalette(palette);
 
+    if (options.screen != -1) {
+        QList<QScreen*> screens;
+        screens = qApp->screens();
+        int numScreens = screens.size();
+        qDebug() << "There are " << numScreens << " screens and we attempt to use the number " << options.screen;
+        if (numScreens >= options.screen) {
+            QScreen* screen = qApp->screens()[options.screen];
+            mainWindow->windowHandle()->setScreen(screen);
+            mainWindow->showFullScreen();
+        } else {
+            qDebug() << "Invalid screen index!";
+        }
+    } else {
+        mainWindow->move(options.window_x, options.window_y);
+    }
+
     if (options.show_cursor == false) {
         window->setCursor(Qt::BlankCursor);
     }
     static const int WINDOW_ID = 0;
-    window->setWindowId(WINDOW_ID); // Deprecated
-    window->setOffsetId(WINDOW_ID); // Set window ID offset
+    //window->setWindowId(WINDOW_ID); // Deprecated
+    //window->setOffsetId(WINDOW_ID); // Deprecated
     qDebug() << "Window" << WINDOW_ID << "of size:" <<
                 options.window_width << "x" << options.window_height <<
-                "at position" << x << "," << y;
-    qDebug() << "Window ID: " << window->getWindowId();
+                "at position" << options.window_x << "," << options.window_y;
+    //qDebug() << "Window ID: " << window->getWindowId();
     if (options.show_window_frame) {
         mainWindow->setWindowFlags(mainWindow->windowFlags() | Qt::Window);
     } else {

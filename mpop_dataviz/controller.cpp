@@ -17,6 +17,7 @@ static const QString VIEW_ANSWER_BY_LANGUAGE_METHOD = "view_answer_by_language";
 static const QString VIEW_ALL_ANSWERS_METHOD = "all_results";
 static const QString SHOW_TEST_CARD = "show_testcard";
 static const QString HIDE_TEST_CARD = "hide_testcard";
+static const QString DATAVIZ_LANGUAGE_METHOD = "language";
 static const int INDEX_NAMESPACE_PREFIX = 0;
 static const int INDEX_WINDOW_NUMBER = 1;
 static const int INDEX_METHOD = 2;
@@ -283,6 +284,8 @@ void Controller::messageReceivedCb(const QString& oscAddress, const QVariantList
             showTestCard(windowIndex, true);
         } else if (methodName == HIDE_TEST_CARD) {
             showTestCard(windowIndex, false);
+        } else if (methodName == DATAVIZ_LANGUAGE_METHOD) {
+            setDatavizLanguage(windowIndex, arguments.at(0).toString());
         } else {
             qDebug() << "Unhandled OSC method" << methodName;
         }
@@ -339,6 +342,13 @@ void Controller::showTestCard(int windowIndex, bool visible)
     }
 }
 
+void Controller::setDatavizLanguage(int windowIndex, const QString &lang)
+{
+    DatavizWindow::ptr window = getWindowById(windowIndex);
+    if (window) {
+        window->setTextPainterLanguage(lang);
+    }
+}
 
 void Controller::showUserAnswer(int windowIndex, const QList<int>& values) {
     DatavizWindow::ptr window = getWindowById(windowIndex);

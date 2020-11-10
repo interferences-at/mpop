@@ -35,6 +35,8 @@ public:
     void beginOpenGLPainting(); // QPainter beginNativePainting wrapper
     void endOpenGLPainting();  // QPainter endNativePainting wrapper
 
+    void setTextLanguage(const QString &lang) { _lang = lang; }
+
 private:
     QPainter _painter;
 
@@ -50,6 +52,9 @@ private:
     int _pixelRatio;
 
     // Constantes
+    QString _lang = "en";
+    // All translatable text
+    QMap<QString, QMap<QString, QString>> _texts;
 
     // Abscissa X Axis
     const int X_AXIS_HEIGHT = 78; // From botton to the horizontal line

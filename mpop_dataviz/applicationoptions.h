@@ -15,6 +15,7 @@ public: // public data members
     int contents_width = 1260;
     int window_x = 0;
     int window_y = 0;
+    int screen = -1;
     quint16 osc_receive_port = 31337;
     bool show_cursor = false;
 
