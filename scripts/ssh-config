@@ -2,32 +2,33 @@
 
 Host central-1
     User odroid
-    HostName 192.200.200.66
+    HostName 192.200.200.51
 
 Host central-2
     User odroid
-    HostName 192.200.200.65
+    HostName 192.200.200.52
 
 Host central-3
     User odroid
-    HostName 192.200.200.61
+    HostName 192.200.200.53
 
 Host central-4
     User odroid
-    HostName 192.200.200.62
+    HostName 192.200.200.54
 
 Host entrance
     User odroid
-    HostName 192.200.200.68
+    HostName 192.200.200.55
 
 Host exit
     User odroid
-    HostName 192.200.200.67
+    HostName 192.200.200.56
 
 Host dataviz-a
     User utilisateur
-    HostName 192.168.0.245
+    HostName 192.200.200.57
 
 Host dataviz-b
     User utilisateur
-    HostName 192.168.0.246
+    HostName 192.200.200.58
+
