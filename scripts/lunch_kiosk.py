@@ -14,7 +14,8 @@ DATAVIZ_HOST_B = '192.200.200.73' # over wifi
 DATAVIZ_PORT_LEFT = 31337
 DATAVIZ_PORT_RIGHT = 31338
 SERVICE_HOST = DATAVIZ_HOST_A
-START_SERVICE_ON_DATAVIZ_A = False
+# START_SERVICE_ON_DATAVIZ_A = False
+START_SERVICE_ON_DATAVIZ_A = True
 
 
 # Configuration for this instance only:
@@ -80,5 +81,6 @@ else: # Dataviz:
 
 # Service:
 if start_service:
-    add_command("docker-compose --file ~/src/mpop/docker-compose.yml up", identifier='service')
+    add_command("docker-compose --file ~/src/mpop/docker-compose.yml up", identifier='database')
+    add_command("~/src/mpop/scripts/sh_start_service_without_docker.sh", identifier='service')
 
