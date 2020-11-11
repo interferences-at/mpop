@@ -9,7 +9,7 @@
 #include "kioskconfig.h"
 
 // Constants:
-static const QString APPLICATION_VERSION = "0.1.0-SNAPSHOT";
+static const QString APPLICATION_VERSION = "0.1.0";
 static const QString APPLICATION_NAME = "mpop_kiosk";
 
 /**
