@@ -201,7 +201,7 @@ void Controller::messageReceivedCb(const QString& oscAddress, const QVariantList
     }
 
     if (pathTokens[INDEX_NAMESPACE_PREFIX] == NAMESPACE_PATH_PREFIX) {
-        int windowIndex = pathTokens[INDEX_WINDOW_NUMBER].toInt();
+        int windowIndex = 0; // XXX deprecated pathTokens[INDEX_WINDOW_NUMBER].toInt();
         qDebug() << "windowIndex" << windowIndex;
         if (getWindowById(windowIndex) == nullptr) {
             qDebug() << "Invalid dataviz window index" << windowIndex;

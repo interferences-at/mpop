@@ -7,11 +7,12 @@ Lunch script for every computer
 import socket
 
 # Global configuration:
-DATAVIZ_HOST_A = '192.200.200.59'
-DATAVIZ_HOST_B = '192.200.200.73'
+DATAVIZ_HOST_A = '192.200.200.57'
+DATAVIZ_HOST_B = '192.200.200.58'
 DATAVIZ_PORT_LEFT = 31337
 DATAVIZ_PORT_RIGHT = 31338
 SERVICE_HOST = DATAVIZ_HOST_A
+START_SERVICE_ON_DATAVIZ_A = True
 
 
 # Configuration for this instance only:
@@ -57,7 +58,8 @@ elif my_hostname == 'kiosk-central-4':
 
 elif my_hostname == 'dataviz-a':
     start_kiosk = False
-    start_service = True
+    if START_SERVICE_ON_DATAVIZ_A:
+        start_service = True
 
 elif my_hostname == 'dataviz-b':
     start_kiosk = False
@@ -69,12 +71,13 @@ if start_kiosk: # Kiosk:
         kiosk_mode=KIOSK_MODE,
         service_host=SERVICE_HOST,
         dataviz_host=DATAVIZ_HOST,
-        dataviz_port=DATAVIZ_PORT))
+        dataviz_port=DATAVIZ_PORT), identifier='kiosk')
 else: # Dataviz:
-    add_command("~/src/mpop/mpop_dataviz/mpop_dataviz --port 31337 --x-position 1280 --align-right")
-    add_command("~/src/mpop/mpop_dataviz/mpop_dataviz --port 31338 --x-position 3200")
+    add_command("~/src/mpop/mpop_dataviz/mpop_dataviz --port 31337 --x-position 1280 --align-right", identifier='dataviz-left')
+    add_command("~/src/mpop/mpop_dataviz/mpop_dataviz --port 31338 --x-position 3200", identifier='dataviz-right')
 
 # Service:
 if start_service:
-    add_command("docker-compose --file ~/src/mpop/docker-compose.yml up")
+    add_command("docker-compose --file ~/src/mpop/docker-compose.yml up", identifier='database')
+    add_command("~/src/mpop/scripts/sh_start_service_without_docker.sh", identifier='service')
 
