@@ -3,6 +3,8 @@
 FROM ubuntu:20.04
 MAINTAINER Alexandre Quessy <alexandre@quessy.net>
 
+ENV TZ=America/Toronto
+
 # Install core dependencies
 RUN apt-get update && \
     DEBIAN_FRONTEND=noninteractive apt-get install --assume-yes --quiet --no-install-recommends \
@@ -27,10 +29,15 @@ RUN apt-get update && \
         qtdeclarative5-dev \
         qttools5-dev-tools
 
+RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
+
+
 COPY . /app
 WORKDIR /app
 RUN qmake . && make
 # RUN ./test_mpop_service/test_mpop_service
 EXPOSE 1234
+
+
 CMD ["mpop_service/mpop_service"]
 

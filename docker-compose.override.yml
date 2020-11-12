@@ -20,3 +20,4 @@ services:
       CONFIG_MYSQL_PORT: '3306'
       CONFIG_USE_SQLITE: 'false'
       MPOP_SERVICE_PORT_NUMBER: '3333'
+      TZ: 'America/Toronto'
