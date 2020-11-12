@@ -38,8 +38,6 @@ RUN qmake . && make
 # RUN ./test_mpop_service/test_mpop_service
 EXPOSE 1234
 
-# timezone env with default
-ENV TZ EST
 
 CMD ["mpop_service/mpop_service"]
 
