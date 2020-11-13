@@ -122,15 +122,15 @@ void BarChartLayout::moveObjectsToLayout(qint64 currentTime) {
         }
 
         if (_rowsValues.at(rowIndex) == 0) {
-            for (int i = 0; i < 5; i++) {
+            for (int i = 0; i < 3; i++) {
                 PrisonerLine::ptr line = PrisonerLine::ptr::create();
 
-                line->setSize(_barsWidth + DISTANCE_BETWEEN_COLUMN, _barsWidth);
+                line->setSize(_barsHeight, _barsWidth);
                 line->setColor("#FFFFFF");
 
-                qreal x = i * (DISTANCE_BETWEEN_BARS + _barsWidth);
+                qreal x = i * (DISTANCE_BETWEEN_BARS + _barsHeight);
                 qreal y = -rowIndex * (DISTANCE_BETWEEN_ROW + (_barsHeight));
-                x += _x;
+                x += (_x + (_barsHeight / 2 - _barsWidth));
                 y -= _y;
 
                 _groupTweenAnimator->addSceneObjectToAnimate(line, x, y, 0);
