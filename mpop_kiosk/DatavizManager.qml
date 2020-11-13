@@ -13,6 +13,32 @@ Item {
 
     property var oscMessageSender: null // The oscSender instance.
     readonly property int datavizWindowIndex: 0 // You should leave this to 0
+    // The translated titles
+    readonly property var titles: {
+        // Gender
+        "male": { "en": "Male", "fr": "Homme" },
+        "female": { "en": "Female", "fr": "Femme" },
+        "other": { "en": "Other", "fr": "Autre" },
+        // Ethnicity
+        "quebecer": { "en": "Quebecer", "fr": "Québécoise" },
+        "canadian": { "en": "Canadian", "fr": "Canadienne" },
+        "american": { "en": "American", "fr": "Américaine" },
+        "european": { "en": "European", "fr": "Européenne" },
+        "native": { "en": "Native", "fr": "Autochtone" },
+        "other": { "en": "Other", "fr": "Autre" },
+        // Language
+        "en": { "en": "English", "fr": "Anglais" },
+        "fr": { "en": "French", "fr": "Français" },
+        // Final Questions`
+        "investir_education": { "en": "Education?", "fr": "L’éducation?" },
+        "investir_sante_services_sociaux": {
+            "en": "Health and Social Services?",
+            "fr": "La santé et les services sociaux?" },
+        "investir_emploi": {
+            "en": "Job-related programs?",
+            "fr": "Les programmes liés à l’emploi?" },
+
+    }
 
     /**
      * Shows my current answer.
@@ -50,7 +76,7 @@ Item {
         var args = [rowCount, myRow, myAnswer];
         for (var i = 0; i < rowCount; i ++) {
             var answer = titleTheirs[i];
-            args.push(answer.title);
+            args.push(translatedTitle(answer.title));
             args.push(answer.theirs);
         }
         oscMessageSender.send(_makePath("view_answer_by_gender"), args);
@@ -70,7 +96,7 @@ Item {
         var args = [rowCount, myRow, myAnswer];
         for (var i = 0; i < rowCount; i ++) {
             var answer = titleTheirs[i];
-            args.push(answer.title);
+            args.push(translatedTitle(answer.title));
             args.push(answer.theirs);
         }
         oscMessageSender.send(_makePath("view_answer_by_culture"), args);
@@ -90,7 +116,7 @@ Item {
         var args = [rowCount, myRow, myAnswer];
         for (var i = 0; i < rowCount; i ++) {
             var answer = titleTheirs[i];
-            args.push(answer.title);
+            args.push(translatedTitle(answer.title));
             args.push(answer.theirs);
         }
         oscMessageSender.send(_makePath("view_answer_by_language"), args);
@@ -176,7 +202,7 @@ Item {
         var args = [numAnswers];
         for (var i = 0; i < numAnswers; i ++) {
             var answer = values[i];
-            args.push(answer.title);
+            args.push(translatedTitle(answer.title));
             args.push(answer.mine);
             args.push(answer.theirs);
         }
@@ -212,5 +238,18 @@ Item {
         }
         var ret = "/dataviz/" + datavizWindowIndex + stringStartingWithSlash;
         return ret;
+    }
+
+    /**
+     * Translate titles
+     * @param title key
+     */
+    function translatedTitle(title) {
+        var language = window.lang.toString()
+        if (language === '') {
+            lang = 'en'; // Just in case
+        }
+
+        return titles[title][language];
     }
 }
