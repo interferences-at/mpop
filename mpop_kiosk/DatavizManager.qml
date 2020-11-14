@@ -13,30 +13,53 @@ Item {
 
     property var oscMessageSender: null // The oscSender instance.
     readonly property int datavizWindowIndex: 0 // You should leave this to 0
+
+    readonly property var modelEthnicities: ModelEthnicities {}
+    readonly property var modelGenders: ModelGenders {}
     // The translated titles
     readonly property var titles: {
         // Gender
-        "male": { "en": "Male", "fr": "Homme" },
-        "female": { "en": "Female", "fr": "Femme" },
-        "other": { "en": "Other", "fr": "Autre" },
+        "male": {
+            "en": modelGenders.findQuestion("male").text_en,
+            "fr": modelGenders.findQuestion("male").text_fr },
+        "female": {
+            "en": modelGenders.findQuestion("female").text_en,
+            "fr": modelGenders.findQuestion("female").text_fr },
+        "other": {
+            "en": modelGenders.findQuestion("other").text_en,
+            "fr": modelGenders.findQuestion("other").text_fr },
         // Ethnicity
-        "quebecer": { "en": "Quebecer", "fr": "Québécoise" },
-        "canadian": { "en": "Canadian", "fr": "Canadienne" },
-        "american": { "en": "American", "fr": "Américaine" },
-        "european": { "en": "European", "fr": "Européenne" },
-        "native": { "en": "Native", "fr": "Autochtone" },
-        "other": { "en": "Other", "fr": "Autre" },
+        "quebecer": {
+            "en": modelEthnicities.findQuestion("quebecer").text_en,
+            "fr": modelEthnicities.findQuestion("quebecer").text_fr },
+        "canadian": {
+            "en": modelEthnicities.findQuestion("canadian").text_en,
+            "fr": modelEthnicities.findQuestion("canadian").text_fr },
+        "american": {
+            "en": modelEthnicities.findQuestion("american").text_en,
+            "fr": modelEthnicities.findQuestion("american").text_fr },
+        "european": {
+            "en": modelEthnicities.findQuestion("european").text_en,
+            "fr": modelEthnicities.findQuestion("european").text_fr },
+        "native": {
+            "en": modelEthnicities.findQuestion("native").text_en,
+            "fr": modelEthnicities.findQuestion("native").text_fr },
+        "other": {
+            "en": modelEthnicities.findQuestion("other").text_en,
+            "fr": modelEthnicities.findQuestion("other").text_fr },
         // Language
         "en": { "en": "English", "fr": "Anglais" },
         "fr": { "en": "French", "fr": "Français" },
-        // Final Questions`
-        "investir_education": { "en": "Education?", "fr": "L’éducation?" },
+        // Final Questions
+        "investir_education": {
+            "en": modelQuestions.findQuestion("investir_education").subtitle_en,
+            "fr": modelQuestions.findQuestion("investir_education").subtitle_fr },
         "investir_sante_services_sociaux": {
-            "en": "Health and Social Services?",
-            "fr": "La santé et les services sociaux?" },
+            "en": modelQuestions.findQuestion("investir_sante_services_sociaux").subtitle_en,
+            "fr": modelQuestions.findQuestion("investir_sante_services_sociaux").subtitle_fr },
         "investir_emploi": {
-            "en": "Job-related programs?",
-            "fr": "Les programmes liés à l’emploi?" },
+            "en": modelQuestions.findQuestion("investir_emploi").subtitle_en,
+            "fr": modelQuestions.findQuestion("investir_emploi").subtitle_fr },
 
     }
 

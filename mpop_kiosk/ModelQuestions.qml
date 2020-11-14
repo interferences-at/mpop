@@ -18,6 +18,15 @@ ListModel {
         for (var i = 0; i < model.count; ++i) {
             if (criteria(model.get(i))) {
                 return model.get(i);
+            } else {
+                if (model.get(i).subquestions) {
+                    var subquestions = model.get(i).subquestions;
+                    for (var j = 0; j < subquestions.count; ++j) {
+                        if (criteria(subquestions.get(j))) {
+                            return subquestions.get(j);
+                        }
+                    }
+                }
             }
         }
         return null;
