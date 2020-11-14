@@ -13,32 +13,6 @@ Item {
 
     property var oscMessageSender: null // The oscSender instance.
     readonly property int datavizWindowIndex: 0 // You should leave this to 0
-    // The translated titles
-    readonly property var titles: {
-        // Gender
-        "male": { "en": "Male", "fr": "Homme" },
-        "female": { "en": "Female", "fr": "Femme" },
-        "other": { "en": "Other", "fr": "Autre" },
-        // Ethnicity
-        "quebecer": { "en": "Quebecer", "fr": "Québécoise" },
-        "canadian": { "en": "Canadian", "fr": "Canadienne" },
-        "american": { "en": "American", "fr": "Américaine" },
-        "european": { "en": "European", "fr": "Européenne" },
-        "native": { "en": "Native", "fr": "Autochtone" },
-        "other": { "en": "Other", "fr": "Autre" },
-        // Language
-        "en": { "en": "English", "fr": "Anglais" },
-        "fr": { "en": "French", "fr": "Français" },
-        // Final Questions`
-        "investir_education": { "en": "Education?", "fr": "L’éducation?" },
-        "investir_sante_services_sociaux": {
-            "en": "Health and Social Services?",
-            "fr": "La santé et les services sociaux?" },
-        "investir_emploi": {
-            "en": "Job-related programs?",
-            "fr": "Les programmes liés à l’emploi?" },
-
-    }
 
     readonly property var modelEthnicities: ModelEthnicities {}
     readonly property var modelGenders: ModelGenders {}
