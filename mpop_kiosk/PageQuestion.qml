@@ -9,6 +9,22 @@ Column {
 
     id: thisPage
 
+    function getIndexIsQuestions() {
+        return datavizIndex === index_QUESTIONS;
+    }
+
+    function goToIndexQuestions() {
+        if (datavizIndex !== index_QUESTIONS) {
+            toggleDataviz();
+        }
+    }
+
+    function goToIndexDataviz() {
+        if (datavizIndex === index_QUESTIONS) {
+            toggleDataviz();
+        }
+    }
+
     function loadAnswersForCurrentVisitor() {
         // TODO: Retrieve value for user from service and populate the slider, if set.
         for (var i = 0; i < numberOfQuestions; i ++) {
@@ -145,8 +161,12 @@ Column {
             datavizIndex = index_QUESTIONS;
         } else {
             // change index depending on quantity of questions
-            if (hasMultipleQuestions) datavizIndex = index_CHOOSE_MULTIPLE;
-            else datavizIndex = index_CHOOSE_SINGLE
+            if (hasMultipleQuestions) {
+                datavizIndex = index_CHOOSE_MULTIPLE;
+            }
+            else {
+                datavizIndex = index_CHOOSE_SINGLE;
+            }
         }
     }
 
@@ -175,9 +195,6 @@ Column {
     readonly property int index_QUESTIONS: 0
     readonly property int index_CHOOSE_SINGLE: 1
     readonly property int index_CHOOSE_MULTIPLE: 2
-
-    signal nextButtonClicked()
-    signal previousButtonClicked()
 
     Component.onCompleted: {
         loadAnswersForCurrentVisitor();
