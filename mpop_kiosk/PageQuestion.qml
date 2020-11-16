@@ -694,8 +694,9 @@ Column {
             // Button to go back to the question main question page.
             WidgetIconButton {
                 Layout.leftMargin: 30
+                Layout.rightMargin: 30
                 Layout.topMargin: 50
-                Layout.alignment: Qt.AlignBottom
+                Layout.alignment: Qt.AlignRight
 
                 BilingualText {
                     id: goBackLabel
