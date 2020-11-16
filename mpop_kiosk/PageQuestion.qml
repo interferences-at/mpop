@@ -121,10 +121,11 @@ Column {
 
         currentAnswers[sliderIndex] = value;
 
+        console.log("Has Multiple Question :" + hasMultipleQuestions);
         if (hasMultipleQuestions) {
-            sendDatavizShowMyAnswer(value);
-        } else {
             sendDatavizShowMyAnswers(currentAnswers);
+        } else {
+            sendDatavizShowMyAnswer(value);
         }
     }
 
