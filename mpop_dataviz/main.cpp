@@ -179,7 +179,7 @@ int main(int argc, char* argv[]) {
         window->setCursor(Qt::BlankCursor);
     }
     static const int WINDOW_ID = 0;
-    //window->setWindowId(WINDOW_ID); // Deprecated
+    window->setWindowId(WINDOW_ID); // Deprecated
     //window->setOffsetId(WINDOW_ID); // Deprecated
     qDebug() << "Window" << WINDOW_ID << "of size:" <<
                 options.window_width << "x" << options.window_height <<
