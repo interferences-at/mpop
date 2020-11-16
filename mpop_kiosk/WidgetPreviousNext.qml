@@ -19,7 +19,7 @@ ColumnLayout {
     BilingualText {
         id : textPrevious
         textEn: "Previous"
-        textFr: "Précédent"
+        textFr: "Précédente"
     }
 
     BilingualText {
