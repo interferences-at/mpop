@@ -595,6 +595,18 @@ ApplicationWindow {
                             capitalization: Font.AllUppercase
                         }
                     }
+
+                    Timer {
+                        id: thanksTimer
+                        interval: 10000 // 10 seconds
+                        repeat: false
+                        running: mainStackLayout.currentIndex === mainStackLayout.index_EXIT_SECTION && exitSection.currentIndex == exitSection.index_THANK_YOU
+                        onTriggered: {
+                            console.log("Return back to the screensaver");
+                            // Display screensaver
+                            goToScreenSaver();
+                        }
+                    }
                 }
             }
 
