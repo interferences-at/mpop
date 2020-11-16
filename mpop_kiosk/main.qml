@@ -399,7 +399,7 @@ ApplicationWindow {
             Label {
                 id: clickedMessage
 
-                text: "Scannez votre puce pour commencer.\nScan your tag to start."
+                text: "Scannez votre clé pour commencer.\nScan your key to start."
                 color: "#fff"
                 font.weight: Font.Bold
                 visible: false
