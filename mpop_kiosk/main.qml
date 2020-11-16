@@ -17,7 +17,6 @@ ApplicationWindow {
     property alias lang: userProfile.language // All the BilingualText items watch this value
     property alias rfidTag: userProfile.rfidTag
     property alias invertedTheme: mainStackLayout.invertedTheme
-    property alias viewAllQuestions: questionsContainer.viewAllQuestions
     property alias currentQuestionIndex: pageButtonsListView.currentIndex
 
     // Those aliases are accessed directly via the global window item:
@@ -649,8 +648,6 @@ ApplicationWindow {
             Layout.margins: 0
             spacing: 0
 
-            property bool viewAllQuestions: false
-
             function setCurrentPage(index) {
                 // format pageNumberText from index
                 var pageNumberText = ('00' + (index + 1)).slice(-2);
@@ -721,89 +718,9 @@ ApplicationWindow {
                                 }
                             }
                         }
-
-                        // "All" questions button
-                        WidgetQuestionButton {
-                            BilingualText {
-                                id: allQuestionsText
-                                textFr: "Toutes"
-                                textEn: "All"
-                            }
-
-                            text: allQuestionsText.text
-                            font.pixelSize: 11
-                            font.letterSpacing: 11 * 25 / 1000
-                            Layout.fillWidth: true
-
-                            bgCoverAll: true
-                            highlighted: viewAllQuestions
-                            onClicked: viewAllQuestions = !viewAllQuestions
-                        }
-                    }
-                }
-
-                Item {
-                    Layout.fillHeight: true
-                    visible: viewAllQuestions
-
-                    Rectangle {
-                        anchors.left: parent.left
-                        anchors.top: parent.top
-                        anchors.bottom: parent.bottom
-                        anchors.margins: -1
-                        height: parent.height
-                        implicitWidth: 1670
-                        color: Palette.white
-                        border.color: Palette.mediumGrey
-
-                        ListView {
-                            id: pageQuestionsViewList
-
-                            width: parent.width
-                            height: contentItem.childrenRect.height
-                            anchors.bottom: parent.bottom
-                            anchors.bottomMargin: 56
-                            boundsBehavior: Flickable.StopAtBounds
-                            orientation: Qt.Vertical
-
-                            // There are 15 pages, and that should not change.
-                            model: modelQuestions
-
-                            // Let's draw each button:
-                            delegate: Label {
-                                BilingualText {
-                                    id: questionText
-                                    textEn: model.question_en
-                                    textFr: model.question_fr
-                                }
-
-                                width: parent.width
-                                height: 56
-                                padding: 0
-                                leftPadding: 25
-                                rightPadding: 25
-                                color: index > currentQuestionIndex ? Palette.mediumGrey : Palette.lightBlack
-                                text: questionText.text
-                                elide: Text.ElideRight
-                                verticalAlignment: Label.AlignVCenter
-
-                                font {
-                                    pixelSize: 20
-                                    capitalization: Font.AllUppercase
-                                }
-
-                                background: Rectangle {
-                                    color: "transparent"
-                                    border.color: Palette.mediumGrey
-                                    anchors.fill: parent
-                                    anchors.bottomMargin: -1
-                                }
-                            }
-                        }
                     }
                 }
             }
-
 
             /**
              * Displays the current page number.
@@ -959,13 +876,6 @@ ApplicationWindow {
                             }
                         }
                     }
-                }
-
-                // all questions overlay
-                Rectangle {
-                    anchors.fill: parent
-                    color: Palette.lightBlack
-                    opacity: viewAllQuestions ? 0.5 : 0
                 }
             }
         }
