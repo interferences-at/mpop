@@ -14,6 +14,55 @@ Item {
     property var oscMessageSender: null // The oscSender instance.
     readonly property int datavizWindowIndex: 0 // You should leave this to 0
 
+    readonly property var modelEthnicities: ModelEthnicities {}
+    readonly property var modelGenders: ModelGenders {}
+    // The translated titles
+    readonly property var titles: {
+        // Gender
+        "male": {
+            "en": modelGenders.findQuestion("male").text_en,
+            "fr": modelGenders.findQuestion("male").text_fr },
+        "female": {
+            "en": modelGenders.findQuestion("female").text_en,
+            "fr": modelGenders.findQuestion("female").text_fr },
+        "other": {
+            "en": modelGenders.findQuestion("other").text_en,
+            "fr": modelGenders.findQuestion("other").text_fr },
+        // Ethnicity
+        "quebecer": {
+            "en": modelEthnicities.findQuestion("quebecer").text_en,
+            "fr": modelEthnicities.findQuestion("quebecer").text_fr },
+        "canadian": {
+            "en": modelEthnicities.findQuestion("canadian").text_en,
+            "fr": modelEthnicities.findQuestion("canadian").text_fr },
+        "american": {
+            "en": modelEthnicities.findQuestion("american").text_en,
+            "fr": modelEthnicities.findQuestion("american").text_fr },
+        "european": {
+            "en": modelEthnicities.findQuestion("european").text_en,
+            "fr": modelEthnicities.findQuestion("european").text_fr },
+        "native": {
+            "en": modelEthnicities.findQuestion("native").text_en,
+            "fr": modelEthnicities.findQuestion("native").text_fr },
+        "other": {
+            "en": modelEthnicities.findQuestion("other").text_en,
+            "fr": modelEthnicities.findQuestion("other").text_fr },
+        // Language
+        "en": { "en": "English", "fr": "Anglais" },
+        "fr": { "en": "French", "fr": "Français" },
+        // Final Questions
+        "investir_education": {
+            "en": modelQuestions.findQuestion("investir_education").subtitle_en,
+            "fr": modelQuestions.findQuestion("investir_education").subtitle_fr },
+        "investir_sante_services_sociaux": {
+            "en": modelQuestions.findQuestion("investir_sante_services_sociaux").subtitle_en,
+            "fr": modelQuestions.findQuestion("investir_sante_services_sociaux").subtitle_fr },
+        "investir_emploi": {
+            "en": modelQuestions.findQuestion("investir_emploi").subtitle_en,
+            "fr": modelQuestions.findQuestion("investir_emploi").subtitle_fr },
+
+    }
+
     /**
      * Shows my current answer.
      *
@@ -50,7 +99,7 @@ Item {
         var args = [rowCount, myRow, myAnswer];
         for (var i = 0; i < rowCount; i ++) {
             var answer = titleTheirs[i];
-            args.push(answer.title);
+            args.push(translatedTitle(answer.title));
             args.push(answer.theirs);
         }
         oscMessageSender.send(_makePath("view_answer_by_gender"), args);
@@ -70,7 +119,7 @@ Item {
         var args = [rowCount, myRow, myAnswer];
         for (var i = 0; i < rowCount; i ++) {
             var answer = titleTheirs[i];
-            args.push(answer.title);
+            args.push(translatedTitle(answer.title));
             args.push(answer.theirs);
         }
         oscMessageSender.send(_makePath("view_answer_by_culture"), args);
@@ -90,7 +139,7 @@ Item {
         var args = [rowCount, myRow, myAnswer];
         for (var i = 0; i < rowCount; i ++) {
             var answer = titleTheirs[i];
-            args.push(answer.title);
+            args.push(translatedTitle(answer.title));
             args.push(answer.theirs);
         }
         oscMessageSender.send(_makePath("view_answer_by_language"), args);
@@ -176,7 +225,7 @@ Item {
         var args = [numAnswers];
         for (var i = 0; i < numAnswers; i ++) {
             var answer = values[i];
-            args.push(answer.title);
+            args.push(translatedTitle(answer.title));
             args.push(answer.mine);
             args.push(answer.theirs);
         }
@@ -212,5 +261,18 @@ Item {
         }
         var ret = "/dataviz/" + datavizWindowIndex + stringStartingWithSlash;
         return ret;
+    }
+
+    /**
+     * Translate titles
+     * @param title key
+     */
+    function translatedTitle(title) {
+        var language = window.lang.toString()
+        if (language === '') {
+            lang = 'en'; // Just in case
+        }
+
+        return titles[title][language];
     }
 }
