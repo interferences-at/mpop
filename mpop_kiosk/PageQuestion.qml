@@ -13,15 +13,16 @@ Column {
         return datavizIndex === index_QUESTIONS;
     }
 
-    function goToIndexQuestions() {
-        if (datavizIndex !== index_QUESTIONS) {
-            toggleDataviz();
-        }
+    function goToIndexQuestion() {
+        datavizIndex = index_QUESTIONS;
     }
 
     function goToIndexDataviz() {
-        if (datavizIndex === index_QUESTIONS) {
-            toggleDataviz();
+        if (hasMultipleQuestions) {
+            datavizIndex = index_CHOOSE_MULTIPLE;
+        }
+        else {
+            datavizIndex = index_CHOOSE_SINGLE;
         }
     }
 
@@ -157,19 +158,12 @@ Column {
      * Show/hide the dataviz section.
      */
     function toggleDataviz() {
-        if (datavizIndex !== index_QUESTIONS) {
-            datavizIndex = index_QUESTIONS;
+        if (datavizIndex === index_QUESTIONS) {
+            goToIndexDataviz();
         } else {
-            // change index depending on quantity of questions
-            if (hasMultipleQuestions) {
-                datavizIndex = index_CHOOSE_MULTIPLE;
-            }
-            else {
-                datavizIndex = index_CHOOSE_SINGLE;
-            }
+            goToIndexQuestion();
         }
     }
-
 
     // property var modelQuestions: null
     property var questionModel: model
@@ -248,6 +242,7 @@ Column {
     ColumnLayout {
         width: parent.width
 
+        // XXX: this stack layout is not used at all.
         StackLayout {
             id: questionDatavizStackLayout
 

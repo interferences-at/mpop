@@ -665,9 +665,17 @@ ApplicationWindow {
                 var pageNumberText = ('00' + (index + 1)).slice(-2);
 
                 // propagate to subcomponents
+                // get previous tab state
+                var isTabQuestion = questionsStackLayout.isInQuestionTab();
                 questionsStackLayout.currentIndex = index;
                 currentQuestionIndex = index;
                 currentPageNumberLabel.text = pageNumberText;
+                // set current tab of the question page:
+                if (isTabQuestion) {
+                    questionsStackLayout.goToQuestionTab();
+                } else {
+                    questionsStackLayout.goToDatavizTab();
+                }
             }
 
             /**
@@ -796,7 +804,8 @@ ApplicationWindow {
                         id: questionsStackLayout
 
                         function loadAnswerForCurrentIndex() {
-                            pageQuestionRepeater.itemAt(currentIndex).loadAnswersForCurrentVisitor();
+                            var currentQuestionPageItem = pageQuestionRepeater.itemAt(currentIndex);
+                            currentQuestionPageItem.loadAnswersForCurrentVisitor();
                         }
 
                         readonly property int index_FIRST_QUESTION: 0
@@ -813,11 +822,35 @@ ApplicationWindow {
                          * Go to the dataviz mode, or leaves it - for the current page.
                          */
                         function toggleDataviz() {
-                            pageQuestionRepeater.itemAt(currentIndex).toggleDataviz();
+                            var currentQuestionPageItem = getCurrentPageQuestionItem();
+                            currentQuestionPageItem.toggleDataviz();
+                        }
+
+                        function isInQuestionTab() {
+                            var currentQuestionPageItem = getCurrentPageQuestionItem();
+                            return currentQuestionPageItem.getIndexIsQuestions();
+                        }
+
+                        function goToDatavizTab() {
+                            var currentQuestionPageItem = getCurrentPageQuestionItem();
+                            currentQuestionPageItem.goToIndexDataviz();
+                        }
+
+                        function goToQuestionTab() {
+                            var currentQuestionPageItem = getCurrentPageQuestionItem();
+                            currentQuestionPageItem.goToIndexQuestion();
+                        }
+
+                        function getCurrentPageQuestionItem() {
+                            var pageIndex = questionsStackLayout.currentIndex;
+                            console.log("current question page index: " + pageIndex);
+                            // var currentQuestionPageItem = pageQuestionRepeater.itemAt(pageIndex);
+                            var currentQuestionPageItem = questionsStackLayout.children[pageIndex];
+                            return currentQuestionPageItem;
                         }
 
                         // The pages for single and multiple questions:
-                        // TODO: wrap in Repeater and feed with model data
+                        // wrap in Repeater and feed with model data
 
                         Repeater {
                             id: pageQuestionRepeater
