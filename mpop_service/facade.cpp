@@ -552,7 +552,7 @@ bool Facade::isDefualtParam(const QString& filter){
 
     QString DEFAULT_VALUE= "all";
 
-    if(filter.compare(DEFAULT_VALUE, Qt:: CaseInsensitive)==0){
+    if(filter.compare(DEFAULT_VALUE, Qt::CaseInsensitive)==0){
         return true;
     }
     return false;
@@ -600,13 +600,13 @@ QList<int> Facade::getAnswerByAge(const QString& questionId, const QString& ethe
                       " FROM answer AS a "
                       " JOIN visitor AS v ON a.visitor_id = v.id JOIN question AS q ON a.question_id = q.id";
 
-    if (ethenicity != "all") {
+    if (!isDefualtParam(ethenicity)) {
         sqlQuery += " JOIN ethnicity AS e ON v.ethnicity= e.id  WHERE q.identifier= ? and e.`identifier`= ? ";
     } else {
          sqlQuery += " WHERE q.identifier= ? ";
     }
 
-    if (gender != "all"){
+    if (!isDefualtParam(gender)){
         if (gender == "male"|| gender =="female" || gender == "other"){
             sqlQuery += " AND v.`gender` = ?";
         }
@@ -629,11 +629,11 @@ QList<int> Facade::getAnswerByAge(const QString& questionId, const QString& ethe
     // ? replaces the parameter in query
     query.addBindValue(QVariant(questionId));
 
-    if (ethenicity != "all") {
+    if (!isDefualtParam(ethenicity)) {
         query.addBindValue(QVariant(ethenicity));
     }
 
-    if (gender != "all") {
+    if (!isDefualtParam(gender)) {
         query.addBindValue(QVariant(gender));
     }
 
@@ -708,7 +708,7 @@ QMap<QString,int> Facade::getAnswerByGender(const QString& questionId, const QSt
 
 
 
-    if(ethenicity != "all") {
+    if(!isDefualtParam(ethenicity)) {
 
         sqlQuery += " JOIN ethnicity AS e ON v.ethnicity= e.id WHERE q.identifier=? and e.`identifier`= ?";
     } else {
@@ -745,7 +745,7 @@ QMap<QString,int> Facade::getAnswerByGender(const QString& questionId, const QSt
     // ? replaces the perameter in query
     query.addBindValue(QVariant(questionId));
 
-    if(ethenicity!= "all") {
+    if(!isDefualtParam(ethenicity)) {
         query.addBindValue(QVariant(ethenicity));
     }
 
@@ -829,7 +829,7 @@ QMap<QString, int> Facade::getAnswerByEthnicity(const QString& questionId,int ag
         sqlQuery += " and v.age BETWEEN ? and  100 ";
     }
 
-    if(gender != "all"){
+    if(!isDefualtParam(gender)){
 
         sqlQuery += " and v.gender = ? ";
     }
@@ -866,7 +866,7 @@ QMap<QString, int> Facade::getAnswerByEthnicity(const QString& questionId,int ag
         query.addBindValue(QVariant(ageFrom));
     }
 
-    if(gender!="all"){
+    if(!isDefualtParam(gender)){
 
         query.addBindValue(QVariant(gender));
     }
@@ -925,7 +925,7 @@ QMap<QString,int> Facade::getAnswerByLanguage(const QString& questionId, int age
                         "from answer AS a JOIN visitor AS v ON a.visitor_id = v.id JOIN question AS q ON a.question_id = q.id";
 
 
-    if(ethnicity != "all") {
+    if(!isDefualtParam(ethnicity)) {
 
         sqlQuery += " JOIN ethnicity AS e ON v.ethnicity= e.id WHERE q.identifier=? and e.`identifier`= ?";
     } else {
@@ -946,7 +946,7 @@ QMap<QString,int> Facade::getAnswerByLanguage(const QString& questionId, int age
         sqlQuery += " and v.age BETWEEN ? and  100 ";
     }
 
-    if(gender != "all"){
+    if(!isDefualtParam(gender)){
 
         sqlQuery += " and v.gender = ? ";
     }
@@ -968,7 +968,7 @@ QMap<QString,int> Facade::getAnswerByLanguage(const QString& questionId, int age
     // ? replaces the perameter in query
     query.addBindValue(QVariant(questionId));
 
-    if(ethnicity!= "all") {
+    if(!isDefualtParam(ethnicity)) {
         query.addBindValue(QVariant(ethnicity));
     }
     if(ageTo != -1 and ageFrom != -1 ){
@@ -984,7 +984,7 @@ QMap<QString,int> Facade::getAnswerByLanguage(const QString& questionId, int age
         query.addBindValue(QVariant(ageFrom));
     }
 
-    if(gender!="all"){
+    if(!isDefualtParam(gender)){
 
         query.addBindValue(QVariant(gender));
     }
