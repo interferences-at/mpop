@@ -96,7 +96,7 @@ public:
      * @return True if the database is ready.
      */
     bool isDatabaseReady();
-    
+
     /**
      * @brief Get user answers average by user age.
      * @param questionId The question identifier.
@@ -195,6 +195,11 @@ public:
     */
    float getRandomValueByTodaysVisitors();
 
+   /**
+    * @brief isDefualtParam
+    * @return return boolean result.
+    */
+   bool isDefualtParam(const QString& filter);
 
 
 public slots:

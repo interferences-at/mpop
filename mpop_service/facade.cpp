@@ -544,6 +544,23 @@ bool Facade::deleteTagsVisitorsAndTheirAnswers(const QList<QString>& rfidTags) {
 }
 
 /**
+ * @brief Facade::isDefualtParam
+ * @param filter
+ * @return boolean result.
+ */
+bool Facade::isDefualtParam(const QString& filter){
+
+    QString DEFAULT_VALUE= "all";
+
+    if(filter.compare(DEFAULT_VALUE, Qt::CaseInsensitive)==0){
+        return true;
+    }
+    return false;
+}
+
+
+
+/**
  * @brief Facade::getAnswerByAge
  * @param questionId
  * @param ethenicity
@@ -583,25 +600,26 @@ QList<int> Facade::getAnswerByAge(const QString& questionId, const QString& ethe
                       " FROM answer AS a "
                       " JOIN visitor AS v ON a.visitor_id = v.id JOIN question AS q ON a.question_id = q.id";
 
-    if (ethenicity != "all") {
+    if (!isDefualtParam(ethenicity)) {
         sqlQuery += " JOIN ethnicity AS e ON v.ethnicity= e.id  WHERE q.identifier= ? and e.`identifier`= ? ";
     } else {
          sqlQuery += " WHERE q.identifier= ? ";
     }
 
-    if (gender != "all"){
+    if (!isDefualtParam(gender)){
         if (gender == "male"|| gender =="female" || gender == "other"){
             sqlQuery += " AND v.`gender` = ?";
         }
 
     }
 
-    if (timeAnswered != "all") {
-        if(timeAnswered == "this_year"){
-            sqlQuery += " AND YEAR(a.`created_at`) = ?";
+    if (!isDefualtParam(timeAnswered)) {
+
+        if (timeAnswered.compare("this_year",Qt::CaseInsensitive)==0) {
+            sqlQuery = " AND YEAR(a.`created_at`) = YEAR(CURDATE())";
         }
-        else if (timeAnswered == "today"){
-            sqlQuery += " AND DATE(a.`created_at`) = ?";
+        else if (timeAnswered.compare("today",Qt::CaseInsensitive)==0) {
+            sqlQuery = " AND DATE(a.`created_at`) = date(CURRENT_TIMESTAMP())";
         }
     }
 
@@ -611,24 +629,14 @@ QList<int> Facade::getAnswerByAge(const QString& questionId, const QString& ethe
     // ? replaces the parameter in query
     query.addBindValue(QVariant(questionId));
 
-    if (ethenicity != "all") {
+    if (!isDefualtParam(ethenicity)) {
         query.addBindValue(QVariant(ethenicity));
     }
 
-    if (gender != "all") {
+    if (!isDefualtParam(gender)) {
         query.addBindValue(QVariant(gender));
     }
 
-    if (timeAnswered != "all") {
-        QString timeFilter;
-        if (timeAnswered =="this_year") {
-            timeFilter = "YEAR(CURDATE())";
-        }
-        else if (timeAnswered == "today") {
-            timeFilter = "date(CURRENT_TIMESTAMP())";
-        }
-        query.addBindValue(QVariant(timeFilter));
-    }
     qDebug() << "getAnswerByAge ::: Query ::" << sqlQuery;
     bool ok = query.exec();
 
@@ -687,7 +695,7 @@ QMap<QString,int> Facade::getAnswerByGender(const QString& questionId, const QSt
     qDebug() << "getAnswerByGender";
     int ansMale = -1 , ansFemale = -1, ansOther = -1;
     QMap<QString,int> AvgAnsByGender;
-    
+
     QString sqlQuery= "SELECT IFNULL(ROUND(AVG( CASE WHEN v.gender='male' "
                       "THEN a.answer_value ELSE -1 END ),2),'-1') as 'Male', "
                       "IFNULL(ROUND(AVG( CASE WHEN v.gender='female' THEN "
@@ -699,8 +707,8 @@ QMap<QString,int> Facade::getAnswerByGender(const QString& questionId, const QSt
 
 
 
-    
-    if(ethenicity != "all") {
+
+    if(!isDefualtParam(ethenicity)) {
 
         sqlQuery += " JOIN ethnicity AS e ON v.ethnicity= e.id WHERE q.identifier=? and e.`identifier`= ?";
     } else {
@@ -721,13 +729,13 @@ QMap<QString,int> Facade::getAnswerByGender(const QString& questionId, const QSt
         sqlQuery += " and v.age BETWEEN ? and  100 ";
     }
 
-    if(timeAnswered != "all") {
+    if (!isDefualtParam(timeAnswered)) {
 
-        if(timeAnswered == "this_year"){
-            sqlQuery += " and YEAR(a.`created_at`)= ?";
+        if (timeAnswered.compare("this_year",Qt::CaseInsensitive)==0) {
+            sqlQuery = " AND YEAR(a.`created_at`) = YEAR(CURDATE())";
         }
-        else if (timeAnswered == "today"){
-            sqlQuery += " and date(a.`created_at`)= ?";
+        else if (timeAnswered.compare("today",Qt::CaseInsensitive)==0) {
+            sqlQuery = " AND DATE(a.`created_at`) = date(CURRENT_TIMESTAMP())";
         }
     }
 
@@ -737,7 +745,7 @@ QMap<QString,int> Facade::getAnswerByGender(const QString& questionId, const QSt
     // ? replaces the perameter in query
     query.addBindValue(QVariant(questionId));
 
-    if(ethenicity!= "all") {
+    if(!isDefualtParam(ethenicity)) {
         query.addBindValue(QVariant(ethenicity));
     }
 
@@ -754,19 +762,6 @@ QMap<QString,int> Facade::getAnswerByGender(const QString& questionId, const QSt
         query.addBindValue(QVariant(ageFrom));
     }
 
-    if(timeAnswered != "all")
-    {
-        QString timeFilter;
-        if(timeAnswered =="this_year"){
-
-            timeFilter = "YEAR(CURDATE())";
-        }
-        else if (timeAnswered =="today"){
-
-            timeFilter = "date(CURRENT_TIMESTAMP())";
-        }
-        query.addBindValue(QVariant(timeFilter));
-    }
     qDebug() << "getAnswerByGender ::: Query ::" <<sqlQuery;
     bool ok = query.exec();
 
@@ -834,18 +829,18 @@ QMap<QString, int> Facade::getAnswerByEthnicity(const QString& questionId,int ag
         sqlQuery += " and v.age BETWEEN ? and  100 ";
     }
 
-    if(gender != "all"){
+    if(!isDefualtParam(gender)){
 
         sqlQuery += " and v.gender = ? ";
     }
 
-    if(timeAnswered != "all"){
+    if (!isDefualtParam(timeAnswered)) {
 
-        if(timeAnswered == "this_year"){
-            sqlQuery += " and YEAR(a.`created_at`) = ?";
+        if (timeAnswered.compare("this_year",Qt::CaseInsensitive)==0) {
+            sqlQuery = " AND YEAR(a.`created_at`) = YEAR(CURDATE())";
         }
-        else if (timeAnswered == "today"){
-            sqlQuery += " and date(a.`created_at`) = ?";
+        else if (timeAnswered.compare("today",Qt::CaseInsensitive)==0) {
+            sqlQuery = " AND DATE(a.`created_at`) = date(CURRENT_TIMESTAMP())";
         }
     }
 
@@ -871,24 +866,11 @@ QMap<QString, int> Facade::getAnswerByEthnicity(const QString& questionId,int ag
         query.addBindValue(QVariant(ageFrom));
     }
 
-    if(gender!="all"){
+    if(!isDefualtParam(gender)){
 
         query.addBindValue(QVariant(gender));
     }
 
-    if(timeAnswered != "all")
-    {
-        QString timeFilter;
-        if(timeAnswered == "this_year"){
-
-            timeFilter = "YEAR(CURDATE())";
-        }
-        else if (timeAnswered == "today"){
-
-            timeFilter = "date(CURRENT_TIMESTAMP())";
-        }
-        query.addBindValue(QVariant(timeFilter));
-    }
 
     //qDebug() << "getAnswerByEthnicity ::: Query ::" <<sqlQuery;
 
@@ -943,7 +925,7 @@ QMap<QString,int> Facade::getAnswerByLanguage(const QString& questionId, int age
                         "from answer AS a JOIN visitor AS v ON a.visitor_id = v.id JOIN question AS q ON a.question_id = q.id";
 
 
-    if(ethnicity != "all") {
+    if(!isDefualtParam(ethnicity)) {
 
         sqlQuery += " JOIN ethnicity AS e ON v.ethnicity= e.id WHERE q.identifier=? and e.`identifier`= ?";
     } else {
@@ -964,18 +946,18 @@ QMap<QString,int> Facade::getAnswerByLanguage(const QString& questionId, int age
         sqlQuery += " and v.age BETWEEN ? and  100 ";
     }
 
-    if(gender != "all"){
+    if(!isDefualtParam(gender)){
 
         sqlQuery += " and v.gender = ? ";
     }
 
-    if(timeAnswered != "all"){
+    if (!isDefualtParam(timeAnswered)) {
 
-        if(timeAnswered == "this_year"){
-            sqlQuery += " and YEAR(a.`created_at`) = ?";
+        if (timeAnswered.compare("this_year",Qt::CaseInsensitive)==0) {
+            sqlQuery = " AND YEAR(a.`created_at`) = YEAR(CURDATE())";
         }
-        else if (timeAnswered == "today"){
-            sqlQuery += " and date(a.`created_at`) = ?";
+        else if (timeAnswered.compare("today",Qt::CaseInsensitive)==0) {
+            sqlQuery = " AND DATE(a.`created_at`) = date(CURRENT_TIMESTAMP())";
         }
     }
 
@@ -986,7 +968,7 @@ QMap<QString,int> Facade::getAnswerByLanguage(const QString& questionId, int age
     // ? replaces the perameter in query
     query.addBindValue(QVariant(questionId));
 
-    if(ethnicity!= "all") {
+    if(!isDefualtParam(ethnicity)) {
         query.addBindValue(QVariant(ethnicity));
     }
     if(ageTo != -1 and ageFrom != -1 ){
@@ -1002,24 +984,11 @@ QMap<QString,int> Facade::getAnswerByLanguage(const QString& questionId, int age
         query.addBindValue(QVariant(ageFrom));
     }
 
-    if(gender!="all"){
+    if(!isDefualtParam(gender)){
 
         query.addBindValue(QVariant(gender));
     }
 
-    if(timeAnswered != "all")
-    {
-        QString timeFilter;
-        if(timeAnswered == "this_year"){
-
-            timeFilter = "YEAR(CURDATE())";
-        }
-        else if (timeAnswered == "today"){
-
-            timeFilter = "date(CURRENT_TIMESTAMP())";
-        }
-        query.addBindValue(QVariant(timeFilter));
-    }
 
     bool ok = query.exec();
 
@@ -1152,13 +1121,13 @@ QMap<QString, int> Facade:: getAnswers(const QList<QString>& questionIds, int ag
         }
 
         //filter by time answered
-        if(timeAnswered != DEFAULT_FILTER){
+        if (!isDefualtParam( timeAnswered)) {
 
-            if(timeAnswered == "this_year"){
-                sqlQuery += " AND YEAR(a.`created_at`) = ? ";
+            if (timeAnswered.compare("this_year",Qt::CaseInsensitive)==0) {
+                sqlQuery = " AND YEAR(a.`created_at`) = YEAR(CURDATE())";
             }
-            else if (timeAnswered == "today"){
-                sqlQuery += " AND date(a.`created_at`) = ? ";
+            else if (timeAnswered.compare("today",Qt::CaseInsensitive)==0) {
+                sqlQuery = " AND DATE(a.`created_at`) = date(CURRENT_TIMESTAMP())";
             }
         }
 
@@ -1193,20 +1162,6 @@ QMap<QString, int> Facade:: getAnswers(const QList<QString>& questionIds, int ag
         if(gender != DEFAULT_FILTER){
 
             query.addBindValue(QVariant(gender));
-        }
-
-        if(timeAnswered != DEFAULT_FILTER)
-        {
-            QString timeFilter;
-            if(timeAnswered == "this_year"){
-
-                timeFilter = "YEAR(CURDATE())";
-            }
-            else if (timeAnswered == "today"){
-
-                timeFilter = "date(CURRENT_TIMESTAMP())";
-            }
-            query.addBindValue(QVariant(timeFilter));
         }
 
         bool ok = query.exec();
