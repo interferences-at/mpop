@@ -597,8 +597,20 @@ ApplicationWindow {
                     }
 
                     Timer {
-                        id: thanksTimer
-                        interval: 10000 // 10 seconds
+                        // (entrance mode only) Go back to the screensaver after the "you can now start your visit" page has been shown.
+                        interval: 5000 // 5 seconds
+                        repeat: false
+                        running: mainStackLayout.currentIndex === mainStackLayout.index_DEMOGRAPHIC_QUESTIONS && demographicQuestionsStackLayout.currentIndex === demographicQuestionsStackLayout.index_ENJOY_YOUR_VISIT
+                        onTriggered: {
+                            console.log("Go to the screensaver");
+                            // Display screensaver
+                            goToScreenSaver();
+                        }
+                    }
+
+                    Timer {
+                        // (exit mode only) Go back to the screensaver after the thank page you has been shown
+                        interval: 5000 // 5 seconds
                         repeat: false
                         running: mainStackLayout.currentIndex === mainStackLayout.index_EXIT_SECTION && exitSection.currentIndex == exitSection.index_THANK_YOU
                         onTriggered: {
