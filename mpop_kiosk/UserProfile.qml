@@ -287,6 +287,36 @@ Item {
     }
 
     /**
+     * Free the RFID tag.
+     * Reads the current user RFID and free up from service.
+     *
+     * @param cb Callback that expects no result.
+     */
+    function freeTag(callback){
+        console.log("calling free Tag function!!");
+        getRfidTag(function(error, resultTag){
+            if(error){
+                console.log("Error:: "+error);
+            }
+            else
+            {
+              websocket.callRemoteMethod("freeTag",[resultTag], function(err){
+                  if (err) {
+                      console.log("Error calling freeTag()");
+                      callback(err);
+                  } else {
+                      callback(null); //done
+                 }
+              })
+            }
+        });
+    }
+
+
+
+
+
+    /**
      * Sets the RFID tag.
      * Reads the info from the service, if any.
      * Populate the info here.

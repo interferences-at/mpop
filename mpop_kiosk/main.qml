@@ -71,6 +71,16 @@ ApplicationWindow {
         mainStackLayout.currentIndex = mainStackLayout.index_SCREENSAVER;
         userProfile.userId = -1;
         window.userProfile.clearAllCallbackIds();
+
+        window.userProfile.freeTag(function(err){
+            if(err){
+                console.log("Error calling freeTag:: " + err);
+            }
+            else{
+                console.log("Current Tag has be free");
+            }
+        })
+
         datavizManager.goto_screensaver();
     }
 
