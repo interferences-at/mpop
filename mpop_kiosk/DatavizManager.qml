@@ -178,7 +178,7 @@ Item {
     /**
      * Shows my current answers.
      *
-     * /my_answer
+     * /my_answers <multiple args>
      *
      * @param value Array List of ints for my current answers. There should be between 2 and 5 answers.
      */
