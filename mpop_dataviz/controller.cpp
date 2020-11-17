@@ -6,7 +6,8 @@
 // constants
 // For the OSC message handling:
 static const QString NAMESPACE_PATH_PREFIX = "dataviz";
-static const QString BARCHART_METHOD = "my_answer";
+static const QString MYANSWER_METHOD = "my_answer";
+static const QString MYANSWERS_METHOD = "my_answers";
 static const QString VIEW_ANSWERS_METHOD = "view_answers";
 static const QString GOTO_SCREENSAVER_METHOD = "goto_screensaver";
 static const QString SCREENSAVER_SET_PARAM_METHOD = "screensaver_set_param";
@@ -215,7 +216,7 @@ void Controller::messageReceivedCb(const QString& oscAddress, const QVariantList
 
         // Handle methods:
         // The barchart method: /dataviz/1/barchart iii 70 20 10
-        if (methodName == BARCHART_METHOD) {
+        if (methodName == MYANSWER_METHOD || methodName == MYANSWERS_METHOD ) {
             QList<int> ints = toInts(arguments);
             qDebug() << "Calling showBarChart" << methodName << windowIndex << ints;
             this->showUserAnswer(windowIndex, ints);

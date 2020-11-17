@@ -146,10 +146,16 @@ Column {
         }
     }
 
+    /**
+     * Sends OSC to the dataviz to show my one (1) answer.
+     */
     function sendDatavizShowMyAnswer(currentValue) {
         window.datavizManager.my_answer(currentValue);
     }
 
+    /**
+     * Sends OSC to the dataviz to show my multiple answers.
+     */
     function sendDatavizShowMyAnswers(currentValues) {
         window.datavizManager.my_answers(currentValues);
     }
