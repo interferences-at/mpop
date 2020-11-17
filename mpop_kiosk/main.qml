@@ -875,11 +875,14 @@ ApplicationWindow {
                                 readonly property int num_PAGES: 15
 
                                 showPrevButton: questionsStackLayout.currentIndex > 0
+                                showNextButton: questionsStackLayout.currentIndex < (num_PAGES - 1)
 
                                 onNextButtonClicked: {
                                     var i = questionsStackLayout.currentIndex + 1;
                                     if (i === num_PAGES) {
-                                        mainStackLayout.currentIndex = mainStackLayout.index_EXIT_SECTION;
+                                        if (kioskConfig.kiosk_mode === const_KIOSK_MODE_EXIT) {
+                                            mainStackLayout.currentIndex = mainStackLayout.index_EXIT_SECTION;
+                                        }
                                     } else {
                                         questionsContainer.setCurrentPage(i);
                                     }
