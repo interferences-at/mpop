@@ -21,7 +21,7 @@ void OscReceiver::readyReadCb() {
         QString oscAddress;
         this->byteArrayToVariantList(arguments, oscAddress, data);
         emit messageReceived(oscAddress, arguments);
-        qDebug() << "C++OscReceiver Received: " << oscAddress << arguments;
+        // qDebug() << "C++OscReceiver Received: " << oscAddress << arguments;
     }
 }
 
