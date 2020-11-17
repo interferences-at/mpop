@@ -55,3 +55,47 @@ Mpop Dataviz offers an OSC API.
 
 Launch it directly, or with Lunch.
 
+
+## Setup MySQL without Docker
+
+```
+sudo apt install mysql-server
+```
+
+```
+sudo mysql_secure_installation
+```
+
+Follow the inscructions in https://www.digitalocean.com/community/tutorials/how-to-install-mysql-on-ubuntu-20-04
+
+```
+mysql -u root -p
+```
+
+```
+CREATE USER 'root'@'host' IDENTIFIED WITH authentication_plugin BY 'secret';
+```
+
+```
+FLUSH PRIVILEGES;
+```
+
+```
+systemctl status mysql.service
+```
+
+Then, edit the crontab:
+
+```
+crontab -e
+```
+
+Add this:
+
+```
+# minutes hours monthday month weekday command
+4 11 * * * ~/src/mpop/scripts/sh_backup_db.sh
+```
+
+It will run the SQL backup every day at 11h04.
+
