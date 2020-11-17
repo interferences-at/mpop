@@ -120,6 +120,7 @@ int main(int argc, char* argv[]) {
     format.setSamples(16);
     window->setFormat(format);
 
+    static const int SMALLER_SPACING_WIDTH = 100;
     static const int SPACING_WIDTH = 660;
     // The window container allows to embed our Qt OpenGL window into a QWidget.
     // Then, we put that in our windowLayout
@@ -137,12 +138,16 @@ int main(int argc, char* argv[]) {
 
     // Add dataviz widget to layout
     if (options.align_right) {
-        windowLayout->addSpacing(SPACING_WIDTH);
+        windowLayout->addSpacing(SPACING_WIDTH - SMALLER_SPACING_WIDTH);
+    } else {
+        windowLayout->addSpacing(SMALLER_SPACING_WIDTH);
     }
     windowLayout->addWidget(windowContainer);
 
     if (! options.align_right) {
-        windowLayout->addSpacing(SPACING_WIDTH);
+        windowLayout->addSpacing(SPACING_WIDTH - SMALLER_SPACING_WIDTH);
+    } else {
+        windowLayout->addSpacing(SMALLER_SPACING_WIDTH);
     }
 
     // Create mainWindow and keep everything inside
