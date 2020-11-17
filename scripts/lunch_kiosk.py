@@ -73,8 +73,10 @@ if start_kiosk: # Kiosk:
         dataviz_host=DATAVIZ_HOST,
         dataviz_port=DATAVIZ_PORT), identifier='kiosk')
 else: # Dataviz:
-    add_command("~/src/mpop/mpop_dataviz/mpop_dataviz --port 31337 --x-position 1280 --align-right", identifier='dataviz-left')
-    add_command("~/src/mpop/mpop_dataviz/mpop_dataviz --port 31338 --x-position 3200", identifier='dataviz-right')
+    #add_command("~/src/mpop/mpop_dataviz/mpop_dataviz --port 31337 --x-position 1280 --align-right", identifier='dataviz-left')
+    #add_command("~/src/mpop/mpop_dataviz/mpop_dataviz --port 31338 --x-position 3200", identifier='dataviz-right')
+    add_command("~/src/mpop/scripts/sh_left.sh", identifier='dataviz-left')
+    add_command("~/src/mpop/scripts/sh_right.sh", identifier='dataviz-right')
 
 # Service:
 if start_service:
