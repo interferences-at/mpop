@@ -270,7 +270,7 @@ Item {
     function translatedTitle(title) {
         var language = window.lang.toString()
         if (language === '') {
-            lang = 'en'; // Just in case
+            language = 'fr'; // Just in case
         }
 
         return titles[title][language];
