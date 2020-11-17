@@ -149,6 +149,15 @@ ApplicationWindow {
         onLastRfidReadChanged: {
             lastRfidRead = rfidReader.lastRfidRead;
             console.log("(QML) Last RFID read: " + lastRfidRead);
+
+            // free the latest current Tag
+
+            userProfile.freeTag(function(err,result){
+                if (err) {
+                    console.log("Error calling  freeTag: " + err.message);
+                }
+            })
+
             userProfile.setRfidTag(lastRfidRead, function (err, result) {
                 if (err) {
                     console.log("Error calling setRfidTag: " + err.message);
