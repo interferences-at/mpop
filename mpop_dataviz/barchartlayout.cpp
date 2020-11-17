@@ -86,7 +86,7 @@ void BarChartLayout::moveObjectsToLayout(qint64 currentTime) {
         // We group lines by groups of 5
         for (int barIndex = 0; barIndex < _rowsValues.at(rowIndex); barIndex++) {
             if (lineIndex >= _barObjects->size()) {
-                qWarning() << "Out of bound: " << lineIndex;
+                // qDebug() << "bar out of bound: " << lineIndex << " (not a problem)";
                 break; // exitting this loop
             }
             PrisonerLine::ptr line = _barObjects->at(lineIndex);

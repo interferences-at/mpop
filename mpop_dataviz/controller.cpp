@@ -191,10 +191,10 @@ bool parseViewAnswerByAge(const QVariantList& arguments, int& outMyAnswer, int& 
  */
 void Controller::messageReceivedCb(const QString& oscAddress, const QVariantList& arguments) {
     // TODO: perhaps move the OSC receiver out of the controller.
-    qDebug() << "Controller received" << oscAddress << arguments;
+    // qDebug() << "Controller received" << oscAddress << arguments;
 
     QStringList pathTokens = splitPath(oscAddress);
-    qDebug() << "OSC Path tokens" << pathTokens;
+    // qDebug() << "OSC Path tokens" << pathTokens;
     int numTokens = pathTokens.size();
     if (numTokens < EXPECTED_MINIMUM_PATH_TOKENS) {
         qDebug() << "Invalid OSC path" << oscAddress;
@@ -203,34 +203,34 @@ void Controller::messageReceivedCb(const QString& oscAddress, const QVariantList
 
     if (pathTokens[INDEX_NAMESPACE_PREFIX] == NAMESPACE_PATH_PREFIX) {
         int windowIndex = 0; // XXX deprecated pathTokens[INDEX_WINDOW_NUMBER].toInt();
-        qDebug() << "windowIndex" << windowIndex;
+        // qDebug() << "windowIndex" << windowIndex;
         if (getWindowById(windowIndex) == nullptr) {
-            qDebug() << "Invalid dataviz window index" << windowIndex;
+            // qDebug() << "Invalid dataviz window index" << windowIndex;
             return;
         }
 
         QString methodName = pathTokens[INDEX_METHOD];
         int numArgs = arguments.size();
 
-        qDebug() << "methodName" << methodName;
+        // qDebug() << "methodName" << methodName;
 
         // Handle methods:
         // The barchart method: /dataviz/1/barchart iii 70 20 10
         if (methodName == MYANSWER_METHOD || methodName == MYANSWERS_METHOD ) {
             QList<int> ints = toInts(arguments);
-            qDebug() << "Calling showBarChart" << methodName << windowIndex << ints;
+            // qDebug() << "Calling showBarChart" << methodName << windowIndex << ints;
             this->showUserAnswer(windowIndex, ints);
         } else if (methodName == VIEW_ANSWERS_METHOD) {
             ViewModeManager::AnswerDataPtr toPopulate = ViewModeManager::AnswerDataPtr::create();
             if (parseViewAnswers(arguments, toPopulate)) {
-                qDebug() << "Calling view_answers";
+                // qDebug() << "Calling view_answers";
                 this->showAnswers(windowIndex, toPopulate);
             }
         } else if (methodName == GOTO_SCREENSAVER_METHOD) {
             this->goToScreensaver(windowIndex);
         } else if (methodName == SCREENSAVER_SET_PARAM_METHOD) {
             if (numArgs < 2) {
-                qDebug() << "Invalid num of args";
+                //qDebug() << "Invalid num of args";
                 return;
             } else {
                 QString paramName = arguments[0].toString();
@@ -278,7 +278,7 @@ void Controller::messageReceivedCb(const QString& oscAddress, const QVariantList
             QList<int> answersValues = toInts(arguments);
 
             if (numArgs != 25){
-                qDebug() << "Uncorrect number of arguments";
+                //qDebug() << "Uncorrect number of arguments";
             } else {
                 showAllAnswers(windowIndex, answersValues);
             }
@@ -291,10 +291,10 @@ void Controller::messageReceivedCb(const QString& oscAddress, const QVariantList
         } else if (methodName == DATAVIZ_LANGUAGE_METHOD) {
             setDatavizLanguage(windowIndex, arguments.at(0).toString());
         } else {
-            qDebug() << "Unhandled OSC method" << methodName;
+            //qDebug() << "Unhandled OSC method" << methodName;
         }
     } else {
-        qDebug() << "Unhandle OSC path" << oscAddress;
+        //qDebug() << "Unhandle OSC path" << oscAddress;
     }
 }
 
@@ -377,7 +377,7 @@ DatavizWindow* Controller::getWindow(int windowIndex) const { // Q_DECL_DEPRECAT
     if (windowIndex < _windows.size() && windowIndex >= 0) {
         return _windows[windowIndex].get();
     } else {
-        qDebug() << "No such window" << windowIndex;
+        //qDebug() << "No such window" << windowIndex;
         return nullptr;
     }
 }
@@ -385,7 +385,7 @@ DatavizWindow* Controller::getWindow(int windowIndex) const { // Q_DECL_DEPRECAT
 DatavizWindow::ptr Controller::getWindowById(uint windowId) const
 {
     if (!_windowsMap.contains(windowId)) {
-        qDebug() << "No such window" << windowId;
+        //qDebug() << "No such window" << windowId;
         return nullptr;
     }
 
