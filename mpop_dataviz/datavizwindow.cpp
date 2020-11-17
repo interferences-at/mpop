@@ -8,7 +8,7 @@
 
 
 DatavizWindow::DatavizWindow() {
-    qDebug() << "Create a Window";
+    //qDebug() << "Create a Window";
     _elapsedTimer.start();
 
     // Allocate all the bars to screen saver
