@@ -1,3 +1,5 @@
+# MPOP
+
 # Copy this file to ~/.ssh/config
 
 Host central-1
@@ -16,11 +18,11 @@ Host central-4
     User odroid
     HostName 192.200.200.54
 
-Host sortie
+Host entrance
     User odroid
     HostName 192.200.200.55
 
-Host entrance
+Host sortie
     User odroid
     HostName 192.200.200.56
 
