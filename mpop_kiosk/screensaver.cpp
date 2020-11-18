@@ -124,13 +124,13 @@ void StickRenderer::resizeGLCanvas(int width, int height)
 
     _right = qreal(width) / qreal(height);
     _left = -_right;
-    _top = 1;
-    _bottom = -_top;
+    _top = 1.0;
+    _bottom = -1.0;
 
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
 
-    glOrtho(_left, _right, _bottom, _top, -1, 1);
+    glOrtho(_left, _right, _top, _bottom, -1, 1);
 
     randomX = std::uniform_real_distribution<qreal>(_left * 1.2, _right * 1.2);
     randomY = std::uniform_real_distribution<qreal>(_bottom * 1.2, _top * 1.2);
