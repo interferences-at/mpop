@@ -437,21 +437,21 @@ Item {
 
         // Go to the demographic question if this is the entry kiosk
         if (kioskConfig.kiosk_mode == window.const_KIOSK_MODE_ENTRY) {
-                goToDemographicQuestions();
+                window.goToDemographicQuestions();
 
         // Go to the survey questions if this is the central kiosk
         // But: if the user hasn't answered the demographic questions, send them there.
         } else if (kioskConfig.kiosk_mode == window.const_KIOSK_MODE_CENTRAL) {
             if (userProfile.hasDemographicQuestionsAnswered()) {
-                goToSurveyQuestions();
+                window.goToSurveyQuestions();
 
             } else {
-                goToDemographicQuestions();
+                window.goToDemographicQuestions();
             }
 
         // If this is the exit kiosk, send them to the final pages
         } else if (kioskConfig.kiosk_mode == window.const_KIOSK_MODE_EXIT) {
-            goToFinalQuestions();
+            window.goToFinalQuestions();
         }
     }
 

@@ -155,13 +155,13 @@ ApplicationWindow {
 
             // Case: 2 :: free the latest current Tag when new Tag scan and Kiosk is in Exit mode.
 
-             if (kioskConfig.kiosk_mode == window.const_KIOSK_MODE_EXIT) {
+            if (kioskConfig.kiosk_mode == window.const_KIOSK_MODE_EXIT) {
                 userProfile.freeTagPreviousTag(previousRfidTag, function(err,result){
                     if (err) {
                         console.log("Error calling  freeTag: " + err.message);
                     }
                 });
-               }
+            }
 
             userProfile.setRfidTag(lastRfidRead, function (err, result) {
                 if (err) {
@@ -215,7 +215,6 @@ ApplicationWindow {
         function goToFinalQuestions() {
             mainStackLayout.currentIndex = mainStackLayout.index_EXIT_SECTION;
             exitSection.currentIndex = exitSection.index_LAST_QUESTIONS;
-
         }
 
         service_port_number: kioskConfig.service_port_number
