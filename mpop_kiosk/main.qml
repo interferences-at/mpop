@@ -213,6 +213,7 @@ ApplicationWindow {
         }
 
         function goToFinalQuestions() {
+            pageFinalQuestion.goToTabSliders();
             mainStackLayout.currentIndex = mainStackLayout.index_EXIT_SECTION;
             exitSection.currentIndex = exitSection.index_LAST_QUESTIONS;
         }
@@ -975,6 +976,7 @@ ApplicationWindow {
             Layout.margins: 0
 
             PageFinalQuestion {
+                id: pageFinalQuestion
                 model: modelFinalQuestions.get(0)
 
                 showPrevButton: kioskConfig.kiosk_mode !== const_KIOSK_MODE_EXIT
