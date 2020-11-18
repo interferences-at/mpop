@@ -53,7 +53,7 @@ ApplicationWindow {
         if (err) {
             console.log(err);
         } else {
-            console.log("Got a successful response for setFakeRfidTag.");
+            // console.log("Got a successful response for setFakeRfidTag.");
         }
     }
 
@@ -83,7 +83,7 @@ ApplicationWindow {
         pageLanguage.setHightlighted(highlightNone);
 
         for (var i = 0; i < questionsStackLayout.children.length; i ++) {
-            console.log("Reset question " + i);
+            // console.log("Reset question " + i);
             var pageQuestionItem = pageQuestionRepeater.itemAt(i);
             if (pageQuestionItem !== null) {
                 pageQuestionItem.resetToDefaultAnswer();
@@ -113,7 +113,7 @@ ApplicationWindow {
 
     Component.onCompleted: {
         if (kioskConfig.is_fullscreen) {
-            console.log("Turning on fullscreen mode");
+            // console.log("Turning on fullscreen mode");
             visibility = Window.FullScreen;
         }
 
@@ -234,7 +234,7 @@ ApplicationWindow {
         onUserAnswersUpdated: {
             // Update the value of each slider according to the answer of the visitor for that slider:
             for (var i = 0; i < questionsStackLayout.children.length; i ++) {
-                console.log("Load answer for question " + i);
+                // console.log("Load answer for question " + i);
                 var pageQuestionItem = pageQuestionRepeater.itemAt(i);
                 if (pageQuestionItem !== null) {
                     pageQuestionItem.loadAnswersForCurrentVisitor();
@@ -385,7 +385,7 @@ ApplicationWindow {
                 running: false
                 triggeredOnStart: false
                 onTriggered: {
-                    console.log("hideTextTimer triggered");
+                    // console.log("hideTextTimer triggered");
                     clickedMessage.visible = false;
                 }
             }
@@ -413,7 +413,7 @@ ApplicationWindow {
             MouseArea {
                 anchors.fill: parent
                 onClicked: {
-                    console.log("Screensaver touched");
+                    // console.log("Screensaver touched");
                     clickedMessage.visible = true;
                     hideTextTimer.start();
                 }
@@ -475,7 +475,7 @@ ApplicationWindow {
                     }
 
                     onChoiceClicked: {
-                        console.log("onLanguageChosen " + index)
+                        // console.log("onLanguageChosen " + index)
                         userProfile.setUserLanguage(userProfile.userId, model.get(index).language_identifier, function(err) {
                             if (err) {
                                 console.log(err.message);
@@ -524,7 +524,7 @@ ApplicationWindow {
                     model: ModelGenders {}
 
                     onChoiceClicked: {
-                        console.log("onGenderChosen " + index)
+                        // console.log("onGenderChosen " + index)
                         userProfile.setUserGender(userProfile.userId, model.get(index).identifier, function (err) {
                             if (err) {
                                 console.log(err.message);
@@ -543,7 +543,7 @@ ApplicationWindow {
                     model: ModelEthnicities {}
 
                     onChoiceClicked: {
-                        console.log("onEthnicityChosen " + index)
+                        // console.log("onEthnicityChosen " + index)
                         userProfile.setUserEthnicity(userProfile.userId, model.get(index).identifier, function (err) {
                             if (err) {
                                 console.log(err.message);
@@ -562,7 +562,7 @@ ApplicationWindow {
                     model: 120
 
                     onChoiceClicked: {
-                        console.log("onAgeChosen " + index);
+                        // console.log("onAgeChosen " + index);
                         userProfile.setUserAge(userProfile.userId, index, function (err) {
                             if (err) {
                                 console.log(err.message);
@@ -602,7 +602,7 @@ ApplicationWindow {
                         repeat: false
                         running: mainStackLayout.currentIndex === mainStackLayout.index_DEMOGRAPHIC_QUESTIONS && demographicQuestionsStackLayout.currentIndex === demographicQuestionsStackLayout.index_ENJOY_YOUR_VISIT
                         onTriggered: {
-                            console.log("Go to the screensaver");
+                            // console.log("Go to the screensaver");
                             // Display screensaver
                             goToScreenSaver();
                         }
@@ -614,7 +614,7 @@ ApplicationWindow {
                         repeat: false
                         running: mainStackLayout.currentIndex === mainStackLayout.index_EXIT_SECTION && exitSection.currentIndex == exitSection.index_THANK_YOU
                         onTriggered: {
-                            console.log("Return back to the screensaver");
+                            // console.log("Return back to the screensaver");
                             // Display screensaver
                             goToScreenSaver();
                         }
@@ -855,7 +855,7 @@ ApplicationWindow {
 
                         function getCurrentPageQuestionItem() {
                             var pageIndex = questionsStackLayout.currentIndex;
-                            console.log("current question page index: " + pageIndex);
+                            // console.log("current question page index: " + pageIndex);
                             // var currentQuestionPageItem = pageQuestionRepeater.itemAt(pageIndex);
                             var currentQuestionPageItem = questionsStackLayout.children[pageIndex];
                             return currentQuestionPageItem;
@@ -897,7 +897,7 @@ ApplicationWindow {
                             WidgetIconButton {
 
                                 onClicked: {
-                                    console.log("Exit clicked. Go to screensaver.");
+                                    // console.log("Exit clicked. Go to screensaver.");
                                     goToScreenSaver();
                                 }
                                 Layout.alignment: Qt.AlignTop | Qt.AlignHCenter

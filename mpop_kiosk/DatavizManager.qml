@@ -232,7 +232,7 @@ Item {
 
 
     function _verb(path, args) {
-        console.log("Send OSC: " + path + " " + args.toString());
+        // console.log("Send OSC: " + path + " " + args.toString());
     }
 
 
@@ -273,7 +273,7 @@ Item {
             args.push(answer.mine);
             args.push(answer.theirs);
         }
-        console.log(_makePath("view_answers") + " " + args);
+        // console.log(_makePath("view_answers") + " " + args);
         oscMessageSender.send(_makePath("view_answers"), args);
     }
 
