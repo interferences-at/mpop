@@ -17,6 +17,9 @@ RowLayout {
     property var model
     property alias showPrevButton: widgetPreviousNext.showPrevButton
 
+    property var myAnswers: [0, 0, 0]
+    property var theirAnswers: [0, 0, 0]
+
     signal finalQuestionChosen(string value)
     signal previousClicked()
     signal nextClicked()
@@ -25,7 +28,10 @@ RowLayout {
         // TODO: connect to JSON-RPC API
         console.log("final question slider moved:", index, value);
 
-        // TODO: Check if user respond correctly by moving sliders
+        // Update locale slider Array
+        thisPage.myAnswers[index] = value;
+        // update my answers values
+        answersView.myAnswers = thisPage.myAnswers;
     }
 
     function goToTabSliders() {
@@ -33,19 +39,26 @@ RowLayout {
     }
 
     function setDatavizAnswers() {
-//        const questionIds = [model.subquestions.count]
+        const questionIds = [model.subquestions.count]
 
-//        for (let i = 0; i < model.subquestions.count; i++) {
-//            questionIds[i] = model.subquestions.get(i).identifier
-//        }
+        for (let i = 0; i < model.subquestions.count; i++) {
+            questionIds[i] = model.subquestions.get(i).identifier
+        }
 
-//        window.userProfile.getAnswers(questionIds, 0, 100, "all", "all", "all", function(error, allAnswers) {
-//            if (error) {
-//                console.log(error);
-//            } else {
-//                console.log(JSON.stringify(allAnswers));
-//            }
-//        });
+        window.userProfile.getAnswers(questionIds, 0, 100, "all", "all", "all", function(error, allAnswers) {
+            if (error) {
+                console.log(error);
+            } else {
+                for (let i = 0; i < Object.keys(allAnswers).length; i++) {
+                    const key = Object.keys(allAnswers)[i];
+                    const value = allAnswers[key];
+
+                    thisPage.theirAnswers[i] = value > 0 ? value : 0;
+                }
+                // Update their Answers
+                answersView.theirAnswers = thisPage.theirAnswers;
+            }
+        });
     }
 
     StackLayout {
@@ -167,9 +180,121 @@ RowLayout {
                 anchors.fill: parent
                 render: mainStackLayout.currentIndex === mainStackLayout.index_EXIT_SECTION &&
                         finalQuestionStackLayout.currentIndex === finalQuestionStackLayout.index_DATAVIZ
-                myAnswers: [34, 56, 87]
-                theirAnswers: [96, 75, 88]
+                theirAnswers: thisPage.theirAnswers
+                myAnswers: thisPage.myAnswers
             }
+
+            Rectangle {
+                // vertical line
+                color: "white"
+                x: 76; y: 50; width: 2; height: 952
+            }
+
+            Rectangle {
+                // horizontal line
+                color: "white"
+                x: 95; y: 1002; width: 952; height: 2
+            }
+
+            ColumnLayout {
+                anchors.fill: parent
+
+                RowLayout {
+                    Layout.fillWidth: true
+                    Layout.alignment: Qt.AlignTop
+
+                    ColumnLayout {
+                        Layout.topMargin: 82
+                        Layout.leftMargin: 95
+
+                        spacing: 321
+
+                        Repeater {
+                            model: thisPage.model.subquestions
+
+                            ColumnLayout {
+
+                                BilingualText {
+                                    id: titleText
+                                    textEn: subtitle_en
+                                    textFr: subtitle_fr
+                                }
+
+                                Label {
+                                    Layout.alignment: Qt.AlignLeft
+                                    text: titleText.text
+                                    font {
+                                        family: "Trim SemiBold"
+                                        weight: Font.DemiBold
+                                        pointSize: 14
+                                        capitalization: Font.AllUppercase
+                                    }
+                                    color: Palette.white
+                                }
+
+                            }
+
+                        }
+
+                    }
+
+                }
+
+
+                RowLayout {
+                    Layout.fillWidth: true
+                    Layout.fillHeight: true
+                    Layout.preferredHeight: 78
+                    Layout.preferredWidth: 1260
+                    Layout.leftMargin: 95
+
+                    ColumnLayout {
+
+                        BilingualText {
+                            id: minLeftText
+                            textEn: thisPage.model.min_en
+                            textFr: thisPage.model.min_fr
+                        }
+
+                        Label {
+                            Layout.fillWidth: true
+                            Layout.alignment: Qt.AlignLeft
+                            text: minLeftText.text
+                            font {
+                                family: "Trim SemiBold"
+                                weight: Font.DemiBold
+                                pointSize: 14
+                                capitalization: Font.AllUppercase
+                            }
+                            color: Palette.white
+                        }
+                    }
+
+                    ColumnLayout {
+
+                        BilingualText {
+                            id: maxRightText
+                            textEn: thisPage.model.max_en
+                            textFr: thisPage.model.max_fr
+                        }
+
+                        Label {
+                            Layout.fillWidth: true
+                            Layout.alignment: Qt.AlignRight
+                            text: maxRightText.text
+                            font {
+                                family: "Trim SemiBold"
+                                weight: Font.DemiBold
+                                pointSize: 14
+                                capitalization: Font.AllUppercase
+                            }
+                            color: Palette.white
+                        }
+                    }
+                }
+
+            }
+
         }
 
     }
@@ -205,8 +330,8 @@ RowLayout {
                 }
                 onNextButtonClicked: {
                     if (finalQuestionStackLayout.currentIndex < finalQuestionStackLayout.count - 1) {
-                        // TODO: Retrieve data from userProfile.getAnswers() method to populate the dataviz
-                        // setDatavizAnswers()
+                        // Retrieve data from service to populate the dataviz
+                         setDatavizAnswers()
                         finalQuestionStackLayout.currentIndex = finalQuestionStackLayout.currentIndex + 1
                     } else {
                         nextClicked()
