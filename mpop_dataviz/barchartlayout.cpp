@@ -121,7 +121,7 @@ void BarChartLayout::moveObjectsToLayout(qint64 currentTime) {
             _groupTweenAnimator->addSceneObjectToAnimate(sceneObject, x, y, rotation);
         }
 
-        if (_rowsValues.at(rowIndex) == 0) {
+        if (_rowsValues.at(rowIndex) < 1) {
             for (int i = 0; i < 3; i++) {
                 PrisonerLine::ptr line = PrisonerLine::ptr::create();
 
