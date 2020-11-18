@@ -513,9 +513,9 @@ Column {
                         } else {
                             // Retrieve my answer
                             var myAnswers = getQuestionsAnswers(questionIds);
-                            console.log("view_answers(" + myAnswers + "," + JSON.stringify(answers)  + "");
+                            console.log("view_answers " + myAnswers + "," + JSON.stringify(answers) + "");
                             // pack the title, my answers and their answers.
-                            var answersTitles = makeMultipleQuestionTitle(myAnswers, answers)
+                            var answersTitles = makeMultipleQuestionTitle(myAnswers, answers);
                             window.datavizManager.view_answers(answersTitles);
                         }
                     });

@@ -19,8 +19,8 @@ ListModel {
             if (criteria(model.get(i))) {
                 return model.get(i);
             } else {
-                if (model.get(i).subquestions) {
-                    var subquestions = model.get(i).subquestions;
+                var subquestions = model.get(i).subquestions;
+                if (subquestions !== undefined) {
                     for (var j = 0; j < subquestions.count; ++j) {
                         if (criteria(subquestions.get(j))) {
                             return subquestions.get(j);
@@ -36,11 +36,17 @@ ListModel {
      * Finds a question given its identifier.
      * @param string question_identifier
      * @return ListElements
+     *
+     * FIXME: FIXME: modelQuestions.findQuestion doesn't work for subquestions.
      */
     function findQuestion(question_identifier) {
-        return _find(thisModel, function(item) {
+        var ret = _find(thisModel, function(item) {
             return item.identifier === question_identifier;
         });
+        if (ret === null) {
+            console.log("Could not find question " + question_identifier);
+        }
+        return ret;
     }
 
     /**
