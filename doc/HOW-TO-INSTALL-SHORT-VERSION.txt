@@ -1,0 +1,77 @@
+# How to install - Short version
+
+This document is in French.
+
+Ce document est en français.
+
+## Introduction
+
+Dans ce document, nous expliquons comment installer le système kiosk + dataviz au complet.
+
+## Installation
+
+Notre logiciel fonctionne sur Ubuntu GNU/Linux. Nous avons trois (3) sortes d'ordinateurs:
+
+- Odroid N1 (1x kiosque d'entrée et 1x kiosque de sortie)
+- Odroid H1 (4x kiosque central)
+- PC (x2)
+
+Les Odroid H1 et les PC sont sur Xubuntu 20.10 64-bit. Les Odroid N1 sont sur Xubuntu 20.04 pour architecture aarch64.
+
+Une fois Xubuntu installé, il faut faire un clone du dépôt Git et installer les dépendances.
+Les scripts sont dans le dossier du même nom.
+
+
+```
+mkdir -p ~/src
+cd ~/src/
+git clone https://github.com/interferences-at/mpop.git
+cd ~/src/mpop/
+./scripts/sh_install_ubuntu.sh
+```
+
+Ensuite, il faut installer Lunch. Lunch sert à lancer des logiciels.
+
+```
+mkdir -p ~/src
+cd ~/src/
+git clone https://github.com/sourcelibre/lunch.git
+cd ~/src/lunch/
+python3 setup.py build
+```
+
+Enfin, il faut ajouter un programme au démarrage.: appeler le script ~/src/mpop/scripts/sh_start_kiosk_graphical.sh
+
+Celui-ci va lancer Lunch, qui lui lance le kiosk, ou dataviz, et/ou le service. Ces trois (3) logiciels sont les
+différentes composantes du système.
+
+## Le hostname
+
+Le script Lunch va détecter le nom d'hôte de chaque ordi, et lancer les bons logiciels pour chacun.
+Voici les noms d'hôte et ce qu'ils lancent:
+
+- dataviz-a: le mpop_service, MySQL et deux (2) instance de mpop_dataviz
+- dataviz-b: deux (2) instance de mpop_dataviz
+- entrance: mpop_kiosk --kiosk-mode entrance
+- sortie: mpop_kiosk --kiosk-mode exit
+- central-1: mpop_kiosk --kiosk-mode central
+- central-2: mpop_kiosk --kiosk-mode central
+- central-3: mpop_kiosk --kiosk-mode central
+- central-4: mpop_kiosk --kiosk-mode central
+
+Les kiosques centraux envoient des messages OSC au bon dataviz, en utilisant leur adresse IP.
+Tous les kiosques accèdent au mpop_service avec son adresse IP.
+
+
+## La base de données
+
+Installer une base de donnée MySQL, populer ses tables en appelant les scripts qui se trouvent dans
+~/src/mpop/flyway/sql/*.sql ou en chargeant un backup SQL qui se trouve dans ~/backups/*.sql - prendre le plus
+récent.
+
+
+## Autres considérations
+
+- Désactiver l'économisateur écran
+- Désactiver les mises à jour automatiques.
+
