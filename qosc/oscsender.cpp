@@ -20,8 +20,8 @@ void OscSender::send(const QString& oscAddress, const QVariantList& arguments) {
 
     qint64 written = m_udpSocket->write(datagram);
 
-    qDebug() << "C++OscSender Send" << datagram.size() << "bytes:" << datagram.toHex() <<
-                "to " << m_hostAddress << "on port" << m_port;
+    // qDebug() << "C++OscSender Send" << datagram.size() << "bytes:" << datagram.toHex() <<
+    //            "to " << m_hostAddress << "on port" << m_port;
 
     if (written == -1) {
         qCritical() << "Failed to send OSC. (write bytes to the send socket)";

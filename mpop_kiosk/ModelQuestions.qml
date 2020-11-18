@@ -44,7 +44,7 @@ ListModel {
             return item.identifier === question_identifier;
         });
         if (ret === null) {
-            console.log("Could not find question " + question_identifier);
+            // console.log("Could not find question " + question_identifier);
         }
         return ret;
     }

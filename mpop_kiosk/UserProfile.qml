@@ -68,7 +68,7 @@ Item {
      */
     function setUserGender(user_id, value, cb) {
         // TODO: validate arguments
-        console.log("Calling setUserGender(" + user_id + "," + value + ")");
+        //console.log("Calling setUserGender(" + user_id + "," + value + ")");
         websocket.callRemoteMethod("setUserGender", [user_id, value], function (err, user_id) {
             if (err) {
                 console.log("Error calling setUserGender(" + user_id + "," + value + "): " + err.message);
@@ -86,7 +86,7 @@ Item {
      */
     function setUserLanguage(user_id, value, cb) {
         // TODO: validate arguments
-        console.log("Calling setUserLanguage(" + user_id + "," + value + ")");
+        //console.log("Calling setUserLanguage(" + user_id + "," + value + ")");
         websocket.callRemoteMethod("setUserLanguage", [user_id, value], function (err, user_id) {
             if (err) {
                 console.log("Error calling setUserLanguage(" + user_id + "," + value + "): " + err.message);
@@ -104,7 +104,7 @@ Item {
      */
     function setUserEthnicity(user_id, value, cb) {
         // TODO: validate arguments
-        console.log("Calling setUserEthnicity(" + user_id + "," + value + ")");
+        //console.log("Calling setUserEthnicity(" + user_id + "," + value + ")");
         websocket.callRemoteMethod("setUserEthnicity", [user_id, value], function (err, user_id) {
             if (err) {
                 console.log("Error calling setUserEthnicity(" + user_id + "," + value + "): " + err.message);
@@ -122,7 +122,7 @@ Item {
      */
     function setUserAge(user_id, value, cb) {
         // TODO: validate arguments
-        console.log("Calling setUserAge(" + user_id + "," + value + ")");
+        //console.log("Calling setUserAge(" + user_id + "," + value + ")");
         websocket.callRemoteMethod("setUserAge", [user_id, value], function (err, user_id) {
             if (err) {
                 console.log("Error calling setUserAge(" + user_id + "," + value + "): " + err.message);
@@ -140,7 +140,7 @@ Item {
      */
     function setUserAnswer(user_id, question_identifier, value, cb) {
         // TODO: validate arguments
-        console.log("Calling setUserAnswer(" + user_id + "," + question_identifier + "," + value + ")");
+        //console.log("Calling setUserAnswer(" + user_id + "," + question_identifier + "," + value + ")");
         websocket.callRemoteMethod("setUserAnswer", [user_id, question_identifier, value], function (err, user_id) {
             if (err) {
                 console.log("Error calling setUserAnswer(" + user_id + "," + question_identifier + "," + value + "): " + err.message);
@@ -162,7 +162,7 @@ Item {
      */
     function getAnswerByAge(questionId, ethnicity, gender, timeAnswered, cb) {
         // TODO: validate arguments
-        console.log("Calling getAnswerByAge(" + questionId + "," + ethnicity + "," + gender + "," + timeAnswered + ")");
+        //console.log("Calling getAnswerByAge(" + questionId + "," + ethnicity + "," + gender + "," + timeAnswered + ")");
         websocket.callRemoteMethod("getAnswerByAge", [questionId, ethnicity, gender,timeAnswered], function (err, ansByAge) {
             if (err) {
                 console.log("Error calling getAnswerByAge(" + questionId + "," + ethnicity + "," + gender + " ," + timeAnswered + "): " + err.message);
@@ -186,7 +186,7 @@ Item {
 
     function getAnswerByEthnicity(questionId, ageFrom, ageTo, gender, timeAnswered, cb){
         // TODO: validate arguments
-        console.log("Calling getAnswerByEthnicity(" + questionId + "," + ageFrom + "," + ageTo + "," + gender + "," + timeAnswered + ")");
+        //console.log("Calling getAnswerByEthnicity(" + questionId + "," + ageFrom + "," + ageTo + "," + gender + "," + timeAnswered + ")");
         websocket.callRemoteMethod("getAnswerByEthnicity", [questionId, ageFrom, ageTo, gender,timeAnswered], function (err, ansByEthnicity) {
             if (err) {
                 console.log("Error calling getAnswerByEthnicity(" + questionId + "," + ageFrom + "," + ageTo + "," + gender + "," + timeAnswered + "): " + err.message);
@@ -209,7 +209,7 @@ Item {
      */
     function getAnswerByGender(questionId,ethenicity,ageTo,ageFrom,timeAnswered, cb){
 
-        console.log("Calling getAnswerByGender(" + questionId + "," + ethenicity + "," + ageTo + "," + ageFrom + "," + timeAnswered + ")");
+        //console.log("Calling getAnswerByGender(" + questionId + "," + ethenicity + "," + ageTo + "," + ageFrom + "," + timeAnswered + ")");
         websocket.callRemoteMethod("getAnswerByGender", [questionId, ethenicity,ageTo, ageFrom, timeAnswered], function (err, ansByGender) {
             if (err) {
                 console.log("Error calling getAnswerByEthnicity(" + questionId + "," + ethenicity + "," + ageTo + "," + ageFrom + timeAnswered + "): " + err.message);
@@ -233,7 +233,7 @@ Item {
      */
     function getUserAnswerByLanguage(questionId,ageFrom,ageTo,ethnicity,gender,timeAnswered,cb){
 
-        console.log("Calling getUserAnswerByLanguage(" + questionId + "," + gender + "," + ethnicity + "," + ageTo + "," + ageFrom + "," + timeAnswered + ")");
+        //console.log("Calling getUserAnswerByLanguage(" + questionId + "," + gender + "," + ethnicity + "," + ageTo + "," + ageFrom + "," + timeAnswered + ")");
         websocket.callRemoteMethod("getAnswerByLanguage", [questionId,ageFrom,ageTo,ethnicity,gender,timeAnswered], function (err, ansByLanguage) {
             if (err) {
                 console.log("Error calling getAnswerByLanguage(" + questionId + "," + ethnicity + "," + ageTo + "," + ageFrom + timeAnswered + "): " + err.message);
@@ -259,7 +259,7 @@ Item {
      * @see Facade.cpp
      */
     function getAnswers(questionIds, ageFrom, ageTo, ethnicity, gender, timeAnswered, callback) {
-        console.log("Calling getAnswers(" + questionIds + ", " + ageFrom + "," + ageTo + "," + ethnicity + "," + gender + "," + timeAnswered + ")");
+        //console.log("Calling getAnswers(" + questionIds + ", " + ageFrom + "," + ageTo + "," + ethnicity + "," + gender + "," + timeAnswered + ")");
         var params = [questionIds, ageFrom, ageTo, ethnicity, gender, timeAnswered];
         websocket.callRemoteMethod("getAnswers", params, function (error, allAnswers) {
             if (error) {
@@ -275,7 +275,7 @@ Item {
      * Call getRandomValue method
      */
     function getRandomValues(callback) {
-        console.log("Calling getRandomValue()");
+        //console.log("Calling getRandomValue()");
         websocket.callRemoteMethod("getRandomValue", [], function(error, randomValues) {
             if (error) {
                 console.log("Error calling getRandomValue()");
@@ -435,7 +435,7 @@ Item {
                     // QMap<QString, int>
                     for (var key in userAnswers) {
                         var answerValue = userAnswers[key];
-                        console.log("Loading answer " + key + " = " + answerValue);
+                        //console.log("Loading answer " + key + " = " + answerValue);
                         thisUserProfile.answers[key] = answerValue;
                     }
 
