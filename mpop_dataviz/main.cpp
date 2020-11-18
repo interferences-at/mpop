@@ -182,6 +182,7 @@ int main(int argc, char* argv[]) {
 
     if (options.show_cursor == false) {
         window->setCursor(Qt::BlankCursor);
+        mainWindow->setCursor(Qt::BlankCursor);
     }
     static const int WINDOW_ID = 0;
     window->setWindowId(WINDOW_ID); // Deprecated
