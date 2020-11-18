@@ -72,14 +72,17 @@ ApplicationWindow {
         userProfile.userId = -1;
         window.userProfile.clearAllCallbackIds();
 
-        window.userProfile.freeTag(function(err){
-            if(err){
-                console.log("Error calling freeTag:: " + err);
-            }
-            else{
-                console.log("Current Tag has be free");
-            }
-        })
+        // Case : 1 , Free  latest current Tag when Kiosk is in Exit mode and Screen Saver shows up
+        if (kioskConfig.kiosk_mode == window.const_KIOSK_MODE_EXIT) {
+            window.userProfile.freeTag(function(err){
+                if(err){
+                    console.log("Error calling freeTag:: " + err);
+                }
+                else{
+                    console.log("Current Tag has be free");
+                }
+            })
+        }
 
         datavizManager.goto_screensaver();
     }
@@ -150,13 +153,15 @@ ApplicationWindow {
             lastRfidRead = rfidReader.lastRfidRead;
             console.log("(QML) Last RFID read: " + lastRfidRead);
 
-            // free the latest current Tag
+            // Case: 2 :: free the latest current Tag when new Tag scan and Kiosk is in Exit mode.
 
-            userProfile.freeTag(function(err,result){
-                if (err) {
-                    console.log("Error calling  freeTag: " + err.message);
-                }
-            })
+             if (kioskConfig.kiosk_mode == window.const_KIOSK_MODE_EXIT) {
+                userProfile.freeTag(function(err,result){
+                    if (err) {
+                        console.log("Error calling  freeTag: " + err.message);
+                    }
+                })
+               }
 
             userProfile.setRfidTag(lastRfidRead, function (err, result) {
                 if (err) {
