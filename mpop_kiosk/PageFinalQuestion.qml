@@ -29,7 +29,7 @@ RowLayout {
     }
 
     function goToTabSliders() {
-        finalQuestionStackLayout.currentIndex = index_SLIDERS;
+        finalQuestionStackLayout.currentIndex = finalQuestionStackLayout.index_SLIDERS;
     }
 
     function setDatavizAnswers() {
