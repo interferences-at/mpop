@@ -12,7 +12,7 @@
 #include <QScreen>
 
 // Constants:
-static const QString APPLICATION_VERSION = "0.1.1-SNAPSHOT";
+static const QString APPLICATION_VERSION = "1.0.0";
 static const QString APPLICATION_NAME = "mpop_dataviz";
 
 
