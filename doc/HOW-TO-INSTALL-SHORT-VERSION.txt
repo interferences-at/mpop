@@ -18,6 +18,13 @@ Notre logiciel fonctionne sur Ubuntu GNU/Linux. Nous avons trois (3) sortes d'or
 
 Les Odroid H1 et les PC sont sur Xubuntu 20.10 64-bit. Les Odroid N1 sont sur Xubuntu 20.04 pour architecture aarch64.
 
+## Ubuntu images
+
+- For the N2: https://odroid.in/ubuntu_20.04lts/n2/ubuntu-20.04-4.9-mate-odroid-n2-20200716.img.xz - we burn it with Balena Etcher.
+- For the H2 and the regular PC: http://mirror.csclub.uwaterloo.ca/xubuntu-releases/20.10/release/xubuntu-20.10-desktop-amd64.iso - and then we install it.
+
+## Git clone
+
 Une fois Xubuntu installé, il faut faire un clone du dépôt Git et installer les dépendances.
 Les scripts sont dans le dossier du même nom.
 
