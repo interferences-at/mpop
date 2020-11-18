@@ -50,14 +50,14 @@ différentes composantes du système.
 Le script Lunch va détecter le nom d'hôte de chaque ordi, et lancer les bons logiciels pour chacun.
 Voici les noms d'hôte et ce qu'ils lancent:
 
-- dataviz-a: le mpop_service, MySQL et deux (2) instance de mpop_dataviz
-- dataviz-b: deux (2) instance de mpop_dataviz
-- entrance: mpop_kiosk --kiosk-mode entrance
-- sortie: mpop_kiosk --kiosk-mode exit
-- central-1: mpop_kiosk --kiosk-mode central
-- central-2: mpop_kiosk --kiosk-mode central
-- central-3: mpop_kiosk --kiosk-mode central
-- central-4: mpop_kiosk --kiosk-mode central
+- dataviz-a: le `mpop_service`, une base de données MySQL et deux (2) instance de `mpop_dataviz`
+- dataviz-b: deux (2) instance de `mpop_dataviz`
+- entrance: `mpop_kiosk --kiosk-mode entrance`
+- sortie: `mpop_kiosk --kiosk-mode exit`
+- central-1: `mpop_kiosk --kiosk-mode central`
+- central-2: `mpop_kiosk --kiosk-mode central`
+- central-3: `mpop_kiosk --kiosk-mode central`
+- central-4: `mpop_kiosk --kiosk-mode central`
 
 Les kiosques centraux envoient des messages OSC au bon dataviz, en utilisant leur adresse IP.
 Tous les kiosques accèdent au mpop_service avec son adresse IP.
@@ -65,13 +65,24 @@ Tous les kiosques accèdent au mpop_service avec son adresse IP.
 
 ## La base de données
 
-Installer une base de donnée MySQL, populer ses tables en appelant les scripts qui se trouvent dans
-~/src/mpop/flyway/sql/*.sql ou en chargeant un backup SQL qui se trouve dans ~/backups/*.sql - prendre le plus
+Installer une base de donnée MySQL nommé `mpop_database`, populer ses tables en appelant les scripts qui se trouvent dans
+`~/src/mpop/flyway/sql/*.sql` ou en chargeant un backup SQL qui se trouve dans `~/backups/*.sql` - prendre le plus
 récent.
+
+## Backups
+
+Sur `dataviz-a`, faire `crontab -e` et l'éditer:
+
+```
+4 11 * * * ~/src/mpop/scripts/sh_backup_db.sh
+59 11 * * * ~/src/mpop/scripts/sh_rsync_dataviz-b.sh
+```
 
 
 ## Autres considérations
 
-- Désactiver l'économisateur écran
+- Désactiver l'économisateur écran. (avec l'item de menu Settings : Screensaver)
 - Désactiver les mises à jour automatiques.
+- Enlever toutes les notifications. (avec l'item de menu Settings : Notifications)
+- Ajuster la taille et l'emplacement de chaque écran. (avec l'item de menu Settings : Display)
 
