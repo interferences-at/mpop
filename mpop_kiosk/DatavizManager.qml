@@ -16,51 +16,93 @@ Item {
 
     readonly property var modelEthnicities: ModelEthnicities {}
     readonly property var modelGenders: ModelGenders {}
-    // The translated titles
-    readonly property var titles: {
-        // Gender
-        "male": {
-            "en": modelGenders.findQuestion("male").text_en,
-            "fr": modelGenders.findQuestion("male").text_fr },
-        "female": {
-            "en": modelGenders.findQuestion("female").text_en,
-            "fr": modelGenders.findQuestion("female").text_fr },
-        "other": {
-            "en": modelGenders.findQuestion("other").text_en,
-            "fr": modelGenders.findQuestion("other").text_fr },
-        // Ethnicity
-        "quebecer": {
-            "en": modelEthnicities.findQuestion("quebecer").text_en,
-            "fr": modelEthnicities.findQuestion("quebecer").text_fr },
-        "canadian": {
-            "en": modelEthnicities.findQuestion("canadian").text_en,
-            "fr": modelEthnicities.findQuestion("canadian").text_fr },
-        "american": {
-            "en": modelEthnicities.findQuestion("american").text_en,
-            "fr": modelEthnicities.findQuestion("american").text_fr },
-        "european": {
-            "en": modelEthnicities.findQuestion("european").text_en,
-            "fr": modelEthnicities.findQuestion("european").text_fr },
-        "native": {
-            "en": modelEthnicities.findQuestion("native").text_en,
-            "fr": modelEthnicities.findQuestion("native").text_fr },
-        "other": {
-            "en": modelEthnicities.findQuestion("other").text_en,
-            "fr": modelEthnicities.findQuestion("other").text_fr },
-        // Language
-        "en": { "en": "English", "fr": "Anglais" },
-        "fr": { "en": "French", "fr": "Français" },
-        // Final Questions
-        "investir_education": {
-            "en": modelQuestions.findQuestion("investir_education").subtitle_en,
-            "fr": modelQuestions.findQuestion("investir_education").subtitle_fr },
-        "investir_sante_services_sociaux": {
-            "en": modelQuestions.findQuestion("investir_sante_services_sociaux").subtitle_en,
-            "fr": modelQuestions.findQuestion("investir_sante_services_sociaux").subtitle_fr },
-        "investir_emploi": {
-            "en": modelQuestions.findQuestion("investir_emploi").subtitle_en,
-            "fr": modelQuestions.findQuestion("investir_emploi").subtitle_fr },
 
+    function getTextForGender(gender) {
+        var language = window.lang;
+        var ret = gender;
+        if (language === 'en') {
+            ret = modelGenders.findQuestion(gender).text_en;
+        } else {
+            ret = modelGenders.findQuestion(gender).text_fr;
+        }
+        return ret;
+    }
+
+    function getTextForEthnicity(key) {
+        var language = window.lang;
+        var ret = key;
+        if (language === 'en') {
+            ret = modelEthnicities.findQuestion(key).text_en;
+        } else {
+            ret = modelEthnicities.findQuestion(key).text_fr;
+        }
+        return ret;
+    }
+
+    function getTextForQuestion(key) {
+        var language = window.lang;
+        var ret = key;
+        /*
+          FIXME: modelQuestions.findQuestion doesn't work for subquestions.
+        if (language === 'en') {
+            ret = modelQuestions.findQuestion(key).text_en;
+            console.log("find question " + key + " " + ret);
+        } else {
+            ret = modelQuestions.findQuestion(key).text_fr;
+        }
+        */
+
+        var subtitle_fr = "";
+        var subtitle_en = "";
+        if (key === "equitable_victimes") {
+            subtitle_fr = "les victimes";
+            subtitle_en = "victims";
+        } else if (key ===  "equitable_vulnerables") {
+            subtitle_fr = "les personnes marginalisées";
+            subtitle_en = "marginalized people";
+        } else if (key ===  "equitable_jeunes_contrevenants") {
+            subtitle_fr = "les jeunes contrevenants";
+            subtitle_en = "young offenders";
+        } else if (key ===  "equitable_riches") {
+            subtitle_fr = "les gens fortunés";
+            subtitle_en = "wealthy people";
+        } else if (key === "equitable_minorites_culturelles") {
+            subtitle_fr = "les minorités visibles ou culturelles";
+            subtitle_en = "visible or cultural minorities";
+        } else if (key ===  "soins_physiques") {
+            subtitle_fr = "Santé physique";
+            subtitle_en = "Physical health";
+        } else if (key ===  "soins_mentaux") {
+            subtitle_fr =  "Santé mentale";
+            subtitle_en = "Mental health";
+        } else if (key === "investir_education") {
+            subtitle_fr = "L’éducation?";
+            subtitle_en = "Education?";
+        } else if (key ===  "investir_sante_services_sociaux") {
+            subtitle_fr = "La santé et les services sociaux?";
+            subtitle_en = "Health and Social Services?";
+        } else if (key ===  "investir_emploi") {
+            subtitle_fr = "Les programmes liés à l’emploi?";
+            subtitle_en =  "Job-related programs?";
+        }
+        if (language === "fr") {
+            ret = subtitle_fr;
+        } else {
+            ret = subtitle_en;
+        }
+
+        return ret;
+    }
+
+    function getTextForLanguage(key) {
+        var language = window.lang;
+        var results = {
+            "en": { "en": "English", "fr": "Anglais" },
+            "fr": { "en": "French", "fr": "Français" }
+        };
+        var ret = key;
+        ret = results[language][key];
+        return ret;
     }
 
     /**
@@ -99,7 +141,7 @@ Item {
         var args = [rowCount, myRow, myAnswer];
         for (var i = 0; i < rowCount; i ++) {
             var answer = titleTheirs[i];
-            args.push(translatedTitle(answer.title));
+            args.push(getTextForGender(answer.title));
             args.push(answer.theirs);
         }
         oscMessageSender.send(_makePath("view_answer_by_gender"), args);
@@ -119,7 +161,7 @@ Item {
         var args = [rowCount, myRow, myAnswer];
         for (var i = 0; i < rowCount; i ++) {
             var answer = titleTheirs[i];
-            args.push(translatedTitle(answer.title));
+            args.push(getTextForEthnicity(answer.title));
             args.push(answer.theirs);
         }
         oscMessageSender.send(_makePath("view_answer_by_culture"), args);
@@ -139,7 +181,7 @@ Item {
         var args = [rowCount, myRow, myAnswer];
         for (var i = 0; i < rowCount; i ++) {
             var answer = titleTheirs[i];
-            args.push(translatedTitle(answer.title));
+            args.push(getTextForLanguage(answer.title));
             args.push(answer.theirs);
         }
         oscMessageSender.send(_makePath("view_answer_by_language"), args);
@@ -222,13 +264,16 @@ Item {
      */
     function view_answers(values) {
         var numAnswers = values.length;
+        // num answers
         var args = [numAnswers];
         for (var i = 0; i < numAnswers; i ++) {
             var answer = values[i];
-            args.push(translatedTitle(answer.title));
+            // text, my answer, their answer
+            args.push(getTextForQuestion(answer.title));
             args.push(answer.mine);
             args.push(answer.theirs);
         }
+        console.log(_makePath("view_answers") + " " + args);
         oscMessageSender.send(_makePath("view_answers"), args);
     }
 
@@ -261,18 +306,5 @@ Item {
         }
         var ret = "/dataviz/" + datavizWindowIndex + stringStartingWithSlash;
         return ret;
-    }
-
-    /**
-     * Translate titles
-     * @param title key
-     */
-    function translatedTitle(title) {
-        var language = window.lang.toString()
-        if (language === '') {
-            language = 'fr'; // Just in case
-        }
-
-        return titles[title][language];
     }
 }
