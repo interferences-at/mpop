@@ -28,6 +28,10 @@ RowLayout {
         // TODO: Check if user respond correctly by moving sliders
     }
 
+    function goToTabSliders() {
+        finalQuestionStackLayout.currentIndex = finalQuestionStackLayout.index_SLIDERS;
+    }
+
     function setDatavizAnswers() {
 //        const questionIds = [model.subquestions.count]
 

@@ -71,6 +71,18 @@ ApplicationWindow {
         mainStackLayout.currentIndex = mainStackLayout.index_SCREENSAVER;
         userProfile.userId = -1;
         window.userProfile.clearAllCallbackIds();
+
+        // Case : 1 , Free  latest current Tag when Kiosk is in Exit mode and Screen Saver shows up
+        if (kioskConfig.kiosk_mode == window.const_KIOSK_MODE_EXIT) {
+            window.userProfile.freeCurrentTag(function(err){
+                if (err) {
+                    console.log("Error calling freeCurrentTag:: " + err);
+                } else {
+                    console.log("The current RFID tag has been freed.");
+                }
+            });
+        }
+
         datavizManager.goto_screensaver();
     }
 
@@ -137,8 +149,20 @@ ApplicationWindow {
     Connections {
         target: rfidReader
         onLastRfidReadChanged: {
+            var previousRfidTag = lastRfidRead;
             lastRfidRead = rfidReader.lastRfidRead;
             console.log("(QML) Last RFID read: " + lastRfidRead);
+
+            // Case: 2 :: free the latest current Tag when new Tag scan and Kiosk is in Exit mode.
+
+            if (kioskConfig.kiosk_mode == window.const_KIOSK_MODE_EXIT) {
+                userProfile.freeTagPreviousTag(previousRfidTag, function(err,result){
+                    if (err) {
+                        console.log("Error calling  freeTag: " + err.message);
+                    }
+                });
+            }
+
             userProfile.setRfidTag(lastRfidRead, function (err, result) {
                 if (err) {
                     console.log("Error calling setRfidTag: " + err.message);
@@ -189,9 +213,9 @@ ApplicationWindow {
         }
 
         function goToFinalQuestions() {
+            pageFinalQuestion.goToTabSliders();
             mainStackLayout.currentIndex = mainStackLayout.index_EXIT_SECTION;
             exitSection.currentIndex = exitSection.index_LAST_QUESTIONS;
-
         }
 
         service_port_number: kioskConfig.service_port_number
@@ -952,6 +976,7 @@ ApplicationWindow {
             Layout.margins: 0
 
             PageFinalQuestion {
+                id: pageFinalQuestion
                 model: modelFinalQuestions.get(0)
 
                 showPrevButton: kioskConfig.kiosk_mode !== const_KIOSK_MODE_EXIT

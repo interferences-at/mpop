@@ -287,6 +287,43 @@ Item {
     }
 
     /**
+     * Free the current RFID tag.
+     * Reads the current user RFID and free up from service.
+     *
+     * @param cb Callback that expects no result.
+     */
+    function freeCurrentTag(callback){
+        console.log("calling free Tag function!!");
+        getRfidTag(function(error, resultTag){
+            if(error){
+                console.log("Error:: "+error);
+            }
+            else
+            {
+              websocket.callRemoteMethod("freeTag",[resultTag], function(err){
+                  if (err) {
+                      console.log("Error calling freeTag()");
+                      callback(err);
+                  } else {
+                      callback(null); //done
+                 }
+              });
+            }
+        });
+    }
+
+    function freeTagPreviousTag(previousRfidTag, callback) {
+        websocket.callRemoteMethod("freeTag",[previousRfidTag], function(err){
+            if (err) {
+                console.log("Error calling freeTag()");
+                callback(err);
+            } else {
+                callback(null); //done
+           }
+        });
+    }
+
+    /**
      * Sets the RFID tag.
      * Reads the info from the service, if any.
      * Populate the info here.
@@ -400,7 +437,7 @@ Item {
 
         // Go to the demographic question if this is the entry kiosk
         if (kioskConfig.kiosk_mode == window.const_KIOSK_MODE_ENTRY) {
-                goToDemographicQuestions();
+            goToDemographicQuestions();
 
         // Go to the survey questions if this is the central kiosk
         // But: if the user hasn't answered the demographic questions, send them there.
