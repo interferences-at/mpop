@@ -4,7 +4,7 @@
 # Script that install Trim SemiBold font on the system
 
 FONTS_INSTALL_PATH="$HOME/.local/share/fonts"
-FONTS_DOWNLOAD_URL="https://raw.githubusercontent.com/aalex/mpop-private/baydam-patch-1/Trim-SemiBold.otf?token=AA7DZ25WF5NDC2AM657RJLK7TQ6YI"
+FONTS_DOWNLOAD_URL="https://raw.githubusercontent.com/aalex/mpop-private/dev/Trim-SemiBold.otf?token=AA7DZ27CBTECQ6H7HCZC2CK7X3ECY"
 FONT_FILENAME="Trim-SemiBold.otf"
 
 # Pull the fonts from private repository
