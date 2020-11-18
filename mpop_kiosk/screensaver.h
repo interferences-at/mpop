@@ -80,8 +80,8 @@ class AnswersView : public Screensaver
 
 public:
     enum Answers {
-        TheirAnswer,
         UserAnswer,
+        TheirAnswer
     };
 
     /*
