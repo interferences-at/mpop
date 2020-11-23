@@ -709,6 +709,8 @@ Column {
             Layout.fillWidth: true
             visible: datavizIndex > 0
 
+            Item { Layout.fillWidth: true }
+
             // Button to go back to the question main question page.
             WidgetIconButton {
                 Layout.leftMargin: 30
