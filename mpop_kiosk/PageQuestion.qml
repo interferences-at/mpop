@@ -707,7 +707,7 @@ Column {
         // filter navigation
         RowLayout {
             Layout.fillWidth: true
-            visible: datavizIndex > 0
+            visible: datavizIndex > 1 && !hasMultipleQuestions
 
             Item { Layout.fillWidth: true }
 
