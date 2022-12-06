@@ -18,13 +18,13 @@ public:
     virtual ~Layout();
 
     /**
-     * @brief Adds some prisoner lines to this layour.
+     * @brief Adds some prisoner lines to this layout.
      * @param prisonerLines
      */
     void addBarObjects(QSharedPointer<QVector<PrisonerLine::ptr>> barObjects);
 
     /**
-     * @brief Move the objects managed by this layout into their desired position.
+     * @brief Moves the objects managed by this layout into their desired position.
      */
     virtual void moveObjectsToLayout(qint64 currentTime) = 0;
 

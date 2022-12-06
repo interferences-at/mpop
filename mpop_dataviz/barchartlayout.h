@@ -31,7 +31,6 @@ public:
                                _rowsValues.end(), 0);
     }
 
-
     void updateBarsPosition(qint64 currentTime) override;
 
     void showSceneObject(qint64 currentTime) override;
@@ -40,6 +39,7 @@ public:
     void setStartPosition(const QPointF &pos);
     void setDistanceBetweenRows(qreal rowSpace) { _spaceBetweenRows = rowSpace; }
 
+    void setLogarithmicY(bool isLogarithmicY);
 private:
     QList<int> _rowsValues;
     QSharedPointer<GroupTweenAnimator> _groupTweenAnimator;
@@ -47,6 +47,7 @@ private:
     QVector<PrisonerLine::ptr> _horizontalLines;
 
     bool _centered = false;
+    bool _isLogarithmicY = false;
 
     qreal _x, _y = 0.0;
     qreal _spaceBetweenRows = 0.018;

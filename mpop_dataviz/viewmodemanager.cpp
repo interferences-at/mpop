@@ -413,6 +413,7 @@ void ViewModeManager::moveBarsToAnswerByAgeLayout()
     _agesAnswerBarChart.moveObjectsToLayout(currentTime());
 
     _userAgeAnswer.addBarObjects(myAgeVect);
+    _userAgeAnswer.setLogarithmicY(true);
     _userAgeAnswer.setBarsSize(sizeFromPixel(3.5, barHeight));
     _userAgeAnswer.setBarsColor("#80E2A7");
     _userAgeAnswer.setStartPosition(
