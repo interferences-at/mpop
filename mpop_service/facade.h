@@ -104,9 +104,9 @@ public:
      * @param gender identifier default value 'all'
      * @param timeAnswered identifier default value 'all'
      * @param value The average of the answers.
+     * @return An associative list. The values are ints. (for each age range)
      */
     QList<int> getAnswerByAge(const QString& questionId,const QString& ethenicity,const QString& gender ,const QString& timeAnswered);
-
 
 
     /**
@@ -194,13 +194,6 @@ public:
     * @return todays total visitors
     */
    float getRandomValueByTodaysVisitors();
-
-   /**
-    * @brief isDefualtParam
-    * @return return boolean result.
-    */
-   bool isDefualtParam(const QString& filter);
-
 
 public slots:
    void reconnectTimerTriggered();

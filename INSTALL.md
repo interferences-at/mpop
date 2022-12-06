@@ -28,7 +28,17 @@ The migration scripts are in the flyway/sql folder.
 
 MPOP Service offers a JSON-RPC 2.0 Websocket API.
 
-The Docker Compose setup should build mpop\_service and deploy it.
+Previously, we used Docker Compose to build mpop\_service and deploy it.
+
+Now, we build it by hand and deploy it with a shell script.
+
+`./sh_start_service_without_docker.sh`
+
+Lunch launches the service.
+
+See `scripts/lunch_kiosk.py`
+
+See `tail -F /tmp/odroid/lunch-child-service.log`
 
 
 ## Deploying MPOP Kiosk
