@@ -53,6 +53,7 @@ void BarChartLayout::setStartPosition(const QPointF &pos)
 
 void BarChartLayout::moveObjectsToLayout(qint64 currentTime) {
     // TODO: never ever iterate over size of line vector
+    // TODO: if (_isLogarithmicY) {}
     const qreal DISTANCE_BETWEEN_BARS = _barsHeight / 3.7;
     const qreal WIDTH_OF_EACH_COLUMN = DISTANCE_BETWEEN_BARS * 3;
     const qreal DISTANCE_BETWEEN_COLUMN = DISTANCE_BETWEEN_BARS / 2;
@@ -73,15 +74,17 @@ void BarChartLayout::moveObjectsToLayout(qint64 currentTime) {
     int biggestRow = *std::max_element(_rowsValues.begin(), _rowsValues.end());
     qreal columnSize = biggestRow / 5;
 
-    qreal offsetX = ((WIDTH_OF_EACH_COLUMN * columnSize) + ((DISTANCE_BETWEEN_BARS * 2) +
-                       DISTANCE_BETWEEN_COLUMN) * (int(columnSize) - 1)) / 2;
-    qreal offsetY = ((_barsHeight * (_rowsValues.size() - 1)) +
-                     (DISTANCE_BETWEEN_ROW * (_rowsValues.size() - 1))) / 2;
+    qreal offsetX = (
+        (WIDTH_OF_EACH_COLUMN * columnSize) +
+        ((DISTANCE_BETWEEN_BARS * 2) + DISTANCE_BETWEEN_COLUMN) *
+        (int(columnSize) - 1)
+    ) / 2;
+    qreal offsetY = (
+        (_barsHeight * (_rowsValues.size() - 1)) +
+        (DISTANCE_BETWEEN_ROW * (_rowsValues.size() - 1))) / 2;
 
     for (int rowIndex = 0; rowIndex < _rowsValues.size(); rowIndex++) {
-
         int columnIndex = 0;
-
         // Each bar in the bar chart is a column
         // We group lines by groups of 5
         for (int barIndex = 0; barIndex < _rowsValues.at(rowIndex); barIndex++) {
@@ -101,9 +104,8 @@ void BarChartLayout::moveObjectsToLayout(qint64 currentTime) {
             if (moduloFive == 4) {
                 x = ((barIndex - 2) * DISTANCE_BETWEEN_BARS) - (DISTANCE_BETWEEN_BARS / 2) + columnOffset;
                 rotation = -73;
-                // Increase the size of the fifth bar to fit to user story proportion
+                // Increase the size of every fifth bar
                 line->setSize(_barsWidth, _barsHeight * 1.25);
-
                 columnIndex += 1;
             }
 
