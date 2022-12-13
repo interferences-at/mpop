@@ -166,12 +166,14 @@ Item {
     /**
      * Returns the text for the languages.
      * To display for the dataviz for a question.
+     * The first key is the language in which we show the user interface.
+     * The second key is the language name we want to display.
      */
     function getTextForLanguage(key) {
         var language = window.lang;
         var results = {
-            "en": { "en": "English", "fr": "Anglais" },
-            "fr": { "en": "French", "fr": "Français" }
+            "en": { "en": "English", "fr": "French" },
+            "fr": { "en": "Anglais", "fr": "Français" }
         };
         var ret = key;
         ret = results[language][key];
