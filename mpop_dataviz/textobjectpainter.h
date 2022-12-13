@@ -9,7 +9,9 @@
 #include <QDebug>
 #include <QFontDatabase>
 
-
+/**
+ * @brief Draws our text objects.
+ */
 class TextObjectPainter
 {
 public:
@@ -19,17 +21,17 @@ public:
     // Reset painter
     void setPaintDevice(QOpenGLPaintDevice *device);
 
-    // Draw the X Axis line and text
+    // Draws the X Axis line and text
     void drawHorizontalNumbers();
-    // Draw the Y Axis line and text
+    // Draws the Y Axis line and text
     void drawVerticalNumbers();
-    // Draw top right info
+    // Draws top right info
     void drawTopRightInfos();
-    // Draw frame per second
+    // Draws frame per second
     void drawFramePerSecond(const int &framePerSecond);
-    // Draw view answer element
+    // Draws view answer element
     void drawViewElements(ViewModeManager::ViewMode view, const QList<QString> &title = {});
-    // Draw test card
+    // Draws test card
     void drawTestCard();
 
     void beginOpenGLPainting(); // QPainter beginNativePainting wrapper
@@ -37,11 +39,19 @@ public:
 
     void setTextLanguage(const QString &lang) { _lang = lang; }
 
+    /**
+     * @brief Sets the text for the min and max labels.
+     * @param minLabel Text for the min label.
+     * @param maxLabel Text for the max label.
+     */
+    void setMinMaxLabels(const QString &minLabel, const QString& maxLabel) {
+        _minLabel = minLabel;
+        _maxLabel = maxLabel;
+    }
+
 private:
     QPainter _painter;
-
     QPen _linePen;
-
     // Font settings
     QFont _fpsTextFont;
     QFont _answersTitlesFont;
@@ -51,8 +61,9 @@ private:
     int _height;
     int _pixelRatio;
 
-    // Constantes
     QString _lang = "en";
+    QString _minLabel = "0%"; // Changed dynamically
+    QString _maxLabel = "100%"; // Changed dynamically
     // All translatable text
     QMap<QString, QMap<QString, QString>> _texts;
 

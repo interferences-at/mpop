@@ -26,7 +26,6 @@ bool SceneObject::getVisible() const {
 }
 
 
-
 void SceneObject::setPosition(qreal x, qreal y) {
     setX(x);
     setY(y);

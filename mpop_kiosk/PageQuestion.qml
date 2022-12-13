@@ -9,23 +9,36 @@ Column {
 
     id: thisPage
 
+    // Functions:
+
+    /**
+     * Checks if the current sub-page index is the one for the questions.
+     */
     function getIndexIsQuestions() {
         return datavizIndex === index_QUESTIONS;
     }
 
+    /**
+     * Goes to the questions sub-page.
+     */
     function goToIndexQuestion() {
         datavizIndex = index_QUESTIONS;
     }
 
+    /**
+     * Goes to the sub-page for the dataviz.
+     */
     function goToIndexDataviz() {
         if (hasMultipleQuestions) {
             datavizIndex = index_CHOOSE_MULTIPLE;
-        }
-        else {
+        } else {
             datavizIndex = index_CHOOSE_SINGLE;
         }
     }
 
+    /**
+     * Loads the answers for the current visitor.
+     */
     function loadAnswersForCurrentVisitor() {
         // TODO: Retrieve value for user from service and populate the slider, if set.
         for (var i = 0; i < numberOfQuestions; i ++) {
@@ -34,11 +47,9 @@ Column {
             if (window.userProfile.answers.hasOwnProperty(key)) {
                 value = window.userProfile.answers[key];
             }
-
             sliderRepeater.itemAt(i).sliderValue = value;
         }
     }
-
 
     /**
      * Retrieves the question identifiers.
@@ -66,8 +77,7 @@ Column {
         for (var i = 0; i < questionsIds.length; i ++){
             if(window.userProfile.answers.hasOwnProperty(questionsIds[i])){
                 answer = window.userProfile.answers[questionsIds[i]];
-            }
-            else{
+            } else {
                  answer=-1;
              }
             ret.push(answer);
@@ -84,8 +94,7 @@ Column {
      */
     function makeMultipleQuestionTitle(myAnswers, answers){
         var ret = [];
-
-        var titleSize= window.userProfile.getObjectLength(answers);
+        var titleSize = window.userProfile.getObjectLength(answers);
         var objectPropertiesNames = Object.getOwnPropertyNames(answers);
         for (var i = 0; i < titleSize; i ++) {
             var answerTitle = window.datavizManager.makeTitleMineTheirs(objectPropertiesNames[i],myAnswers[i],answers[objectPropertiesNames[i]]);
@@ -102,17 +111,19 @@ Column {
      */
     function packAnswersTitle(titleAnswers){
         var ret = [];
-
-        var titleSize= window.userProfile.getObjectLength(titleAnswers);
+        var titleSize = window.userProfile.getObjectLength(titleAnswers);
         var objectPropertiesNames = Object.getOwnPropertyNames(titleAnswers);
         for (var i = 0; i < titleSize; i ++) {
            var answerTitle = window.datavizManager.makeTitleTheirs(objectPropertiesNames[i],titleAnswers[objectPropertiesNames[i]])
            ret.push(answerTitle);
         }
-
         return ret;
     }
 
+    /**
+     * Resets all the sliders to the default.
+     * The default is 50. (the middle of the slider)
+     */
     function resetToDefaultAnswer() {
         for (var i = 0; i < numberOfQuestions; i ++) {
             var value = 50; // default
@@ -124,10 +135,9 @@ Column {
      * Called when the answer changes their answer for a question using a slider.
      */
     function handleSliderMoved(sliderIndex, value) {
-        console.log("handleSliderMoved(" + sliderIndex + "," + value + ")");
+        // console.log("handleSliderMoved(" + sliderIndex + "," + value + ")");
         var identifier = model.identifier || model.subquestions.get(sliderIndex).identifier;
         var userId = window.userProfile.userId;
-
         window.userProfile.setUserAnswer(userId, identifier, value, function (err, user_id) {
             if (err) {
                 console.log("Error calling setUserAnswer(" + userId + "," + identifier + "," + value + "): " + err.message);
@@ -135,10 +145,8 @@ Column {
                 console.log("Success calling setUserAnswer(" + userId + "," + identifier + "," + value + ")");
             }
         });
-
         currentAnswers[sliderIndex] = value;
-
-        console.log("Has Multiple Question :" + hasMultipleQuestions);
+        // console.log("Has Multiple Question :" + hasMultipleQuestions);
         if (hasMultipleQuestions) {
             sendDatavizShowMyAnswers(currentAnswers);
         } else {
@@ -196,11 +204,14 @@ Column {
     readonly property int index_CHOOSE_SINGLE: 1
     readonly property int index_CHOOSE_MULTIPLE: 2
 
+    // When the page widget is ready:
     Component.onCompleted: {
+        // Loads the answers for the current visitor.
         loadAnswersForCurrentVisitor();
-
+        // Sets all sliders to their default value.
         for (var i = 0; i < numberOfQuestions; i ++) {
             var default_value_for_sliders = 50;
+            // Important: we also populate the list of answers:
             currentAnswers.push(default_value_for_sliders);
         }
     }
@@ -228,7 +239,6 @@ Column {
             Layout.fillWidth: true
             text: mainQuestionText.text
             font {
-
                 pixelSize: 45
                 capitalization: Font.AllUppercase
             }
@@ -430,7 +440,6 @@ Column {
              * Triggers sending OSC to the dataviz.
              */
             function sendDatavizViewBy() {
-
                 var questionId = model.identifier;
                 var ageFrom = currentFilterValueAgeFrom;
                 var ageTo = currentFilterValueAgeTo;
@@ -438,6 +447,8 @@ Column {
                 var ethnicity = currentFilterValueForEthnicity;
                 var timeAnswered = currentFilterValueForTime;
 
+                // The exact OSC messages sent will depend on the current filter
+                // that is selected.
                 switch (filterHighlighted) {
                 case filter_AGE:
                     // call get answer by age
@@ -450,6 +461,7 @@ Column {
                             var myAge = window.userProfile.age;
                             // answerByAge is a list of 20 values
                             console.log("show_one_answer_by_age(" + myAnswer + ", " + myAge + ", " + answerByAge + ")");
+                            window.datavizManager.send_dataviz_min_max_labels(questionId);
                             window.datavizManager.show_one_answer_by_age(myAnswer, myAge, answerByAge);
                         }
                     });
@@ -466,6 +478,7 @@ Column {
                             console.log("show_one_answer_by_ethnicity(" + myAnswer + ", " + myEthnicity + ", " +  JSON.stringify(answerByEthnicity)  + ")");
                             // pack the title and their answers.
                             var theirTitles= packAnswersTitle(answerByEthnicity);
+                            window.datavizManager.send_dataviz_min_max_labels(questionId);
                             window.datavizManager.show_one_answer_by_ethnicity(myEthnicity, myAnswer, theirTitles);
                         }
                     });
@@ -483,6 +496,7 @@ Column {
                             console.log("show_one_answer_by_Gender(" + myAnswer + ", " + myGender + ", " + answerByGender + ")");
                             // pack the title and their answers.
                             var theirTitles= packAnswersTitle(answerByGender);
+                            window.datavizManager.send_dataviz_min_max_labels(questionId);
                             window.datavizManager.show_one_answer_by_gender(myGender, myAnswer, theirTitles);
                         }
                     });
@@ -500,6 +514,7 @@ Column {
                             console.log("show_one_answer_by_language(" + myAnswer + ", " + myLanguage + ", " + answerByLanguage + ")");
                             // pack the title and their answers.
                             var theirTitles= packAnswersTitle(answerByLanguage);
+                            window.datavizManager.send_dataviz_min_max_labels(questionId);
                             window.datavizManager.show_one_answer_by_language(myLanguage, myAnswer, theirTitles);
                         }
                     });
@@ -516,6 +531,9 @@ Column {
                             console.log("view_answers " + myAnswers + "," + JSON.stringify(answers) + "");
                             // pack the title, my answers and their answers.
                             var answersTitles = makeMultipleQuestionTitle(myAnswers, answers);
+                            // When they are in the same page, all the min/max labels
+                            // are the same for every question.
+                            window.datavizManager.send_dataviz_min_max_labels(questionIds[0]);
                             window.datavizManager.view_answers(answersTitles);
                         }
                     });

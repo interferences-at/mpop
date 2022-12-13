@@ -34,6 +34,10 @@ public:
 
     void setTextPainterLanguage(const QString &lang) { _painter->setTextLanguage(lang); }
 
+    void setMinMaxLabels(const QString &minLabel, const QString& maxLabel) {
+        _painter->setMinMaxLabels(minLabel, maxLabel);
+    }
+
     ViewModeManager *viewManager() { return _viewModeManager; }
 
     // Show/Hide test card

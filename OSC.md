@@ -125,3 +125,15 @@ A speed ratio of 1.0 is normal. You can speed it up or slow it down by setting i
 
 A radius ratio of 1.0 is the default. You can make the radius of all bars bigger or smaller by changing that.
 
+## set_min_max_labels
+
+Sets the min and max labels for the dataviz.
+
+```
+/dataviz/0/set_min_max_labels "0%" "100%"
+```
+
+Arguments:
+- min label
+- max label
+

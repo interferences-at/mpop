@@ -17,6 +17,10 @@ Item {
     readonly property var modelEthnicities: ModelEthnicities {}
     readonly property var modelGenders: ModelGenders {}
 
+    /**
+     * Returns the text for the gender names.
+     * Of course, it will be different according to the current language.
+     */
     function getTextForGender(gender) {
         var language = window.lang;
         var ret = gender;
@@ -28,6 +32,69 @@ Item {
         return ret;
     }
 
+    /**
+     * Retrieves the text for the min and max values for a given question.
+     * (or set of questions)
+     * @returns A two-item array with strings are values.
+     */
+    function getTextForMinMax(questionId) {
+        // Default values: (most questions use these)
+        var min_fr = "Pas du tout";
+        var max_fr = "Tout à fait";
+        var min_en = "Not at all";
+        var max_en = "Absolutely";
+
+        // FIXME: Introspect the ModelQuestions instead of hard-coding these here.
+        if (questionId === 'incidence_drogue') {
+            min_fr = "0%";
+            max_fr = "100%";
+            min_en = "0%";
+            max_en = "100%";
+        } else if (questionId === 'interner') {
+            min_fr = "Internées";
+            max_fr = "Emprisonnées";
+            min_en = "Interned";
+            max_en = "Imprisoned";
+        } else if (questionId === 'peine_plus_severes') {
+            min_fr = "Réduction";
+            max_fr = "Augmentation";
+            min_en = "Reduction";
+            max_en = "Increase";
+        } else if (questionId === 'taux_recidive') {
+            min_fr = "Faible";
+            max_fr = "Élevé";
+            min_en = "Low";
+            max_en = "High";
+        } else if (questionId === 'bon_traitement') {
+            min_fr = "Maltraités";
+            max_fr = "Dorlotés";
+            min_en = "Mistreated";
+            max_en = "Spoilt";
+        } else if (questionId === 'benefice_justice_reparatrice') {
+            min_fr = "La réhabilitation des criminels";
+            max_fr = "La guérison des victimes";
+            min_en = "Rehabilitation of criminals";
+            max_en = "Healing for victims";
+        } else if (questionId === 'investir_education' || questionId === 'investir_sante_services_sociaux' ||
+                   questionId === 'investir_emploi') {
+            min_fr = "Rien";
+            max_fr = "Beaucoup";
+            min_en = "Nothing";
+            max_en = "A lot";
+        }
+        // Returns the right two-item array, depending on the language:
+        var language = window.lang;
+        var ret = [min_fr, max_fr];
+        if (language === 'en') {
+            ret[0] = min_en;
+            ret[1] = max_en;
+        }
+        return ret;
+    }
+
+    /**
+     * Returns the text for the ethnicities.
+     */
     function getTextForEthnicity(key) {
         var language = window.lang;
         var ret = key;
@@ -39,6 +106,9 @@ Item {
         return ret;
     }
 
+    /**
+     * Returns the text for a given question.
+     */
     function getTextForQuestion(key) {
         var language = window.lang;
         var ret = key;
@@ -90,10 +160,13 @@ Item {
         } else {
             ret = subtitle_en;
         }
-
         return ret;
     }
 
+    /**
+     * Returns the text for the languages.
+     * To display for the dataviz for a question.
+     */
     function getTextForLanguage(key) {
         var language = window.lang;
         var results = {
@@ -127,7 +200,6 @@ Item {
         return ret;
     }
 
-
     /**
      * View an answer to a single question by gender.
      *
@@ -146,7 +218,6 @@ Item {
         }
         oscMessageSender.send(_makePath("view_answer_by_gender"), args);
     }
-
 
     /**
      * View an answer to a single question by ethnicity.
@@ -167,7 +238,6 @@ Item {
         oscMessageSender.send(_makePath("view_answer_by_culture"), args);
     }
 
-
     /**
      * View an answer to a single question by language.
      *
@@ -187,7 +257,6 @@ Item {
         oscMessageSender.send(_makePath("view_answer_by_language"), args);
     }
 
-
     /**
      * Sets a screensaver parameter.
      *
@@ -200,7 +269,6 @@ Item {
         var args = [name, value];
         oscMessageSender.send(_makePath("screensaver_set_param"), args);
     }
-
 
     /**
      * View one answer by age.
@@ -230,11 +298,9 @@ Item {
         oscMessageSender.send(path, values);
     }
 
-
     function _verb(path, args) {
         // console.log("Send OSC: " + path + " " + args.toString());
     }
-
 
     /**
      * Go to the screensaver.
@@ -242,7 +308,6 @@ Item {
     function goto_screensaver() {
         oscMessageSender.send(_makePath("goto_screensaver"), []);
     }
-
 
     /**
      * Creates an object to pass in an Array to view_answers.
@@ -255,7 +320,6 @@ Item {
         };
         return ret;
     }
-
 
     /**
      * View the answers for a multiple-question page.
@@ -277,7 +341,6 @@ Item {
         oscMessageSender.send(_makePath("view_answers"), args);
     }
 
-
     /**
      * Show all answers.
      * @param values Array List of 25 int values.
@@ -294,6 +357,14 @@ Item {
         oscMessageSender.send(_makePath("language"), [lang]);
     }
 
+    /**
+     * Sends the labels for the min and max to the dataviz.
+     * @param questionId Id of the question.
+     */
+    function send_dataviz_min_max_labels(questionId) {
+        var minMaxLabels = getTextForMinMax(questionId);
+        oscMessageSender.send(_makePath("set_min_max_labels"), minMaxLabels);
+    }
 
     /**
      * Prepares a OSC path.

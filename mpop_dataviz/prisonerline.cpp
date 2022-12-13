@@ -42,15 +42,13 @@ void PrisonerLine::draw(const qint64& elapsed) {
     glPopMatrix();
 }
 
-void PrisonerLine::setColor(const QString &colorCode)
-{
+void PrisonerLine::setColor(const QString &colorCode) {
     _color = QColor(colorCode);
     // Convert Hex to RGBA
     setColor(_color.red(), _color.green(), _color.blue(), _color.alpha());
 }
 
-void PrisonerLine::setColor(int red, int green, int blue, int alpha)
-{
+void PrisonerLine::setColor(int red, int green, int blue, int alpha) {
     _color = QColor(red, green, blue, alpha);
     // Convert RGBA to float color (0.0 -> 1.0)
     _red = _color.redF();
@@ -59,8 +57,7 @@ void PrisonerLine::setColor(int red, int green, int blue, int alpha)
     _alpha = _color.alphaF();
 }
 
-void PrisonerLine::setSize(qreal width, qreal height)
-{
+void PrisonerLine::setSize(qreal width, qreal height) {
     if (_width != width)
         _width = width;
 
