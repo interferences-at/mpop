@@ -1,9 +1,7 @@
 #include "screensaverlayout.h"
 
-ScreensaverLayout::ScreensaverLayout()
-{
+ScreensaverLayout::ScreensaverLayout() {
     _groupTweenAnimator.reset(new GroupTweenAnimator());
-
     randomX = std::uniform_real_distribution<qreal>(_left * 1.2, _right * 1.2);
     randomY = std::uniform_real_distribution<qreal>(_bottom * 1.2, _top * 1.2);
     randomRadius = std::uniform_real_distribution<qreal>(-1, 1);
@@ -11,8 +9,8 @@ ScreensaverLayout::ScreensaverLayout()
     randomRatioRotation = std::uniform_real_distribution<qreal>(-0.1, 0.1);
 }
 
-void ScreensaverLayout::moveObjectsToLayout(qint64 currentTime)
-{
+
+void ScreensaverLayout::moveObjectsToLayout(qint64 currentTime) {
     _groupTweenAnimator.reset(new GroupTweenAnimator());
     _groupTweenAnimator->setDuration(1000);
     _groupTweenAnimator->setEasingType(QEasingCurve::InOutQuad);
@@ -20,30 +18,22 @@ void ScreensaverLayout::moveObjectsToLayout(qint64 currentTime)
     QRandomGenerator generator;
 
     if (!_previousBars.isEmpty() && _previousBars.size() < _barObjects->size()) {
-
         for (int i = _previousBars.size(); i < _barObjects->size(); i++) {
-
             qreal posX = randomX(generator);
             qreal posY = randomY(generator);
             std::uniform_real_distribution<qreal> randomRotation(0, 360);
             qreal rotation = randomRotation(generator);
-
             PrisonerLine::ptr line = _barObjects->at(i);
-
             _groupTweenAnimator->addSceneObjectToAnimate(line, posX, posY, rotation);
         }
         _groupTweenAnimator->start(currentTime);
-
     }
-
     // When everything is done keep track of previous bars data
     _previousBars = *_barObjects;
 }
 
-void ScreensaverLayout::updateBarsPosition(qint64 currentTime)
-{
+void ScreensaverLayout::updateBarsPosition(qint64 currentTime) {
     QRandomGenerator generator;
-
     for (auto line : *_barObjects) {
         qreal centerX = randomX(generator);
         qreal centerY = randomY(generator);
@@ -68,33 +58,30 @@ void ScreensaverLayout::updateBarsPosition(qint64 currentTime)
             _groupTweenAnimator.clear();
         }
     }
-
 }
 
-void ScreensaverLayout::showSceneObject(qint64 currentTime)
-{
+void ScreensaverLayout::showSceneObject(qint64 currentTime) {
     for (auto line : *_barObjects) {
         if (line->getVisible()) {
-
             line->draw(currentTime);
         }
     }
 }
 
-QSharedPointer<QVector<PrisonerLine::ptr> > ScreensaverLayout::getClosestBars(const QPointF &pos)
-{
+QSharedPointer<QVector<PrisonerLine::ptr> > ScreensaverLayout::getClosestBars(const QPointF &pos) {
     // Sort bars by the closest to the point(x, y)
     std::sort(std::begin(*_barObjects), std::end(*_barObjects),
               [&](PrisonerLine::ptr a, PrisonerLine::ptr b) -> bool {
         return pow(abs(a->getX() - pos.x()), 2) + pow(abs(a->getY() - pos.y()), 2) <
                pow(abs(b->getX() - pos.x()), 2) + pow(abs(b->getY() - pos.y()), 2);
     });
-
     return _barObjects;
 }
 
 void ScreensaverLayout::setParam(const QString& paramName, float value) {
-    if (paramName == "speed") { _speedRatio = value; }
+    if (paramName == "speed") {
+        _speedRatio = value;
+    }
 }
 
 ScreensaverLayout::~ScreensaverLayout()

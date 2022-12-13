@@ -26,29 +26,24 @@ qint64 DatavizWindow::elapsed() const {
     return this->_elapsedTimer.elapsed();
 }
 
-void DatavizWindow::toggleTestCard()
-{
+void DatavizWindow::toggleTestCard() {
     _showTestCard = !_showTestCard;
-
     restartTestCardTimer();
 }
 
-void DatavizWindow::setTestCardVisibility(bool visible)
-{
+void DatavizWindow::setTestCardVisibility(bool visible) {
     _showTestCard = visible;
 
     restartTestCardTimer();
 }
 
-void DatavizWindow::restartTestCardTimer()
-{
+void DatavizWindow::restartTestCardTimer() {
     if (_showTestCard) {
         _testCardTimer.restart();
     }
 }
 
-void DatavizWindow::keyPressEvent(QKeyEvent *event)
-{
+void DatavizWindow::keyPressEvent(QKeyEvent *event) {
     if (event->modifiers() & Qt::ControlModifier) {
         switch (event->key()) {
         case Qt::Key_Q:
@@ -67,8 +62,7 @@ void DatavizWindow::keyPressEvent(QKeyEvent *event)
     }
 }
 
-void DatavizWindow::updateFramePerSecond()
-{
+void DatavizWindow::updateFramePerSecond() {
     // Frame per second
     _framePerSecond = _framesCount / ((double)_frameTimer.elapsed() / 1000.0);
     // Restart timer
@@ -136,7 +130,6 @@ void DatavizWindow::paintGL() {
 
     ViewModeManager::ViewMode viewActiveMode = _viewModeManager->getViewActiveMode();
     _viewModeManager->showViewManagerBars(viewActiveMode);
-
     _painter->endOpenGLPainting(); // Finish OpenGL painting
 
     if (viewActiveMode >= ViewModeManager::MultiAnswersMode &&
@@ -148,7 +141,6 @@ void DatavizWindow::paintGL() {
     // Draw test card
     if (_showTestCard) {
         _painter->drawTestCard();
-
         if (_testCardTimer.elapsed() >= 1000 * 60 * 30) {
             _showTestCard = false;
         }

@@ -19,6 +19,7 @@ static const QString VIEW_ALL_ANSWERS_METHOD = "all_results";
 static const QString DATAVIZ_LANGUAGE_METHOD = "language";
 static const QString SHOW_TEST_CARD = "show_testcard";
 static const QString HIDE_TEST_CARD = "hide_testcard";
+static const QString SET_MIN_MAX_LABELS = "set_min_max_labels";
 
 static const int INDEX_NAMESPACE_PREFIX = 0;
 static const int INDEX_WINDOW_NUMBER = 1;
@@ -277,19 +278,29 @@ void Controller::messageReceivedCb(const QString& oscAddress, const QVariantList
             */
             QList<int> answersValues = toInts(arguments);
 
-            if (numArgs != 25){
+            if (numArgs != 25) {
                 //qDebug() << "Uncorrect number of arguments";
             } else {
                 showAllAnswers(windowIndex, answersValues);
             }
         } else if (methodName == DATAVIZ_LANGUAGE_METHOD) {
-            setDatavizLanguage(windowIndex, arguments.at(0).toString());
+            if (numArgs >= 1) {
+                setDatavizLanguage(windowIndex, arguments.at(0).toString());
+            }
         } else if (methodName == SHOW_TEST_CARD) {
             showTestCard(windowIndex, true);
         } else if (methodName == HIDE_TEST_CARD) {
             showTestCard(windowIndex, false);
         } else if (methodName == DATAVIZ_LANGUAGE_METHOD) {
-            setDatavizLanguage(windowIndex, arguments.at(0).toString());
+            if (numArgs >= 1) {
+                setDatavizLanguage(windowIndex, arguments.at(0).toString());
+            }
+        } else if (methodName == SET_MIN_MAX_LABELS) {
+            if (numArgs >= 2) {
+                setMinMaxLabels(windowIndex,
+                    arguments.at(0).toString(),
+                    arguments.at(1).toString());
+            }
         } else {
             //qDebug() << "Unhandled OSC method" << methodName;
         }
@@ -330,8 +341,7 @@ void Controller::showSingleAnswerByAge(int windowIndex, int myAnswer, int myRowI
     }
 }
 
-void Controller::showAllAnswers(int windowIndex, const QList<int> &values)
-{
+void Controller::showAllAnswers(int windowIndex, const QList<int> &values) {
     DatavizWindow::ptr window = getWindowById(windowIndex);
     if (window) {
         window->viewManager()->setAllAnswersBars(values);
@@ -339,16 +349,14 @@ void Controller::showAllAnswers(int windowIndex, const QList<int> &values)
 }
 
 
-void Controller::setDatavizLanguage(int windowIndex, const QString &lang)
-{
+void Controller::setDatavizLanguage(int windowIndex, const QString &lang) {
     DatavizWindow::ptr window = getWindowById(windowIndex);
     if (window) {
         window->setTextPainterLanguage(lang);
     }
 }
 
-void Controller::showTestCard(int windowIndex, bool visible)
-{
+void Controller::showTestCard(int windowIndex, bool visible) {
     DatavizWindow::ptr window = getWindowById(windowIndex);
     if (window) {
         window->setTestCardVisibility(visible);
@@ -382,13 +390,18 @@ DatavizWindow* Controller::getWindow(int windowIndex) const { // Q_DECL_DEPRECAT
     }
 }
 
-DatavizWindow::ptr Controller::getWindowById(uint windowId) const
-{
+DatavizWindow::ptr Controller::getWindowById(uint windowId) const {
     if (!_windowsMap.contains(windowId)) {
         //qDebug() << "No such window" << windowId;
         return nullptr;
     }
-
     return _windowsMap[windowId];
+}
+
+void Controller::setMinMaxLabels(int windowIndex, const QString& minLabel, const QString& maxLabel) {
+    DatavizWindow::ptr window = getWindowById(windowIndex);
+    if (window) {
+        window->setMinMaxLabels(minLabel, maxLabel);
+    }
 }
 

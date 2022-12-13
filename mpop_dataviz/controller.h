@@ -29,6 +29,13 @@ public:
     void setDatavizLanguage(int windowIndex, const QString &lang);
     // Show/Hide test card via OSC
     void showTestCard(int windowIndex, bool visible);
+    /**
+     * @brief Sets the text for the min and max labels.
+     * @param windowIndex Index of the window. (deprecated)
+     * @param minLabel Text for the min label.
+     * @param maxLabel Text for the max label.
+     */
+    void setMinMaxLabels(int windowIndex, const QString& minLabel, const QString& maxLabel);
 
 private:
     // data members
@@ -36,7 +43,6 @@ private:
     QVector<QSharedPointer<DatavizWindow>> _windows;
     // Make easy to find window by ID
     QMap<uint, DatavizWindow::ptr> _windowsMap;
-
 
 private:
     DatavizWindow* getWindow(int windowIndex) const Q_DECL_DEPRECATED;
