@@ -1,18 +1,19 @@
 # Build a Qt project on macOS
 name: Build on macOS
 
-on:
-  push:
-    # branches: [ dev ]
-    # Disable this action, for now, since it often fails for reasons unrelated to our code:
-    # (plus, macOS is not a target platform for this software)
-    branches-ignore:
-      - '**'
-  pull_request:
-    # branches: [ dev ]
-    # Disable this action, for now, since it often fails for reasons unrelated to our code:
-    branches-ignore:
-      - '**'
+on: workflow_dispatch # Disable this workflow, unless manually triggered.
+# on:
+#   push:
+#     # branches: [ dev ]
+#     # Disable this action, for now, since it often fails for reasons unrelated to our code:
+#     # (plus, macOS is not a target platform for this software)
+#     branches-ignore:
+#       - '**'
+#   pull_request:
+#     # branches: [ dev ]
+#     # Disable this action, for now, since it often fails for reasons unrelated to our code:
+#     branches-ignore:
+#       - '**'
 
 jobs:
   build:
