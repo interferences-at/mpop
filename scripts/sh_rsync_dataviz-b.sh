@@ -1,5 +1,9 @@
 #!/bin/bash
 # Copies the backups to another computer
 
-rsync -a ~/backups/* dataviz-b:backups/
+rsync --archive \
+    --verbose \
+    --human-readable \
+    --delete-before \
+    ~/backups/ dataviz-b:backups/
 
